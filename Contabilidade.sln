@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35013.160
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contabilidade", "Contabilidade\Contabilidade.csproj", "{BCB783B9-8109-4236-8BF7-66A00226F672}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BCB783B9-8109-4236-8BF7-66A00226F672}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCB783B9-8109-4236-8BF7-66A00226F672}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCB783B9-8109-4236-8BF7-66A00226F672}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCB783B9-8109-4236-8BF7-66A00226F672}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5DA17B83-B359-48A7-AE20-7E623BF4B723}
+	EndGlobalSection
+EndGlobal
