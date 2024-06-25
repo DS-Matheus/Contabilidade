@@ -34,11 +34,11 @@
             btnCriarBD = new Button();
             cbbBD = new ComboBox();
             groupBox2 = new GroupBox();
-            label1 = new Label();
-            txtNome = new TextBox();
+            btnEntrar = new Button();
             txtSenha = new TextBox();
             label2 = new Label();
-            btnEntrar = new Button();
+            txtNome = new TextBox();
+            label1 = new Label();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
             SuspendLayout();
@@ -106,21 +106,15 @@
             groupBox2.TabStop = false;
             groupBox2.Text = "Informações de Usuário";
             // 
-            // label1
+            // btnEntrar
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(17, 29);
-            label1.Name = "label1";
-            label1.Size = new Size(40, 15);
-            label1.TabIndex = 0;
-            label1.Text = "Nome";
-            // 
-            // txtNome
-            // 
-            txtNome.Location = new Point(17, 47);
-            txtNome.Name = "txtNome";
-            txtNome.Size = new Size(260, 23);
-            txtNome.TabIndex = 1;
+            btnEntrar.Location = new Point(110, 120);
+            btnEntrar.Name = "btnEntrar";
+            btnEntrar.Size = new Size(75, 30);
+            btnEntrar.TabIndex = 4;
+            btnEntrar.Text = "Entrar";
+            btnEntrar.UseVisualStyleBackColor = true;
+            btnEntrar.Click += btnEntrar_Click;
             // 
             // txtSenha
             // 
@@ -138,14 +132,21 @@
             label2.TabIndex = 2;
             label2.Text = "Senha";
             // 
-            // btnEntrar
+            // txtNome
             // 
-            btnEntrar.Location = new Point(110, 120);
-            btnEntrar.Name = "btnEntrar";
-            btnEntrar.Size = new Size(75, 30);
-            btnEntrar.TabIndex = 4;
-            btnEntrar.Text = "Entrar";
-            btnEntrar.UseVisualStyleBackColor = true;
+            txtNome.Location = new Point(17, 47);
+            txtNome.Name = "txtNome";
+            txtNome.Size = new Size(260, 23);
+            txtNome.TabIndex = 1;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(17, 29);
+            label1.Name = "label1";
+            label1.Size = new Size(40, 15);
+            label1.TabIndex = 0;
+            label1.Text = "Nome";
             // 
             // frmLogin
             // 
@@ -157,6 +158,7 @@
             Name = "frmLogin";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Contabilidade - Login";
+            Load += frmLogin_Load;
             groupBox1.ResumeLayout(false);
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
