@@ -9,6 +9,15 @@ namespace Contabilidade
 {
     public partial class frmLogin : Form
     {
+
+        public const int WM_NCLBUTTONDOWN = 0xA1;
+        public const int HT_CAPTION = 0x2;
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        public static extern bool ReleaseCapture();
+
         public frmLogin()
         {
             InitializeComponent();
@@ -88,6 +97,39 @@ namespace Contabilidade
             else
             {
                 Directory.CreateDirectory(pastaDatabases);
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void btnMinimizar_Click(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Minimized;
+        }
+
+        private void panel2_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                ReleaseCapture();
+                SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+            }
+        }
+
+        private void chbVisibilidadeSenha_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chbVisibilidadeSenha.Checked)
+            {
+                // Se o checkbox estiver marcado, torna a senha visível
+                txtSenha.UseSystemPasswordChar = false;
+            }
+            else
+            {
+                // Se o checkbox não estiver marcado, oculta a senha
+                txtSenha.UseSystemPasswordChar = true;
             }
         }
     }
