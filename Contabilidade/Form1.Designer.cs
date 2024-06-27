@@ -64,7 +64,7 @@
             groupBox1.Location = new Point(17, 12);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(300, 112);
-            groupBox1.TabIndex = 0;
+            groupBox1.TabIndex = 2;
             groupBox1.TabStop = false;
             groupBox1.Text = "Banco de Dados";
             // 
@@ -100,6 +100,7 @@
             btnCriarBD.TabIndex = 1;
             btnCriarBD.Text = "Criar";
             btnCriarBD.UseVisualStyleBackColor = true;
+            btnCriarBD.Click += btnCriarBD_Click;
             // 
             // cbbBD
             // 
@@ -110,7 +111,9 @@
             cbbBD.Margin = new Padding(20);
             cbbBD.Name = "cbbBD";
             cbbBD.Size = new Size(260, 23);
+            cbbBD.Sorted = true;
             cbbBD.TabIndex = 0;
+            cbbBD.TextChanged += cbbBD_TextChanged;
             // 
             // groupBox2
             // 
@@ -124,7 +127,7 @@
             groupBox2.Location = new Point(17, 140);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(300, 156);
-            groupBox2.TabIndex = 1;
+            groupBox2.TabIndex = 3;
             groupBox2.TabStop = false;
             groupBox2.Text = "Informações de Usuário";
             // 
@@ -135,7 +138,7 @@
             chbVisibilidadeSenha.Location = new Point(17, 127);
             chbVisibilidadeSenha.Name = "chbVisibilidadeSenha";
             chbVisibilidadeSenha.Size = new Size(102, 19);
-            chbVisibilidadeSenha.TabIndex = 5;
+            chbVisibilidadeSenha.TabIndex = 2;
             chbVisibilidadeSenha.Text = "Exibir senha";
             chbVisibilidadeSenha.UseVisualStyleBackColor = true;
             chbVisibilidadeSenha.CheckedChanged += chbVisibilidadeSenha_CheckedChanged;
@@ -147,7 +150,7 @@
             btnEntrar.Location = new Point(201, 120);
             btnEntrar.Name = "btnEntrar";
             btnEntrar.Size = new Size(75, 30);
-            btnEntrar.TabIndex = 4;
+            btnEntrar.TabIndex = 3;
             btnEntrar.Text = "Entrar";
             btnEntrar.UseVisualStyleBackColor = true;
             btnEntrar.Click += btnEntrar_Click;
@@ -158,7 +161,7 @@
             txtSenha.Location = new Point(17, 91);
             txtSenha.Name = "txtSenha";
             txtSenha.Size = new Size(260, 23);
-            txtSenha.TabIndex = 3;
+            txtSenha.TabIndex = 1;
             txtSenha.UseSystemPasswordChar = true;
             // 
             // label2
@@ -177,7 +180,7 @@
             txtNome.Location = new Point(17, 47);
             txtNome.Name = "txtNome";
             txtNome.Size = new Size(260, 23);
-            txtNome.TabIndex = 1;
+            txtNome.TabIndex = 0;
             // 
             // label1
             // 
@@ -198,7 +201,7 @@
             panel1.Margin = new Padding(0);
             panel1.Name = "panel1";
             panel1.Size = new Size(260, 309);
-            panel1.TabIndex = 2;
+            panel1.TabIndex = 5;
             // 
             // label3
             // 
@@ -221,7 +224,7 @@
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
             panel2.Size = new Size(595, 30);
-            panel2.TabIndex = 3;
+            panel2.TabIndex = 4;
             panel2.MouseDown += panel2_MouseDown;
             // 
             // btnMinimizar
@@ -234,7 +237,7 @@
             btnMinimizar.Location = new Point(535, 0);
             btnMinimizar.Name = "btnMinimizar";
             btnMinimizar.Size = new Size(30, 30);
-            btnMinimizar.TabIndex = 2;
+            btnMinimizar.TabIndex = 1;
             btnMinimizar.Text = "--";
             btnMinimizar.UseVisualStyleBackColor = true;
             btnMinimizar.Click += btnMinimizar_Click;
@@ -259,7 +262,7 @@
             btnFechar.Location = new Point(565, 0);
             btnFechar.Name = "btnFechar";
             btnFechar.Size = new Size(30, 30);
-            btnFechar.TabIndex = 0;
+            btnFechar.TabIndex = 1;
             btnFechar.Text = "X";
             btnFechar.UseVisualStyleBackColor = true;
             btnFechar.Click += button1_Click;
@@ -273,7 +276,7 @@
             panel3.Location = new Point(260, 30);
             panel3.Name = "panel3";
             panel3.Size = new Size(335, 309);
-            panel3.TabIndex = 4;
+            panel3.TabIndex = 1;
             // 
             // frmLogin
             // 
