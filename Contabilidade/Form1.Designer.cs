@@ -89,6 +89,7 @@
             btnExcluirBD.TabIndex = 2;
             btnExcluirBD.Text = "Excluir";
             btnExcluirBD.UseVisualStyleBackColor = true;
+            btnExcluirBD.Click += btnExcluirBD_Click;
             // 
             // btnCriarBD
             // 
