@@ -12,11 +12,12 @@ namespace Contabilidade
 {
     public partial class frmLogin : Form
     {
-        protected string textoCbbBD = "";
+        private string nomeBDRenomear = "";
+        private string textoCbbBD = "";
         public string pastaDatabases = Directory.GetCurrentDirectory() + "\\databases";
-        public string caminhoBD = "";
-        public string[] caminhosBDs = new string[0];
-        public List<string> nomesBDs = new List<string>();
+        private string caminhoBD = "";
+        private string[] caminhosBDs = new string[0];
+        private List<string> nomesBDs = new List<string>();
 
         // Variáveis usadas para permitir que a janela se movimente através da barra superior customizada
         public const int WM_NCLBUTTONDOWN = 0xA1;
@@ -98,7 +99,7 @@ namespace Contabilidade
             {
                 string nomeArquivo = Path.GetFileNameWithoutExtension(arquivo);
                 cbbBD.Items.Add(nomeArquivo);
-                nomesBDs.Add(nomeArquivo + ".sqlite");
+                nomesBDs.Add(nomeArquivo.ToLower() + ".sqlite");
             }
         }
 
@@ -262,7 +263,7 @@ namespace Contabilidade
                 return false;
             }
             // Verifica se o arquivo não existe no comboBox
-            else if (!nomesBDs.Contains(nomeBD))
+            else if (!nomesBDs.Contains(nomeBD.ToLower()))
             {
                 MessageBox.Show("Não foi possivel localizar o banco de dados ou ele não existe!", tituloMensagem, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cbbBD.Text = "";
@@ -270,7 +271,7 @@ namespace Contabilidade
 
                 return false;
             }
-            else if (nomesBDs.Contains(nomeBD))
+            else if (nomesBDs.Contains(nomeBD.ToLower()))
             {
                 return true;
             }
@@ -303,6 +304,146 @@ namespace Contabilidade
                 cbbBD.Text = "";
                 cbbBD.Focus();
             }
+        }
+
+        private void renomearBD()
+        {
+            caminhoBD = pastaDatabases + "\\" + nomeBDRenomear;
+            // Renomear
+            File.Move(caminhoBD, Path.Combine(Path.GetDirectoryName(caminhoBD) + "\\", validarExtensaoBD(cbbBD.Text)));
+
+            MessageBox.Show("O banco de dados foi renomeado com sucesso!", "Operação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            btnCriarBD.Enabled = true;
+            btnExcluirBD.Enabled = true;
+            gpbInfoUsuario.Enabled = true;
+            btnRenomearBD.Text = "Renomear";
+
+            carregarBDs();
+        }
+
+        private void btnRenomearBD_Click(object sender, EventArgs e)
+        {
+            // Verificar se o botão está no modo de salvamento (quando o usuário já indicou o banco a ser renomeado)
+            if (btnRenomearBD.Text == "Salvar")
+            {
+                string nomeBD = validarExtensaoBD(textoCbbBD);
+
+                // Verifica se é nulo
+                if (textoCbbBD == "" || textoCbbBD == null || string.IsNullOrWhiteSpace(textoCbbBD))
+                {
+                    MessageBox.Show("Não foi informado um nome para o banco!", "Erro ao renomear banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    cbbBD.Text = "";
+                    cbbBD.Focus();
+                }
+                // Verifica se o arquivo existe no comboBox
+                else if (nomesBDs.Contains(nomeBD.ToLower()))
+                {
+                    // Verificar se o arquivo encontrado é o mesmo que deseja-se renomear (se sim: pode-se alterar a capitalização das letras desde que não seja igual ao já existente)
+                    if (nomeBD.ToLower() == nomeBDRenomear.ToLower())
+                    {
+                        // Se o nome for exatamente igual: erro
+                        if (nomeBD == nomeBDRenomear)
+                        {
+                            MessageBox.Show("O nome informado é exatamente igual ao anterior!", "Erro ao renomear banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            cbbBD.Text = "";
+                            cbbBD.Focus();
+                        }
+                        // Senão: renomear
+                        else
+                        {
+                            renomearBD();
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Já existe um banco de dados com esse nome!", "Erro ao renomear banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        cbbBD.Text = "";
+                        cbbBD.Focus();
+                    }
+                }
+                // Verifica se o arquivo não existe no comboBox
+                else if (!nomesBDs.Contains(nomeBD.ToLower()))
+                {
+                    // Verifica se começa com número
+                    if (char.IsDigit(textoCbbBD[0]))
+                    {
+                        MessageBox.Show("O nome informado não pode começar com um número!", "Erro ao renomear banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        cbbBD.Text = "";
+                        cbbBD.Focus();
+                    }
+                    // Verifica se utiliza apenas letras e números
+                    else if (!validarNomeBD(textoCbbBD))
+                    {
+                        MessageBox.Show("O nome ínformado deve conter apenas letras e números (sem espaços)!", "Erro ao renomear banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        cbbBD.Text = "";
+                        cbbBD.Focus();
+                    }
+                    // Passou nas verificações, tentar renomear
+                    else
+                    {
+                        try
+                        {
+                            renomearBD();
+                        }
+                        catch (Exception error)
+                        {
+                            MessageBox.Show(error.Message.ToString(), "Erro ao renomear banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Por gentileza, anote o nome informado do banco, salve um print da tela de Login e contate o desenvolvedor do programa.", "Erro não tratado!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            // Verificar se o banco existe e se existir: travar demais botões, exibir mensagem e aguardar o usuário inserir um novo nome válido.
+            else if (verificarExistenciaBD("Erro ao localizar banco de dados"))
+            {
+                // Salvar nome do banco a ser renomeado
+                nomeBDRenomear = validarExtensaoBD(textoCbbBD);
+
+                MessageBox.Show("Banco de dados selecionado. Insira um novo nome e confirme ou tecle ESC para cancelar", "Renomear arquivo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // Entrar em modo de salvamento
+                btnCriarBD.Enabled = false;
+                btnExcluirBD.Enabled = false;
+                gpbInfoUsuario.Enabled = false;
+                btnRenomearBD.Text = "Salvar";
+
+                cbbBD.Text = "";
+                cbbBD.Focus();
+            }
+            else
+            {
+                nomeBDRenomear = "";
+            }
+        }
+
+        private void handleKeyPressRenomearBD(KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Escape)
+            {
+                btnCriarBD.Enabled = true;
+                btnExcluirBD.Enabled = true;
+                gpbInfoUsuario.Enabled = true;
+                btnRenomearBD.Text = "Renomear";
+                cbbBD.Text = "";
+            }
+            else if (e.KeyChar == (char)Keys.Enter)
+            {
+                btnRenomearBD.PerformClick();
+            }
+        }
+
+        private void cbbBD_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            handleKeyPressRenomearBD(e);
+        }
+
+        private void btnRenomearBD_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            handleKeyPressRenomearBD(e);
         }
     }
 }

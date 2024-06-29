@@ -33,7 +33,7 @@
             btnExcluirBD = new Button();
             btnCriarBD = new Button();
             cbbBD = new ComboBox();
-            groupBox2 = new GroupBox();
+            gpbInfoUsuario = new GroupBox();
             chbVisibilidadeSenha = new CheckBox();
             btnEntrar = new Button();
             txtSenha = new TextBox();
@@ -48,7 +48,7 @@
             btnFechar = new Button();
             panel3 = new Panel();
             groupBox1.SuspendLayout();
-            groupBox2.SuspendLayout();
+            gpbInfoUsuario.SuspendLayout();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             panel3.SuspendLayout();
@@ -78,6 +78,8 @@
             btnRenomearBD.TabIndex = 3;
             btnRenomearBD.Text = "Renomear";
             btnRenomearBD.UseVisualStyleBackColor = true;
+            btnRenomearBD.Click += btnRenomearBD_Click;
+            btnRenomearBD.KeyPress += btnRenomearBD_KeyPress;
             // 
             // btnExcluirBD
             // 
@@ -106,6 +108,7 @@
             // cbbBD
             // 
             cbbBD.Cursor = Cursors.IBeam;
+            cbbBD.DisplayMember = "dsadas";
             cbbBD.Font = new Font("Lucida Sans", 9.75F);
             cbbBD.FormattingEnabled = true;
             cbbBD.Location = new Point(17, 31);
@@ -115,22 +118,23 @@
             cbbBD.Sorted = true;
             cbbBD.TabIndex = 0;
             cbbBD.TextChanged += cbbBD_TextChanged;
+            cbbBD.KeyPress += cbbBD_KeyPress;
             // 
-            // groupBox2
+            // gpbInfoUsuario
             // 
-            groupBox2.Controls.Add(chbVisibilidadeSenha);
-            groupBox2.Controls.Add(btnEntrar);
-            groupBox2.Controls.Add(txtSenha);
-            groupBox2.Controls.Add(label2);
-            groupBox2.Controls.Add(txtNome);
-            groupBox2.Controls.Add(label1);
-            groupBox2.Font = new Font("Lucida Sans", 12F, FontStyle.Bold);
-            groupBox2.Location = new Point(17, 140);
-            groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(300, 156);
-            groupBox2.TabIndex = 3;
-            groupBox2.TabStop = false;
-            groupBox2.Text = "Informações de Usuário";
+            gpbInfoUsuario.Controls.Add(chbVisibilidadeSenha);
+            gpbInfoUsuario.Controls.Add(btnEntrar);
+            gpbInfoUsuario.Controls.Add(txtSenha);
+            gpbInfoUsuario.Controls.Add(label2);
+            gpbInfoUsuario.Controls.Add(txtNome);
+            gpbInfoUsuario.Controls.Add(label1);
+            gpbInfoUsuario.Font = new Font("Lucida Sans", 12F, FontStyle.Bold);
+            gpbInfoUsuario.Location = new Point(17, 140);
+            gpbInfoUsuario.Name = "gpbInfoUsuario";
+            gpbInfoUsuario.Size = new Size(300, 156);
+            gpbInfoUsuario.TabIndex = 3;
+            gpbInfoUsuario.TabStop = false;
+            gpbInfoUsuario.Text = "Informações de Usuário";
             // 
             // chbVisibilidadeSenha
             // 
@@ -272,7 +276,7 @@
             // 
             panel3.BackColor = Color.FromArgb(232, 241, 242);
             panel3.Controls.Add(groupBox1);
-            panel3.Controls.Add(groupBox2);
+            panel3.Controls.Add(gpbInfoUsuario);
             panel3.Dock = DockStyle.Fill;
             panel3.Location = new Point(260, 30);
             panel3.Name = "panel3";
@@ -294,8 +298,8 @@
             Text = "Contabilidade - Login";
             Load += frmLogin_Load;
             groupBox1.ResumeLayout(false);
-            groupBox2.ResumeLayout(false);
-            groupBox2.PerformLayout();
+            gpbInfoUsuario.ResumeLayout(false);
+            gpbInfoUsuario.PerformLayout();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             panel2.ResumeLayout(false);
@@ -307,7 +311,7 @@
         #endregion
 
         private GroupBox groupBox1;
-        private GroupBox groupBox2;
+        private GroupBox gpbInfoUsuario;
         private ComboBox cbbBD;
         private Button btnRenomearBD;
         private Button btnExcluirBD;
