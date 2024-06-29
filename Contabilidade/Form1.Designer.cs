@@ -104,6 +104,7 @@
             btnCriarBD.Text = "Criar";
             btnCriarBD.UseVisualStyleBackColor = true;
             btnCriarBD.Click += btnCriarBD_Click;
+            btnCriarBD.KeyPress += btnCriarBD_KeyPress;
             // 
             // cbbBD
             // 
