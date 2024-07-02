@@ -18,7 +18,6 @@ namespace Contabilidade
         private string textoCbbBD = "";
         public string pastaDatabases = Directory.GetCurrentDirectory() + "\\databases";
         private string caminhoBD = "";
-        private string[] caminhosBDs = new string[0];
         private List<string> nomesBDs = new List<string>();
 
         // Variáveis usadas para permitir que a janela se movimente através da barra superior customizada
@@ -34,44 +33,51 @@ namespace Contabilidade
             InitializeComponent();
         }
 
-        private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
-        {
-
-        }
-
         private void btnEntrar_Click(object sender, EventArgs e)
         {
-            if (cbbBD.SelectedItem == null)
+            // Verifica se o banco de dados existe
+            if (!verificarExistenciaBD("Erro ao localizar banco de dados"))
             {
-                MessageBox.Show("Nenhum banco de dados selecionado!", "Formulário Incompleto", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                cbbBD.Focus();
+                return;
             }
+            // Verifica se a senha foi digitada
+            else if (txtNome.Text == "")
+            {
+                MessageBox.Show("Usuário não informado!", "Formulário Incompleto", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                txtNome.Focus();
+                
+            }
+            // Verifica se o usuário foi informado
             else if (txtSenha.Text == "")
             {
                 MessageBox.Show("Senha não informada!", "Formulário Incompleto", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 txtSenha.Focus();
             }
-            else if (txtNome.Text == "")
-            {
-                MessageBox.Show("Usuário não informado!", "Formulário Incompleto", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                txtNome.Focus();
-            }
             else
             {
                 try
                 {
-                    Conexao con = new Conexao(cbbBD.SelectedItem.ToString());
-
+                    // Conectar ao banco
+                    Conexao con = new Conexao(pastaDatabases + "\\" + validarExtensaoBD(cbbBD.Text));
                     con.conectar();
 
-                    string sql = "SELECT * FROM usuarios WHERE nome = '" + txtNome.Text + "' AND senha = '" + txtSenha.Text + "'";
+                    // Query de pesquisa
+                    string sql = "SELECT * FROM usuarios WHERE nome= @nome AND senha= @senha;";
+                    SQLiteCommand comando = new SQLiteCommand(sql, con.conn);
+                    // Parâmetros
+                    comando.Parameters.AddWithValue("@nome", txtNome.Text);
+                    comando.Parameters.AddWithValue("@senha", txtSenha.Text);
 
-                    SQLiteDataAdapter dados = new SQLiteDataAdapter(sql, con.conn); // Consultar usuários com os parâmetros informados
-                    DataTable usuario = new DataTable();
+                    // Consultar usuários com os parâmetros informados
+                    SQLiteDataAdapter dados = new SQLiteDataAdapter(comando);
+                    DataTable dtUsuario = new DataTable();
+                    // Passando os dados encontrados pelo DataAdapter para o DataTable
+                    dados.Fill(dtUsuario);
 
-                    dados.Fill(usuario); // Passando os dados encontrados pelo DataAdapter para o DataTable
+                    con.desconectar();
+                    comando.Dispose();
 
-                    if (usuario.Rows.Count < 0)
+                    if (dtUsuario.Rows.Count <= 0)
                     {
                         MessageBox.Show("Usuário ou senha inválido(s)!", "Registro não encontrado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                         txtSenha.Clear();
@@ -79,9 +85,9 @@ namespace Contabilidade
                     }
                     else
                     {
-                        string nome = usuario.Rows[0]["nome"].ToString();
+                        string nome = dtUsuario.Rows[0]["nome"].ToString();
 
-                        MessageBox.Show("Bem Vindo(a) " + nome + ".", "Login", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                        MessageBox.Show("Bem Vindo(a) " + nome + ".", "Login", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
                 catch (Exception error)
@@ -93,7 +99,7 @@ namespace Contabilidade
 
         private void carregarBDs()
         {
-            caminhosBDs = Directory.GetFiles(pastaDatabases, "*.sqlite");
+            string[] caminhosBDs = Directory.GetFiles(pastaDatabases, "*.sqlite");
             cbbBD.Items.Clear();
             nomesBDs.Clear();
 
@@ -195,6 +201,13 @@ namespace Contabilidade
                 comando.ExecuteNonQuery();
 
                 carregarBDs();
+
+                // Fechar conexões
+                con.desconectar();
+                comando.Dispose();
+
+                cbbBD.Text = nomeBDFuncao.Replace(".sqlite", "");
+
                 MessageBox.Show("O banco de dados foi criado.", "Operação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 btnExcluirBD.Enabled = true;
