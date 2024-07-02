@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Text.RegularExpressions;
 using System.Text;
+using System.Runtime.InteropServices;
 
 namespace Contabilidade
 {
@@ -21,13 +22,11 @@ namespace Contabilidade
 
         private List<string> nomesBDs = new List<string>();
 
-        // Variáveis usadas para permitir que a janela se movimente através da barra superior customizada
-        public const int WM_NCLBUTTONDOWN = 0xA1;
-        public const int HT_CAPTION = 0x2;
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
-        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
-        public static extern bool ReleaseCapture();
+        // Funções usadas para permitir que a janela se movimente através da barra superior customizada
+        [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
+        private extern static void ReleaseCapture();
+        [DllImport("user32.DLL", EntryPoint = "SendMessage")]
+        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
 
         public frmLogin()
         {
@@ -89,6 +88,11 @@ namespace Contabilidade
                         string nome = dtUsuario.Rows[0]["nome"].ToString();
 
                         MessageBox.Show("Bem Vindo(a) " + nome + ".", "Login", MessageBoxButtons.OK, MessageBoxIcon.None);
+
+                        this.Hide(); // Esconde o formulário atual
+                        frmPainelPrincipal frmPainelPrincipal = new frmPainelPrincipal(); // Crie uma instância do frmPainelPrincipal
+                        frmPainelPrincipal.ShowDialog(); // Exibe o form como uma janela de diálogo modal
+                        this.Close(); // Fecha o formulário atual
                     }
                 }
                 catch (Exception error)
@@ -124,7 +128,7 @@ namespace Contabilidade
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btnFechar_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
@@ -134,14 +138,10 @@ namespace Contabilidade
             this.WindowState = FormWindowState.Minimized;
         }
 
-        private void panel2_MouseDown(object sender, MouseEventArgs e)
+        private void pnlBarraTitulo_MouseDown(object sender, MouseEventArgs e)
         {
-            // Verificações para permitir a movimentação da janela através da barra superior customizada
-            if (e.Button == MouseButtons.Left)
-            {
-                ReleaseCapture();
-                SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
-            }
+            ReleaseCapture();
+            SendMessage(this.Handle, 0x112, 0xf012, 0);
         }
 
         private void chbVisibilidadeSenha_CheckedChanged(object sender, EventArgs e)

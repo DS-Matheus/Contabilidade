@@ -42,7 +42,7 @@
             label1 = new Label();
             panel1 = new Panel();
             label3 = new Label();
-            panel2 = new Panel();
+            pnlBarraTitulo = new Panel();
             btnMinimizar = new Button();
             label4 = new Label();
             btnFechar = new Button();
@@ -50,7 +50,7 @@
             groupBox1.SuspendLayout();
             gpbInfoUsuario.SuspendLayout();
             panel1.SuspendLayout();
-            panel2.SuspendLayout();
+            pnlBarraTitulo.SuspendLayout();
             panel3.SuspendLayout();
             SuspendLayout();
             // 
@@ -219,18 +219,18 @@
             label3.TabIndex = 0;
             label3.Text = "Login";
             // 
-            // panel2
+            // pnlBarraTitulo
             // 
-            panel2.BackColor = Color.White;
-            panel2.Controls.Add(btnMinimizar);
-            panel2.Controls.Add(label4);
-            panel2.Controls.Add(btnFechar);
-            panel2.Dock = DockStyle.Top;
-            panel2.Location = new Point(0, 0);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(595, 30);
-            panel2.TabIndex = 4;
-            panel2.MouseDown += panel2_MouseDown;
+            pnlBarraTitulo.BackColor = Color.White;
+            pnlBarraTitulo.Controls.Add(btnMinimizar);
+            pnlBarraTitulo.Controls.Add(label4);
+            pnlBarraTitulo.Controls.Add(btnFechar);
+            pnlBarraTitulo.Dock = DockStyle.Top;
+            pnlBarraTitulo.Location = new Point(0, 0);
+            pnlBarraTitulo.Name = "pnlBarraTitulo";
+            pnlBarraTitulo.Size = new Size(595, 30);
+            pnlBarraTitulo.TabIndex = 4;
+            pnlBarraTitulo.MouseDown += pnlBarraTitulo_MouseDown;
             // 
             // btnMinimizar
             // 
@@ -270,7 +270,7 @@
             btnFechar.TabIndex = 1;
             btnFechar.Text = "X";
             btnFechar.UseVisualStyleBackColor = true;
-            btnFechar.Click += button1_Click;
+            btnFechar.Click += btnFechar_Click;
             // 
             // panel3
             // 
@@ -291,8 +291,9 @@
             ClientSize = new Size(595, 339);
             Controls.Add(panel3);
             Controls.Add(panel1);
-            Controls.Add(panel2);
+            Controls.Add(pnlBarraTitulo);
             FormBorderStyle = FormBorderStyle.None;
+            KeyPreview = true;
             Name = "frmLogin";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Contabilidade - Login";
@@ -302,8 +303,8 @@
             gpbInfoUsuario.PerformLayout();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
-            panel2.ResumeLayout(false);
-            panel2.PerformLayout();
+            pnlBarraTitulo.ResumeLayout(false);
+            pnlBarraTitulo.PerformLayout();
             panel3.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -323,7 +324,7 @@
         private Label label1;
         private Panel panel1;
         private Label label3;
-        private Panel panel2;
+        private Panel pnlBarraTitulo;
         private Panel panel3;
         private Button btnFechar;
         private Label label4;
