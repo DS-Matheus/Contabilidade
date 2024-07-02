@@ -118,7 +118,6 @@
             cbbBD.Size = new Size(260, 23);
             cbbBD.Sorted = true;
             cbbBD.TabIndex = 0;
-            cbbBD.TextChanged += cbbBD_TextChanged;
             cbbBD.KeyPress += cbbBD_KeyPress;
             // 
             // gpbInfoUsuario

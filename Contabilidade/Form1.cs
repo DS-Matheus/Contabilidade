@@ -15,9 +15,10 @@ namespace Contabilidade
         private string usuarioBD = "";
         private string senhaUsuarioBD = "";
         private string nomeBDFuncao = "";
-        private string textoCbbBD = "";
+
         public string pastaDatabases = Directory.GetCurrentDirectory() + "\\databases";
         private string caminhoBD = "";
+
         private List<string> nomesBDs = new List<string>();
 
         // Variáveis usadas para permitir que a janela se movimente através da barra superior customizada
@@ -87,7 +88,7 @@ namespace Contabilidade
                     {
                         string nome = dtUsuario.Rows[0]["nome"].ToString();
 
-                        MessageBox.Show("Bem Vindo(a) " + nome + ".", "Login", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Bem Vindo(a) " + nome + ".", "Login", MessageBoxButtons.OK, MessageBoxIcon.None);
                     }
                 }
                 catch (Exception error)
@@ -210,16 +211,7 @@ namespace Contabilidade
 
                 MessageBox.Show("O banco de dados foi criado.", "Operação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                btnExcluirBD.Enabled = true;
-                btnRenomearBD.Enabled = true;
-                gpbInfoUsuario.Enabled = true;
-                btnCriarBD.Text = "Criar";
-
-                senhaUsuarioBD = "";
-                usuarioBD = "";
-                nomeBDFuncao = "";
-                caminhoBD = "";
-
+                frmResetar();
                 txtNome.Focus();
             }
             catch (Exception error)
@@ -239,17 +231,7 @@ namespace Contabilidade
                     }
                 }
 
-                btnExcluirBD.Enabled = true;
-                btnRenomearBD.Enabled = true;
-                gpbInfoUsuario.Enabled = true;
-                btnCriarBD.Text = "Criar";
-
-                senhaUsuarioBD = "";
-                usuarioBD = "";
-                nomeBDFuncao = "";
-                caminhoBD = "";
-
-                cbbBD.Text = "";
+                frmResetar(true);
                 cbbBD.Focus();
             }
         }
@@ -300,6 +282,8 @@ namespace Contabilidade
 
         private void btnCriarBD_Click(object sender, EventArgs e)
         {
+            caminhoBD = pastaDatabases + "\\" + validarExtensaoBD(cbbBD.Text);
+
             // Verifica se está em modo de registro de senha
             if (btnCriarBD.Text == "Concluir")
             {
@@ -322,7 +306,7 @@ namespace Contabilidade
                 if (verificarUsuario(cbbBD.Text))
                 {
                     usuarioBD = cbbBD.Text;
-                    MessageBox.Show("Insira agora uma senha para finalizar", "Criar banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Qual será a senha desse usuário?", "Criar banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Question);
 
                     btnCriarBD.Text = "Concluir";
                     cbbBD.Text = "";
@@ -334,29 +318,29 @@ namespace Contabilidade
                     cbbBD.Focus();
                 }
             }
-            // Verifica se é nulo
-            else if (textoCbbBD == "" || textoCbbBD == null || string.IsNullOrWhiteSpace(textoCbbBD))
+            // Senão: verifica se é nulo
+            else if (cbbBD.Text == "" || cbbBD.Text == null || string.IsNullOrWhiteSpace(cbbBD.Text))
             {
                 MessageBox.Show("Não foi informado um nome para o banco!", "Erro ao criar o banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cbbBD.Text = "";
                 cbbBD.Focus();
             }
             // Verifica se começa com número
-            else if (char.IsDigit(textoCbbBD[0]))
+            else if (char.IsDigit(cbbBD.Text[0]))
             {
                 MessageBox.Show("O nome informado não pode começar com um número!", "Erro ao criar o banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cbbBD.Text = "";
                 cbbBD.Focus();
             }
             // Verifica se a string é maior que 30 caracteres
-            else if (textoCbbBD.Length >= 30)
+            else if (cbbBD.Text.Length >= 30)
             {
                 MessageBox.Show("O nome do banco não deve conter mais que 30 caracteres!", "Erro ao criar o banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cbbBD.Text = "";
                 cbbBD.Focus();
             }
             // Verifica se utiliza apenas letras e números
-            else if (!validarNomeBD(textoCbbBD))
+            else if (!validarNomeBD(cbbBD.Text))
             {
                 MessageBox.Show("O nome ínformado deve conter apenas letras e números (sem espaços)!", "Erro ao criar o banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cbbBD.Text = "";
@@ -373,7 +357,7 @@ namespace Contabilidade
             else
             {
                 nomeBDFuncao = validarExtensaoBD(cbbBD.Text);
-                MessageBox.Show("Insira um nome de usuário (apenas letras e números)", "Criar banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Qual o nome do usuário a se registrar?", "Criar banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Question);
 
                 btnExcluirBD.Enabled = false;
                 btnRenomearBD.Enabled = false;
@@ -384,11 +368,6 @@ namespace Contabilidade
             }
         }
 
-        private void cbbBD_TextChanged(object sender, EventArgs e)
-        {
-            textoCbbBD = cbbBD.Text;
-        }
-
         public void excluirBD(string caminho, string nomeBD)
         {
             if (File.Exists(caminho))
@@ -396,7 +375,7 @@ namespace Contabilidade
                 try
                 {
                     File.Delete(caminho);
-                    MessageBox.Show($"O Banco de dados {nomeBD} foi excluido.", "Operação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show($"O Banco de dados {nomeBD.Replace(".sqlite", "")} foi excluído.", "Operação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception error)
                 {
@@ -405,7 +384,7 @@ namespace Contabilidade
             }
             else
             {
-                MessageBox.Show($"Não foi possivel localizar o banco de dados ou ele não existe!", "Erro ao excluir o banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Não foi possivel localizar o banco de dados ou ele não existe!", "Erro ao excluir o banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -419,10 +398,10 @@ namespace Contabilidade
 
         public bool verificarExistenciaBD(string tituloMensagem)
         {
-            string nomeBD = validarExtensaoBD(textoCbbBD);
+            string nomeBD = validarExtensaoBD(cbbBD.Text);
 
             // Verifica se é nulo
-            if (textoCbbBD == "" || textoCbbBD == null || string.IsNullOrWhiteSpace(textoCbbBD))
+            if (cbbBD.Text == "" || cbbBD.Text == null || string.IsNullOrWhiteSpace(cbbBD.Text))
             {
                 MessageBox.Show("Não foi informado um nome para o banco!", tituloMensagem, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cbbBD.Text = "";
@@ -460,35 +439,40 @@ namespace Contabilidade
 
         private void btnExcluirBD_Click(object sender, EventArgs e)
         {
-            string nomeBD = validarExtensaoBD(textoCbbBD);
+            // Exibe uma caixa de diálogo de confirmação
+            DialogResult resultado = MessageBox.Show("Você realmente deseja excluir o banco de dados? Esse processo é irreversível.", "Excluir banco de dados", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
 
-            if (verificarExistenciaBD("Erro ao excluir banco de dados"))
+            // Verifica a resposta do usuário
+            if (resultado == DialogResult.Yes)
             {
-                caminhoBD = pastaDatabases + "\\" + nomeBD;
+                string nomeBD = validarExtensaoBD(cbbBD.Text);
 
-                excluirBD(caminhoBD, nomeBD);
-                carregarBDs();
+                if (verificarExistenciaBD("Erro ao excluir banco de dados"))
+                {
+                    caminhoBD = pastaDatabases + "\\" + nomeBD;
 
-                cbbBD.Text = "";
-                cbbBD.Focus();
+                    excluirBD(caminhoBD, nomeBD);
+                    carregarBDs();
+
+                    cbbBD.Text = "";
+                    cbbBD.Focus();
+                }
+            }
+            else
+            {
+                Console.WriteLine("Operação de exclusão cancelada pelo usuário.");
             }
         }
 
         private void renomearBD()
         {
-            caminhoBD = pastaDatabases + "\\" + nomeBDFuncao;
+            caminhoBD = pastaDatabases + "\\" + validarExtensaoBD(nomeBDFuncao);
             // Renomear
             File.Move(caminhoBD, Path.Combine(Path.GetDirectoryName(caminhoBD) + "\\", validarExtensaoBD(cbbBD.Text)));
 
             MessageBox.Show("O banco de dados foi renomeado com sucesso!", "Operação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-            btnCriarBD.Enabled = true;
-            btnExcluirBD.Enabled = true;
-            gpbInfoUsuario.Enabled = true;
-            btnRenomearBD.Text = "Renomear";
-
-            nomeBDFuncao = "";
-            caminhoBD = "";
+            frmResetar();
 
             carregarBDs();
         }
@@ -498,10 +482,10 @@ namespace Contabilidade
             // Verificar se o botão está no modo de salvamento (quando o usuário já indicou o banco a ser renomeado)
             if (btnRenomearBD.Text == "Salvar")
             {
-                string nomeBD = validarExtensaoBD(textoCbbBD);
+                string nomeBD = validarExtensaoBD(cbbBD.Text);
 
                 // Verifica se é nulo
-                if (textoCbbBD == "" || textoCbbBD == null || string.IsNullOrWhiteSpace(textoCbbBD))
+                if (cbbBD.Text == "" || cbbBD.Text == null || string.IsNullOrWhiteSpace(cbbBD.Text))
                 {
                     MessageBox.Show("Não foi informado um nome para o banco!", "Erro ao renomear banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     cbbBD.Text = "";
@@ -537,14 +521,14 @@ namespace Contabilidade
                 else if (!nomesBDs.Contains(nomeBD.ToLower()))
                 {
                     // Verifica se começa com número
-                    if (char.IsDigit(textoCbbBD[0]))
+                    if (char.IsDigit(cbbBD.Text[0]))
                     {
                         MessageBox.Show("O nome informado não pode começar com um número!", "Erro ao renomear banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         cbbBD.Text = "";
                         cbbBD.Focus();
                     }
                     // Verifica se utiliza apenas letras e números
-                    else if (!validarNomeBD(textoCbbBD))
+                    else if (!validarNomeBD(cbbBD.Text))
                     {
                         MessageBox.Show("O nome ínformado deve conter apenas letras e números (sem espaços)!", "Erro ao renomear banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         cbbBD.Text = "";
@@ -572,7 +556,7 @@ namespace Contabilidade
             else if (verificarExistenciaBD("Erro ao localizar banco de dados"))
             {
                 // Salvar nome do banco a ser renomeado
-                nomeBDFuncao = validarExtensaoBD(textoCbbBD);
+                nomeBDFuncao = validarExtensaoBD(cbbBD.Text);
 
                 MessageBox.Show("Banco de dados selecionado. Insira um novo nome e confirme ou tecle ESC para cancelar", "Renomear arquivo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -595,17 +579,7 @@ namespace Contabilidade
         {
             if (e.KeyChar == (char)Keys.Escape)
             {
-                btnExcluirBD.Enabled = true;
-                btnRenomearBD.Enabled = true;
-                gpbInfoUsuario.Enabled = true;
-                btnCriarBD.Text = "Criar";
-
-                senhaUsuarioBD = "";
-                usuarioBD = "";
-                nomeBDFuncao = "";
-                caminhoBD = "";
-
-                cbbBD.Text = "";
+                frmResetar(true);
                 cbbBD.Focus();
             }
             else if (e.KeyChar == (char)Keys.Enter)
@@ -618,13 +592,8 @@ namespace Contabilidade
         {
             if (e.KeyChar == (char)Keys.Escape)
             {
-                btnCriarBD.Enabled = true;
-                btnExcluirBD.Enabled = true;
-                gpbInfoUsuario.Enabled = true;
-                btnRenomearBD.Text = "Renomear";
-                cbbBD.Text = "";
-                nomeBDFuncao = "";
-                caminhoBD = "";
+                frmResetar(true);
+                cbbBD.Focus();
             }
             else if (e.KeyChar == (char)Keys.Enter)
             {
@@ -657,6 +626,28 @@ namespace Contabilidade
             if (btnCriarBD.Text == "Salvar" || btnCriarBD.Text == "Concluir")
             {
                 handleKeyPressCriarBD(e);
+            }
+        }
+
+        private void frmResetar(bool completo = false)
+        {
+            btnCriarBD.Enabled = true;
+            btnExcluirBD.Enabled = true;
+            btnRenomearBD.Enabled = true;
+            gpbInfoUsuario.Enabled = true;
+
+            btnCriarBD.Text = "Criar";
+            btnExcluirBD.Text = "Excluir";
+            btnRenomearBD.Text = "Renomear";
+
+            senhaUsuarioBD = "";
+            usuarioBD = "";
+            nomeBDFuncao = "";
+            caminhoBD = "";
+
+            if (completo)
+            {
+                cbbBD.Text = "";
             }
         }
     }
