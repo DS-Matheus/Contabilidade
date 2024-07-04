@@ -31,7 +31,8 @@
             pnlBarraTitulo = new Panel();
             btnMinimizar = new Button();
             btnFechar = new Button();
-            label4 = new Label();
+            lblTitulo = new Label();
+            panel1 = new Panel();
             pnlBarraTitulo.SuspendLayout();
             SuspendLayout();
             // 
@@ -40,7 +41,7 @@
             pnlBarraTitulo.BackColor = Color.White;
             pnlBarraTitulo.Controls.Add(btnMinimizar);
             pnlBarraTitulo.Controls.Add(btnFechar);
-            pnlBarraTitulo.Controls.Add(label4);
+            pnlBarraTitulo.Controls.Add(lblTitulo);
             pnlBarraTitulo.Dock = DockStyle.Top;
             pnlBarraTitulo.Location = new Point(0, 0);
             pnlBarraTitulo.Name = "pnlBarraTitulo";
@@ -78,21 +79,32 @@
             btnFechar.UseVisualStyleBackColor = true;
             btnFechar.Click += btnFechar_Click;
             // 
-            // label4
+            // lblTitulo
             // 
-            label4.AutoSize = true;
-            label4.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label4.Location = new Point(12, 7);
-            label4.Name = "label4";
-            label4.Size = new Size(156, 16);
-            label4.TabIndex = 1;
-            label4.Text = "Sistema de Contabilidade ";
+            lblTitulo.AutoSize = true;
+            lblTitulo.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblTitulo.Location = new Point(12, 7);
+            lblTitulo.Name = "lblTitulo";
+            lblTitulo.Size = new Size(350, 16);
+            lblTitulo.TabIndex = 1;
+            lblTitulo.Text = "Sistema de Contabilidade | Banco: banco - Usuário: usuário";
+            // 
+            // panel1
+            // 
+            panel1.BackColor = Color.FromArgb(19, 41, 61);
+            panel1.Dock = DockStyle.Left;
+            panel1.Location = new Point(0, 30);
+            panel1.Margin = new Padding(0);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(260, 420);
+            panel1.TabIndex = 6;
             // 
             // frmPainelPrincipal
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(panel1);
             Controls.Add(pnlBarraTitulo);
             FormBorderStyle = FormBorderStyle.None;
             KeyPreview = true;
@@ -109,6 +121,7 @@
         private Panel pnlBarraTitulo;
         private Button btnMinimizar;
         private Button btnFechar;
-        private Label label4;
+        private Label lblTitulo;
+        private Panel panel1;
     }
 }

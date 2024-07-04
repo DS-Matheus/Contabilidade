@@ -19,9 +19,10 @@ namespace Contabilidade
         private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
 
 
-        public frmPainelPrincipal()
+        public frmPainelPrincipal(string nomeBD, string usuario)
         {
             InitializeComponent();
+            lblTitulo.Text = $"Sistema de Contabilidade | Banco: {nomeBD} - Usuário: {usuario}";
         }
 
         private void pnlBarraTitulo_MouseDown(object sender, MouseEventArgs e)
