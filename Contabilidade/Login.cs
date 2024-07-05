@@ -45,7 +45,7 @@ namespace Contabilidade
             {
                 MessageBox.Show("Usuário não informado!", "Formulário Incompleto", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 txtNome.Focus();
-                
+
             }
             // Verifica se o usuário foi informado
             else if (txtSenha.Text == "")
@@ -650,6 +650,12 @@ namespace Contabilidade
             {
                 cbbBD.Text = "";
             }
+        }
+
+        private void label4_MouseDown(object sender, MouseEventArgs e)
+        {
+            ReleaseCapture();
+            SendMessage(this.Handle, 0x112, 0xf012, 0);
         }
     }
 }

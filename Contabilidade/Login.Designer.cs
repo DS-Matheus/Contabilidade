@@ -40,18 +40,18 @@
             label2 = new Label();
             txtNome = new TextBox();
             label1 = new Label();
-            panel1 = new Panel();
+            pnlSidebar = new Panel();
             label3 = new Label();
             pnlBarraTitulo = new Panel();
             btnMinimizar = new Button();
             label4 = new Label();
             btnFechar = new Button();
-            panel3 = new Panel();
+            pnlLogin = new Panel();
             groupBox1.SuspendLayout();
             gpbInfoUsuario.SuspendLayout();
-            panel1.SuspendLayout();
+            pnlSidebar.SuspendLayout();
             pnlBarraTitulo.SuspendLayout();
-            panel3.SuspendLayout();
+            pnlLogin.SuspendLayout();
             SuspendLayout();
             // 
             // groupBox1
@@ -197,22 +197,22 @@
             label1.TabIndex = 0;
             label1.Text = "Nome";
             // 
-            // panel1
+            // pnlSidebar
             // 
-            panel1.BackColor = Color.FromArgb(19, 41, 61);
-            panel1.Controls.Add(label3);
-            panel1.Dock = DockStyle.Left;
-            panel1.Location = new Point(0, 30);
-            panel1.Margin = new Padding(0);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(260, 309);
-            panel1.TabIndex = 5;
+            pnlSidebar.BackColor = Color.FromArgb(50, 52, 77);
+            pnlSidebar.Controls.Add(label3);
+            pnlSidebar.Dock = DockStyle.Left;
+            pnlSidebar.Location = new Point(0, 30);
+            pnlSidebar.Margin = new Padding(0);
+            pnlSidebar.Name = "pnlSidebar";
+            pnlSidebar.Size = new Size(260, 309);
+            pnlSidebar.TabIndex = 5;
             // 
             // label3
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Forte", 36F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label3.ForeColor = Color.FromArgb(232, 241, 242);
+            label3.ForeColor = Color.White;
             label3.Location = new Point(66, 22);
             label3.Name = "label3";
             label3.Size = new Size(128, 52);
@@ -221,7 +221,7 @@
             // 
             // pnlBarraTitulo
             // 
-            pnlBarraTitulo.BackColor = Color.White;
+            pnlBarraTitulo.BackColor = Color.FromArgb(38, 38, 59);
             pnlBarraTitulo.Controls.Add(btnMinimizar);
             pnlBarraTitulo.Controls.Add(label4);
             pnlBarraTitulo.Controls.Add(btnFechar);
@@ -239,6 +239,7 @@
             btnMinimizar.FlatAppearance.BorderSize = 0;
             btnMinimizar.FlatStyle = FlatStyle.Flat;
             btnMinimizar.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnMinimizar.ForeColor = Color.White;
             btnMinimizar.Location = new Point(535, 0);
             btnMinimizar.Name = "btnMinimizar";
             btnMinimizar.Size = new Size(30, 30);
@@ -251,11 +252,13 @@
             // 
             label4.AutoSize = true;
             label4.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label4.ForeColor = Color.White;
             label4.Location = new Point(12, 7);
             label4.Name = "label4";
             label4.Size = new Size(156, 16);
             label4.TabIndex = 1;
             label4.Text = "Sistema de Contabilidade ";
+            label4.MouseDown += label4_MouseDown;
             // 
             // btnFechar
             // 
@@ -264,6 +267,7 @@
             btnFechar.FlatAppearance.BorderSize = 0;
             btnFechar.FlatStyle = FlatStyle.Flat;
             btnFechar.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnFechar.ForeColor = Color.White;
             btnFechar.Location = new Point(565, 0);
             btnFechar.Name = "btnFechar";
             btnFechar.Size = new Size(30, 30);
@@ -272,16 +276,16 @@
             btnFechar.UseVisualStyleBackColor = true;
             btnFechar.Click += btnFechar_Click;
             // 
-            // panel3
+            // pnlLogin
             // 
-            panel3.BackColor = Color.FromArgb(232, 241, 242);
-            panel3.Controls.Add(groupBox1);
-            panel3.Controls.Add(gpbInfoUsuario);
-            panel3.Dock = DockStyle.Fill;
-            panel3.Location = new Point(260, 30);
-            panel3.Name = "panel3";
-            panel3.Size = new Size(335, 309);
-            panel3.TabIndex = 1;
+            pnlLogin.BackColor = SystemColors.ButtonFace;
+            pnlLogin.Controls.Add(groupBox1);
+            pnlLogin.Controls.Add(gpbInfoUsuario);
+            pnlLogin.Dock = DockStyle.Fill;
+            pnlLogin.Location = new Point(260, 30);
+            pnlLogin.Name = "pnlLogin";
+            pnlLogin.Size = new Size(335, 309);
+            pnlLogin.TabIndex = 1;
             // 
             // frmLogin
             // 
@@ -289,8 +293,8 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(232, 241, 242);
             ClientSize = new Size(595, 339);
-            Controls.Add(panel3);
-            Controls.Add(panel1);
+            Controls.Add(pnlLogin);
+            Controls.Add(pnlSidebar);
             Controls.Add(pnlBarraTitulo);
             FormBorderStyle = FormBorderStyle.None;
             KeyPreview = true;
@@ -301,11 +305,11 @@
             groupBox1.ResumeLayout(false);
             gpbInfoUsuario.ResumeLayout(false);
             gpbInfoUsuario.PerformLayout();
-            panel1.ResumeLayout(false);
-            panel1.PerformLayout();
+            pnlSidebar.ResumeLayout(false);
+            pnlSidebar.PerformLayout();
             pnlBarraTitulo.ResumeLayout(false);
             pnlBarraTitulo.PerformLayout();
-            panel3.ResumeLayout(false);
+            pnlLogin.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -322,10 +326,10 @@
         private Label label2;
         private TextBox txtNome;
         private Label label1;
-        private Panel panel1;
+        private Panel pnlSidebar;
         private Label label3;
         private Panel pnlBarraTitulo;
-        private Panel panel3;
+        private Panel pnlLogin;
         private Button btnFechar;
         private Label label4;
         private Button btnMinimizar;
