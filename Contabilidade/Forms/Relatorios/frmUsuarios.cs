@@ -1,5 +1,4 @@
-﻿using Contabilidade.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -9,18 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Contabilidade.Forms
+namespace Contabilidade.Forms.Relatorios
 {
-    public partial class frmLogoff : Form
+    public partial class frmUsuarios : Form
     {
-        public frmLogoff()
+        public frmUsuarios()
         {
             InitializeComponent();
-        }
-
-        private void frmLogoff_Load(object sender, EventArgs e)
-        {
-            
         }
     }
 }

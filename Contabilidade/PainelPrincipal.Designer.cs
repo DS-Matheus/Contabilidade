@@ -28,16 +28,28 @@
         /// </summary>
         private void InitializeComponent()
         {
-            pnlInfo = new Panel();
+            pnlLogo = new Panel();
             lblBanco = new Label();
             lblUsuario = new Label();
             btnFechar = new Button();
             pnlMenuLateral = new Panel();
-            btnLogoff = new Button();
-            btnUsuarios = new Button();
-            btnConsultas = new Button();
+            pnlRelatorios = new Panel();
+            btnRelUsuarios = new Button();
+            btnSaldo = new Button();
+            btnBalanceteConta = new Button();
+            btnBalanceteGeral = new Button();
+            btnRelAnalitico = new Button();
+            btnRelDiario = new Button();
             btnRelatorios = new Button();
+            pnlLancamentos = new Panel();
+            btnTransporte = new Button();
+            btnMovimentacao = new Button();
             btnLancamentos = new Button();
+            pnlCadastros = new Panel();
+            btnUsuarios = new Button();
+            btnHistoricos = new Button();
+            btnContas = new Button();
+            btnLogoff = new Button();
             btnCadastro = new Button();
             btnMinimizar = new Button();
             pnlTitulo = new Panel();
@@ -49,22 +61,25 @@
             label4 = new Label();
             label3 = new Label();
             label1 = new Label();
-            pnlInfo.SuspendLayout();
+            pnlLogo.SuspendLayout();
             pnlMenuLateral.SuspendLayout();
+            pnlRelatorios.SuspendLayout();
+            pnlLancamentos.SuspendLayout();
+            pnlCadastros.SuspendLayout();
             pnlTitulo.SuspendLayout();
             pnlDesktop.SuspendLayout();
             SuspendLayout();
             // 
-            // pnlInfo
+            // pnlLogo
             // 
-            pnlInfo.BackColor = Color.FromArgb(39, 39, 58);
-            pnlInfo.Controls.Add(lblBanco);
-            pnlInfo.Controls.Add(lblUsuario);
-            pnlInfo.Dock = DockStyle.Top;
-            pnlInfo.Location = new Point(0, 0);
-            pnlInfo.Name = "pnlInfo";
-            pnlInfo.Size = new Size(220, 80);
-            pnlInfo.TabIndex = 5;
+            pnlLogo.BackColor = Color.FromArgb(39, 39, 58);
+            pnlLogo.Controls.Add(lblBanco);
+            pnlLogo.Controls.Add(lblUsuario);
+            pnlLogo.Dock = DockStyle.Top;
+            pnlLogo.Location = new Point(0, 0);
+            pnlLogo.Name = "pnlLogo";
+            pnlLogo.Size = new Size(203, 80);
+            pnlLogo.TabIndex = 5;
             // 
             // lblBanco
             // 
@@ -74,7 +89,7 @@
             lblBanco.ForeColor = Color.Gainsboro;
             lblBanco.Location = new Point(0, 0);
             lblBanco.Name = "lblBanco";
-            lblBanco.Size = new Size(220, 40);
+            lblBanco.Size = new Size(203, 40);
             lblBanco.TabIndex = 2;
             lblBanco.Text = "Banco";
             lblBanco.TextAlign = ContentAlignment.BottomCenter;
@@ -87,7 +102,7 @@
             lblUsuario.ForeColor = Color.Gainsboro;
             lblUsuario.Location = new Point(0, 40);
             lblUsuario.Name = "lblUsuario";
-            lblUsuario.Size = new Size(220, 40);
+            lblUsuario.Size = new Size(203, 40);
             lblUsuario.TabIndex = 1;
             lblUsuario.Text = "Usuário";
             lblUsuario.TextAlign = ContentAlignment.TopCenter;
@@ -110,14 +125,16 @@
             // 
             // pnlMenuLateral
             // 
-            pnlMenuLateral.BackColor = Color.FromArgb(51, 51, 76);
-            pnlMenuLateral.Controls.Add(btnLogoff);
-            pnlMenuLateral.Controls.Add(btnUsuarios);
-            pnlMenuLateral.Controls.Add(btnConsultas);
+            pnlMenuLateral.AutoScroll = true;
+            pnlMenuLateral.BackColor = Color.FromArgb(39, 39, 58);
+            pnlMenuLateral.Controls.Add(pnlRelatorios);
             pnlMenuLateral.Controls.Add(btnRelatorios);
+            pnlMenuLateral.Controls.Add(pnlLancamentos);
             pnlMenuLateral.Controls.Add(btnLancamentos);
+            pnlMenuLateral.Controls.Add(pnlCadastros);
+            pnlMenuLateral.Controls.Add(btnLogoff);
             pnlMenuLateral.Controls.Add(btnCadastro);
-            pnlMenuLateral.Controls.Add(pnlInfo);
+            pnlMenuLateral.Controls.Add(pnlLogo);
             pnlMenuLateral.Dock = DockStyle.Left;
             pnlMenuLateral.Location = new Point(0, 0);
             pnlMenuLateral.Margin = new Padding(0);
@@ -125,93 +142,302 @@
             pnlMenuLateral.Size = new Size(220, 580);
             pnlMenuLateral.TabIndex = 6;
             // 
-            // btnLogoff
+            // pnlRelatorios
             // 
-            btnLogoff.Dock = DockStyle.Bottom;
-            btnLogoff.FlatAppearance.BorderSize = 0;
-            btnLogoff.FlatStyle = FlatStyle.Flat;
-            btnLogoff.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnLogoff.ForeColor = Color.Gainsboro;
-            btnLogoff.ImageAlign = ContentAlignment.MiddleLeft;
-            btnLogoff.Location = new Point(0, 540);
-            btnLogoff.Name = "btnLogoff";
-            btnLogoff.Size = new Size(220, 40);
-            btnLogoff.TabIndex = 11;
-            btnLogoff.Text = "Menu Inicial";
-            btnLogoff.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btnLogoff.UseVisualStyleBackColor = true;
-            btnLogoff.Click += btnLogoff_Click;
+            pnlRelatorios.BackColor = Color.FromArgb(62, 62, 92);
+            pnlRelatorios.Controls.Add(btnRelUsuarios);
+            pnlRelatorios.Controls.Add(btnSaldo);
+            pnlRelatorios.Controls.Add(btnBalanceteConta);
+            pnlRelatorios.Controls.Add(btnBalanceteGeral);
+            pnlRelatorios.Controls.Add(btnRelAnalitico);
+            pnlRelatorios.Controls.Add(btnRelDiario);
+            pnlRelatorios.Dock = DockStyle.Top;
+            pnlRelatorios.Location = new Point(0, 400);
+            pnlRelatorios.Name = "pnlRelatorios";
+            pnlRelatorios.Size = new Size(203, 240);
+            pnlRelatorios.TabIndex = 16;
+            pnlRelatorios.Visible = false;
             // 
-            // btnUsuarios
+            // btnRelUsuarios
             // 
-            btnUsuarios.Dock = DockStyle.Top;
-            btnUsuarios.FlatAppearance.BorderSize = 0;
-            btnUsuarios.FlatStyle = FlatStyle.Flat;
-            btnUsuarios.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnUsuarios.ForeColor = Color.Gainsboro;
-            btnUsuarios.ImageAlign = ContentAlignment.MiddleLeft;
-            btnUsuarios.Location = new Point(0, 240);
-            btnUsuarios.Name = "btnUsuarios";
-            btnUsuarios.Size = new Size(220, 40);
-            btnUsuarios.TabIndex = 10;
-            btnUsuarios.Text = "Usuários";
-            btnUsuarios.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btnUsuarios.UseVisualStyleBackColor = true;
-            btnUsuarios.Click += btnUsuarios_Click;
+            btnRelUsuarios.BackColor = Color.FromArgb(61, 61, 91);
+            btnRelUsuarios.Dock = DockStyle.Top;
+            btnRelUsuarios.FlatAppearance.BorderSize = 0;
+            btnRelUsuarios.FlatStyle = FlatStyle.Flat;
+            btnRelUsuarios.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnRelUsuarios.ForeColor = Color.Gainsboro;
+            btnRelUsuarios.ImageAlign = ContentAlignment.MiddleLeft;
+            btnRelUsuarios.Location = new Point(0, 200);
+            btnRelUsuarios.Name = "btnRelUsuarios";
+            btnRelUsuarios.Size = new Size(203, 40);
+            btnRelUsuarios.TabIndex = 12;
+            btnRelUsuarios.Text = "Usuários";
+            btnRelUsuarios.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnRelUsuarios.UseVisualStyleBackColor = false;
+            btnRelUsuarios.Click += btnRelUsuarios_Click;
             // 
-            // btnConsultas
+            // btnSaldo
             // 
-            btnConsultas.Dock = DockStyle.Top;
-            btnConsultas.FlatAppearance.BorderSize = 0;
-            btnConsultas.FlatStyle = FlatStyle.Flat;
-            btnConsultas.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnConsultas.ForeColor = Color.Gainsboro;
-            btnConsultas.ImageAlign = ContentAlignment.MiddleLeft;
-            btnConsultas.Location = new Point(0, 200);
-            btnConsultas.Name = "btnConsultas";
-            btnConsultas.Size = new Size(220, 40);
-            btnConsultas.TabIndex = 9;
-            btnConsultas.Text = "Consultas";
-            btnConsultas.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btnConsultas.UseVisualStyleBackColor = true;
-            btnConsultas.Click += btnConsultas_Click;
+            btnSaldo.BackColor = Color.FromArgb(61, 61, 91);
+            btnSaldo.Dock = DockStyle.Top;
+            btnSaldo.FlatAppearance.BorderSize = 0;
+            btnSaldo.FlatStyle = FlatStyle.Flat;
+            btnSaldo.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnSaldo.ForeColor = Color.Gainsboro;
+            btnSaldo.ImageAlign = ContentAlignment.MiddleLeft;
+            btnSaldo.Location = new Point(0, 160);
+            btnSaldo.Name = "btnSaldo";
+            btnSaldo.Size = new Size(203, 40);
+            btnSaldo.TabIndex = 11;
+            btnSaldo.Text = "Saldo";
+            btnSaldo.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnSaldo.UseVisualStyleBackColor = false;
+            btnSaldo.Click += btnSaldo_Click;
+            // 
+            // btnBalanceteConta
+            // 
+            btnBalanceteConta.BackColor = Color.FromArgb(61, 61, 91);
+            btnBalanceteConta.Dock = DockStyle.Top;
+            btnBalanceteConta.FlatAppearance.BorderSize = 0;
+            btnBalanceteConta.FlatStyle = FlatStyle.Flat;
+            btnBalanceteConta.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnBalanceteConta.ForeColor = Color.Gainsboro;
+            btnBalanceteConta.ImageAlign = ContentAlignment.MiddleLeft;
+            btnBalanceteConta.Location = new Point(0, 120);
+            btnBalanceteConta.Name = "btnBalanceteConta";
+            btnBalanceteConta.Size = new Size(203, 40);
+            btnBalanceteConta.TabIndex = 10;
+            btnBalanceteConta.Text = "Balancete de Conta";
+            btnBalanceteConta.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnBalanceteConta.UseVisualStyleBackColor = false;
+            btnBalanceteConta.Click += btnBalanceteConta_Click;
+            // 
+            // btnBalanceteGeral
+            // 
+            btnBalanceteGeral.BackColor = Color.FromArgb(61, 61, 91);
+            btnBalanceteGeral.Dock = DockStyle.Top;
+            btnBalanceteGeral.FlatAppearance.BorderSize = 0;
+            btnBalanceteGeral.FlatStyle = FlatStyle.Flat;
+            btnBalanceteGeral.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnBalanceteGeral.ForeColor = Color.Gainsboro;
+            btnBalanceteGeral.ImageAlign = ContentAlignment.MiddleLeft;
+            btnBalanceteGeral.Location = new Point(0, 80);
+            btnBalanceteGeral.Name = "btnBalanceteGeral";
+            btnBalanceteGeral.Size = new Size(203, 40);
+            btnBalanceteGeral.TabIndex = 9;
+            btnBalanceteGeral.Text = "Balancete Geral";
+            btnBalanceteGeral.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnBalanceteGeral.UseVisualStyleBackColor = false;
+            btnBalanceteGeral.Click += btnBalanceteGeral_Click;
+            // 
+            // btnRelAnalitico
+            // 
+            btnRelAnalitico.BackColor = Color.FromArgb(61, 61, 91);
+            btnRelAnalitico.Dock = DockStyle.Top;
+            btnRelAnalitico.FlatAppearance.BorderSize = 0;
+            btnRelAnalitico.FlatStyle = FlatStyle.Flat;
+            btnRelAnalitico.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnRelAnalitico.ForeColor = Color.Gainsboro;
+            btnRelAnalitico.ImageAlign = ContentAlignment.MiddleLeft;
+            btnRelAnalitico.Location = new Point(0, 40);
+            btnRelAnalitico.Name = "btnRelAnalitico";
+            btnRelAnalitico.Size = new Size(203, 40);
+            btnRelAnalitico.TabIndex = 8;
+            btnRelAnalitico.Text = "Analítico";
+            btnRelAnalitico.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnRelAnalitico.UseVisualStyleBackColor = false;
+            btnRelAnalitico.Click += btnRelAnalitico_Click;
+            // 
+            // btnRelDiario
+            // 
+            btnRelDiario.BackColor = Color.FromArgb(61, 61, 91);
+            btnRelDiario.Dock = DockStyle.Top;
+            btnRelDiario.FlatAppearance.BorderSize = 0;
+            btnRelDiario.FlatStyle = FlatStyle.Flat;
+            btnRelDiario.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnRelDiario.ForeColor = Color.Gainsboro;
+            btnRelDiario.ImageAlign = ContentAlignment.MiddleLeft;
+            btnRelDiario.Location = new Point(0, 0);
+            btnRelDiario.Name = "btnRelDiario";
+            btnRelDiario.Size = new Size(203, 40);
+            btnRelDiario.TabIndex = 7;
+            btnRelDiario.Text = "Diário";
+            btnRelDiario.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnRelDiario.UseVisualStyleBackColor = false;
+            btnRelDiario.Click += btnRelDiario_Click;
             // 
             // btnRelatorios
             // 
+            btnRelatorios.BackColor = Color.FromArgb(51, 51, 76);
             btnRelatorios.Dock = DockStyle.Top;
             btnRelatorios.FlatAppearance.BorderSize = 0;
             btnRelatorios.FlatStyle = FlatStyle.Flat;
             btnRelatorios.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnRelatorios.ForeColor = Color.Gainsboro;
             btnRelatorios.ImageAlign = ContentAlignment.MiddleLeft;
-            btnRelatorios.Location = new Point(0, 160);
+            btnRelatorios.Location = new Point(0, 360);
             btnRelatorios.Name = "btnRelatorios";
-            btnRelatorios.Size = new Size(220, 40);
-            btnRelatorios.TabIndex = 8;
+            btnRelatorios.Size = new Size(203, 40);
+            btnRelatorios.TabIndex = 15;
             btnRelatorios.Text = "Relatórios";
             btnRelatorios.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btnRelatorios.UseVisualStyleBackColor = true;
+            btnRelatorios.UseVisualStyleBackColor = false;
             btnRelatorios.Click += btnRelatorios_Click;
+            // 
+            // pnlLancamentos
+            // 
+            pnlLancamentos.BackColor = Color.FromArgb(62, 62, 92);
+            pnlLancamentos.Controls.Add(btnTransporte);
+            pnlLancamentos.Controls.Add(btnMovimentacao);
+            pnlLancamentos.Dock = DockStyle.Top;
+            pnlLancamentos.Location = new Point(0, 280);
+            pnlLancamentos.Name = "pnlLancamentos";
+            pnlLancamentos.Size = new Size(203, 80);
+            pnlLancamentos.TabIndex = 14;
+            pnlLancamentos.Visible = false;
+            // 
+            // btnTransporte
+            // 
+            btnTransporte.BackColor = Color.FromArgb(61, 61, 91);
+            btnTransporte.Dock = DockStyle.Top;
+            btnTransporte.FlatAppearance.BorderSize = 0;
+            btnTransporte.FlatStyle = FlatStyle.Flat;
+            btnTransporte.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnTransporte.ForeColor = Color.Gainsboro;
+            btnTransporte.ImageAlign = ContentAlignment.MiddleLeft;
+            btnTransporte.Location = new Point(0, 40);
+            btnTransporte.Name = "btnTransporte";
+            btnTransporte.Size = new Size(203, 40);
+            btnTransporte.TabIndex = 8;
+            btnTransporte.Text = "Transportar Saldo";
+            btnTransporte.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnTransporte.UseVisualStyleBackColor = false;
+            btnTransporte.Click += btnTransporte_Click;
+            // 
+            // btnMovimentacao
+            // 
+            btnMovimentacao.BackColor = Color.FromArgb(61, 61, 91);
+            btnMovimentacao.Dock = DockStyle.Top;
+            btnMovimentacao.FlatAppearance.BorderSize = 0;
+            btnMovimentacao.FlatStyle = FlatStyle.Flat;
+            btnMovimentacao.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnMovimentacao.ForeColor = Color.Gainsboro;
+            btnMovimentacao.ImageAlign = ContentAlignment.MiddleLeft;
+            btnMovimentacao.Location = new Point(0, 0);
+            btnMovimentacao.Name = "btnMovimentacao";
+            btnMovimentacao.Size = new Size(203, 40);
+            btnMovimentacao.TabIndex = 7;
+            btnMovimentacao.Text = "Movimentação";
+            btnMovimentacao.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnMovimentacao.UseVisualStyleBackColor = false;
+            btnMovimentacao.Click += btnMovimentacao_Click;
             // 
             // btnLancamentos
             // 
+            btnLancamentos.BackColor = Color.FromArgb(51, 51, 76);
             btnLancamentos.Dock = DockStyle.Top;
             btnLancamentos.FlatAppearance.BorderSize = 0;
             btnLancamentos.FlatStyle = FlatStyle.Flat;
             btnLancamentos.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnLancamentos.ForeColor = Color.Gainsboro;
             btnLancamentos.ImageAlign = ContentAlignment.MiddleLeft;
-            btnLancamentos.Location = new Point(0, 120);
+            btnLancamentos.Location = new Point(0, 240);
             btnLancamentos.Name = "btnLancamentos";
-            btnLancamentos.Size = new Size(220, 40);
-            btnLancamentos.TabIndex = 7;
+            btnLancamentos.Size = new Size(203, 40);
+            btnLancamentos.TabIndex = 13;
             btnLancamentos.Text = "Lançamentos";
             btnLancamentos.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btnLancamentos.UseVisualStyleBackColor = true;
+            btnLancamentos.UseVisualStyleBackColor = false;
             btnLancamentos.Click += btnLancamentos_Click;
+            // 
+            // pnlCadastros
+            // 
+            pnlCadastros.BackColor = Color.FromArgb(62, 62, 92);
+            pnlCadastros.Controls.Add(btnUsuarios);
+            pnlCadastros.Controls.Add(btnHistoricos);
+            pnlCadastros.Controls.Add(btnContas);
+            pnlCadastros.Dock = DockStyle.Top;
+            pnlCadastros.Location = new Point(0, 120);
+            pnlCadastros.Name = "pnlCadastros";
+            pnlCadastros.Size = new Size(203, 120);
+            pnlCadastros.TabIndex = 12;
+            pnlCadastros.Visible = false;
+            // 
+            // btnUsuarios
+            // 
+            btnUsuarios.BackColor = Color.FromArgb(61, 61, 91);
+            btnUsuarios.Dock = DockStyle.Top;
+            btnUsuarios.FlatAppearance.BorderSize = 0;
+            btnUsuarios.FlatStyle = FlatStyle.Flat;
+            btnUsuarios.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnUsuarios.ForeColor = Color.Gainsboro;
+            btnUsuarios.ImageAlign = ContentAlignment.MiddleLeft;
+            btnUsuarios.Location = new Point(0, 80);
+            btnUsuarios.Name = "btnUsuarios";
+            btnUsuarios.Size = new Size(203, 40);
+            btnUsuarios.TabIndex = 9;
+            btnUsuarios.Text = "Usuários";
+            btnUsuarios.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnUsuarios.UseVisualStyleBackColor = false;
+            btnUsuarios.Click += btnUsuarios_Click;
+            // 
+            // btnHistoricos
+            // 
+            btnHistoricos.BackColor = Color.FromArgb(61, 61, 91);
+            btnHistoricos.Dock = DockStyle.Top;
+            btnHistoricos.FlatAppearance.BorderSize = 0;
+            btnHistoricos.FlatStyle = FlatStyle.Flat;
+            btnHistoricos.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnHistoricos.ForeColor = Color.Gainsboro;
+            btnHistoricos.ImageAlign = ContentAlignment.MiddleLeft;
+            btnHistoricos.Location = new Point(0, 40);
+            btnHistoricos.Name = "btnHistoricos";
+            btnHistoricos.Size = new Size(203, 40);
+            btnHistoricos.TabIndex = 8;
+            btnHistoricos.Text = "Históricos";
+            btnHistoricos.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnHistoricos.UseVisualStyleBackColor = false;
+            btnHistoricos.Click += btnHistoricos_Click;
+            // 
+            // btnContas
+            // 
+            btnContas.BackColor = Color.FromArgb(61, 61, 91);
+            btnContas.Dock = DockStyle.Top;
+            btnContas.FlatAppearance.BorderSize = 0;
+            btnContas.FlatStyle = FlatStyle.Flat;
+            btnContas.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnContas.ForeColor = Color.Gainsboro;
+            btnContas.ImageAlign = ContentAlignment.MiddleLeft;
+            btnContas.Location = new Point(0, 0);
+            btnContas.Name = "btnContas";
+            btnContas.Size = new Size(203, 40);
+            btnContas.TabIndex = 7;
+            btnContas.Text = "Contas";
+            btnContas.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnContas.UseVisualStyleBackColor = false;
+            btnContas.Click += btnContas_Click;
+            // 
+            // btnLogoff
+            // 
+            btnLogoff.BackColor = Color.FromArgb(51, 51, 76);
+            btnLogoff.Dock = DockStyle.Bottom;
+            btnLogoff.FlatAppearance.BorderSize = 0;
+            btnLogoff.FlatStyle = FlatStyle.Flat;
+            btnLogoff.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnLogoff.ForeColor = Color.Gainsboro;
+            btnLogoff.ImageAlign = ContentAlignment.MiddleLeft;
+            btnLogoff.Location = new Point(0, 640);
+            btnLogoff.Name = "btnLogoff";
+            btnLogoff.Size = new Size(203, 40);
+            btnLogoff.TabIndex = 11;
+            btnLogoff.Text = "Menu Inicial";
+            btnLogoff.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnLogoff.UseVisualStyleBackColor = false;
+            btnLogoff.Click += btnLogoff_Click;
             // 
             // btnCadastro
             // 
+            btnCadastro.BackColor = Color.FromArgb(51, 51, 76);
             btnCadastro.Dock = DockStyle.Top;
             btnCadastro.FlatAppearance.BorderSize = 0;
             btnCadastro.FlatStyle = FlatStyle.Flat;
@@ -220,11 +446,11 @@
             btnCadastro.ImageAlign = ContentAlignment.MiddleLeft;
             btnCadastro.Location = new Point(0, 80);
             btnCadastro.Name = "btnCadastro";
-            btnCadastro.Size = new Size(220, 40);
+            btnCadastro.Size = new Size(203, 40);
             btnCadastro.TabIndex = 6;
             btnCadastro.Text = "Cadastros";
             btnCadastro.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btnCadastro.UseVisualStyleBackColor = true;
+            btnCadastro.UseVisualStyleBackColor = false;
             btnCadastro.Click += btnCadastro_Click;
             // 
             // btnMinimizar
@@ -360,8 +586,11 @@
             Name = "frmPainelPrincipal";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "PainelPrincipal";
-            pnlInfo.ResumeLayout(false);
+            pnlLogo.ResumeLayout(false);
             pnlMenuLateral.ResumeLayout(false);
+            pnlRelatorios.ResumeLayout(false);
+            pnlLancamentos.ResumeLayout(false);
+            pnlCadastros.ResumeLayout(false);
             pnlTitulo.ResumeLayout(false);
             pnlTitulo.PerformLayout();
             pnlDesktop.ResumeLayout(false);
@@ -371,7 +600,7 @@
 
         #endregion
 
-        private Panel pnlInfo;
+        private Panel pnlLogo;
         private Button btnFechar;
         private Label lblUsuario;
         private Panel pnlMenuLateral;
@@ -379,12 +608,7 @@
         private Label lblBanco;
         private Panel pnlTitulo;
         private Label lblTitulo;
-        private Button btnCadastro;
         private Button btnLogoff;
-        private Button btnUsuarios;
-        private Button btnConsultas;
-        private Button btnRelatorios;
-        private Button btnLancamentos;
         private Panel pnlDesktop;
         private Button btnFecharFormFilho;
         private Label label2;
@@ -392,5 +616,22 @@
         private Label label4;
         private Label label3;
         private Label label1;
+        private Button btnCadastro;
+        private Button btnLancamentos;
+        private Panel pnlCadastros;
+        private Button btnUsuarios;
+        private Button btnHistoricos;
+        private Button btnContas;
+        private Panel pnlRelatorios;
+        private Button btnSaldo;
+        private Button btnBalanceteConta;
+        private Button btnBalanceteGeral;
+        private Button btnRelAnalitico;
+        private Button btnRelDiario;
+        private Button btnRelatorios;
+        private Panel pnlLancamentos;
+        private Button btnTransporte;
+        private Button btnMovimentacao;
+        private Button btnRelUsuarios;
     }
 }

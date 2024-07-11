@@ -3,61 +3,46 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Contabilidade.Models
 {
     public static class TemaCores
     {
-        public static Color corPrimaria { get; set; }
-        public static Color corSecundaria { get; set; }
-        public static List<string> listaCores = new List<string>() {"#3F51B5",
-                                                                    "#009688",
-                                                                    "#FF5722",
-                                                                    "#607D8B",
-                                                                    "#FF9800",
-                                                                    "#9C27B0",
-                                                                    "#2196F3",
-                                                                    "#EA676C",
-                                                                    "#E41A4A",
-                                                                    "#5978BB",
-                                                                    "#018790",
-                                                                    "#0E3441",
-                                                                    "#00B0AD",
-                                                                    "#721D47",
-                                                                    "#EA4833",
-                                                                    "#EF937E",
-                                                                    "#F37521",
-                                                                    "#A12059",
-                                                                    "#126881",
-                                                                    "#8BC240",
-                                                                    "#364D5B",
-                                                                    "#C7DC5B",
-                                                                    "#0094BC",
-                                                                    "#E4126B",
-                                                                    "#43B76E",
-                                                                    "#7BCFE9",
-                                                                    "#B71C46"};
-        public static Color alterarBrilhoCor(Color cor, double fatorCorrecao)
+        // Variáveis estáticas públicas com getters e setters
+        public static System.Drawing.Color CorBotaoSelecionado { get; private set; }
+        public static System.Drawing.Color CorBotaoMenu { get; private set; }
+        public static System.Drawing.Color CorBotaoSubMenu { get; private set; }
+        public static System.Drawing.Color CorPainelMenu { get; private set; }
+        public static System.Drawing.Color CorPainelLogo { get; private set; }
+        public static System.Drawing.Color CorPainelTitulo { get; private set; }
+
+        // Dicionário associando índices a listas de strings (agora com cores em hexadecimal)
+        private static Dictionary<string, List<string>> dicionarioStrings = new Dictionary<string, List<string>>
         {
-            double vermelho = cor.R;
-            double verde = cor.G;
-            double azul = cor.B;
-            //Se o fator de correção for menor que 0: escurece a cor.
-            if (fatorCorrecao < 0)
+            { "padrão", new List<string> { "#777787", "#33334C", "#3D3D5B", "#27263A", "#27263A", "#777787" } },
+            { "cadastros", new List<string> { "#FFFFFF", "#FF0000", "#00FF00", "#0000FF", "#FF00FF", "#FFFF00" } },
+            { "lançamentos", new List<string> { "#000000", "#00FF00", "#FF0000", "#FF00FF", "#FFFF00", "#0000FF" } },
+            { "relatórios", new List<string> { "#0000FF", "#6699FF", "#3366FF", "#0033CC", "#0A2239", "#777787" } },
+            { "logoff", new List<string> { "#FF0000", "#FF6666", "#FF3333", "#CC0000", "#0A2239", "#777787" } },
+        };
+
+        // Método para atribuir as cores às variáveis públicas
+        public static void Selecionar(string indice)
+        {
+            if (dicionarioStrings.ContainsKey(indice))
             {
-                fatorCorrecao = 1 + fatorCorrecao;
-                vermelho *= fatorCorrecao;
-                verde *= fatorCorrecao;
-                azul *= fatorCorrecao;
+                CorBotaoSelecionado = ColorTranslator.FromHtml(dicionarioStrings[indice][0]);
+                CorBotaoMenu = ColorTranslator.FromHtml(dicionarioStrings[indice][1]);
+                CorBotaoSubMenu = ColorTranslator.FromHtml(dicionarioStrings[indice][2]);
+                CorPainelMenu = ColorTranslator.FromHtml(dicionarioStrings[indice][3]);
+                CorPainelLogo = ColorTranslator.FromHtml(dicionarioStrings[indice][4]);
+                CorPainelTitulo = ColorTranslator.FromHtml(dicionarioStrings[indice][5]);
             }
-            //Se o fator de correção for maior que 0, clareia a cor.
             else
             {
-                vermelho = (255 - vermelho) * fatorCorrecao + vermelho;
-                verde = (255 - verde) * fatorCorrecao + verde;
-                azul = (255 - azul) * fatorCorrecao + azul;
+                Console.WriteLine($"Tema '{indice}' não encontrado.");
             }
-            return Color.FromArgb(cor.A, (byte)vermelho, (byte)verde, (byte)azul);
         }
     }
 }
