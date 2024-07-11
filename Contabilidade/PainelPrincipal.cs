@@ -18,18 +18,24 @@ namespace Contabilidade
         private Random aleatorio;
         private int indexTemporario;
         private Form formularioAtivo;
+        private string caminhoBD;
+        Conexao con;
 
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
         private extern static void ReleaseCapture();
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
         private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
 
-        public frmPainelPrincipal(string nomeBD, string usuario)
+        public frmPainelPrincipal(string nomeBD, string usuario, string caminhoBanco, Conexao conexaoBanco)
         {
             InitializeComponent();
+            
+            // Salvar informações da conexão
+            caminhoBD = caminhoBanco;
+            con = conexaoBanco;
             lblUsuario.Text = usuario;
             lblBanco.Text = nomeBD;
-            aleatorio = new Random();
+
             btnFecharFormFilho.Visible = false;
             this.MaximizedBounds = Screen.FromHandle(this.Handle).WorkingArea;
         }
@@ -101,13 +107,13 @@ namespace Contabilidade
                         botao.BackColor = TemaCores.CorBotaoSubMenu;
                     }
                     // Painel título
-                    pnlTitulo.BackColor = TemaCores.CorPainelTitulo;
+                    pnlTitulo.BackColor = TemaCores.CorBotaoSelecionado;
                     // Painel logo
-                    pnlLogo.BackColor = TemaCores.CorPainelLogo;
+                    pnlLogo.BackColor = TemaCores.CorPainel;
                     // Painéis do menu lateral
                     foreach (Panel painel in listaPaineisMenu)
                     {
-                        painel.BackColor = TemaCores.CorPainelMenu;
+                        painel.BackColor = TemaCores.CorPainel;
                     }
                     // Botão selecionado
                     botaoAtual.BackColor = TemaCores.CorBotaoSelecionado;
@@ -171,17 +177,14 @@ namespace Contabilidade
                 botao.BackColor = TemaCores.CorBotaoSubMenu;
             }
             // Painel título
-            pnlTitulo.BackColor = TemaCores.CorPainelTitulo;
+            pnlTitulo.BackColor = Color.FromArgb(0, 150, 136);
             // Painel logo
-            pnlLogo.BackColor = TemaCores.CorPainelLogo;
+            pnlLogo.BackColor = TemaCores.CorPainel;
             // Painéis restantes
             foreach (Panel painel in listaPaineis)
             {
-                painel.BackColor = TemaCores.CorPainelMenu;
+                painel.BackColor = TemaCores.CorPainel;
             }
-
-            // Alterar cor do painel de título
-            pnlTitulo.BackColor = TemaCores.CorBotaoSelecionado;
         }
 
         private void abrirFormulario(Form formularioFilho, object btnSender, string tema)
@@ -209,16 +212,12 @@ namespace Contabilidade
             lblTitulo.Text = formularioFilho.Text;
         }
 
-        private void Reset()
+        public void Reset()
         {
             desselecionarBotao();
             esconderSubMenus();
 
             lblTitulo.Text = "Painel Principal";
-
-            pnlTitulo.BackColor = Color.FromArgb(0, 150, 136);
-            pnlLogo.BackColor = Color.FromArgb(39, 39, 58);
-            pnlMenuLateral.BackColor = Color.FromArgb(39, 39, 58);
 
             botaoAtual = null;
             btnFecharFormFilho.Visible = false;
@@ -306,38 +305,51 @@ namespace Contabilidade
 
         private void btnRelDiario_Click(object sender, EventArgs e)
         {
-            abrirFormulario(new Forms.Relatorios.frmRelDiario(), sender, "relatório");
+            abrirFormulario(new Forms.Relatorios.frmRelDiario(), sender, "relatórios");
         }
 
         private void btnRelAnalitico_Click(object sender, EventArgs e)
         {
-            abrirFormulario(new Forms.Relatorios.frmRelAnalitico(), sender, "relatório");
+            abrirFormulario(new Forms.Relatorios.frmRelAnalitico(), sender, "relatórios");
         }
 
         private void btnBalanceteGeral_Click(object sender, EventArgs e)
         {
-            abrirFormulario(new Forms.Relatorios.frmBalanceteGeral(), sender, "relatório");
+            abrirFormulario(new Forms.Relatorios.frmBalanceteGeral(), sender, "relatórios");
         }
 
         private void btnBalanceteConta_Click(object sender, EventArgs e)
         {
-            abrirFormulario(new Forms.Relatorios.frmBalanceteConta(), sender, "relatório");
+            abrirFormulario(new Forms.Relatorios.frmBalanceteConta(), sender, "relatórios");
         }
 
         private void btnSaldo_Click(object sender, EventArgs e)
         {
-            abrirFormulario(new Forms.Relatorios.frmSaldo(), sender, "relatório");
+            abrirFormulario(new Forms.Relatorios.frmSaldo(), sender, "relatórios");
         }
 
         private void btnRelUsuarios_Click(object sender, EventArgs e)
         {
-            abrirFormulario(new Forms.Relatorios.frmUsuarios(), sender, "relatório");
+            abrirFormulario(new Forms.Relatorios.frmUsuarios(), sender, "relatórios");
         }
 
         private void btnLogoff_Click(object sender, EventArgs e)
         {
-            TemaCores.Selecionar("logoff");
-            abrirFormulario(new Forms.frmLogoff(), sender, "logoff");
+            DialogResult input = MessageBox.Show("Deseja realmente voltar à tela de login?", "Você está prestes a sair", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+            if (input == DialogResult.Yes)
+            {
+                con.desconectar();
+
+                this.Hide(); // Esconde o formulário atual
+                frmLogin frmLogin = new frmLogin(); // Crie uma instância do frmLogin
+                frmLogin.ShowDialog(); // Exibe o form como uma janela de diálogo modal
+                this.Close(); // Fecha o formulário atual
+            }
+            else
+            {
+                btnFecharFormFilho.PerformClick();
+            }
         }
     }
 }

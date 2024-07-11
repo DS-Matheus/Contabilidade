@@ -59,7 +59,8 @@ namespace Contabilidade
                 {
                     // Conectar ao banco
                     nomeBDFuncao = validarExtensaoBD(cbbBD.Text);
-                    Conexao con = new Conexao(pastaDatabases + "\\" + nomeBDFuncao);
+                    caminhoBD = pastaDatabases + "\\" + nomeBDFuncao;
+                    Conexao con = new Conexao(caminhoBD);
                     con.conectar();
 
                     // Query de pesquisa
@@ -75,7 +76,7 @@ namespace Contabilidade
                     // Passando os dados encontrados pelo DataAdapter para o DataTable
                     dados.Fill(dtUsuario);
 
-                    con.desconectar();
+                    //con.desconectar();
                     comando.Dispose();
 
                     if (dtUsuario.Rows.Count <= 0)
@@ -91,7 +92,7 @@ namespace Contabilidade
                         MessageBox.Show("Bem Vindo(a) " + usuario + ".", "Login", MessageBoxButtons.OK, MessageBoxIcon.None);
 
                         this.Hide(); // Esconde o formulário atual
-                        frmPainelPrincipal frmPainelPrincipal = new frmPainelPrincipal(nomeBDFuncao.Replace(".sqlite", ""), usuario); // Crie uma instância do frmPainelPrincipal
+                        frmPainelPrincipal frmPainelPrincipal = new frmPainelPrincipal(nomeBDFuncao.Replace(".sqlite", ""), usuario, caminhoBD, con); // Crie uma instância do frmPainelPrincipal
                         frmPainelPrincipal.ShowDialog(); // Exibe o form como uma janela de diálogo modal
                         this.Close(); // Fecha o formulário atual
                     }
