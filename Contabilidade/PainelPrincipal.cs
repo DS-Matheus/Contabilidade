@@ -15,10 +15,7 @@ namespace Contabilidade
     public partial class frmPainelPrincipal : Form
     {
         private Button botaoAtual;
-        private Random aleatorio;
-        private int indexTemporario;
         private Form formularioAtivo;
-        private string caminhoBD;
         Conexao con;
 
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
@@ -26,22 +23,24 @@ namespace Contabilidade
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
         private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
 
-        public frmPainelPrincipal(string nomeBD, string usuario, string caminhoBanco, Conexao conexaoBanco)
+        public frmPainelPrincipal(string nomeBD, string usuario, Conexao conexaoBanco)
         {
             InitializeComponent();
-            
+
             // Salvar informações da conexão
-            caminhoBD = caminhoBanco;
             con = conexaoBanco;
             lblUsuario.Text = usuario;
             lblBanco.Text = nomeBD;
 
             btnFecharFormFilho.Visible = false;
             this.MaximizedBounds = Screen.FromHandle(this.Handle).WorkingArea;
+
+            timerRelogio.Start();
         }
 
         private void btnFechar_Click(object sender, EventArgs e)
         {
+            con.desconectar();
             Application.Exit();
         }
 
@@ -83,7 +82,7 @@ namespace Contabilidade
                         btnSaldo,
                         btnRelUsuarios,
                     ];
-                    
+
                     // Testar se um botão já foi pressionado anteriormente
                     if (botaoAtual != null)
                     {
@@ -91,7 +90,7 @@ namespace Contabilidade
                         botaoAtual.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
                         botaoAtual.ForeColor = Color.Gainsboro;
                     }
-                    
+
                     // Atualizar botão selecionado
                     botaoAtual = (Button)btnSender;
 
@@ -196,19 +195,19 @@ namespace Contabilidade
 
             TemaCores.Selecionar(tema);
             selecionarBotao(btnSender);
-            
+
             formularioAtivo = formularioFilho;
-            
+
             formularioFilho.TopLevel = false;
             formularioFilho.FormBorderStyle = FormBorderStyle.None;
             formularioFilho.Dock = DockStyle.Fill;
-            
+
             this.pnlDesktop.Controls.Add(formularioFilho);
             this.pnlDesktop.Tag = formularioFilho;
-            
+
             formularioFilho.BringToFront();
             formularioFilho.Show();
-            
+
             lblTitulo.Text = formularioFilho.Text;
         }
 
@@ -280,7 +279,7 @@ namespace Contabilidade
 
         private void btnUsuarios_Click(object sender, EventArgs e)
         {
-            abrirFormulario(new Forms.Cadastros.frmUsuarios(), sender, "cadastros");
+            abrirFormulario(new Forms.Cadastros.frmUsuarios(lblUsuario.Text, con), sender, "cadastros");
         }
 
         private void btnLancamentos_Click(object sender, EventArgs e)
@@ -350,6 +349,11 @@ namespace Contabilidade
             {
                 btnFecharFormFilho.PerformClick();
             }
+        }
+
+        private void timerRelogio_Tick(object sender, EventArgs e)
+        {
+            lblRelogio.Text = DateTime.Now.ToString("hh:mm:ss");
         }
     }
 }

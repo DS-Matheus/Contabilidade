@@ -92,7 +92,7 @@ namespace Contabilidade
                         MessageBox.Show("Bem Vindo(a) " + usuario + ".", "Login", MessageBoxButtons.OK, MessageBoxIcon.None);
 
                         this.Hide(); // Esconde o formulário atual
-                        frmPainelPrincipal frmPainelPrincipal = new frmPainelPrincipal(nomeBDFuncao.Replace(".sqlite", ""), usuario, caminhoBD, con); // Crie uma instância do frmPainelPrincipal
+                        frmPainelPrincipal frmPainelPrincipal = new frmPainelPrincipal(nomeBDFuncao.Replace(".sqlite", ""), usuario, con); // Crie uma instância do frmPainelPrincipal
                         frmPainelPrincipal.ShowDialog(); // Exibe o form como uma janela de diálogo modal
                         this.Close(); // Fecha o formulário atual
                     }
@@ -238,7 +238,7 @@ namespace Contabilidade
             }
         }
 
-        private bool verificarSenha(string senha)
+        public static bool verificarSenha(string senha)
         {
             if (string.IsNullOrWhiteSpace(senha))
             {
@@ -256,7 +256,7 @@ namespace Contabilidade
             }
         }
 
-        private bool verificarUsuario(string usuario)
+        public static bool verificarUsuario(string usuario)
         {
             string padrao = @"^[a-zA-Z0-9]+$";
 
@@ -265,7 +265,7 @@ namespace Contabilidade
                 MessageBox.Show("O nome de usuário não pode ser vázio ou conter espaços!", "Erro ao registrar usuário", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
-            else if (cbbBD.Text.Length >= 20)
+            else if (usuario.Length >= 20)
             {
                 MessageBox.Show("O nome de usuário não pode ter mais que 20 caracteres!", "Erro ao registrar usuário", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
