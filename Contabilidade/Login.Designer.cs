@@ -168,6 +168,7 @@
             txtSenha.Size = new Size(260, 23);
             txtSenha.TabIndex = 1;
             txtSenha.UseSystemPasswordChar = true;
+            txtSenha.KeyPress += txtSenha_KeyPress;
             // 
             // label2
             // 
@@ -186,6 +187,7 @@
             txtNome.Name = "txtNome";
             txtNome.Size = new Size(260, 23);
             txtNome.TabIndex = 0;
+            txtNome.KeyPress += txtNome_KeyPress;
             // 
             // label1
             // 

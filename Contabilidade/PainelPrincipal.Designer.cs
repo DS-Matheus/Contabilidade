@@ -36,7 +36,6 @@
             btnFechar = new Button();
             pnlMenuLateral = new Panel();
             pnlRelatorios = new Panel();
-            btnRelUsuarios = new Button();
             btnSaldo = new Button();
             btnBalanceteConta = new Button();
             btnBalanceteGeral = new Button();
@@ -58,10 +57,9 @@
             btnFecharFormFilho = new Button();
             lblTitulo = new Label();
             pnlDesktop = new Panel();
-            panel1 = new Panel();
+            calendario = new MonthCalendar();
             label2 = new Label();
             label1 = new Label();
-            calendario = new MonthCalendar();
             lblRelogio = new Label();
             timerRelogio = new System.Windows.Forms.Timer(components);
             pnlLogo.SuspendLayout();
@@ -72,7 +70,6 @@
             pnlCadastros.SuspendLayout();
             pnlTitulo.SuspendLayout();
             pnlDesktop.SuspendLayout();
-            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // pnlLogo
@@ -99,7 +96,7 @@
             lblBanco.BackColor = Color.Transparent;
             lblBanco.Font = new Font("Lucida Sans", 10F);
             lblBanco.ForeColor = Color.Black;
-            lblBanco.Location = new Point(185, 24);
+            lblBanco.Location = new Point(182, 460);
             lblBanco.Name = "lblBanco";
             lblBanco.Size = new Size(304, 22);
             lblBanco.TabIndex = 2;
@@ -111,7 +108,7 @@
             lblUsuario.BackColor = Color.Transparent;
             lblUsuario.Font = new Font("Lucida Sans", 10F);
             lblUsuario.ForeColor = Color.Black;
-            lblUsuario.Location = new Point(631, 24);
+            lblUsuario.Location = new Point(628, 460);
             lblUsuario.Name = "lblUsuario";
             lblUsuario.Size = new Size(222, 22);
             lblUsuario.TabIndex = 1;
@@ -156,7 +153,6 @@
             // pnlRelatorios
             // 
             pnlRelatorios.BackColor = Color.FromArgb(62, 62, 92);
-            pnlRelatorios.Controls.Add(btnRelUsuarios);
             pnlRelatorios.Controls.Add(btnSaldo);
             pnlRelatorios.Controls.Add(btnBalanceteConta);
             pnlRelatorios.Controls.Add(btnBalanceteGeral);
@@ -168,26 +164,6 @@
             pnlRelatorios.Size = new Size(203, 240);
             pnlRelatorios.TabIndex = 16;
             pnlRelatorios.Visible = false;
-            // 
-            // btnRelUsuarios
-            // 
-            btnRelUsuarios.BackColor = Color.FromArgb(61, 61, 91);
-            btnRelUsuarios.Dock = DockStyle.Top;
-            btnRelUsuarios.FlatAppearance.BorderSize = 0;
-            btnRelUsuarios.FlatStyle = FlatStyle.Flat;
-            btnRelUsuarios.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnRelUsuarios.ForeColor = Color.Gainsboro;
-            btnRelUsuarios.ImageAlign = ContentAlignment.MiddleLeft;
-            btnRelUsuarios.Location = new Point(0, 200);
-            btnRelUsuarios.Name = "btnRelUsuarios";
-            btnRelUsuarios.Padding = new Padding(30, 0, 0, 0);
-            btnRelUsuarios.Size = new Size(203, 40);
-            btnRelUsuarios.TabIndex = 12;
-            btnRelUsuarios.Text = "Usuários";
-            btnRelUsuarios.TextAlign = ContentAlignment.MiddleLeft;
-            btnRelUsuarios.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btnRelUsuarios.UseVisualStyleBackColor = false;
-            btnRelUsuarios.Click += btnRelUsuarios_Click;
             // 
             // btnSaldo
             // 
@@ -553,8 +529,11 @@
             // 
             // pnlDesktop
             // 
-            pnlDesktop.Controls.Add(panel1);
+            pnlDesktop.Controls.Add(lblUsuario);
+            pnlDesktop.Controls.Add(lblBanco);
             pnlDesktop.Controls.Add(calendario);
+            pnlDesktop.Controls.Add(label2);
+            pnlDesktop.Controls.Add(label1);
             pnlDesktop.Controls.Add(lblRelogio);
             pnlDesktop.Dock = DockStyle.Fill;
             pnlDesktop.Location = new Point(220, 80);
@@ -563,23 +542,19 @@
             pnlDesktop.Size = new Size(880, 500);
             pnlDesktop.TabIndex = 8;
             // 
-            // panel1
+            // calendario
             // 
-            panel1.Controls.Add(lblUsuario);
-            panel1.Controls.Add(lblBanco);
-            panel1.Controls.Add(label2);
-            panel1.Controls.Add(label1);
-            panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 432);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(880, 68);
-            panel1.TabIndex = 4;
+            calendario.FirstDayOfWeek = Day.Sunday;
+            calendario.Location = new Point(327, 148);
+            calendario.Margin = new Padding(40, 40, 40, 5);
+            calendario.Name = "calendario";
+            calendario.TabIndex = 1;
             // 
             // label2
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Forte", 15F);
-            label2.Location = new Point(27, 22);
+            label2.Location = new Point(27, 458);
             label2.Name = "label2";
             label2.Size = new Size(152, 22);
             label2.TabIndex = 3;
@@ -589,19 +564,12 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Forte", 15F);
-            label1.Location = new Point(495, 22);
+            label1.Location = new Point(492, 458);
             label1.Name = "label1";
             label1.Size = new Size(130, 22);
             label1.TabIndex = 2;
             label1.Text = "Usuário ativo:";
-            // 
-            // calendario
-            // 
-            calendario.FirstDayOfWeek = Day.Sunday;
-            calendario.Location = new Point(327, 148);
-            calendario.Margin = new Padding(40, 40, 40, 5);
-            calendario.Name = "calendario";
-            calendario.TabIndex = 1;
+            label1.Click += label1_Click;
             // 
             // lblRelogio
             // 
@@ -639,8 +607,6 @@
             pnlTitulo.ResumeLayout(false);
             pnlDesktop.ResumeLayout(false);
             pnlDesktop.PerformLayout();
-            panel1.ResumeLayout(false);
-            panel1.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -673,12 +639,10 @@
         private Panel pnlLancamentos;
         private Button btnTransporte;
         private Button btnMovimentacao;
-        private Button btnRelUsuarios;
         private MonthCalendar calendario;
         private Label lblRelogio;
         private System.Windows.Forms.Timer timerRelogio;
         private Label label1;
-        private Panel panel1;
         private Label label2;
         private PictureBox picLogo;
     }

@@ -76,7 +76,7 @@ namespace Contabilidade
                     // Passando os dados encontrados pelo DataAdapter para o DataTable
                     dados.Fill(dtUsuario);
 
-                    //con.desconectar();
+                    // Liberar recursos;
                     comando.Dispose();
 
                     if (dtUsuario.Rows.Count <= 0)
@@ -657,6 +657,30 @@ namespace Contabilidade
         {
             ReleaseCapture();
             SendMessage(this.Handle, 0x112, 0xf012, 0);
+        }
+
+        private void handleKeyPressEntrar(KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Escape)
+            {
+                txtNome.Text = "";
+                txtSenha.Text = "";
+                txtNome.Focus();
+            }
+            else if (e.KeyChar == (char)Keys.Enter)
+            {
+                btnEntrar.PerformClick();
+            }
+        }
+
+        private void txtNome_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            handleKeyPressEntrar(e);
+        }
+
+        private void txtSenha_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            handleKeyPressEntrar(e);
         }
     }
 }

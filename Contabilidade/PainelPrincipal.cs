@@ -80,7 +80,6 @@ namespace Contabilidade
                         btnBalanceteGeral,
                         btnBalanceteConta,
                         btnSaldo,
-                        btnRelUsuarios,
                     ];
 
                     // Testar se um botão já foi pressionado anteriormente
@@ -151,7 +150,6 @@ namespace Contabilidade
                 btnBalanceteGeral,
                 btnBalanceteConta,
                 btnSaldo,
-                btnRelUsuarios,
             ];
 
             // Botão anterior: Voltar fonte ao padrão
@@ -327,11 +325,6 @@ namespace Contabilidade
             abrirFormulario(new Forms.Relatorios.frmSaldo(), sender, "relatórios");
         }
 
-        private void btnRelUsuarios_Click(object sender, EventArgs e)
-        {
-            abrirFormulario(new Forms.Relatorios.frmUsuarios(), sender, "relatórios");
-        }
-
         private void btnLogoff_Click(object sender, EventArgs e)
         {
             DialogResult input = MessageBox.Show("Deseja realmente voltar à tela de login?", "Você está prestes a sair", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
@@ -354,6 +347,11 @@ namespace Contabilidade
         private void timerRelogio_Tick(object sender, EventArgs e)
         {
             lblRelogio.Text = DateTime.Now.ToString("hh:mm:ss");
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
