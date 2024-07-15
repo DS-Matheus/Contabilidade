@@ -98,7 +98,7 @@ namespace Contabilidade.Forms.Cadastros
 
             int numLinha = obterNumLinhaSelecionada(dgvUsuarios);
             var id = dgvUsuarios.Rows[numLinha].Cells["ID"].Value;
-            string usuario = dgvUsuarios.Rows[numLinha].Cells["ID"].Value?.ToString();
+            string usuario = dgvUsuarios.Rows[numLinha].Cells["Usuário"].Value?.ToString();
 
             DialogResult input = MessageBox.Show($"Deseja realmente excluir o usuário {usuario}?", "Confirmação de exclusão", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
