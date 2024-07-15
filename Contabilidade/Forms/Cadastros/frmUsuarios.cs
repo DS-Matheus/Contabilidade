@@ -1,17 +1,6 @@
 ﻿using Contabilidade.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Data.SqlClient;
 using System.Data.SQLite;
-using System.Drawing;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Contabilidade.Forms.Cadastros
 {
@@ -20,15 +9,16 @@ namespace Contabilidade.Forms.Cadastros
         string usuarioAtual;
         Conexao con;
         static DataTable dtDados = new DataTable();
+        DataView dv = dtDados.DefaultView;
         public static string usuario { get; set; } = "";
         public static string senha { get; set; } = "";
 
-        public frmUsuarios(string usuario, Conexao conexaoBanco)
+        public frmUsuarios(string usuarioBD, Conexao conexaoBanco)
         {
             InitializeComponent();
 
             con = conexaoBanco;
-            usuarioAtual = usuario;
+            usuarioAtual = usuarioBD;
 
             atualizarDataGrid();
         }
@@ -36,7 +26,7 @@ namespace Contabilidade.Forms.Cadastros
         public void atualizarDataGrid()
         {
             // Query de pesquisa
-            string sql = "SELECT nome, senha FROM usuarios;";
+            string sql = "SELECT * FROM usuarios;";
             using (var command = new SQLiteCommand(sql, con.conn))
             {
                 SQLiteDataAdapter sqlDA = new SQLiteDataAdapter(sql, con.conn);
@@ -44,6 +34,11 @@ namespace Contabilidade.Forms.Cadastros
                 sqlDA.Fill(dtDados);
 
                 dgvUsuarios.DataSource = dtDados;
+
+                dv.RowFilter = "nome LIKE '" + txtFiltrar.Text + "%'";
+                dgvUsuarios.DataSource = dv;
+
+                cbbFiltrar.SelectedIndex = 0;
             }
         }
 
@@ -72,8 +67,11 @@ namespace Contabilidade.Forms.Cadastros
                         // Verificar se houve a criação da linha (0 = negativo)
                         if (retornoBD > 0)
                         {
+                            var id = comando.Connection.LastInsertRowId;
+
                             // Adicionar dados na tabela
                             DataRow row = dtDados.NewRow();
+                            row["id"] = id;
                             row["nome"] = usuario;
                             row["senha"] = senha;
                             dtDados.Rows.Add(row);
@@ -95,43 +93,42 @@ namespace Contabilidade.Forms.Cadastros
             }
         }
 
-
-        private bool IsTextboxEmpty(List<string> listaConteudos)
-        {
-            foreach (string conteudo in listaConteudos)
-            {
-                if (string.IsNullOrWhiteSpace(conteudo))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
         private void btnExcluir_Click(object sender, EventArgs e)
         {
 
             int numLinha = obterNumLinhaSelecionada(dgvUsuarios);
-            var (usuario, senha) = obterDadosDGV(numLinha);
+            var id = dgvUsuarios.Rows[numLinha].Cells["ID"].Value;
+            string usuario = dgvUsuarios.Rows[numLinha].Cells["ID"].Value?.ToString();
 
             DialogResult input = MessageBox.Show($"Deseja realmente excluir o usuário {usuario}?", "Confirmação de exclusão", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
             if (input == DialogResult.Yes)
             {
-                using (var comando = new SQLiteCommand("DELETE FROM usuarios WHERE nome = @nome and senha = @senha", con.conn))
+                using (var comando = new SQLiteCommand("DELETE FROM usuarios WHERE id = @id", con.conn))
                 {
-                    comando.Parameters.AddWithValue("@nome", usuario);
-                    comando.Parameters.AddWithValue("@senha", senha);
+                    comando.Parameters.AddWithValue("@id", id);
 
                     int retornoBD = comando.ExecuteNonQuery();
 
                     // Verificar se houve a exclusão de alguma linha (0 = negativo)
                     if (retornoBD > 0)
                     {
+                        // Encontrar registro no DataTable
+                        DataRow[] rows = dtDados.Select($"ID = {id}");
                         // Excluir do DataTable
-                        dtDados.Rows.RemoveAt(numLinha);
+                        if (rows.Length > 0)
+                        {
+                            // Encontrou o usuário, podemos excluí-lo
+                            rows[0].Delete();
+                            dtDados.AcceptChanges();
+                            MessageBox.Show("Usuário excluído com sucesso!", "Exclusão bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        }
+                        else
+                        {
+                            MessageBox.Show("DataGridView não atualizado, comunique o desenvolvedor!", "Exclusão com erros", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+
                         dgvUsuarios.Refresh();
-                        MessageBox.Show("Usuário excluído com sucesso!", "Exclusão bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     }
                     else
                     {
@@ -150,6 +147,7 @@ namespace Contabilidade.Forms.Cadastros
         {
             // Obter usuário selecionado
             int numLinha = obterNumLinhaSelecionada(dgvUsuarios);
+            var id = dgvUsuarios.Rows[numLinha].Cells["ID"].Value;
             var (usuarioAntigo, senhaAntiga) = obterDadosDGV(numLinha);
 
             // Criar uma instância do formulário de dados e aguardar um retorno
@@ -159,12 +157,11 @@ namespace Contabilidade.Forms.Cadastros
                 if (frmDados.ShowDialog() == DialogResult.OK)
                 {
                     // Editar usuário
-                    using (var comando = new SQLiteCommand("UPDATE usuarios SET nome = @nome, senha = @senha WHERE nome = @nomeAntigo and senha = @senhaAntiga", con.conn))
+                    using (var comando = new SQLiteCommand("UPDATE usuarios SET nome = @nome, senha = @senha WHERE id = @id", con.conn))
                     {
                         comando.Parameters.AddWithValue("@nome", usuario);
                         comando.Parameters.AddWithValue("@senha", senha);
-                        comando.Parameters.AddWithValue("@nomeAntigo", usuarioAntigo);
-                        comando.Parameters.AddWithValue("@senhaAntiga", senhaAntiga);
+                        comando.Parameters.AddWithValue("@id", id);
 
                         int retornoBD = comando.ExecuteNonQuery();
 
@@ -209,13 +206,11 @@ namespace Contabilidade.Forms.Cadastros
         {
             if (cbbFiltrar.Text == "Usuário")
             {
-                DataView dv = dtDados.DefaultView;
                 dv.RowFilter = "nome LIKE '" + txtFiltrar.Text + "%'";
                 dgvUsuarios.DataSource = dv;
             }
             else if (cbbFiltrar.Text == "Senha")
             {
-                DataView dv = dtDados.DefaultView;
                 dv.RowFilter = "senha LIKE '" + txtFiltrar.Text + "%'";
                 dgvUsuarios.DataSource = dv;
             }

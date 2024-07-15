@@ -30,8 +30,6 @@
         {
             components = new System.ComponentModel.Container();
             dgvUsuarios = new DataGridView();
-            Usuário = new DataGridViewTextBoxColumn();
-            Senha = new DataGridViewTextBoxColumn();
             btnCriar = new Button();
             btnExcluir = new Button();
             btnEditar = new Button();
@@ -40,6 +38,9 @@
             txtFiltrar = new TextBox();
             btnImprimir = new Button();
             groupBox1 = new GroupBox();
+            ID = new DataGridViewTextBoxColumn();
+            Usuário = new DataGridViewTextBoxColumn();
+            Senha = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgvUsuarios).BeginInit();
             ((System.ComponentModel.ISupportInitialize)bindingSource1).BeginInit();
             groupBox1.SuspendLayout();
@@ -52,7 +53,7 @@
             dgvUsuarios.AllowUserToOrderColumns = true;
             dgvUsuarios.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvUsuarios.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvUsuarios.Columns.AddRange(new DataGridViewColumn[] { Usuário, Senha });
+            dgvUsuarios.Columns.AddRange(new DataGridViewColumn[] { ID, Usuário, Senha });
             dgvUsuarios.Location = new Point(12, 12);
             dgvUsuarios.MultiSelect = false;
             dgvUsuarios.Name = "dgvUsuarios";
@@ -60,20 +61,6 @@
             dgvUsuarios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvUsuarios.Size = new Size(596, 476);
             dgvUsuarios.TabIndex = 0;
-            // 
-            // Usuário
-            // 
-            Usuário.DataPropertyName = "nome";
-            Usuário.HeaderText = "Usuário";
-            Usuário.Name = "Usuário";
-            Usuário.ReadOnly = true;
-            // 
-            // Senha
-            // 
-            Senha.DataPropertyName = "senha";
-            Senha.HeaderText = "Senha";
-            Senha.Name = "Senha";
-            Senha.ReadOnly = true;
             // 
             // btnCriar
             // 
@@ -144,6 +131,29 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "Filtrar por";
             // 
+            // ID
+            // 
+            ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            ID.DataPropertyName = "id";
+            ID.HeaderText = "ID";
+            ID.Name = "ID";
+            ID.ReadOnly = true;
+            ID.Width = 43;
+            // 
+            // Usuário
+            // 
+            Usuário.DataPropertyName = "nome";
+            Usuário.HeaderText = "Usuário";
+            Usuário.Name = "Usuário";
+            Usuário.ReadOnly = true;
+            // 
+            // Senha
+            // 
+            Senha.DataPropertyName = "senha";
+            Senha.HeaderText = "Senha";
+            Senha.Name = "Senha";
+            Senha.ReadOnly = true;
+            // 
             // frmUsuarios
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -174,9 +184,10 @@
         private ComboBox cbbFiltrar;
         private BindingSource bindingSource1;
         private TextBox txtFiltrar;
-        private DataGridViewTextBoxColumn Usuário;
-        private DataGridViewTextBoxColumn Senha;
         private Button btnImprimir;
         private GroupBox groupBox1;
+        private DataGridViewTextBoxColumn ID;
+        private DataGridViewTextBoxColumn Usuário;
+        private DataGridViewTextBoxColumn Senha;
     }
 }
