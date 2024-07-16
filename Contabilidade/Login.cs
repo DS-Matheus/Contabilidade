@@ -557,6 +557,7 @@ namespace Contabilidade
 
                         this.Hide(); // Esconde o formulário atual
                         frmPainelPrincipal frmPainelPrincipal = new frmPainelPrincipal(nomeBD.Replace(".sqlite", ""), usuario, con); // Crie uma instância do frmPainelPrincipal
+                        frmPainelPrincipal.Owner = this; // Definir o painel de Login como pai
                         frmPainelPrincipal.ShowDialog(); // Exibe o form como uma janela de diálogo modal
                         this.Close(); // Fecha o formulário atual
                     }

@@ -169,7 +169,6 @@
             FormBorderStyle = FormBorderStyle.None;
             Name = "frmUsuarios";
             Text = "Usuários";
-            Load += frmUsuarios_Load;
             ((System.ComponentModel.ISupportInitialize)dgvUsuarios).EndInit();
             ((System.ComponentModel.ISupportInitialize)bindingSource1).EndInit();
             groupBox1.ResumeLayout(false);

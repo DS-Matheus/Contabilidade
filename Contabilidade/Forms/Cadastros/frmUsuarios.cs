@@ -94,54 +94,80 @@ namespace Contabilidade.Forms.Cadastros
             }
         }
 
+        private void excluirUsuario(string id)
+        {
+            using (var comando = new SQLiteCommand("DELETE FROM usuarios WHERE id = @id", con.conn))
+            {
+                comando.Parameters.AddWithValue("@id", id);
+
+                int retornoBD = comando.ExecuteNonQuery();
+
+                // Verificar se houve a exclusão de alguma linha (0 = negativo)
+                if (retornoBD > 0)
+                {
+                    // Encontrar registro no DataTable
+                    DataRow[] rows = dtDados.Select($"ID = {id}");
+                    // Excluir do DataTable
+                    if (rows.Length > 0)
+                    {
+                        // Encontrou o usuário, podemos excluí-lo
+                        rows[0].Delete();
+                        dtDados.AcceptChanges();
+                        MessageBox.Show("Usuário excluído com sucesso!", "Exclusão bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    }
+                    else
+                    {
+                        MessageBox.Show("DataGridView não atualizado, comunique o desenvolvedor!", "Exclusão com erros", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
+                    dgvUsuarios.Refresh();
+                }
+                else
+                {
+                    MessageBox.Show("Não foi possível encontrar o usuário ou ocorreu um erro na exclusão.", "Exclusão não realizada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+        }
+
         private void btnExcluir_Click(object sender, EventArgs e)
         {
 
             int numLinha = obterNumLinhaSelecionada(dgvUsuarios);
-            var id = dgvUsuarios.Rows[numLinha].Cells["ID"].Value;
+            string id = dgvUsuarios.Rows[numLinha].Cells["ID"].Value.ToString();
             string usuario = dgvUsuarios.Rows[numLinha].Cells["Usuário"].Value?.ToString();
 
-            DialogResult input = MessageBox.Show($"Deseja realmente excluir o usuário {usuario}?", "Confirmação de exclusão", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            DialogResult input = MessageBox.Show($"Deseja realmente excluir o usuário {usuario}?", "Confirmação de exclusão", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
 
             if (input == DialogResult.Yes)
             {
-                using (var comando = new SQLiteCommand("DELETE FROM usuarios WHERE id = @id", con.conn))
+                if (!verificarUsuarioAtual(usuario))
                 {
-                    comando.Parameters.AddWithValue("@id", id);
-
-                    int retornoBD = comando.ExecuteNonQuery();
-
-                    // Verificar se houve a exclusão de alguma linha (0 = negativo)
-                    if (retornoBD > 0)
+                    excluirUsuario(id);
+                }
+                else
+                {
+                    if (dtDados.Rows.Count <= 1)
                     {
-                        // Encontrar registro no DataTable
-                        DataRow[] rows = dtDados.Select($"ID = {id}");
-                        // Excluir do DataTable
-                        if (rows.Length > 0)
-                        {
-                            // Encontrou o usuário, podemos excluí-lo
-                            rows[0].Delete();
-                            dtDados.AcceptChanges();
-                            MessageBox.Show("Usuário excluído com sucesso!", "Exclusão bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                        }
-                        else
-                        {
-                            MessageBox.Show("DataGridView não atualizado, comunique o desenvolvedor!", "Exclusão com erros", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-
-                        dgvUsuarios.Refresh();
+                        MessageBox.Show("Não é permitido excluir o único usuário do banco de dados!", "Exclusão abortada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                     else
                     {
-                        MessageBox.Show("Não foi possível encontrar o usuário ou ocorreu um erro na exclusão.", "Exclusão não realizada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        input = MessageBox.Show($"Não é permitido excluir o usuário atual.", "Exclusão abortada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
             }
         }
 
-        private void frmUsuarios_Load(object sender, EventArgs e)
+        public static bool verificarUsuarioAtual(string usuario)
         {
-
+            if (frmPainelPrincipal.usuarioAtual == usuario)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private void btnEditar_Click(object sender, EventArgs e)
@@ -169,6 +195,12 @@ namespace Contabilidade.Forms.Cadastros
                         // Verificar se houve a edição de alguma linha (0 = negativo)
                         if (retornoBD > 0)
                         {
+                            // Caso o usuário atual foi editado, atualizar no painel principal
+                            if (verificarUsuarioAtual(usuarioAntigo))
+                            {
+                                frmPainelPrincipal.usuarioAtual = usuario;
+                            }
+
                             // Atualizar DataTable
                             dgvUsuarios.Rows[numLinha].Cells["Usuário"].Value = usuario;
                             dgvUsuarios.Rows[numLinha].Cells["Senha"].Value = senha;

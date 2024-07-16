@@ -1,4 +1,5 @@
-﻿using Contabilidade.Models;
+﻿using Contabilidade.Forms.Cadastros;
+using Contabilidade.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,6 +18,7 @@ namespace Contabilidade
         private Button botaoAtual;
         private Form formularioAtivo;
         Conexao con;
+        public static string usuarioAtual = "";
 
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
         private extern static void ReleaseCapture();
@@ -26,10 +28,11 @@ namespace Contabilidade
         public frmPainelPrincipal(string nomeBD, string usuario, Conexao conexaoBanco)
         {
             InitializeComponent();
-
+            
             // Salvar informações da conexão
             con = conexaoBanco;
-            lblUsuario.Text = usuario;
+            usuarioAtual = usuario;
+            lblUsuario.Text = usuarioAtual;
             lblBanco.Text = nomeBD;
 
             btnFecharFormFilho.Visible = false;
@@ -188,13 +191,14 @@ namespace Contabilidade
         {
             if (formularioAtivo != null)
             {
-                formularioAtivo.Close();
+                formularioAtivo.Dispose();
             }
 
             TemaCores.Selecionar(tema);
             selecionarBotao(btnSender);
 
             formularioAtivo = formularioFilho;
+            formularioFilho.Owner = this;
 
             formularioFilho.TopLevel = false;
             formularioFilho.FormBorderStyle = FormBorderStyle.None;
@@ -255,7 +259,11 @@ namespace Contabilidade
         {
             if (formularioAtivo != null)
             {
-                formularioAtivo.Close();
+                if (formularioAtivo.Text == "Usuários")
+                {
+                    lblUsuario.Text = usuarioAtual;
+                }
+                formularioAtivo.Dispose();
                 Reset();
             }
         }
@@ -336,7 +344,7 @@ namespace Contabilidade
                 this.Hide(); // Esconde o formulário atual
                 frmLogin frmLogin = new frmLogin(); // Crie uma instância do frmLogin
                 frmLogin.ShowDialog(); // Exibe o form como uma janela de diálogo modal
-                this.Close(); // Fecha o formulário atual
+                this.Dispose(); // Fecha o formulário atual
             }
             else
             {
