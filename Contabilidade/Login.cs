@@ -1,13 +1,9 @@
 using Contabilidade.Models;
 using System.Data;
 using System.Data.SQLite;
-using System;
-using System.IO;
-using System.Windows.Forms;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Text.RegularExpressions;
-using System.Text;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Contabilidade
 {
@@ -15,9 +11,9 @@ namespace Contabilidade
     {
         private string usuarioBD = "";
         private string senhaUsuarioBD = "";
-        private string nomeBDFuncao = "";
+        private string nomeBD = "";
 
-        public string pastaDatabases = Directory.GetCurrentDirectory() + "\\databases";
+        private string pastaDatabases = Directory.GetCurrentDirectory() + "\\databases";
         private string caminhoBD = "";
 
         private List<string> nomesBDs = new List<string>();
@@ -31,77 +27,6 @@ namespace Contabilidade
         public frmLogin()
         {
             InitializeComponent();
-        }
-
-        private void btnEntrar_Click(object sender, EventArgs e)
-        {
-            // Verifica se o banco de dados existe
-            if (!verificarExistenciaBD("Erro ao localizar banco de dados"))
-            {
-                return;
-            }
-            // Verifica se a senha foi digitada
-            else if (txtNome.Text == "")
-            {
-                MessageBox.Show("Usuário não informado!", "Formulário Incompleto", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                txtNome.Focus();
-
-            }
-            // Verifica se o usuário foi informado
-            else if (txtSenha.Text == "")
-            {
-                MessageBox.Show("Senha não informada!", "Formulário Incompleto", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                txtSenha.Focus();
-            }
-            else
-            {
-                try
-                {
-                    // Conectar ao banco
-                    nomeBDFuncao = validarExtensaoBD(cbbBD.Text);
-                    caminhoBD = pastaDatabases + "\\" + nomeBDFuncao;
-                    Conexao con = new Conexao(caminhoBD);
-                    con.conectar();
-
-                    // Query de pesquisa
-                    string sql = "SELECT * FROM usuarios WHERE nome= @nome AND senha= @senha;";
-                    SQLiteCommand comando = new SQLiteCommand(sql, con.conn);
-                    // Parâmetros
-                    comando.Parameters.AddWithValue("@nome", txtNome.Text);
-                    comando.Parameters.AddWithValue("@senha", txtSenha.Text);
-
-                    // Consultar usuários com os parâmetros informados
-                    SQLiteDataAdapter dados = new SQLiteDataAdapter(comando);
-                    DataTable dtUsuario = new DataTable();
-                    // Passando os dados encontrados pelo DataAdapter para o DataTable
-                    dados.Fill(dtUsuario);
-
-                    // Liberar recursos;
-                    comando.Dispose();
-
-                    if (dtUsuario.Rows.Count <= 0)
-                    {
-                        MessageBox.Show("Usuário ou senha inválido(s)!", "Registro não encontrado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                        txtSenha.Clear();
-                        txtNome.Focus();
-                    }
-                    else
-                    {
-                        string usuario = dtUsuario.Rows[0]["nome"].ToString();
-
-                        MessageBox.Show("Bem Vindo(a) " + usuario + ".", "Login", MessageBoxButtons.OK, MessageBoxIcon.None);
-
-                        this.Hide(); // Esconde o formulário atual
-                        frmPainelPrincipal frmPainelPrincipal = new frmPainelPrincipal(nomeBDFuncao.Replace(".sqlite", ""), usuario, con); // Crie uma instância do frmPainelPrincipal
-                        frmPainelPrincipal.ShowDialog(); // Exibe o form como uma janela de diálogo modal
-                        this.Close(); // Fecha o formulário atual
-                    }
-                }
-                catch (Exception error)
-                {
-                    MessageBox.Show(error.Message.ToString(), "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
         }
 
         private void carregarBDs()
@@ -181,7 +106,7 @@ namespace Contabilidade
 
         private void criarBD()
         {
-            caminhoBD = pastaDatabases + $"\\{nomeBDFuncao}";
+            caminhoBD = $"{pastaDatabases}\\{nomeBD}";
 
             try
             {
@@ -209,11 +134,11 @@ namespace Contabilidade
                 con.desconectar();
                 comando.Dispose();
 
-                cbbBD.Text = nomeBDFuncao.Replace(".sqlite", "");
+                cbbBD.Text = nomeBD.Replace(".sqlite", "");
 
                 MessageBox.Show("O banco de dados foi criado.", "Operação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                frmResetar();
+                resetarForm();
                 txtNome.Focus();
             }
             catch (Exception error)
@@ -233,7 +158,7 @@ namespace Contabilidade
                     }
                 }
 
-                frmResetar(true);
+                resetarForm(true);
                 cbbBD.Focus();
             }
         }
@@ -358,7 +283,7 @@ namespace Contabilidade
             // Senão: entra em modo de registro de usuário
             else
             {
-                nomeBDFuncao = validarExtensaoBD(cbbBD.Text);
+                nomeBD = validarExtensaoBD(cbbBD.Text);
                 MessageBox.Show("Qual o nome do usuário a se registrar?", "Criar banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Question);
 
                 btnExcluirBD.Enabled = false;
@@ -370,7 +295,7 @@ namespace Contabilidade
             }
         }
 
-        public void excluirBD(string caminho, string nomeBD)
+        public void excluirBD(string caminho)
         {
             if (File.Exists(caminho))
             {
@@ -400,7 +325,8 @@ namespace Contabilidade
 
         public bool verificarExistenciaBD(string tituloMensagem)
         {
-            string nomeBD = validarExtensaoBD(cbbBD.Text);
+            // Salvar nome do banco para as operações futuras
+            nomeBD = validarExtensaoBD(cbbBD.Text);
 
             // Verifica se é nulo
             if (cbbBD.Text == "" || cbbBD.Text == null || string.IsNullOrWhiteSpace(cbbBD.Text))
@@ -447,13 +373,11 @@ namespace Contabilidade
             // Verifica a resposta do usuário
             if (resultado == DialogResult.Yes)
             {
-                string nomeBD = validarExtensaoBD(cbbBD.Text);
-
                 if (verificarExistenciaBD("Erro ao excluir banco de dados"))
                 {
-                    caminhoBD = pastaDatabases + "\\" + nomeBD;
+                    caminhoBD = $"{pastaDatabases}\\{nomeBD}";
 
-                    excluirBD(caminhoBD, nomeBD);
+                    excluirBD(caminhoBD);
                     carregarBDs();
 
                     cbbBD.Text = "";
@@ -466,15 +390,15 @@ namespace Contabilidade
             }
         }
 
-        private void renomearBD()
+        private void renomearBD(string nomeBDNovo)
         {
-            caminhoBD = pastaDatabases + "\\" + validarExtensaoBD(nomeBDFuncao);
+            caminhoBD = $"{pastaDatabases}\\{nomeBD}";
             // Renomear
-            File.Move(caminhoBD, Path.Combine(Path.GetDirectoryName(caminhoBD) + "\\", validarExtensaoBD(cbbBD.Text)));
+            File.Move(caminhoBD, Path.Combine(Path.GetDirectoryName(caminhoBD) + "\\", nomeBDNovo));
 
             MessageBox.Show("O banco de dados foi renomeado com sucesso!", "Operação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-            frmResetar();
+            resetarForm();
 
             carregarBDs();
         }
@@ -484,7 +408,7 @@ namespace Contabilidade
             // Verificar se o botão está no modo de salvamento (quando o usuário já indicou o banco a ser renomeado)
             if (btnRenomearBD.Text == "Salvar")
             {
-                string nomeBD = validarExtensaoBD(cbbBD.Text);
+                string nomeBDNovo = validarExtensaoBD(cbbBD.Text);
 
                 // Verifica se é nulo
                 if (cbbBD.Text == "" || cbbBD.Text == null || string.IsNullOrWhiteSpace(cbbBD.Text))
@@ -494,13 +418,13 @@ namespace Contabilidade
                     cbbBD.Focus();
                 }
                 // Verifica se o arquivo existe no comboBox
-                else if (nomesBDs.Contains(nomeBD.ToLower()))
+                else if (nomesBDs.Contains(nomeBDNovo.ToLower()))
                 {
                     // Verificar se o arquivo encontrado é o mesmo que deseja-se renomear (se sim: pode-se alterar a capitalização das letras desde que não seja igual ao já existente)
-                    if (nomeBD.ToLower() == nomeBDFuncao.ToLower())
+                    if (nomeBDNovo.ToLower() == nomeBD.ToLower())
                     {
                         // Se o nome for exatamente igual: erro
-                        if (nomeBD == nomeBDFuncao)
+                        if (nomeBDNovo == nomeBD)
                         {
                             MessageBox.Show("O nome informado é exatamente igual ao anterior!", "Erro ao renomear banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             cbbBD.Text = "";
@@ -509,7 +433,7 @@ namespace Contabilidade
                         // Senão: renomear
                         else
                         {
-                            renomearBD();
+                            renomearBD(nomeBDNovo);
                         }
                     }
                     else
@@ -520,7 +444,7 @@ namespace Contabilidade
                     }
                 }
                 // Verifica se o arquivo não existe no comboBox
-                else if (!nomesBDs.Contains(nomeBD.ToLower()))
+                else if (!nomesBDs.Contains(nomeBDNovo.ToLower()))
                 {
                     // Verifica se começa com número
                     if (char.IsDigit(cbbBD.Text[0]))
@@ -541,7 +465,7 @@ namespace Contabilidade
                     {
                         try
                         {
-                            renomearBD();
+                            renomearBD(nomeBDNovo);
                         }
                         catch (Exception error)
                         {
@@ -557,9 +481,6 @@ namespace Contabilidade
             // Verificar se o banco existe e se existir: travar demais botões, exibir mensagem e aguardar o usuário inserir um novo nome válido.
             else if (verificarExistenciaBD("Erro ao localizar banco de dados"))
             {
-                // Salvar nome do banco a ser renomeado
-                nomeBDFuncao = validarExtensaoBD(cbbBD.Text);
-
                 MessageBox.Show("Banco de dados selecionado. Insira um novo nome e confirme ou tecle ESC para cancelar", "Renomear arquivo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 // Entrar em modo de salvamento
@@ -573,7 +494,77 @@ namespace Contabilidade
             }
             else
             {
-                nomeBDFuncao = "";
+                nomeBD = "";
+            }
+        }
+
+        private void btnEntrar_Click(object sender, EventArgs e)
+        {
+            // Verifica se o banco de dados existe
+            if (!verificarExistenciaBD("Erro ao localizar banco de dados"))
+            {
+                return;
+            }
+            // Verifica se a senha foi digitada
+            else if (txtNome.Text == "")
+            {
+                MessageBox.Show("Usuário não informado!", "Formulário Incompleto", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                txtNome.Focus();
+
+            }
+            // Verifica se o usuário foi informado
+            else if (txtSenha.Text == "")
+            {
+                MessageBox.Show("Senha não informada!", "Formulário Incompleto", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                txtSenha.Focus();
+            }
+            else
+            {
+                try
+                {
+                    // Conectar ao banco
+                    caminhoBD = pastaDatabases + "\\" + nomeBD;
+                    Conexao con = new Conexao(caminhoBD);
+                    con.conectar();
+
+                    // Query de pesquisa
+                    string sql = "SELECT * FROM usuarios WHERE nome= @nome AND senha= @senha;";
+                    SQLiteCommand comando = new SQLiteCommand(sql, con.conn);
+                    // Parâmetros
+                    comando.Parameters.AddWithValue("@nome", txtNome.Text);
+                    comando.Parameters.AddWithValue("@senha", txtSenha.Text);
+
+                    // Consultar usuários com os parâmetros informados
+                    SQLiteDataAdapter dados = new SQLiteDataAdapter(comando);
+                    DataTable dtUsuario = new DataTable();
+                    // Passando os dados encontrados pelo DataAdapter para o DataTable
+                    dados.Fill(dtUsuario);
+
+                    // Liberar recursos;
+                    comando.Dispose();
+
+                    if (dtUsuario.Rows.Count <= 0)
+                    {
+                        MessageBox.Show("Usuário ou senha inválido(s)!", "Registro não encontrado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        txtSenha.Clear();
+                        txtNome.Focus();
+                    }
+                    else
+                    {
+                        string usuario = dtUsuario.Rows[0]["nome"].ToString();
+
+                        MessageBox.Show("Bem Vindo(a) " + usuario + ".", "Login", MessageBoxButtons.OK, MessageBoxIcon.None);
+
+                        this.Hide(); // Esconde o formulário atual
+                        frmPainelPrincipal frmPainelPrincipal = new frmPainelPrincipal(nomeBD.Replace(".sqlite", ""), usuario, con); // Crie uma instância do frmPainelPrincipal
+                        frmPainelPrincipal.ShowDialog(); // Exibe o form como uma janela de diálogo modal
+                        this.Close(); // Fecha o formulário atual
+                    }
+                }
+                catch (Exception error)
+                {
+                    MessageBox.Show(error.Message.ToString(), "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
@@ -581,7 +572,7 @@ namespace Contabilidade
         {
             if (e.KeyChar == (char)Keys.Escape)
             {
-                frmResetar(true);
+                resetarForm(true);
                 cbbBD.Focus();
             }
             else if (e.KeyChar == (char)Keys.Enter)
@@ -594,7 +585,7 @@ namespace Contabilidade
         {
             if (e.KeyChar == (char)Keys.Escape)
             {
-                frmResetar(true);
+                resetarForm(true);
                 cbbBD.Focus();
             }
             else if (e.KeyChar == (char)Keys.Enter)
@@ -631,7 +622,7 @@ namespace Contabilidade
             }
         }
 
-        private void frmResetar(bool completo = false)
+        private void resetarForm(bool completo = false)
         {
             btnCriarBD.Enabled = true;
             btnExcluirBD.Enabled = true;
@@ -642,9 +633,9 @@ namespace Contabilidade
             btnExcluirBD.Text = "Excluir";
             btnRenomearBD.Text = "Renomear";
 
-            senhaUsuarioBD = "";
             usuarioBD = "";
-            nomeBDFuncao = "";
+            senhaUsuarioBD = "";
+            nomeBD = "";
             caminhoBD = "";
 
             if (completo)
