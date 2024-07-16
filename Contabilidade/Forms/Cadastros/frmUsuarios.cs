@@ -1,4 +1,5 @@
 ﻿using Contabilidade.Models;
+using DGVPrinterHelper;
 using System.Data;
 using System.Data.SQLite;
 
@@ -219,6 +220,21 @@ namespace Contabilidade.Forms.Cadastros
         private void cbbFiltrar_SelectedIndexChanged(object sender, EventArgs e)
         {
             txtFiltrar_TextChanged(sender, e);
+        }
+
+        private void btnImprimir_Click(object sender, EventArgs e)
+        {
+            var printer = new DGVPrinter();
+            printer.Title = "Usuários Cadastrados";
+            printer.SubTitle = string.Format("Data: {0}", System.DateTime.Now.ToString("dd/MM/yyyy"));
+            printer.SubTitleFormatFlags = StringFormatFlags.LineLimit | StringFormatFlags.NoClip;
+            printer.PageNumbers = true;
+            printer.PageNumberInHeader = false;
+            printer.PorportionalColumns = true;
+            printer.HeaderCellAlignment = StringAlignment.Near;
+            printer.FooterSpacing = 15;
+            printer.PrintDataGridView(dgvUsuarios);
+
         }
     }
 }
