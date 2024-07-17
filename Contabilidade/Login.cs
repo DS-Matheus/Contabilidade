@@ -555,11 +555,17 @@ namespace Contabilidade
 
                         MessageBox.Show("Bem Vindo(a) " + usuario + ".", "Login", MessageBoxButtons.OK, MessageBoxIcon.None);
 
-                        this.Hide(); // Esconde o formulário atual
+                        this.Visible = false;
                         frmPainelPrincipal frmPainelPrincipal = new frmPainelPrincipal(nomeBD.Replace(".sqlite", ""), usuario, con); // Crie uma instância do frmPainelPrincipal
                         frmPainelPrincipal.Owner = this; // Definir o painel de Login como pai
                         frmPainelPrincipal.ShowDialog(); // Exibe o form como uma janela de diálogo modal
-                        this.Close(); // Fecha o formulário atual
+                        
+                        // Após fechar o Painel Principal
+                        resetarForm(true);
+                        txtNome.Text = "";
+                        txtSenha.Text = "";
+                        cbbBD.Focus();
+                        this.Visible = true;
                     }
                 }
                 catch (Exception error)

@@ -28,6 +28,8 @@ namespace Contabilidade.Forms.Cadastros
 
             txtUsuario.Text = usuario;
             txtSenha.Text = senha;
+
+            txtUsuario.Focus();
         }
 
         private void btnFechar_Click(object sender, EventArgs e)

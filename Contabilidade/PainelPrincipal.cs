@@ -44,6 +44,7 @@ namespace Contabilidade
         private void btnFechar_Click(object sender, EventArgs e)
         {
             con.desconectar();
+            this.Dispose();
             Application.Exit();
         }
 
@@ -341,9 +342,9 @@ namespace Contabilidade
             {
                 con.desconectar();
 
+
+                this.Owner.Show(); // Exibe o Formulário de Login
                 this.Hide(); // Esconde o formulário atual
-                frmLogin frmLogin = new frmLogin(); // Crie uma instância do frmLogin
-                frmLogin.ShowDialog(); // Exibe o form como uma janela de diálogo modal
                 this.Dispose(); // Fecha o formulário atual
             }
             else

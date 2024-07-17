@@ -131,7 +131,6 @@ namespace Contabilidade.Forms.Cadastros
 
         private void btnExcluir_Click(object sender, EventArgs e)
         {
-
             int numLinha = obterNumLinhaSelecionada(dgvUsuarios);
             string id = dgvUsuarios.Rows[numLinha].Cells["ID"].Value.ToString();
             string usuario = dgvUsuarios.Rows[numLinha].Cells["Usuário"].Value?.ToString();
@@ -152,7 +151,14 @@ namespace Contabilidade.Forms.Cadastros
                     }
                     else
                     {
-                        input = MessageBox.Show($"Não é permitido excluir o usuário atual.", "Exclusão abortada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        input = MessageBox.Show($"Você está prestes a excluir o usuário atual! Se confirmar você retornará para a tela de login, deseja continuar?", "Confirmação de exclusão", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+                        if (input == DialogResult.Yes)
+                        {
+                            excluirUsuario(id);
+                            this.Owner.Dispose();
+                            this.Dispose();
+                        }
                     }
                 }
             }
