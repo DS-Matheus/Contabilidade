@@ -29,13 +29,13 @@ namespace Contabilidade.Forms.Cadastros
             txtUsuario.Text = usuario;
             txtSenha.Text = senha;
 
-            txtUsuario.Focus();
+            txtUsuario.Select();
         }
 
         private void btnFechar_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
-            this.Close();
+            this.Dispose();
         }
 
         private void btnMinimizar_Click(object sender, EventArgs e)
@@ -71,7 +71,7 @@ namespace Contabilidade.Forms.Cadastros
                 frmUsuarios.senha = txtSenha.Text;
 
                 this.DialogResult = DialogResult.OK;
-                this.Close();
+                this.Dispose();
             }
         }
 

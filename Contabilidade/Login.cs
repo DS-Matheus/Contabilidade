@@ -118,7 +118,7 @@ namespace Contabilidade
                 con.conectar();
 
                 // Criar tabela de usuários
-                string sql = "CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY, nome VARCHAR(20) NOT NULL, senha VARCHAR(30) NOT NULL);";
+                string sql = "CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY, nome VARCHAR(20) NOT NULL UNIQUE, senha VARCHAR(30) NOT NULL);";
                 SQLiteCommand comando = new SQLiteCommand(sql, con.conn);
                 comando.ExecuteNonQuery();
 
@@ -165,7 +165,7 @@ namespace Contabilidade
 
         public static bool verificarSenha(string senha)
         {
-            if (string.IsNullOrWhiteSpace(senha))
+            if (string.IsNullOrWhiteSpace(senha) || senha.Contains(" "))
             {
                 MessageBox.Show("A senha não pode ser vázia ou conter espaços!", "Erro ao registrar senha", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;

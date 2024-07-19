@@ -35,6 +35,7 @@
             lblUsuario = new Label();
             btnFechar = new Button();
             pnlMenuLateral = new Panel();
+            btnBackup = new Button();
             pnlRelatorios = new Panel();
             btnSaldo = new Button();
             btnBalanceteConta = new Button();
@@ -135,6 +136,7 @@
             // 
             pnlMenuLateral.AutoScroll = true;
             pnlMenuLateral.BackColor = Color.FromArgb(39, 39, 58);
+            pnlMenuLateral.Controls.Add(btnBackup);
             pnlMenuLateral.Controls.Add(pnlRelatorios);
             pnlMenuLateral.Controls.Add(btnRelatorios);
             pnlMenuLateral.Controls.Add(pnlLancamentos);
@@ -149,6 +151,26 @@
             pnlMenuLateral.Name = "pnlMenuLateral";
             pnlMenuLateral.Size = new Size(220, 580);
             pnlMenuLateral.TabIndex = 6;
+            // 
+            // btnBackup
+            // 
+            btnBackup.BackColor = Color.FromArgb(51, 51, 76);
+            btnBackup.Dock = DockStyle.Bottom;
+            btnBackup.FlatAppearance.BorderSize = 0;
+            btnBackup.FlatStyle = FlatStyle.Flat;
+            btnBackup.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnBackup.ForeColor = Color.Gainsboro;
+            btnBackup.ImageAlign = ContentAlignment.MiddleLeft;
+            btnBackup.Location = new Point(0, 640);
+            btnBackup.Name = "btnBackup";
+            btnBackup.Padding = new Padding(10, 0, 0, 0);
+            btnBackup.Size = new Size(203, 40);
+            btnBackup.TabIndex = 17;
+            btnBackup.Text = "Backup";
+            btnBackup.TextAlign = ContentAlignment.MiddleLeft;
+            btnBackup.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnBackup.UseVisualStyleBackColor = false;
+            btnBackup.Click += btnBackup_Click;
             // 
             // pnlRelatorios
             // 
@@ -439,7 +461,7 @@
             btnLogoff.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnLogoff.ForeColor = Color.Gainsboro;
             btnLogoff.ImageAlign = ContentAlignment.MiddleLeft;
-            btnLogoff.Location = new Point(0, 640);
+            btnLogoff.Location = new Point(0, 680);
             btnLogoff.Name = "btnLogoff";
             btnLogoff.Padding = new Padding(10, 0, 0, 0);
             btnLogoff.Size = new Size(203, 40);
@@ -569,15 +591,14 @@
             label1.Size = new Size(130, 22);
             label1.TabIndex = 2;
             label1.Text = "Usuário ativo:";
-            label1.Click += label1_Click;
             // 
             // lblRelogio
             // 
             lblRelogio.AutoSize = true;
-            lblRelogio.Font = new Font("Digital-7 Mono", 26.2499962F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            lblRelogio.Font = new Font("Microsoft Sans Serif", 26.2499962F, FontStyle.Italic, GraphicsUnit.Point, 0);
             lblRelogio.Location = new Point(364, 315);
             lblRelogio.Name = "lblRelogio";
-            lblRelogio.Size = new Size(153, 37);
+            lblRelogio.Size = new Size(151, 39);
             lblRelogio.TabIndex = 0;
             lblRelogio.Text = "00:00:00";
             // 
@@ -645,5 +666,6 @@
         private Label label1;
         private Label label2;
         private PictureBox picLogo;
+        private Button btnBackup;
     }
 }

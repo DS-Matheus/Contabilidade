@@ -53,7 +53,7 @@
             btnFechar.Location = new Point(368, 0);
             btnFechar.Name = "btnFechar";
             btnFechar.Size = new Size(30, 30);
-            btnFechar.TabIndex = 1;
+            btnFechar.TabIndex = 5;
             btnFechar.Text = "X";
             btnFechar.UseVisualStyleBackColor = true;
             btnFechar.Click += btnFechar_Click;
@@ -81,7 +81,7 @@
             btnMinimizar.Location = new Point(338, 0);
             btnMinimizar.Name = "btnMinimizar";
             btnMinimizar.Size = new Size(30, 30);
-            btnMinimizar.TabIndex = 1;
+            btnMinimizar.TabIndex = 4;
             btnMinimizar.Text = "--";
             btnMinimizar.UseVisualStyleBackColor = true;
             btnMinimizar.Click += btnMinimizar_Click;
@@ -117,7 +117,7 @@
             txtSenha.Location = new Point(32, 89);
             txtSenha.Name = "txtSenha";
             txtSenha.Size = new Size(335, 23);
-            txtSenha.TabIndex = 4;
+            txtSenha.TabIndex = 2;
             // 
             // label2
             // 
@@ -133,7 +133,7 @@
             txtUsuario.Location = new Point(32, 39);
             txtUsuario.Name = "txtUsuario";
             txtUsuario.Size = new Size(224, 23);
-            txtUsuario.TabIndex = 2;
+            txtUsuario.TabIndex = 1;
             // 
             // label1
             // 
@@ -150,7 +150,7 @@
             btnSalvar.Margin = new Padding(3, 10, 3, 3);
             btnSalvar.Name = "btnSalvar";
             btnSalvar.Size = new Size(75, 32);
-            btnSalvar.TabIndex = 0;
+            btnSalvar.TabIndex = 3;
             btnSalvar.Text = "Salvar";
             btnSalvar.UseVisualStyleBackColor = true;
             btnSalvar.Click += btnSalvar_Click;

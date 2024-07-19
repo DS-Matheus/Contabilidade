@@ -28,7 +28,7 @@ namespace Contabilidade
         public frmPainelPrincipal(string nomeBD, string usuario, Conexao conexaoBanco)
         {
             InitializeComponent();
-            
+
             // Salvar informações da conexão
             con = conexaoBanco;
             usuarioAtual = usuario;
@@ -70,6 +70,7 @@ namespace Contabilidade
                         btnCadastro,
                         btnLancamentos,
                         btnRelatorios,
+                        btnBackup,
                         btnLogoff,
                     ];
 
@@ -140,6 +141,7 @@ namespace Contabilidade
                 btnCadastro,
                 btnLancamentos,
                 btnRelatorios,
+                btnBackup,
                 btnLogoff,
             ];
 
@@ -344,7 +346,6 @@ namespace Contabilidade
 
 
                 this.Owner.Show(); // Exibe o Formulário de Login
-                this.Hide(); // Esconde o formulário atual
                 this.Dispose(); // Fecha o formulário atual
             }
             else
@@ -358,9 +359,148 @@ namespace Contabilidade
             lblRelogio.Text = DateTime.Now.ToString("hh:mm:ss");
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private void btnBackup_Click(object sender, EventArgs e)
         {
+            string pastaBDs = Path.Combine(Directory.GetCurrentDirectory(), "databases");
 
+            // Prompt para escolher o modo de backup
+            DialogResult inputModoBackup = MessageBox.Show(
+                "Deseja fazer backup somente do banco de dados atual?\n\n" +
+                "Selecionar \"Não\" fará backup de todos os bancos de dados existentes na pasta 'databases'.",
+                "Opções de Backup",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question
+            );
+
+            // Cancela a execução se o usuário escolheu essa opção
+            if (inputModoBackup == DialogResult.Cancel)
+            {
+                return;
+            }
+
+            // Prompt para confirmar ou negar a sobreescrita de arquivos
+            DialogResult inputSobreescrever = MessageBox.Show(
+                "Caso existam outros bancos de dados na pasta, deseja sobrescrevê-los?",
+                "Atenção",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning,
+                MessageBoxDefaultButton.Button2
+            );
+
+            bool sobreescrever = (inputSobreescrever == DialogResult.Yes);
+
+            // Seleção da pasta de destino
+            using (FolderBrowserDialog dialog = new FolderBrowserDialog())
+            {
+                if (dialog.ShowDialog() != DialogResult.OK)
+                {
+                    MessageBox.Show(
+                        "Operação cancelada! Nenhum diretório foi escolhido.",
+                        "Backup cancelado",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+                    return;
+                }
+
+                string pastaDestino = dialog.SelectedPath;
+
+                try
+                {
+                    if (inputModoBackup == DialogResult.Yes)
+                    {
+                        // Backup apenas do banco de dados atual
+                        string nomeBD = lblBanco.Text;
+                        string arquivoOrigem = Path.Combine(pastaBDs, $"{nomeBD}.sqlite");
+                        string arquivoDestino = Path.Combine(pastaDestino, $"{nomeBD}.sqlite");
+
+                        var resultado = realizarBackup(arquivoOrigem, arquivoDestino, sobreescrever);
+                        if (resultado) {
+                            MessageBox.Show(
+                                "O arquivo foi copiado para a pasta escolhida.",
+                                "Backup realizado com sucesso",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Exclamation
+                            );
+                        }
+                    }
+                    else if (inputModoBackup == DialogResult.No)
+                    {
+                        var resultado = false;
+                        // backup de cada arquivo na pasta databases
+                        Directory.CreateDirectory(pastaDestino);
+                        foreach (string arquivoOrigem in Directory.GetFiles(pastaBDs))
+                        {
+                            string fileName = Path.GetFileName(arquivoOrigem);
+                            string arquivoDestino = Path.Combine(pastaDestino, fileName);
+
+                            resultado = realizarBackup(arquivoOrigem, arquivoDestino, sobreescrever);
+                            if (!resultado)
+                            {
+                                break;
+                            }
+                        }
+                        if (sobreescrever && resultado)
+                        {
+                            MessageBox.Show(
+                                "Todos os arquivos foram copiados para a pasta escolhida",
+                                "Backup realizado com sucesso",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Exclamation
+                            );
+                        }
+                        else if (!sobreescrever && resultado)
+                        {
+                            MessageBox.Show(
+                                "Com exceção dos arquivos já existentes na pasta escolhida, todos os demais foram copiados com sucesso.",
+                                "Backup realizado com sucesso",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Exclamation
+                            );
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Erro ao fazer backup: {ex.Message}", "Erro ao fazer backup", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private bool realizarBackup(string arquivoOrigem, string arquivoDestino, bool sobreescrever)
+        {
+            try
+            {
+                bool arquivoExiste = File.Exists(arquivoDestino);
+
+                // Realiza o backup apenas se o arquivo não existir ou então se o arquivo existir mas o usuário aceitar a sobreescrita dele
+                if (!arquivoExiste || (arquivoExiste && sobreescrever))
+                {
+                    File.Copy(arquivoOrigem, arquivoDestino, sobreescrever);
+                }
+                else
+                {
+                    MessageBox.Show(
+                        $"Já existe uma versão do banco de dados \"{Path.GetFileNameWithoutExtension(arquivoDestino)}\".",
+                        "Falha ao fazer Backup",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao fazer backup, informe o desenvolvedor:\n" +
+                    $"{ex.Message}",
+                    "Erro ao fazer backup",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+
+                return false;
+            }
         }
     }
 }
