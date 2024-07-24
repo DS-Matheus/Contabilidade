@@ -754,7 +754,8 @@ namespace Contabilidade
                         {
                             // Sobrescrever o arquivo
                             File.Copy(arquivoSelecionado, destino, true);
-                            MessageBox.Show($"Arquivo \"{nomeArquivo}\" sobrescrito com sucesso.", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            carregarBDs();
+                            MessageBox.Show($"O arquivo do banco de dados \"{nomeArquivo}\" foi sobrescrito com sucesso.", "Restauração bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         // Se respostaSobrescrever for No, não faz nada (cancela a operação)
                     }
@@ -762,7 +763,8 @@ namespace Contabilidade
                     {
                         // Arquivo não existe, copiar para a pastaDatabases
                         File.Copy(arquivoSelecionado, destino);
-                        MessageBox.Show($"Arquivo '{nomeArquivo}' copiado para a pastaDatabases.", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        carregarBDs();
+                        MessageBox.Show($"O banco de dados \"{nomeArquivo}\" foi restaurado com sucesso.", "Restauração bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
                 // Se o usuário cancelar a seleção do arquivo, não faz nada
@@ -799,6 +801,7 @@ namespace Contabilidade
                             string destino = Path.Combine(pastaDatabases, Path.GetFileName(arquivo));
                             File.Copy(arquivo, destino, true);
                         }
+                        carregarBDs();
                         MessageBox.Show("Todos os arquivos foram copiados para pastaDatabases com sucesso.",
                                         "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -839,7 +842,7 @@ namespace Contabilidade
                                     File.Copy(arquivo, destino);
                                 }
                             }
-
+                            carregarBDs();
                             MessageBox.Show($"Todos os arquivos confirmados foram restaurados com sucesso.",
                                             "Restauração bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
@@ -870,16 +873,18 @@ namespace Contabilidade
 
                             if (contadorSucessos == 0)
                             {
-                                MessageBox.Show("Nenhum arquivo foi copiado pois todos já existem na pasta do programa.",
+                                MessageBox.Show("Nenhum arquivo foi restaurado pois todos já existem na pasta do programa.",
                                                 "Restauração concluída", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
                             else if (bancosNaoCopiados.Count == 0)
                             {
+                                carregarBDs();
                                 MessageBox.Show($"Todos os arquivos foram restaurados.",
                                                 "Restauração bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             else
                             {
+                                carregarBDs();
                                 MessageBox.Show($"Os seguintes arquivos não foram restaurados porque já existem na pasta do programa:\n\n{string.Join("\n", bancosNaoCopiados)}", "Arquivos não copiados");
                             }
                         }
