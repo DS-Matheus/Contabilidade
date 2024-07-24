@@ -682,5 +682,41 @@ namespace Contabilidade
         {
             handleKeyPressEntrar(e);
         }
+
+        private void btnBackup_Click(object sender, EventArgs e)
+        {
+            // Pergunta inicial ao usuário sobre o tipo de backup
+            DialogResult result = MessageBox.Show("Deseja fazer backup apenas do banco de dados selecionado?", "Backup", MessageBoxButtons.YesNoCancel);
+
+            if (result == DialogResult.Yes)
+            {
+                var nomeBanco = cbbBD.Text;
+
+                // Verifica se é nulo
+                if (cbbBD.Text == "" || cbbBD.Text == null || string.IsNullOrWhiteSpace(cbbBD.Text))
+                {
+                    MessageBox.Show("Não foi informado um nome para o banco!", "Erro ao fazer backup", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    cbbBD.Text = "";
+                    cbbBD.Focus();
+                }
+                // Se o arquivo do banco existir, fazer backup 
+                else if (File.Exists($"{pastaDatabases}\\{validarExtensaoBD(nomeBanco)}"))
+                {
+                    frmPainelPrincipal.FazerBackupBancoAtual(pastaDatabases, nomeBanco);
+                }    
+                else
+                {
+                    MessageBox.Show("Não foi encontrado o arquivo do banco de dados selecionado", "Erro ao fazer backup", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    cbbBD.Text = "";
+                    cbbBD.Focus();
+                }
+                
+            }
+            else if (result == DialogResult.No)
+            {
+                frmPainelPrincipal.FazerBackupTodosBancos(pastaDatabases);
+            }
+            // Se result for DialogResult.Cancel, não faz nada (cancela a operação)
+        }
     }
 }

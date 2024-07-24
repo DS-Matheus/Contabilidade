@@ -73,7 +73,7 @@ namespace Contabilidade
                         btnCadastro,
                         btnLancamentos,
                         btnRelatorios,
-                        btnBackup,
+                        btnSistema,
                         btnLogoff,
                     ];
 
@@ -88,7 +88,7 @@ namespace Contabilidade
                         btnBalanceteGeral,
                         btnBalanceteConta,
                         btnSaldo,
-                        btnSalvar,
+                        btnBackup,
                         btnRestaurar,
                     ];
 
@@ -150,7 +150,7 @@ namespace Contabilidade
                 btnCadastro,
                 btnLancamentos,
                 btnRelatorios,
-                btnBackup,
+                btnSistema,
                 btnLogoff,
             ];
 
@@ -165,7 +165,7 @@ namespace Contabilidade
                 btnBalanceteGeral,
                 btnBalanceteConta,
                 btnSaldo,
-                btnSalvar,
+                btnBackup,
                 btnRestaurar,
             ];
 
@@ -373,12 +373,12 @@ namespace Contabilidade
             lblRelogio.Text = System.DateTime.Now.ToString("HH:mm:ss");
         }
 
-        private void btnBackup_Click(object sender, EventArgs e)
+        private void btnSistema_Click(object sender, EventArgs e)
         {
             exibirSubMenu(pnlBackup);
         }
 
-        private void btnSalvar_Click(object sender, EventArgs e)
+        private void btnBackup_Click(object sender, EventArgs e)
         {
             // Seleciona o botão sem mudar o tema, pois pode haver algum form já aberto
             selecionarBotao(sender, false);
@@ -400,7 +400,7 @@ namespace Contabilidade
             // Se result for DialogResult.Cancel, não faz nada (cancela a operação)
         }
 
-        private void FazerBackupBancoAtual(string pastaBDs, string nomeBD)
+        public static void FazerBackupBancoAtual(string pastaBDs, string nomeBD)
         {
             // Seleção da pasta de destino
             using (var dialog = new FolderBrowserDialog())
@@ -437,7 +437,7 @@ namespace Contabilidade
             }
         }
 
-        private void FazerBackupTodosBancos(string pastaBDs)
+        public static void FazerBackupTodosBancos(string pastaBDs)
         {
             // Seleção da pasta de destino
             using (var dialog = new FolderBrowserDialog())

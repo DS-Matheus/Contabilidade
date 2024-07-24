@@ -35,10 +35,10 @@
             lblUsuario = new Label();
             btnFechar = new Button();
             pnlMenuLateral = new Panel();
-            btnBackup = new Button();
+            btnSistema = new Button();
             pnlBackup = new Panel();
             btnRestaurar = new Button();
-            btnSalvar = new Button();
+            btnBackup = new Button();
             pnlRelatorios = new Panel();
             btnSaldo = new Button();
             btnBalanceteConta = new Button();
@@ -140,7 +140,7 @@
             // 
             pnlMenuLateral.AutoScroll = true;
             pnlMenuLateral.BackColor = Color.FromArgb(39, 39, 58);
-            pnlMenuLateral.Controls.Add(btnBackup);
+            pnlMenuLateral.Controls.Add(btnSistema);
             pnlMenuLateral.Controls.Add(pnlBackup);
             pnlMenuLateral.Controls.Add(pnlRelatorios);
             pnlMenuLateral.Controls.Add(btnRelatorios);
@@ -157,30 +157,30 @@
             pnlMenuLateral.Size = new Size(220, 580);
             pnlMenuLateral.TabIndex = 6;
             // 
-            // btnBackup
+            // btnSistema
             // 
-            btnBackup.BackColor = Color.FromArgb(51, 51, 76);
-            btnBackup.Dock = DockStyle.Bottom;
-            btnBackup.FlatAppearance.BorderSize = 0;
-            btnBackup.FlatStyle = FlatStyle.Flat;
-            btnBackup.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnBackup.ForeColor = Color.Gainsboro;
-            btnBackup.ImageAlign = ContentAlignment.MiddleLeft;
-            btnBackup.Location = new Point(0, 600);
-            btnBackup.Name = "btnBackup";
-            btnBackup.Padding = new Padding(10, 0, 0, 0);
-            btnBackup.Size = new Size(203, 40);
-            btnBackup.TabIndex = 18;
-            btnBackup.Text = "Backup";
-            btnBackup.TextAlign = ContentAlignment.MiddleLeft;
-            btnBackup.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btnBackup.UseVisualStyleBackColor = false;
-            btnBackup.Click += btnBackup_Click;
+            btnSistema.BackColor = Color.FromArgb(51, 51, 76);
+            btnSistema.Dock = DockStyle.Bottom;
+            btnSistema.FlatAppearance.BorderSize = 0;
+            btnSistema.FlatStyle = FlatStyle.Flat;
+            btnSistema.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnSistema.ForeColor = Color.Gainsboro;
+            btnSistema.ImageAlign = ContentAlignment.MiddleLeft;
+            btnSistema.Location = new Point(0, 600);
+            btnSistema.Name = "btnSistema";
+            btnSistema.Padding = new Padding(10, 0, 0, 0);
+            btnSistema.Size = new Size(203, 40);
+            btnSistema.TabIndex = 18;
+            btnSistema.Text = "Sistema";
+            btnSistema.TextAlign = ContentAlignment.MiddleLeft;
+            btnSistema.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnSistema.UseVisualStyleBackColor = false;
+            btnSistema.Click += btnSistema_Click;
             // 
             // pnlBackup
             // 
             pnlBackup.Controls.Add(btnRestaurar);
-            pnlBackup.Controls.Add(btnSalvar);
+            pnlBackup.Controls.Add(btnBackup);
             pnlBackup.Dock = DockStyle.Bottom;
             pnlBackup.Location = new Point(0, 640);
             pnlBackup.Name = "pnlBackup";
@@ -208,25 +208,25 @@
             btnRestaurar.UseVisualStyleBackColor = false;
             btnRestaurar.Click += btnRestaurar_Click;
             // 
-            // btnSalvar
+            // btnBackup
             // 
-            btnSalvar.BackColor = Color.FromArgb(61, 61, 91);
-            btnSalvar.Dock = DockStyle.Top;
-            btnSalvar.FlatAppearance.BorderSize = 0;
-            btnSalvar.FlatStyle = FlatStyle.Flat;
-            btnSalvar.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnSalvar.ForeColor = Color.Gainsboro;
-            btnSalvar.ImageAlign = ContentAlignment.MiddleLeft;
-            btnSalvar.Location = new Point(0, 0);
-            btnSalvar.Name = "btnSalvar";
-            btnSalvar.Padding = new Padding(30, 0, 0, 0);
-            btnSalvar.Size = new Size(203, 40);
-            btnSalvar.TabIndex = 8;
-            btnSalvar.Text = "Salvar";
-            btnSalvar.TextAlign = ContentAlignment.MiddleLeft;
-            btnSalvar.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btnSalvar.UseVisualStyleBackColor = false;
-            btnSalvar.Click += btnSalvar_Click;
+            btnBackup.BackColor = Color.FromArgb(61, 61, 91);
+            btnBackup.Dock = DockStyle.Top;
+            btnBackup.FlatAppearance.BorderSize = 0;
+            btnBackup.FlatStyle = FlatStyle.Flat;
+            btnBackup.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnBackup.ForeColor = Color.Gainsboro;
+            btnBackup.ImageAlign = ContentAlignment.MiddleLeft;
+            btnBackup.Location = new Point(0, 0);
+            btnBackup.Name = "btnBackup";
+            btnBackup.Padding = new Padding(30, 0, 0, 0);
+            btnBackup.Size = new Size(203, 40);
+            btnBackup.TabIndex = 8;
+            btnBackup.Text = "Backup";
+            btnBackup.TextAlign = ContentAlignment.MiddleLeft;
+            btnBackup.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnBackup.UseVisualStyleBackColor = false;
+            btnBackup.Click += btnBackup_Click;
             // 
             // pnlRelatorios
             // 
@@ -723,9 +723,9 @@
         private Label label1;
         private Label label2;
         private PictureBox picLogo;
-        private Button btnBackup;
+        private Button btnSistema;
         private Panel pnlBackup;
         private Button btnRestaurar;
-        private Button btnSalvar;
+        private Button btnBackup;
     }
 }

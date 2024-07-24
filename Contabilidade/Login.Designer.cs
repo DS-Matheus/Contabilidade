@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             groupBox1 = new GroupBox();
+            btnRestaurar = new Button();
+            btnBackup = new Button();
             btnRenomearBD = new Button();
             btnExcluirBD = new Button();
             btnCriarBD = new Button();
@@ -56,6 +58,8 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(btnRestaurar);
+            groupBox1.Controls.Add(btnBackup);
             groupBox1.Controls.Add(btnRenomearBD);
             groupBox1.Controls.Add(btnExcluirBD);
             groupBox1.Controls.Add(btnCriarBD);
@@ -63,10 +67,33 @@
             groupBox1.Font = new Font("Lucida Sans", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             groupBox1.Location = new Point(17, 12);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(300, 112);
+            groupBox1.Size = new Size(300, 145);
             groupBox1.TabIndex = 2;
             groupBox1.TabStop = false;
             groupBox1.Text = "Banco de Dados";
+            // 
+            // btnRestaurar
+            // 
+            btnRestaurar.Cursor = Cursors.Hand;
+            btnRestaurar.Font = new Font("Lucida Sans", 9.75F);
+            btnRestaurar.Location = new Point(153, 103);
+            btnRestaurar.Name = "btnRestaurar";
+            btnRestaurar.Size = new Size(88, 31);
+            btnRestaurar.TabIndex = 5;
+            btnRestaurar.Text = "Restaurar";
+            btnRestaurar.UseVisualStyleBackColor = true;
+            // 
+            // btnBackup
+            // 
+            btnBackup.Cursor = Cursors.Hand;
+            btnBackup.Font = new Font("Lucida Sans", 9.75F);
+            btnBackup.Location = new Point(59, 103);
+            btnBackup.Name = "btnBackup";
+            btnBackup.Size = new Size(88, 31);
+            btnBackup.TabIndex = 4;
+            btnBackup.Text = "Backup";
+            btnBackup.UseVisualStyleBackColor = true;
+            btnBackup.Click += btnBackup_Click;
             // 
             // btnRenomearBD
             // 
@@ -129,7 +156,7 @@
             gpbInfoUsuario.Controls.Add(txtNome);
             gpbInfoUsuario.Controls.Add(label1);
             gpbInfoUsuario.Font = new Font("Lucida Sans", 12F, FontStyle.Bold);
-            gpbInfoUsuario.Location = new Point(17, 140);
+            gpbInfoUsuario.Location = new Point(17, 172);
             gpbInfoUsuario.Name = "gpbInfoUsuario";
             gpbInfoUsuario.Size = new Size(300, 156);
             gpbInfoUsuario.TabIndex = 3;
@@ -207,7 +234,7 @@
             pnlSidebar.Location = new Point(0, 30);
             pnlSidebar.Margin = new Padding(0);
             pnlSidebar.Name = "pnlSidebar";
-            pnlSidebar.Size = new Size(260, 309);
+            pnlSidebar.Size = new Size(260, 340);
             pnlSidebar.TabIndex = 5;
             // 
             // label3
@@ -286,7 +313,7 @@
             pnlLogin.Dock = DockStyle.Fill;
             pnlLogin.Location = new Point(260, 30);
             pnlLogin.Name = "pnlLogin";
-            pnlLogin.Size = new Size(335, 309);
+            pnlLogin.Size = new Size(335, 340);
             pnlLogin.TabIndex = 1;
             // 
             // frmLogin
@@ -294,7 +321,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(232, 241, 242);
-            ClientSize = new Size(595, 339);
+            ClientSize = new Size(595, 370);
             Controls.Add(pnlLogin);
             Controls.Add(pnlSidebar);
             Controls.Add(pnlBarraTitulo);
@@ -336,5 +363,7 @@
         private Label label4;
         private Button btnMinimizar;
         private CheckBox chbVisibilidadeSenha;
+        private Button btnRestaurar;
+        private Button btnBackup;
     }
 }
