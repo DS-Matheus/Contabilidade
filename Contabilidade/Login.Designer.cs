@@ -82,6 +82,7 @@
             btnRestaurar.TabIndex = 5;
             btnRestaurar.Text = "Restaurar";
             btnRestaurar.UseVisualStyleBackColor = true;
+            btnRestaurar.Click += btnRestaurar_Click;
             // 
             // btnBackup
             // 

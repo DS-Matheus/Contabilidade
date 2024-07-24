@@ -703,20 +703,193 @@ namespace Contabilidade
                 else if (File.Exists($"{pastaDatabases}\\{validarExtensaoBD(nomeBanco)}"))
                 {
                     frmPainelPrincipal.FazerBackupBancoAtual(pastaDatabases, nomeBanco);
-                }    
+                }
                 else
                 {
                     MessageBox.Show("Não foi encontrado o arquivo do banco de dados selecionado", "Erro ao fazer backup", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     cbbBD.Text = "";
                     cbbBD.Focus();
                 }
-                
+
             }
             else if (result == DialogResult.No)
             {
                 frmPainelPrincipal.FazerBackupTodosBancos(pastaDatabases);
             }
             // Se result for DialogResult.Cancel, não faz nada (cancela a operação)
+        }
+
+        private void btnRestaurar_Click(object sender, EventArgs e)
+        {
+            // Pergunta inicial ao usuário
+            DialogResult respostaInicial = MessageBox.Show("Deseja restaurar apenas um banco de dados?",
+                                                           "Restaurar banco de dados",
+                                                           MessageBoxButtons.YesNoCancel,
+                                                           MessageBoxIcon.Question);
+
+            if (respostaInicial == DialogResult.Yes)
+            {
+                // Selecionar arquivo .sqlite para restauração individual
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "Arquivos SQLite (*.sqlite)|*.sqlite";
+                openFileDialog.Title = "Selecionar Arquivo SQLite para Backup";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string arquivoSelecionado = openFileDialog.FileName;
+
+                    // Verificar se o arquivo já existe na pastaDatabases
+                    string nomeArquivo = Path.GetFileNameWithoutExtension(arquivoSelecionado);
+                    string destino = Path.Combine(pastaDatabases, Path.GetFileName(arquivoSelecionado));
+
+                    if (File.Exists(destino))
+                    {
+                        // Arquivo existe, perguntar se deseja sobrescrever
+                        DialogResult respostaSobrescrever = MessageBox.Show($"O arquivo \"{nomeArquivo}\" já existe. Deseja sobrescrevê-lo?",
+                                                                              "Sobrescrever Arquivo",
+                                                                              MessageBoxButtons.YesNo,
+                                                                              MessageBoxIcon.Question);
+
+                        if (respostaSobrescrever == DialogResult.Yes)
+                        {
+                            // Sobrescrever o arquivo
+                            File.Copy(arquivoSelecionado, destino, true);
+                            MessageBox.Show($"Arquivo \"{nomeArquivo}\" sobrescrito com sucesso.", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        // Se respostaSobrescrever for No, não faz nada (cancela a operação)
+                    }
+                    else
+                    {
+                        // Arquivo não existe, copiar para a pastaDatabases
+                        File.Copy(arquivoSelecionado, destino);
+                        MessageBox.Show($"Arquivo '{nomeArquivo}' copiado para a pastaDatabases.", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                // Se o usuário cancelar a seleção do arquivo, não faz nada
+            }
+            else if (respostaInicial == DialogResult.No)
+            {
+                // Selecionar pasta para backup de múltiplos arquivos .sqlite
+                FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+                folderBrowserDialog.Description = "Selecione a pasta que contém os arquivos SQLite para backup.";
+
+                if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string pastaSelecionada = folderBrowserDialog.SelectedPath;
+                    string[] arquivosSQLite = Directory.GetFiles(pastaSelecionada, "*.sqlite");
+
+                    if (arquivosSQLite.Length == 0)
+                    {
+                        MessageBox.Show("Não foram encontrados arquivos de banco de dados na pasta selecionada.",
+                                        "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return; // Cancela a função, pois não há arquivos para copiar
+                    }
+
+                    // Verificar se deseja sobrescrever todos os arquivos na pastaDatabases
+                    DialogResult respostaSobrescreverTodos = MessageBox.Show("Deseja sobrescrever todos os arquivos que já existem na pasta do programa?",
+                                                                              "Sobrescrever Todos",
+                                                                              MessageBoxButtons.YesNo,
+                                                                              MessageBoxIcon.Question);
+
+                    if (respostaSobrescreverTodos == DialogResult.Yes)
+                    {
+                        // Sobrescrever todos os arquivos
+                        foreach (string arquivo in arquivosSQLite)
+                        {
+                            string destino = Path.Combine(pastaDatabases, Path.GetFileName(arquivo));
+                            File.Copy(arquivo, destino, true);
+                        }
+                        MessageBox.Show("Todos os arquivos foram copiados para pastaDatabases com sucesso.",
+                                        "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else if (respostaSobrescreverTodos == DialogResult.No)
+                    {
+                        // Perguntar ao usuário se deseja selecionar quais arquivos serão sobrescritos
+                        DialogResult respostaSelecionarArquivos = MessageBox.Show("Deseja então selecionar quais arquivos serão sobrescritos?",
+                                                                                   "Selecionar Arquivos",
+                                                                                   MessageBoxButtons.YesNo,
+                                                                                   MessageBoxIcon.Question);
+
+                        if (respostaSelecionarArquivos == DialogResult.Yes)
+                        {
+                            // Escolher quais arquivos sobrescrever
+                            foreach (string arquivo in arquivosSQLite)
+                            {
+                                string nomeArquivo = Path.GetFileNameWithoutExtension(arquivo);
+                                string destino = Path.Combine(pastaDatabases, Path.GetFileName(arquivo));
+
+                                // Verificar se o arquivo já existe no destino
+                                if (File.Exists(destino))
+                                {
+                                    // Perguntar ao usuário se deseja sobrescrever somente se o arquivo existir
+                                    DialogResult respostaSobrescrever = MessageBox.Show($"O arquivo '{nomeArquivo}' já existe na pasta de destino. Deseja sobrescrevê-lo?",
+                                                                                         "Sobrescrever Arquivo",
+                                                                                         MessageBoxButtons.YesNo,
+                                                                                         MessageBoxIcon.Question);
+
+                                    if (respostaSobrescrever == DialogResult.Yes)
+                                    {
+                                        File.Copy(arquivo, destino, true);
+                                    }
+                                    // Se respostaSobrescrever for No, não faz nada (não sobrescreve o arquivo)
+                                }
+                                else
+                                {
+                                    // Arquivo não existe no destino, copiar diretamente
+                                    File.Copy(arquivo, destino);
+                                }
+                            }
+
+                            MessageBox.Show($"Todos os arquivos confirmados foram restaurados com sucesso.",
+                                            "Restauração bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else if (respostaSelecionarArquivos == DialogResult.No)
+                        {
+                            // Copiar todos os arquivos sem sobrescrever
+                            List<string> bancosNaoCopiados = new List<string>();
+                            int contadorSucessos = 0;
+
+                            foreach (string arquivo in arquivosSQLite)
+                            {
+                                string nomeArquivo = Path.GetFileNameWithoutExtension(arquivo);
+                                string destino = Path.Combine(pastaDatabases, Path.GetFileName(arquivo));
+
+                                // Verificar se o arquivo já existe na pastaDatabases
+                                if (File.Exists(destino))
+                                {
+                                    // Arquivo já existe, adicionar à lista de bancos não copiados
+                                    bancosNaoCopiados.Add(nomeArquivo);
+                                }
+                                else
+                                {
+                                    // Copiar o arquivo para a pastaDatabases
+                                    File.Copy(arquivo, destino);
+                                    contadorSucessos++;
+                                }
+                            }
+
+                            if (contadorSucessos == 0)
+                            {
+                                MessageBox.Show("Nenhum arquivo foi copiado pois todos já existem na pasta do programa.",
+                                                "Restauração concluída", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            else if (bancosNaoCopiados.Count == 0)
+                            {
+                                MessageBox.Show($"Todos os arquivos foram restaurados.",
+                                                "Restauração bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                            else
+                            {
+                                MessageBox.Show($"Os seguintes arquivos não foram restaurados porque já existem na pasta do programa:\n\n{string.Join("\n", bancosNaoCopiados)}", "Arquivos não copiados");
+                            }
+                        }
+                        // Se o usuário cancelar, não faz nada
+                    }
+                    // Se o usuário cancelar, não faz nada
+                }
+                // Se o usuário cancelar a seleção da pasta, não faz nada
+            }
+            // Se respostaInicial for Cancel, não faz nada
         }
     }
 }
