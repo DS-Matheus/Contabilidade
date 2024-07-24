@@ -20,5 +20,10 @@ namespace Contabilidade.Models
         {
             conn.Close();
         }
+
+        public void excluir()
+        {
+            conn.Dispose();
+        }
     }
 }

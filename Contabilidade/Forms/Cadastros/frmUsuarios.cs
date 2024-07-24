@@ -36,7 +36,7 @@ namespace Contabilidade.Forms.Cadastros
 
                 dgvUsuarios.DataSource = dtDados;
 
-                dv.RowFilter = "nome LIKE '" + txtFiltrar.Text + "%'";
+                dv.RowFilter = $"nome LIKE '{txtFiltrar.Text}%'";
                 dgvUsuarios.DataSource = dv;
 
                 cbbFiltrar.SelectedIndex = 0;
@@ -245,12 +245,12 @@ namespace Contabilidade.Forms.Cadastros
         {
             if (cbbFiltrar.Text == "Usuário")
             {
-                dv.RowFilter = "nome LIKE '" + txtFiltrar.Text + "%'";
+                dv.RowFilter = $"nome LIKE '{txtFiltrar.Text}%'";
                 dgvUsuarios.DataSource = dv;
             }
             else if (cbbFiltrar.Text == "Senha")
             {
-                dv.RowFilter = "senha LIKE '" + txtFiltrar.Text + "%'";
+                dv.RowFilter = $"senha LIKE '{txtFiltrar.Text}%'";
                 dgvUsuarios.DataSource = dv;
             }
         }

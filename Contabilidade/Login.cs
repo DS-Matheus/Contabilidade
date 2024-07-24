@@ -13,7 +13,7 @@ namespace Contabilidade
         private string senhaUsuarioBD = "";
         private string nomeBD = "";
 
-        private string pastaDatabases = Directory.GetCurrentDirectory() + "\\databases";
+        private string pastaDatabases = Path.Combine(Application.StartupPath, "databases");
         private string caminhoBD = "";
 
         private List<string> nomesBDs = new List<string>();
@@ -39,7 +39,7 @@ namespace Contabilidade
             {
                 string nomeArquivo = Path.GetFileNameWithoutExtension(arquivo);
                 cbbBD.Items.Add(nomeArquivo);
-                nomesBDs.Add(nomeArquivo.ToLower() + ".sqlite");
+                nomesBDs.Add($"{nomeArquivo.ToLower()}.sqlite");
             }
         }
 
@@ -131,7 +131,7 @@ namespace Contabilidade
                 carregarBDs();
 
                 // Fechar conexões
-                con.desconectar();
+                con.excluir();
                 comando.Dispose();
 
                 cbbBD.Text = nomeBD.Replace(".sqlite", "");
@@ -209,7 +209,7 @@ namespace Contabilidade
 
         private void btnCriarBD_Click(object sender, EventArgs e)
         {
-            caminhoBD = pastaDatabases + "\\" + validarExtensaoBD(cbbBD.Text);
+            caminhoBD = $"{pastaDatabases}\\{validarExtensaoBD(cbbBD.Text)}";
 
             // Verifica se está em modo de registro de senha
             if (btnCriarBD.Text == "Concluir")
@@ -320,7 +320,7 @@ namespace Contabilidade
             if (nomeBanco.EndsWith(".sqlite"))
                 return nomeBanco;
             else
-                return nomeBanco + ".sqlite";
+                return $"{nomeBanco}.sqlite";
         }
 
         public bool verificarExistenciaBD(string tituloMensagem)
@@ -394,7 +394,7 @@ namespace Contabilidade
         {
             caminhoBD = $"{pastaDatabases}\\{nomeBD}";
             // Renomear
-            File.Move(caminhoBD, Path.Combine(Path.GetDirectoryName(caminhoBD) + "\\", nomeBDNovo));
+            File.Move(caminhoBD, $"{Path.GetDirectoryName(caminhoBD)}\\{nomeBDNovo}");
 
             MessageBox.Show("O banco de dados foi renomeado com sucesso!", "Operação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -523,7 +523,7 @@ namespace Contabilidade
                 try
                 {
                     // Conectar ao banco
-                    caminhoBD = pastaDatabases + "\\" + nomeBD;
+                    caminhoBD = $"{pastaDatabases}\\{nomeBD}";
                     Conexao con = new Conexao(caminhoBD);
                     con.conectar();
 
@@ -553,14 +553,16 @@ namespace Contabilidade
                     {
                         string usuario = dtUsuario.Rows[0]["nome"].ToString();
 
-                        MessageBox.Show("Bem Vindo(a) " + usuario + ".", "Login", MessageBoxButtons.OK, MessageBoxIcon.None);
+                        MessageBox.Show($"Bem Vindo(a) {usuario}.", "Login", MessageBoxButtons.OK, MessageBoxIcon.None);
 
                         this.Visible = false;
                         frmPainelPrincipal frmPainelPrincipal = new frmPainelPrincipal(nomeBD.Replace(".sqlite", ""), usuario, con); // Crie uma instância do frmPainelPrincipal
                         frmPainelPrincipal.Owner = this; // Definir o painel de Login como pai
                         frmPainelPrincipal.ShowDialog(); // Exibe o form como uma janela de diálogo modal
-                        
+
                         // Após fechar o Painel Principal
+                        carregarBDs();
+
                         resetarForm(true);
                         txtNome.Text = "";
                         txtSenha.Text = "";
