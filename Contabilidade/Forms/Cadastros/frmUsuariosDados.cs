@@ -51,7 +51,7 @@ namespace Contabilidade.Forms.Cadastros
                 txtUsuario.Text = "";
                 txtUsuario.Focus();
             }
-            // Se a senha não fo válida
+            // Se a senha não for válida
             else if (!frmLogin.verificarSenha(txtSenha.Text))
             {
                 txtSenha.Text = "";

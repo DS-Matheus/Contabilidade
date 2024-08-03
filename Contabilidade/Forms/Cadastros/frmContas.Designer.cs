@@ -28,18 +28,199 @@
         /// </summary>
         private void InitializeComponent()
         {
+            dgvContas = new DataGridView();
+            groupBox1 = new GroupBox();
+            cbbNivel = new ComboBox();
+            txtFiltrar2 = new TextBox();
+            cbbFiltrar = new ComboBox();
+            txtFiltrar = new TextBox();
+            btnImprimir = new Button();
+            btnEditar = new Button();
+            btnExcluir = new Button();
+            btnCriar = new Button();
+            Conta = new DataGridViewTextBoxColumn();
+            Nível = new DataGridViewTextBoxColumn();
+            Descrição = new DataGridViewTextBoxColumn();
+            Saldo = new DataGridViewTextBoxColumn();
+            ((System.ComponentModel.ISupportInitialize)dgvContas).BeginInit();
+            groupBox1.SuspendLayout();
             SuspendLayout();
+            // 
+            // dgvContas
+            // 
+            dgvContas.AllowUserToAddRows = false;
+            dgvContas.AllowUserToDeleteRows = false;
+            dgvContas.AllowUserToOrderColumns = true;
+            dgvContas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvContas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvContas.Columns.AddRange(new DataGridViewColumn[] { Conta, Nível, Descrição, Saldo });
+            dgvContas.Location = new Point(12, 12);
+            dgvContas.MultiSelect = false;
+            dgvContas.Name = "dgvContas";
+            dgvContas.ReadOnly = true;
+            dgvContas.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvContas.Size = new Size(599, 476);
+            dgvContas.TabIndex = 0;
+            // 
+            // groupBox1
+            // 
+            groupBox1.Controls.Add(cbbNivel);
+            groupBox1.Controls.Add(txtFiltrar2);
+            groupBox1.Controls.Add(cbbFiltrar);
+            groupBox1.Controls.Add(txtFiltrar);
+            groupBox1.Location = new Point(618, 262);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(250, 85);
+            groupBox1.TabIndex = 18;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Filtrar por";
+            // 
+            // cbbNivel
+            // 
+            cbbNivel.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbbNivel.FormattingEnabled = true;
+            cbbNivel.Items.AddRange(new object[] { "Analítico", "Sintético", "Ambos" });
+            cbbNivel.Location = new Point(6, 51);
+            cbbNivel.Name = "cbbNivel";
+            cbbNivel.Size = new Size(238, 23);
+            cbbNivel.TabIndex = 19;
+            cbbNivel.Visible = false;
+            // 
+            // txtFiltrar2
+            // 
+            txtFiltrar2.Location = new Point(129, 51);
+            txtFiltrar2.Name = "txtFiltrar2";
+            txtFiltrar2.Size = new Size(115, 23);
+            txtFiltrar2.TabIndex = 11;
+            txtFiltrar2.Visible = false;
+            txtFiltrar2.TextChanged += txtFiltrar2_TextChanged;
+            // 
+            // cbbFiltrar
+            // 
+            cbbFiltrar.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbbFiltrar.FormattingEnabled = true;
+            cbbFiltrar.Items.AddRange(new object[] { "Conta", "Descrição", "Nível", "Saldo menor que", "Saldo maior que", "Saldo entre" });
+            cbbFiltrar.Location = new Point(6, 22);
+            cbbFiltrar.Name = "cbbFiltrar";
+            cbbFiltrar.Size = new Size(238, 23);
+            cbbFiltrar.TabIndex = 9;
+            cbbFiltrar.SelectedIndexChanged += cbbFiltrar_SelectedIndexChanged;
+            // 
+            // txtFiltrar
+            // 
+            txtFiltrar.Location = new Point(6, 51);
+            txtFiltrar.Name = "txtFiltrar";
+            txtFiltrar.Size = new Size(238, 23);
+            txtFiltrar.TabIndex = 10;
+            txtFiltrar.TextChanged += txtFiltrar_TextChanged;
+            // 
+            // btnImprimir
+            // 
+            btnImprimir.Location = new Point(618, 458);
+            btnImprimir.Name = "btnImprimir";
+            btnImprimir.Size = new Size(250, 30);
+            btnImprimir.TabIndex = 17;
+            btnImprimir.Text = "Imprimir";
+            btnImprimir.UseVisualStyleBackColor = true;
+            // 
+            // btnEditar
+            // 
+            btnEditar.Location = new Point(618, 389);
+            btnEditar.Name = "btnEditar";
+            btnEditar.Size = new Size(250, 30);
+            btnEditar.TabIndex = 16;
+            btnEditar.Text = "Editar";
+            btnEditar.UseVisualStyleBackColor = true;
+            // 
+            // btnExcluir
+            // 
+            btnExcluir.Location = new Point(618, 425);
+            btnExcluir.Name = "btnExcluir";
+            btnExcluir.Size = new Size(250, 30);
+            btnExcluir.TabIndex = 15;
+            btnExcluir.Text = "Excluir";
+            btnExcluir.UseVisualStyleBackColor = true;
+            // 
+            // btnCriar
+            // 
+            btnCriar.Location = new Point(618, 353);
+            btnCriar.Name = "btnCriar";
+            btnCriar.Size = new Size(250, 30);
+            btnCriar.TabIndex = 14;
+            btnCriar.Text = "Criar";
+            btnCriar.UseVisualStyleBackColor = true;
+            btnCriar.Click += btnCriar_Click;
+            // 
+            // Conta
+            // 
+            Conta.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            Conta.DataPropertyName = "conta";
+            Conta.HeaderText = "Conta";
+            Conta.Name = "Conta";
+            Conta.ReadOnly = true;
+            Conta.Width = 64;
+            // 
+            // Nível
+            // 
+            Nível.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            Nível.DataPropertyName = "nivel";
+            Nível.HeaderText = "Nível";
+            Nível.Name = "Nível";
+            Nível.ReadOnly = true;
+            Nível.Width = 59;
+            // 
+            // Descrição
+            // 
+            Descrição.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Descrição.DataPropertyName = "descricao";
+            Descrição.HeaderText = "Descrição";
+            Descrição.Name = "Descrição";
+            Descrição.ReadOnly = true;
+            // 
+            // Saldo
+            // 
+            Saldo.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            Saldo.DataPropertyName = "saldo";
+            Saldo.HeaderText = "Saldo";
+            Saldo.Name = "Saldo";
+            Saldo.ReadOnly = true;
+            Saldo.Width = 61;
             // 
             // frmContas
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(864, 461);
+            ClientSize = new Size(880, 500);
+            Controls.Add(groupBox1);
+            Controls.Add(btnImprimir);
+            Controls.Add(btnEditar);
+            Controls.Add(btnExcluir);
+            Controls.Add(btnCriar);
+            Controls.Add(dgvContas);
+            FormBorderStyle = FormBorderStyle.None;
             Name = "frmContas";
             Text = "Contas";
+            ((System.ComponentModel.ISupportInitialize)dgvContas).EndInit();
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
             ResumeLayout(false);
         }
 
         #endregion
+
+        private DataGridView dgvContas;
+        private GroupBox groupBox1;
+        private ComboBox cbbFiltrar;
+        private TextBox txtFiltrar;
+        private Button btnImprimir;
+        private Button btnEditar;
+        private Button btnExcluir;
+        private Button btnCriar;
+        private TextBox txtFiltrar2;
+        private ComboBox cbbNivel;
+        private DataGridViewTextBoxColumn Conta;
+        private DataGridViewTextBoxColumn Nível;
+        private DataGridViewTextBoxColumn Descrição;
+        private DataGridViewTextBoxColumn Saldo;
     }
 }

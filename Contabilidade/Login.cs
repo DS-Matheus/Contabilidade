@@ -118,7 +118,7 @@ namespace Contabilidade
                 con.conectar();
 
                 // Criar tabela de usuários
-                string sql = "CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY, nome VARCHAR(20) NOT NULL UNIQUE, senha VARCHAR(30) NOT NULL);";
+                string sql = "CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY AUTOINCREMENT, nome VARCHAR(20) NOT NULL UNIQUE, senha VARCHAR(30) NOT NULL);";
                 SQLiteCommand comando = new SQLiteCommand(sql, con.conn);
                 comando.ExecuteNonQuery();
 
@@ -126,6 +126,14 @@ namespace Contabilidade
                 comando.CommandText = "INSERT INTO usuarios (nome, senha) VALUES(@nome, @senha);";
                 comando.Parameters.AddWithValue("@nome", usuarioBD);
                 comando.Parameters.AddWithValue("@senha", senhaUsuarioBD);
+                comando.ExecuteNonQuery();
+
+                // Criar tabela de contas
+                comando.CommandText = "CREATE TABLE IF NOT EXISTS contas (conta VARCHAR(14) PRIMARY KEY, descricao VARCHAR(100) NOT NULL, nivel CHAR(1) NOT NULL CHECK (nivel IN ('S', 'A')), saldo NUMERIC(15,2));";
+                comando.ExecuteNonQuery();
+
+                // Criar tabela de históricos
+                comando.CommandText = "CREATE TABLE IF NOT EXISTS historicos (id INTEGER PRIMARY KEY AUTOINCREMENT, historico VARCHAR(100) NOT NULL);";
                 comando.ExecuteNonQuery();
 
                 carregarBDs();

@@ -164,7 +164,7 @@
             Controls.Add(pnlBarraTitulo);
             FormBorderStyle = FormBorderStyle.None;
             Name = "frmUsuariosDados";
-            StartPosition = FormStartPosition.CenterScreen;
+            StartPosition = FormStartPosition.CenterParent;
             Text = "frmUsuariosDados";
             pnlBarraTitulo.ResumeLayout(false);
             pnlBarraTitulo.PerformLayout();

@@ -28,21 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
             dgvUsuarios = new DataGridView();
-            ID = new DataGridViewTextBoxColumn();
-            Usuário = new DataGridViewTextBoxColumn();
-            Senha = new DataGridViewTextBoxColumn();
             btnCriar = new Button();
             btnExcluir = new Button();
             btnEditar = new Button();
             cbbFiltrar = new ComboBox();
-            bindingSource1 = new BindingSource(components);
             txtFiltrar = new TextBox();
             btnImprimir = new Button();
             groupBox1 = new GroupBox();
+            ID = new DataGridViewTextBoxColumn();
+            Usuário = new DataGridViewTextBoxColumn();
+            Senha = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgvUsuarios).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)bindingSource1).BeginInit();
             groupBox1.SuspendLayout();
             SuspendLayout();
             // 
@@ -59,37 +56,14 @@
             dgvUsuarios.Name = "dgvUsuarios";
             dgvUsuarios.ReadOnly = true;
             dgvUsuarios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvUsuarios.Size = new Size(596, 476);
+            dgvUsuarios.Size = new Size(600, 476);
             dgvUsuarios.TabIndex = 0;
-            // 
-            // ID
-            // 
-            ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            ID.DataPropertyName = "id";
-            ID.HeaderText = "ID";
-            ID.Name = "ID";
-            ID.ReadOnly = true;
-            ID.Width = 43;
-            // 
-            // Usuário
-            // 
-            Usuário.DataPropertyName = "nome";
-            Usuário.HeaderText = "Usuário";
-            Usuário.Name = "Usuário";
-            Usuário.ReadOnly = true;
-            // 
-            // Senha
-            // 
-            Senha.DataPropertyName = "senha";
-            Senha.HeaderText = "Senha";
-            Senha.Name = "Senha";
-            Senha.ReadOnly = true;
             // 
             // btnCriar
             // 
-            btnCriar.Location = new Point(614, 353);
+            btnCriar.Location = new Point(618, 353);
             btnCriar.Name = "btnCriar";
-            btnCriar.Size = new Size(254, 30);
+            btnCriar.Size = new Size(250, 30);
             btnCriar.TabIndex = 1;
             btnCriar.Text = "Criar";
             btnCriar.UseVisualStyleBackColor = true;
@@ -97,9 +71,9 @@
             // 
             // btnExcluir
             // 
-            btnExcluir.Location = new Point(614, 425);
+            btnExcluir.Location = new Point(618, 425);
             btnExcluir.Name = "btnExcluir";
-            btnExcluir.Size = new Size(254, 30);
+            btnExcluir.Size = new Size(250, 30);
             btnExcluir.TabIndex = 2;
             btnExcluir.Text = "Excluir";
             btnExcluir.UseVisualStyleBackColor = true;
@@ -107,9 +81,9 @@
             // 
             // btnEditar
             // 
-            btnEditar.Location = new Point(614, 389);
+            btnEditar.Location = new Point(618, 389);
             btnEditar.Name = "btnEditar";
-            btnEditar.Size = new Size(254, 30);
+            btnEditar.Size = new Size(250, 30);
             btnEditar.TabIndex = 3;
             btnEditar.Text = "Editar";
             btnEditar.UseVisualStyleBackColor = true;
@@ -122,7 +96,7 @@
             cbbFiltrar.Items.AddRange(new object[] { "Usuário", "Senha" });
             cbbFiltrar.Location = new Point(6, 22);
             cbbFiltrar.Name = "cbbFiltrar";
-            cbbFiltrar.Size = new Size(242, 23);
+            cbbFiltrar.Size = new Size(238, 23);
             cbbFiltrar.TabIndex = 9;
             cbbFiltrar.SelectedIndexChanged += cbbFiltrar_SelectedIndexChanged;
             // 
@@ -130,15 +104,15 @@
             // 
             txtFiltrar.Location = new Point(6, 51);
             txtFiltrar.Name = "txtFiltrar";
-            txtFiltrar.Size = new Size(242, 23);
+            txtFiltrar.Size = new Size(238, 23);
             txtFiltrar.TabIndex = 10;
             txtFiltrar.TextChanged += txtFiltrar_TextChanged;
             // 
             // btnImprimir
             // 
-            btnImprimir.Location = new Point(614, 458);
+            btnImprimir.Location = new Point(618, 458);
             btnImprimir.Name = "btnImprimir";
-            btnImprimir.Size = new Size(254, 30);
+            btnImprimir.Size = new Size(250, 30);
             btnImprimir.TabIndex = 12;
             btnImprimir.Text = "Imprimir";
             btnImprimir.UseVisualStyleBackColor = true;
@@ -148,12 +122,37 @@
             // 
             groupBox1.Controls.Add(cbbFiltrar);
             groupBox1.Controls.Add(txtFiltrar);
-            groupBox1.Location = new Point(614, 262);
+            groupBox1.Location = new Point(618, 262);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(254, 85);
+            groupBox1.Size = new Size(250, 85);
             groupBox1.TabIndex = 13;
             groupBox1.TabStop = false;
             groupBox1.Text = "Filtrar por";
+            // 
+            // ID
+            // 
+            ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            ID.DataPropertyName = "id";
+            ID.HeaderText = "ID";
+            ID.Name = "ID";
+            ID.ReadOnly = true;
+            ID.Width = 43;
+            // 
+            // Usuário
+            // 
+            Usuário.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Usuário.DataPropertyName = "nome";
+            Usuário.HeaderText = "Usuário";
+            Usuário.Name = "Usuário";
+            Usuário.ReadOnly = true;
+            // 
+            // Senha
+            // 
+            Senha.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Senha.DataPropertyName = "senha";
+            Senha.HeaderText = "Senha";
+            Senha.Name = "Senha";
+            Senha.ReadOnly = true;
             // 
             // frmUsuarios
             // 
@@ -170,7 +169,6 @@
             Name = "frmUsuarios";
             Text = "Usuários";
             ((System.ComponentModel.ISupportInitialize)dgvUsuarios).EndInit();
-            ((System.ComponentModel.ISupportInitialize)bindingSource1).EndInit();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             ResumeLayout(false);
@@ -182,7 +180,6 @@
         private Button btnExcluir;
         private Button btnEditar;
         private ComboBox cbbFiltrar;
-        private BindingSource bindingSource1;
         private TextBox txtFiltrar;
         private Button btnImprimir;
         private GroupBox groupBox1;
