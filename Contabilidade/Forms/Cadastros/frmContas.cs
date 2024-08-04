@@ -234,6 +234,12 @@ namespace Contabilidade.Forms.Cadastros
 
         private void btnImprimir_Click(object sender, EventArgs e)
         {
+            // Solicita o título do arquivo ao usuário
+            string inputTitle = Microsoft.VisualBasic.Interaction.InputBox("Digite o título do arquivo:", "Título do Arquivo", "");
+
+            // Verifica se o título está vazio ou contém apenas espaços
+            string title = string.IsNullOrWhiteSpace(inputTitle) ? "Contas Cadastradas" : inputTitle;
+
             var printer = new DGVPrinter();
             printer.Title = "Contas Cadastradas";
             printer.SubTitle = string.Format("Data: {0}", System.DateTime.Now.ToString("dd/MM/yyyy"));

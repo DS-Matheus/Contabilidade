@@ -262,8 +262,14 @@ namespace Contabilidade.Forms.Cadastros
 
         private void btnImprimir_Click(object sender, EventArgs e)
         {
+            // Solicita o título do arquivo ao usuário
+            string inputTitle = Microsoft.VisualBasic.Interaction.InputBox("Digite o título do arquivo:", "Título do Arquivo", "");
+
+            // Verifica se o título está vazio ou contém apenas espaços
+            string title = string.IsNullOrWhiteSpace(inputTitle) ? "Usuários Cadastrados" : inputTitle;
+
             var printer = new DGVPrinter();
-            printer.Title = "Usuários Cadastrados";
+            printer.Title = title;
             printer.SubTitle = string.Format("Data: {0}", System.DateTime.Now.ToString("dd/MM/yyyy"));
             printer.SubTitleFormatFlags = StringFormatFlags.LineLimit | StringFormatFlags.NoClip;
             printer.PageNumbers = true;
@@ -272,7 +278,7 @@ namespace Contabilidade.Forms.Cadastros
             printer.HeaderCellAlignment = StringAlignment.Near;
             printer.FooterSpacing = 15;
             printer.PrintDataGridView(dgvUsuarios);
-
         }
+
     }
 }
