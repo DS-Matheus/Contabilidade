@@ -1,4 +1,5 @@
 ﻿using Contabilidade.Models;
+using DGVPrinterHelper;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -33,7 +34,7 @@ namespace Contabilidade.Forms.Cadastros
         public void atualizarDataGrid()
         {
             // Query de pesquisa
-            string sql = "SELECT * FROM contas;";
+            string sql = "SELECT * FROM contas ORDER BY conta;";
             using (var command = new SQLiteCommand(sql, con.conn))
             {
                 SQLiteDataAdapter sqlDA = new SQLiteDataAdapter(sql, con.conn);
@@ -229,6 +230,20 @@ namespace Contabilidade.Forms.Cadastros
                     }
                 }
             }
+        }
+
+        private void btnImprimir_Click(object sender, EventArgs e)
+        {
+            var printer = new DGVPrinter();
+            printer.Title = "Contas Cadastradas";
+            printer.SubTitle = string.Format("Data: {0}", System.DateTime.Now.ToString("dd/MM/yyyy"));
+            printer.SubTitleFormatFlags = StringFormatFlags.LineLimit | StringFormatFlags.NoClip;
+            printer.PageNumbers = true;
+            printer.PageNumberInHeader = false;
+            printer.PorportionalColumns = true;
+            printer.HeaderCellAlignment = StringAlignment.Near;
+            printer.FooterSpacing = 15;
+            printer.PrintDataGridView(dgvContas);
         }
     }
 }
