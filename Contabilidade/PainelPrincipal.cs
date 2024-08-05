@@ -298,7 +298,7 @@ namespace Contabilidade
 
         private void btnHistoricos_Click(object sender, EventArgs e)
         {
-            abrirFormulario(new Forms.Cadastros.frmHistoricos(), sender, "cadastros");
+            abrirFormulario(new Forms.Cadastros.frmHistoricos(con), sender, "cadastros");
         }
 
         private void btnUsuarios_Click(object sender, EventArgs e)

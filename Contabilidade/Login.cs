@@ -555,7 +555,7 @@ namespace Contabilidade
                     {
                         MessageBox.Show("Usuário ou senha inválido(s)!", "Registro não encontrado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                         txtSenha.Clear();
-                        txtNome.Focus();
+                        txtSenha.Focus();
                     }
                     else
                     {
