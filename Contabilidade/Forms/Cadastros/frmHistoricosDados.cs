@@ -56,8 +56,9 @@ namespace Contabilidade.Forms.Cadastros
 
         private void btnSalvar_Click(object sender, EventArgs e)
         {
+            var historicoNovo = txtHistorico.Text.TrimEnd();
             // Se o histórico já existir
-            if (frmHistoricos.verificarExistenciaHistorico(txtHistorico.Text))
+            if (frmHistoricos.verificarExistenciaHistorico(historicoNovo))
             {
                 MessageBox.Show("O histórico informado já existe!", "Erro ao informar histórico", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtHistorico.Text = "";
@@ -66,7 +67,7 @@ namespace Contabilidade.Forms.Cadastros
             else
             {
                 // Envia os dados para o formulário pai
-                frmHistoricos.historico = txtHistorico.Text.TrimEnd();
+                frmHistoricos.historico = historicoNovo;
 
                 this.DialogResult = DialogResult.OK;
                 this.Dispose();

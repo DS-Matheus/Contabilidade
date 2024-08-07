@@ -20,8 +20,9 @@ namespace Contabilidade.Forms.Cadastros
         private extern static void ReleaseCapture();
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
         private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
+        private int operacao = 0;
 
-        public frmContasDados(string titulo, string conta, string descricao, string nivel)
+        public frmContasDados(string titulo, string conta, string descricao, string nivel, int operacao = 0)
         {
             InitializeComponent();
 
@@ -30,6 +31,7 @@ namespace Contabilidade.Forms.Cadastros
 
             txtConta.Text = conta;
             txtDescricao.Text = descricao;
+            this.operacao = operacao;
 
             txtConta.Select();
             if (nivel == "S")
@@ -39,6 +41,13 @@ namespace Contabilidade.Forms.Cadastros
             else
             {
                 cbbNivel.SelectedIndex = 0;
+            }
+
+            // Usar diferente de 0 para quando o registro já existir (ex: operação de editar registro)
+            if (operacao != 0)
+            {
+                txtConta.Enabled = false;
+                cbbNivel.Enabled = false;
             }
         }
 
@@ -86,52 +95,65 @@ namespace Contabilidade.Forms.Cadastros
 
         private void btnSalvar_Click(object sender, EventArgs e)
         {
-            // Se a conta não for válida
-            if (!verificarConta(txtConta.Text))
-            {
-                txtConta.Text = "";
-                txtConta.Focus();
-            }
             // Se a descrição não for válida
-            else if (string.IsNullOrWhiteSpace(txtDescricao.Text))
+            if (string.IsNullOrWhiteSpace(txtDescricao.Text))
             {
                 MessageBox.Show("A descrição não pode ser vázia!", "Descrição inválida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtDescricao.Text = "";
                 txtDescricao.Focus();
             }
-            // Se a conta já existir
-            else if (frmContas.verificarExistenciaConta(txtConta.Text))
+            // Se estiver no modo de criação
+            else if (operacao == 0)
             {
-                MessageBox.Show("A conta informada já existe!", "Erro ao informar conta", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtConta.Text = "";
-                txtConta.Focus();
+                // Se a conta não for válida
+                if (!verificarConta(txtConta.Text))
+                {
+                    txtConta.Text = "";
+                    txtConta.Focus();
+                }
+                // Se a conta já existir
+                else if (frmContas.verificarExistenciaConta(txtConta.Text))
+                {
+                    MessageBox.Show("A conta informada já existe!", "Erro ao informar conta", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtConta.Text = "";
+                    txtConta.Focus();
+                }
+                // Se a conta for do tipo analítica mas tentou ser criada na "raiz" (apenas 1 número)
+                else if (Regex.IsMatch(txtConta.Text, @"^[A-Z0-9]$") && cbbNivel.SelectedIndex == 0)
+                {
+                    MessageBox.Show("Não é possível ter uma conta analítica antes da sintética!", "'Numero/Tipo de conta inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    cbbNivel.Focus();
+                }
+                // Se a conta for do tipo analítica e tentou se criar antes da sintética
+                else if (!Regex.IsMatch(txtConta.Text, @"^[A-Z0-9]$") && cbbNivel.SelectedIndex == 0 && !frmContas.verificarContaSintetica(txtConta.Text))
+                {
+                    MessageBox.Show("Não é possível ter uma conta analítica antes da sintética!", "'Numero/Tipo de conta inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    cbbNivel.Focus();
+                }
+                // Se a conta for do tipo sintética maior que 1 e não existe uma conta sintética de nível menor
+                else if (!Regex.IsMatch(txtConta.Text, @"^[A-Z0-9]$") && cbbNivel.SelectedIndex == 1 && !frmContas.verificarContaSintetica(txtConta.Text))
+                {
+                    MessageBox.Show("Hierarquia de contas inválida!\n\nÉ preciso criar uma conta sintética de nível menor antes.", "'Numero de conta inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    cbbNivel.Focus();
+                }
+                else
+                {
+                    var tipoConta = getTipoConta(cbbNivel.SelectedIndex);
+
+                    // Envia os dados para o formulário pai
+                    frmContas.conta = txtConta.Text;
+                    frmContas.descricao = txtDescricao.Text;
+                    frmContas.nivel = tipoConta;
+
+                    this.DialogResult = DialogResult.OK;
+                    this.Dispose();
+                }    
             }
-            // Se a conta for do tipo analítica mas tentou ser criada na "raiz" (apenas 1 número)
-            else if (Regex.IsMatch(txtConta.Text, @"^[A-Z0-9]$") && cbbNivel.SelectedIndex == 0)
-            {
-                MessageBox.Show("Não é possível ter uma conta analítica antes da sintética!", "'Numero/Tipo de conta inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cbbNivel.Focus();
-            }
-            // Se a conta for do tipo analítica e tentou se criar antes da sintética
-            else if (!Regex.IsMatch(txtConta.Text, @"^[A-Z0-9]$") && cbbNivel.SelectedIndex == 0 && !frmContas.verificarContaSintetica(txtConta.Text))
-            {
-                MessageBox.Show("Não é possível ter uma conta analítica antes da sintética!", "'Numero/Tipo de conta inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cbbNivel.Focus();
-            }
-            // Se a conta for do tipo sintética maior que 1 e não existe uma conta sintética de nível menor
-            else if (!Regex.IsMatch(txtConta.Text, @"^[A-Z0-9]$") && cbbNivel.SelectedIndex == 1 && !frmContas.verificarContaSintetica(txtConta.Text))
-            {
-                MessageBox.Show("Hierarquia de contas inválida!\n\nÉ preciso criar uma conta sintética de nível menor antes.", "'Numero de conta inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cbbNivel.Focus();
-            }
+            // Caso seja outra operação
             else
             {
-                var tipoConta = getTipoConta(cbbNivel.SelectedIndex);
-
                 // Envia os dados para o formulário pai
-                frmContas.conta = txtConta.Text;
                 frmContas.descricao = txtDescricao.Text;
-                frmContas.nivel = tipoConta;
 
                 this.DialogResult = DialogResult.OK;
                 this.Dispose();

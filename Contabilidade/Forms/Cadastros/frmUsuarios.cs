@@ -228,7 +228,7 @@ namespace Contabilidade.Forms.Cadastros
             }
         }
 
-        public int obterNumLinhaSelecionada(DataGridView dataGridView)
+        public static int obterNumLinhaSelecionada(DataGridView dataGridView)
         {
             return dataGridView.CurrentRow.Index;
         }
@@ -265,20 +265,23 @@ namespace Contabilidade.Forms.Cadastros
             // Solicita o título do arquivo ao usuário
             string inputTitle = Microsoft.VisualBasic.Interaction.InputBox("Digite o título do arquivo:", "Título do Arquivo", "");
 
-            // Verifica se o título está vazio ou contém apenas espaços
-            string title = string.IsNullOrWhiteSpace(inputTitle) ? "Usuários Cadastrados" : inputTitle;
+            // Verifica se o usuário clicou em "Cancelar": se clicou não executa
+            if (!string.IsNullOrEmpty(inputTitle))
+            {
+                // Verifica se o título está vazio ou contém apenas espaços
+                string title = string.IsNullOrWhiteSpace(inputTitle) ? "Usuários Cadastrados" : inputTitle;
 
-            var printer = new DGVPrinter();
-            printer.Title = title;
-            printer.SubTitle = string.Format("Data: {0}", System.DateTime.Now.ToString("dd/MM/yyyy"));
-            printer.SubTitleFormatFlags = StringFormatFlags.LineLimit | StringFormatFlags.NoClip;
-            printer.PageNumbers = true;
-            printer.PageNumberInHeader = false;
-            printer.PorportionalColumns = true;
-            printer.HeaderCellAlignment = StringAlignment.Near;
-            printer.FooterSpacing = 15;
-            printer.PrintDataGridView(dgvUsuarios);
+                var printer = new DGVPrinter();
+                printer.Title = title;
+                printer.SubTitle = string.Format("Data: {0}", System.DateTime.Now.ToString("dd/MM/yyyy"));
+                printer.SubTitleFormatFlags = StringFormatFlags.LineLimit | StringFormatFlags.NoClip;
+                printer.PageNumbers = true;
+                printer.PageNumberInHeader = false;
+                printer.PorportionalColumns = true;
+                printer.HeaderCellAlignment = StringAlignment.Near;
+                printer.FooterSpacing = 15;
+                printer.PrintDataGridView(dgvUsuarios);
+            }
         }
-
     }
 }

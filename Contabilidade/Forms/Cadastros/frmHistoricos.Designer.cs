@@ -67,6 +67,7 @@
             btnImprimir.TabIndex = 18;
             btnImprimir.Text = "Imprimir";
             btnImprimir.UseVisualStyleBackColor = true;
+            btnImprimir.Click += btnImprimir_Click;
             // 
             // btnEditar
             // 
@@ -76,6 +77,7 @@
             btnEditar.TabIndex = 17;
             btnEditar.Text = "Editar";
             btnEditar.UseVisualStyleBackColor = true;
+            btnEditar.Click += btnEditar_Click;
             // 
             // btnExcluir
             // 

@@ -1,4 +1,5 @@
 ﻿using Contabilidade.Models;
+using DGVPrinterHelper;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -97,6 +98,80 @@ namespace Contabilidade.Forms.Cadastros
         {
             dv.RowFilter = $"historico LIKE '%{txtFiltrar.Text}%'";
             dgvHistoricos.DataSource = dv;
+        }
+
+        private string obterDadosDGV(int numLinha)
+        {
+            string historico = dgvHistoricos.Rows[numLinha].Cells["Histórico"].Value?.ToString();
+
+            return historico;
+        }
+
+        private void btnEditar_Click(object sender, EventArgs e)
+        {
+            // Obter histórico selecionado
+            int numLinha = frmUsuarios.obterNumLinhaSelecionada(dgvHistoricos);
+            var id = dgvHistoricos.Rows[numLinha].Cells["ID"].Value;
+            var historicoAntigo = obterDadosDGV(numLinha);
+
+            // Criar uma instância do formulário de dados e aguardar um retorno
+            using (var frmDados = new frmHistoricosDados("Editar usuário", historicoAntigo))
+            {
+                // O usuário apertou o botão de salvar
+                if (frmDados.ShowDialog() == DialogResult.OK)
+                {
+                    // Editar histórico
+                    using (var comando = new SQLiteCommand("UPDATE historicos SET historico = @historico WHERE id = @id;", con.conn))
+                    {
+                        comando.Parameters.AddWithValue("@historico", historico);
+                        comando.Parameters.AddWithValue("@id", id);
+
+                        int retornoBD = comando.ExecuteNonQuery();
+
+                        // Verificar se houve a edição de alguma linha (0 = negativo)
+                        if (retornoBD > 0)
+                        {
+                            // Atualizar DataTable
+                            dgvHistoricos.Rows[numLinha].Cells["Histórico"].Value = historico;
+
+                            dgvHistoricos.Refresh();
+
+                            // Remover dados das variáveis
+                            historico = "";
+
+                            MessageBox.Show("Histórico editado com sucesso!", "Edição bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Não foi possível encontrar o histórico ou ocorreu um erro na edição.", "Exclusão não realizada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void btnImprimir_Click(object sender, EventArgs e)
+        {
+            // Solicita o título do arquivo ao usuário
+            string inputTitle = Microsoft.VisualBasic.Interaction.InputBox("Digite o título do arquivo:", "Título do Arquivo", "");
+
+            // Verifica se o usuário clicou em "Cancelar": se clicou não executa
+            if (!string.IsNullOrEmpty(inputTitle))
+            {
+                // Verifica se o título está vazio ou contém apenas espaços
+                string title = string.IsNullOrWhiteSpace(inputTitle) ? "Históricos Cadastrados" : inputTitle;
+
+                var printer = new DGVPrinter();
+                printer.Title = title; // Usa o título fornecido pelo usuário
+                printer.SubTitle = string.Format("Data: {0}", System.DateTime.Now.ToString("dd/MM/yyyy"));
+                printer.SubTitleFormatFlags = StringFormatFlags.LineLimit | StringFormatFlags.NoClip;
+                printer.PageNumbers = true;
+                printer.PageNumberInHeader = false;
+                printer.PorportionalColumns = true;
+                printer.HeaderCellAlignment = StringAlignment.Near;
+                printer.FooterSpacing = 15;
+                printer.PrintDataGridView(dgvHistoricos);
+            }
         }
     }
 }

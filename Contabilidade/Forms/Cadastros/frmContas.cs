@@ -237,19 +237,74 @@ namespace Contabilidade.Forms.Cadastros
             // Solicita o título do arquivo ao usuário
             string inputTitle = Microsoft.VisualBasic.Interaction.InputBox("Digite o título do arquivo:", "Título do Arquivo", "");
 
-            // Verifica se o título está vazio ou contém apenas espaços
-            string title = string.IsNullOrWhiteSpace(inputTitle) ? "Contas Cadastradas" : inputTitle;
+            // Verifica se o usuário clicou em "Cancelar": se clicou não executa
+            if (!string.IsNullOrEmpty(inputTitle))
+            {
+                // Verifica se o título está vazio ou contém apenas espaços
+                string title = string.IsNullOrWhiteSpace(inputTitle) ? "Contas Cadastradas" : inputTitle;
 
-            var printer = new DGVPrinter();
-            printer.Title = "Contas Cadastradas";
-            printer.SubTitle = string.Format("Data: {0}", System.DateTime.Now.ToString("dd/MM/yyyy"));
-            printer.SubTitleFormatFlags = StringFormatFlags.LineLimit | StringFormatFlags.NoClip;
-            printer.PageNumbers = true;
-            printer.PageNumberInHeader = false;
-            printer.PorportionalColumns = true;
-            printer.HeaderCellAlignment = StringAlignment.Near;
-            printer.FooterSpacing = 15;
-            printer.PrintDataGridView(dgvContas);
+                var printer = new DGVPrinter();
+                printer.Title = title; // Usa o título fornecido pelo usuário
+                printer.SubTitle = string.Format("Data: {0}", System.DateTime.Now.ToString("dd/MM/yyyy"));
+                printer.SubTitleFormatFlags = StringFormatFlags.LineLimit | StringFormatFlags.NoClip;
+                printer.PageNumbers = true;
+                printer.PageNumberInHeader = false;
+                printer.PorportionalColumns = true;
+                printer.HeaderCellAlignment = StringAlignment.Near;
+                printer.FooterSpacing = 15;
+                printer.PrintDataGridView(dgvContas);
+            }
+        }
+
+        private (string conta, string descricao, string nivel) obterDadosDGV(int numLinha)
+        {
+            string conta = dgvContas.Rows[numLinha].Cells["Conta"].Value?.ToString();
+            string descricao = dgvContas.Rows[numLinha].Cells["Descrição"].Value?.ToString();
+            string nivel = dgvContas.Rows[numLinha].Cells["Nível"].Value?.ToString();
+
+            return (conta, descricao, nivel);
+        }
+
+        private void btnEditar_Click(object sender, EventArgs e)
+        {
+            // Obter conta selecionada
+            int numLinha = frmUsuarios.obterNumLinhaSelecionada(dgvContas);
+            var (conta, descricaoAntiga, nivel)  = obterDadosDGV(numLinha);
+
+            // Criar uma instância do formulário de dados e aguardar um retorno
+            using (var frmDados = new frmContasDados("Editar Conta", conta, descricaoAntiga, nivel, 1))
+            {
+                // O usuário apertou o botão de salvar
+                if (frmDados.ShowDialog() == DialogResult.OK)
+                {
+                    // Editar conta
+                    using (var comando = new SQLiteCommand("UPDATE contas SET descricao = @descricao WHERE conta = @conta;", con.conn))
+                    {
+                        comando.Parameters.AddWithValue("@descricao", descricao);
+                        comando.Parameters.AddWithValue("@conta", conta);
+
+                        int retornoBD = comando.ExecuteNonQuery();
+
+                        // Verificar se houve a edição de alguma linha (0 = negativo)
+                        if (retornoBD > 0)
+                        {
+                            // Atualizar DataTable
+                            dgvContas.Rows[numLinha].Cells["Descrição"].Value = descricao;
+
+                            dgvContas.Refresh();
+
+                            // Remover dados das variáveis
+                            descricao = "";
+
+                            MessageBox.Show("Conta editada com sucesso!", "Edição bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Não foi possível encontrar a conta ou ocorreu um erro na edição.", "Exclusão não realizada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                    }
+                }
+            }
         }
     }
 }
