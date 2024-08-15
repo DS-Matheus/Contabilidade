@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             groupBox1 = new GroupBox();
             txtFiltrar = new TextBox();
             btnImprimir = new Button();
@@ -118,6 +120,8 @@
             // 
             ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             ID.DataPropertyName = "id";
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            ID.DefaultCellStyle = dataGridViewCellStyle1;
             ID.HeaderText = "ID";
             ID.Name = "ID";
             ID.ReadOnly = true;
@@ -126,6 +130,8 @@
             // Histórico
             // 
             Histórico.DataPropertyName = "historico";
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            Histórico.DefaultCellStyle = dataGridViewCellStyle2;
             Histórico.HeaderText = "Histórico";
             Histórico.Name = "Histórico";
             Histórico.ReadOnly = true;

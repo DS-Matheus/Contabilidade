@@ -65,10 +65,10 @@ namespace Contabilidade.Forms.Cadastros
         public static bool verificarConta(string conta)
         {
             string[] formatos = {
-                @"^[A-Z0-9]$", // Formato 1: X
-                @"^[A-Z0-9]\.[A-Z0-9]{3}$", // Formato 2: X.XXX
-                @"^[A-Z0-9]\.[A-Z0-9]{3}\.[A-Z0-9]{3}$", // Formato 3: X.XXX.XXX
-                @"^[A-Z0-9]\.[A-Z0-9]{3}\.[A-Z0-9]{3}\.[A-Z0-9]{4}$" // Formato 4: X.XXX.XXX.XXXX
+                @"^[A-Z0-9]{2}$", // Formato 1: XX
+                @"^[A-Z0-9]{2}\.[A-Z0-9]{3}$", // Formato 2: XX.XXX
+                @"^[A-Z0-9]{2}\.[A-Z0-9]{3}\.[A-Z0-9]{3}$", // Formato 3: XX.XXX.XXX
+                @"^[A-Z0-9]{2}\.[A-Z0-9]{3}\.[A-Z0-9]{3}\.[A-Z0-9]{4}$" // Formato 4: XX.XXX.XXX.XXXX
             };
 
             foreach (string formato in formatos)
@@ -82,10 +82,10 @@ namespace Contabilidade.Forms.Cadastros
             MessageBox.Show("O formato da conta informada está incorreto!\n" +
                 "\n" +
                 "Padrões definidos:\n" +
-                "X\n" +
-                "X.XXX\n" +
-                "X.XXX.XXX\n" +
-                "X.XXX.XXX.XXXX",
+                "XX\n" +
+                "XX.XXX\n" +
+                "XX.XXX.XXX\n" +
+                "XX.XXX.XXX.XXXX",
                 "Conta inválida",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning
@@ -119,19 +119,19 @@ namespace Contabilidade.Forms.Cadastros
                     txtConta.Focus();
                 }
                 // Se a conta for do tipo analítica mas tentou ser criada na "raiz" (apenas 1 número)
-                else if (Regex.IsMatch(txtConta.Text, @"^[A-Z0-9]$") && cbbNivel.SelectedIndex == 0)
+                else if (Regex.IsMatch(txtConta.Text, @"^[A-Z0-9]{2}$") && cbbNivel.SelectedIndex == 0)
                 {
                     MessageBox.Show("Não é possível ter uma conta analítica antes da sintética!", "'Numero/Tipo de conta inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     cbbNivel.Focus();
                 }
                 // Se a conta for do tipo analítica e tentou se criar antes da sintética
-                else if (!Regex.IsMatch(txtConta.Text, @"^[A-Z0-9]$") && cbbNivel.SelectedIndex == 0 && !frmContas.verificarContaSintetica(txtConta.Text))
+                else if (!Regex.IsMatch(txtConta.Text, @"^[A-Z0-9]{2}$") && cbbNivel.SelectedIndex == 0 && !frmContas.verificarContaSintetica(txtConta.Text))
                 {
                     MessageBox.Show("Não é possível ter uma conta analítica antes da sintética!", "'Numero/Tipo de conta inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     cbbNivel.Focus();
                 }
                 // Se a conta for do tipo sintética maior que 1 e não existe uma conta sintética de nível menor
-                else if (!Regex.IsMatch(txtConta.Text, @"^[A-Z0-9]$") && cbbNivel.SelectedIndex == 1 && !frmContas.verificarContaSintetica(txtConta.Text))
+                else if (!Regex.IsMatch(txtConta.Text, @"^[A-Z0-9]{2}$") && cbbNivel.SelectedIndex == 1 && !frmContas.verificarContaSintetica(txtConta.Text))
                 {
                     MessageBox.Show("Hierarquia de contas inválida!\n\nÉ preciso criar uma conta sintética de nível menor antes.", "'Numero de conta inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     cbbNivel.Focus();
@@ -188,27 +188,28 @@ namespace Contabilidade.Forms.Cadastros
             // Remove todos os caracteres não alfanuméricos
             string cleanInput = Regex.Replace(input, @"[^a-zA-Z0-9]", "");
 
-            if (cleanInput.Length == 1)
+            if (cleanInput.Length <= 2)
             {
-                return cleanInput;
+                return cleanInput; // Caso a string tenha 2 ou menos caracteres
             }
-            else if (cleanInput.Length <= 4)
+            else if (cleanInput.Length <= 5)
             {
-                return cleanInput.Insert(1, ".");
+                return cleanInput.Insert(2, ".");
             }
-            else if (cleanInput.Length <= 7)
+            else if (cleanInput.Length <= 8)
             {
-                return cleanInput.Insert(1, ".").Insert(5, ".");
+                return cleanInput.Insert(2, ".").Insert(6, ".");
             }
-            else if (cleanInput.Length <= 11)
+            else if (cleanInput.Length <= 12)
             {
-                return cleanInput.Insert(1, ".").Insert(5, ".").Insert(9, ".");
+                return cleanInput.Insert(2, ".").Insert(6, ".").Insert(10, ".");
             }
             else
             {
-                return cleanInput; // Caso a string seja maior que 11 caracteres
+                return cleanInput; // Caso a string seja maior que 12 caracteres
             }
         }
+
 
         private void txtConta_KeyPress(object sender, KeyPressEventArgs e)
         {

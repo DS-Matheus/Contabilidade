@@ -129,11 +129,19 @@ namespace Contabilidade
                 comando.ExecuteNonQuery();
 
                 // Criar tabela de contas
-                comando.CommandText = "CREATE TABLE IF NOT EXISTS contas (conta VARCHAR(14) PRIMARY KEY, descricao VARCHAR(100) NOT NULL, nivel CHAR(1) NOT NULL CHECK (nivel IN ('S', 'A')), saldo NUMERIC(15,2));";
+                comando.CommandText = "CREATE TABLE IF NOT EXISTS contas (conta VARCHAR(15) PRIMARY KEY, descricao VARCHAR(100) NOT NULL, nivel CHAR(1) NOT NULL CHECK (nivel IN ('S', 'A')), saldo NUMERIC(15,2) NOT NULL);";
                 comando.ExecuteNonQuery();
 
                 // Criar tabela de históricos
-                comando.CommandText = "CREATE TABLE IF NOT EXISTS historicos (id INTEGER PRIMARY KEY AUTOINCREMENT, historico VARCHAR(100) NOT NULL);";
+                comando.CommandText = "CREATE TABLE IF NOT EXISTS historicos (id INTEGER PRIMARY KEY AUTOINCREMENT, historico VARCHAR(100) NOT NULL UNIQUE);";
+                comando.ExecuteNonQuery();
+
+                // Criar tabela de lançamentos
+                comando.CommandText = "CREATE TABLE IF NOT EXISTS lancamentos (id INTEGER PRIMARY KEY AUTOINCREMENT, conta VARCHAR(15) NOT NULL, valor NUMERIC(15,2) NOT NULL, data DATE DEFAULT (DATE('now')), id_historico INTEGER NOT NULL, saldo_anterior NUMERIC(15,2) NOT NULL, saldo_atualizado NUMERIC(15,2) NOT NULL,\tFOREIGN KEY (conta) REFERENCES contas(conta), FOREIGN KEY (id_historico) REFERENCES historicos(id));";
+                comando.ExecuteNonQuery();
+
+                // Criar gatilho para definir valores de saldo
+                comando.CommandText = "CREATE TRIGGER set_saldos BEFORE INSERT ON lancamentos FOR EACH ROW BEGIN SELECT saldo FROM contas WHERE conta = NEW.conta INTO NEW.saldo_anterior; SET NEW.saldo_atualizado = NEW.saldo_anterior + NEW.valor; END;";
                 comando.ExecuteNonQuery();
 
                 carregarBDs();

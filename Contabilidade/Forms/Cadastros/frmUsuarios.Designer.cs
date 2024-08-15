@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             dgvUsuarios = new DataGridView();
             btnCriar = new Button();
             btnExcluir = new Button();
@@ -133,6 +134,8 @@
             // 
             ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             ID.DataPropertyName = "id";
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            ID.DefaultCellStyle = dataGridViewCellStyle1;
             ID.HeaderText = "ID";
             ID.Name = "ID";
             ID.ReadOnly = true;
