@@ -1,6 +1,6 @@
 ﻿namespace Contabilidade.Forms.Lancamentos
 {
-    partial class frmMovimentacao
+    partial class frmLancamentos
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             groupBox1 = new GroupBox();
             txtFiltrar2 = new TextBox();
             cbbFiltrar2 = new ComboBox();
@@ -38,15 +38,15 @@
             btnEditar = new Button();
             btnExcluir = new Button();
             btnCriar = new Button();
-            dgvMovimentacao = new DataGridView();
+            dgvLancamentos = new DataGridView();
             ID = new DataGridViewTextBoxColumn();
+            Data = new DataGridViewTextBoxColumn();
             Conta = new DataGridViewTextBoxColumn();
             Descrição = new DataGridViewTextBoxColumn();
             Valor = new DataGridViewTextBoxColumn();
-            Data = new DataGridViewTextBoxColumn();
             Histórico = new DataGridViewTextBoxColumn();
             groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvMovimentacao).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvLancamentos).BeginInit();
             SuspendLayout();
             // 
             // groupBox1
@@ -131,37 +131,46 @@
             btnCriar.TabIndex = 21;
             btnCriar.Text = "Criar";
             btnCriar.UseVisualStyleBackColor = true;
+            btnCriar.Click += btnCriar_Click;
             // 
-            // dgvMovimentacao
+            // dgvLancamentos
             // 
-            dgvMovimentacao.AllowUserToAddRows = false;
-            dgvMovimentacao.AllowUserToDeleteRows = false;
-            dgvMovimentacao.AllowUserToOrderColumns = true;
-            dgvMovimentacao.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvMovimentacao.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvMovimentacao.Columns.AddRange(new DataGridViewColumn[] { ID, Conta, Descrição, Valor, Data, Histórico });
-            dgvMovimentacao.Location = new Point(12, 12);
-            dgvMovimentacao.MultiSelect = false;
-            dgvMovimentacao.Name = "dgvMovimentacao";
-            dgvMovimentacao.ReadOnly = true;
-            dgvMovimentacao.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvMovimentacao.Size = new Size(856, 391);
-            dgvMovimentacao.TabIndex = 20;
+            dgvLancamentos.AllowUserToAddRows = false;
+            dgvLancamentos.AllowUserToDeleteRows = false;
+            dgvLancamentos.AllowUserToOrderColumns = true;
+            dgvLancamentos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvLancamentos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvLancamentos.Columns.AddRange(new DataGridViewColumn[] { ID, Data, Conta, Descrição, Valor, Histórico });
+            dgvLancamentos.Location = new Point(12, 12);
+            dgvLancamentos.MultiSelect = false;
+            dgvLancamentos.Name = "dgvLancamentos";
+            dgvLancamentos.ReadOnly = true;
+            dgvLancamentos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvLancamentos.Size = new Size(856, 391);
+            dgvLancamentos.TabIndex = 20;
             // 
             // ID
             // 
             ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             ID.DataPropertyName = "id";
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            ID.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            ID.DefaultCellStyle = dataGridViewCellStyle1;
             ID.HeaderText = "ID";
             ID.Name = "ID";
             ID.ReadOnly = true;
+            ID.Visible = false;
             ID.Width = 43;
+            // 
+            // Data
+            // 
+            Data.DataPropertyName = "data";
+            Data.HeaderText = "Data";
+            Data.Name = "Data";
+            Data.ReadOnly = true;
             // 
             // Conta
             // 
-            Conta.DataPropertyName = "fk_conta";
+            Conta.DataPropertyName = "conta";
             Conta.HeaderText = "Conta";
             Conta.Name = "Conta";
             Conta.ReadOnly = true;
@@ -180,13 +189,6 @@
             Valor.Name = "Valor";
             Valor.ReadOnly = true;
             // 
-            // Data
-            // 
-            Data.DataPropertyName = "data";
-            Data.HeaderText = "Data";
-            Data.Name = "Data";
-            Data.ReadOnly = true;
-            // 
             // Histórico
             // 
             Histórico.DataPropertyName = "historico";
@@ -194,7 +196,7 @@
             Histórico.Name = "Histórico";
             Histórico.ReadOnly = true;
             // 
-            // frmMovimentacao
+            // frmLancamentos
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -204,13 +206,13 @@
             Controls.Add(btnEditar);
             Controls.Add(btnExcluir);
             Controls.Add(btnCriar);
-            Controls.Add(dgvMovimentacao);
+            Controls.Add(dgvLancamentos);
             FormBorderStyle = FormBorderStyle.None;
-            Name = "frmMovimentacao";
+            Name = "frmLancamentos";
             Text = "Movimentação";
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvMovimentacao).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvLancamentos).EndInit();
             ResumeLayout(false);
         }
 
@@ -222,15 +224,15 @@
         private Button btnEditar;
         private Button btnExcluir;
         private Button btnCriar;
-        private DataGridView dgvMovimentacao;
+        private DataGridView dgvLancamentos;
         private ComboBox cbbFiltrar;
         private TextBox txtFiltrar2;
         private ComboBox cbbFiltrar2;
         private DataGridViewTextBoxColumn ID;
+        private DataGridViewTextBoxColumn Data;
         private DataGridViewTextBoxColumn Conta;
         private DataGridViewTextBoxColumn Descrição;
         private DataGridViewTextBoxColumn Valor;
-        private DataGridViewTextBoxColumn Data;
         private DataGridViewTextBoxColumn Histórico;
     }
 }

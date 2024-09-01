@@ -106,17 +106,17 @@ namespace Contabilidade
 
         private void criarBD()
         {
-            caminhoBD = $"{pastaDatabases}\\{nomeBD}";
+            string caminhoBD = $"{pastaDatabases}\\{nomeBD}";
+
+            // Criar banco
+            SQLiteConnection.CreateFile(caminhoBD);
+
+            // Conectar ao banco
+            Conexao con = new Conexao(caminhoBD);
+            con.conectar();
 
             try
             {
-                // Criar banco
-                SQLiteConnection.CreateFile(caminhoBD);
-
-                // Conectar ao banco
-                Conexao con = new Conexao(caminhoBD);
-                con.conectar();
-
                 // Criar tabela de usuários
                 string sql = "CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY AUTOINCREMENT, nome VARCHAR(20) NOT NULL UNIQUE, senha VARCHAR(30) NOT NULL);";
                 SQLiteCommand comando = new SQLiteCommand(sql, con.conn);
@@ -129,7 +129,7 @@ namespace Contabilidade
                 comando.ExecuteNonQuery();
 
                 // Criar tabela de contas
-                comando.CommandText = "CREATE TABLE IF NOT EXISTS contas (conta VARCHAR(15) PRIMARY KEY, descricao VARCHAR(100) NOT NULL, nivel CHAR(1) NOT NULL CHECK (nivel IN ('S', 'A')), saldo NUMERIC(15,2) NOT NULL);";
+                comando.CommandText = "CREATE TABLE IF NOT EXISTS contas (conta VARCHAR(15) PRIMARY KEY, descricao VARCHAR(100) NOT NULL, nivel CHAR(1) NOT NULL CHECK (nivel IN ('S', 'A')), saldo NUMERIC(15,2));";
                 comando.ExecuteNonQuery();
 
                 // Criar tabela de históricos
@@ -137,11 +137,7 @@ namespace Contabilidade
                 comando.ExecuteNonQuery();
 
                 // Criar tabela de lançamentos
-                comando.CommandText = "CREATE TABLE IF NOT EXISTS lancamentos (id INTEGER PRIMARY KEY AUTOINCREMENT, conta VARCHAR(15) NOT NULL, valor NUMERIC(15,2) NOT NULL, data DATE DEFAULT (DATE('now')), id_historico INTEGER NOT NULL, saldo_anterior NUMERIC(15,2) NOT NULL, saldo_atualizado NUMERIC(15,2) NOT NULL,\tFOREIGN KEY (conta) REFERENCES contas(conta), FOREIGN KEY (id_historico) REFERENCES historicos(id));";
-                comando.ExecuteNonQuery();
-
-                // Criar gatilho para definir valores de saldo
-                comando.CommandText = "CREATE TRIGGER set_saldos BEFORE INSERT ON lancamentos FOR EACH ROW BEGIN SELECT saldo FROM contas WHERE conta = NEW.conta INTO NEW.saldo_anterior; SET NEW.saldo_atualizado = NEW.saldo_anterior + NEW.valor; END;";
+                comando.CommandText = "CREATE TABLE IF NOT EXISTS lancamentos (id INTEGER PRIMARY KEY AUTOINCREMENT, conta VARCHAR(15) NOT NULL, valor NUMERIC(15,2) NOT NULL, data DATE DEFAULT (DATE('now')), id_historico INTEGER NOT NULL, saldo_anterior NUMERIC(15,2) NOT NULL, saldo_atualizado NUMERIC(15,2) NOT NULL, FOREIGN KEY (conta) REFERENCES contas(conta), FOREIGN KEY (id_historico) REFERENCES historicos(id));";
                 comando.ExecuteNonQuery();
 
                 carregarBDs();
@@ -166,6 +162,7 @@ namespace Contabilidade
                 {
                     try
                     {
+                        con.excluir();
                         File.Delete(caminhoBD);
                     }
                     catch (Exception erro)

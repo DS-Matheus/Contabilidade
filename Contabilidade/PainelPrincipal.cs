@@ -313,7 +313,7 @@ namespace Contabilidade
 
         private void btnMovimentacao_Click(object sender, EventArgs e)
         {
-            abrirFormulario(new Forms.Lancamentos.frmMovimentacao(), sender, "lançamentos");
+            abrirFormulario(new Forms.Lancamentos.frmLancamentos(con), sender, "lançamentos");
         }
 
         private void btnTransporte_Click(object sender, EventArgs e)

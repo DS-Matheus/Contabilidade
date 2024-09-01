@@ -42,8 +42,8 @@
             btnEditar = new Button();
             btnExcluir = new Button();
             btnCriar = new Button();
-            Conta = new DataGridViewTextBoxColumn();
             Nível = new DataGridViewTextBoxColumn();
+            Conta = new DataGridViewTextBoxColumn();
             Descrição = new DataGridViewTextBoxColumn();
             Saldo = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgvContas).BeginInit();
@@ -57,7 +57,7 @@
             dgvContas.AllowUserToOrderColumns = true;
             dgvContas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvContas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvContas.Columns.AddRange(new DataGridViewColumn[] { Conta, Nível, Descrição, Saldo });
+            dgvContas.Columns.AddRange(new DataGridViewColumn[] { Nível, Conta, Descrição, Saldo });
             dgvContas.Location = new Point(12, 12);
             dgvContas.MultiSelect = false;
             dgvContas.Name = "dgvContas";
@@ -157,27 +157,27 @@
             btnCriar.UseVisualStyleBackColor = true;
             btnCriar.Click += btnCriar_Click;
             // 
-            // Conta
-            // 
-            Conta.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            Conta.DataPropertyName = "conta";
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Conta.DefaultCellStyle = dataGridViewCellStyle1;
-            Conta.HeaderText = "Conta";
-            Conta.Name = "Conta";
-            Conta.ReadOnly = true;
-            Conta.Width = 64;
-            // 
             // Nível
             // 
             Nível.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             Nível.DataPropertyName = "nivel";
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Nível.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            Nível.DefaultCellStyle = dataGridViewCellStyle1;
             Nível.HeaderText = "Nível";
             Nível.Name = "Nível";
             Nível.ReadOnly = true;
             Nível.Width = 59;
+            // 
+            // Conta
+            // 
+            Conta.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            Conta.DataPropertyName = "conta";
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            Conta.DefaultCellStyle = dataGridViewCellStyle2;
+            Conta.HeaderText = "Conta";
+            Conta.Name = "Conta";
+            Conta.ReadOnly = true;
+            Conta.Width = 64;
             // 
             // Descrição
             // 
@@ -232,8 +232,8 @@
         private Button btnCriar;
         private TextBox txtFiltrar2;
         private ComboBox cbbNivel;
-        private DataGridViewTextBoxColumn Conta;
         private DataGridViewTextBoxColumn Nível;
+        private DataGridViewTextBoxColumn Conta;
         private DataGridViewTextBoxColumn Descrição;
         private DataGridViewTextBoxColumn Saldo;
     }
