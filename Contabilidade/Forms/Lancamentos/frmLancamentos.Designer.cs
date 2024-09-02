@@ -45,6 +45,7 @@
             Descrição = new DataGridViewTextBoxColumn();
             Valor = new DataGridViewTextBoxColumn();
             Histórico = new DataGridViewTextBoxColumn();
+            btnCalcular = new Button();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvLancamentos).BeginInit();
             SuspendLayout();
@@ -118,7 +119,7 @@
             // 
             btnExcluir.Location = new Point(268, 419);
             btnExcluir.Name = "btnExcluir";
-            btnExcluir.Size = new Size(250, 30);
+            btnExcluir.Size = new Size(120, 30);
             btnExcluir.TabIndex = 22;
             btnExcluir.Text = "Excluir";
             btnExcluir.UseVisualStyleBackColor = true;
@@ -159,7 +160,6 @@
             ID.Name = "ID";
             ID.ReadOnly = true;
             ID.Visible = false;
-            ID.Width = 43;
             // 
             // Data
             // 
@@ -196,11 +196,21 @@
             Histórico.Name = "Histórico";
             Histórico.ReadOnly = true;
             // 
+            // btnCalcular
+            // 
+            btnCalcular.Location = new Point(398, 419);
+            btnCalcular.Name = "btnCalcular";
+            btnCalcular.Size = new Size(120, 30);
+            btnCalcular.TabIndex = 26;
+            btnCalcular.Text = "Calcular";
+            btnCalcular.UseVisualStyleBackColor = true;
+            // 
             // frmLancamentos
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(880, 500);
+            Controls.Add(btnCalcular);
             Controls.Add(groupBox1);
             Controls.Add(btnImprimir);
             Controls.Add(btnEditar);
@@ -234,5 +244,6 @@
         private DataGridViewTextBoxColumn Descrição;
         private DataGridViewTextBoxColumn Valor;
         private DataGridViewTextBoxColumn Histórico;
+        private Button btnCalcular;
     }
 }
