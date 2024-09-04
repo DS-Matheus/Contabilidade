@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Contabilidade.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,9 +13,12 @@ namespace Contabilidade.Forms.Relatorios
 {
     public partial class frmRelDiario : Form
     {
-        public frmRelDiario()
+        Conexao con;
+        public frmRelDiario(Conexao conexaoBanco)
         {
             InitializeComponent();
+
+            con = conexaoBanco;
         }
     }
 }

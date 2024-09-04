@@ -254,7 +254,7 @@ namespace Contabilidade.Forms.Lancamentos
                 if (IsNumeric(txtFiltrar.Text) && IsNumeric(txtFiltrar2.Text))
                 {
                     var valores = ObterMenorEMaior(int.Parse(txtFiltrar.Text), int.Parse(txtFiltrar2.Text));
-                    dv.RowFilter = $"saldo BETWEEN {valores.Item1} AND {valores.Item2}";
+                    dv.RowFilter = $"saldo >= {valores.Item1} AND saldo <= {valores.Item2}";
                     dgvContas.DataSource = dv;
                 }
             }
@@ -392,11 +392,20 @@ namespace Contabilidade.Forms.Lancamentos
             {
                 DataGridViewRow row = dgvContas.Rows[e.RowIndex];
 
-                frmLancamentosDados.conta = row.Cells["Conta"].Value.ToString();
-                frmLancamentosDados.descricao = row.Cells["Descrição"].Value.ToString();
+                // Verificar o tipo da conta para não permitir a seleção de contas sintéticas
+                var tipoConta = row.Cells["Nível"].Value.ToString();
+                if (tipoConta == "A")
+                {
+                    frmLancamentosDados.conta = row.Cells["Conta"].Value.ToString();
+                    frmLancamentosDados.descricao = row.Cells["Descrição"].Value.ToString();
 
-                this.DialogResult = DialogResult.OK;
-                this.Dispose();
+                    this.DialogResult = DialogResult.OK;
+                    this.Dispose();
+                }
+                else
+                {
+                    MessageBox.Show("Não é possível fazer lançamentos em contas do tipo sintético (S), por favor, selecione uma conta analítica (A)","O tipo da conta selecionada é inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
         }
     }

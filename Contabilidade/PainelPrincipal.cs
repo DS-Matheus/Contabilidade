@@ -328,27 +328,27 @@ namespace Contabilidade
 
         private void btnRelDiario_Click(object sender, EventArgs e)
         {
-            abrirFormulario(new Forms.Relatorios.frmRelDiario(), sender, "relatórios");
+            abrirFormulario(new Forms.Relatorios.frmRelDiario(con), sender, "relatórios");
         }
 
         private void btnRelAnalitico_Click(object sender, EventArgs e)
         {
-            abrirFormulario(new Forms.Relatorios.frmRelAnalitico(), sender, "relatórios");
+            abrirFormulario(new Forms.Relatorios.frmRelAnalitico(con), sender, "relatórios");
         }
 
         private void btnBalanceteGeral_Click(object sender, EventArgs e)
         {
-            abrirFormulario(new Forms.Relatorios.frmBalanceteGeral(), sender, "relatórios");
+            abrirFormulario(new Forms.Relatorios.frmBalanceteGeral(con), sender, "relatórios");
         }
 
         private void btnBalanceteConta_Click(object sender, EventArgs e)
         {
-            abrirFormulario(new Forms.Relatorios.frmBalanceteConta(), sender, "relatórios");
+            abrirFormulario(new Forms.Relatorios.frmBalanceteConta(con), sender, "relatórios");
         }
 
         private void btnSaldo_Click(object sender, EventArgs e)
         {
-            abrirFormulario(new Forms.Relatorios.frmSaldo(), sender, "relatórios");
+            abrirFormulario(new Forms.Relatorios.frmSaldo(con), sender, "relatórios");
         }
 
         private void btnLogoff_Click(object sender, EventArgs e)
