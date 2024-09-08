@@ -323,6 +323,7 @@
             Controls.Add(pnlBarraTitulo);
             FormBorderStyle = FormBorderStyle.None;
             Name = "frmLancamentosDadosContas";
+            StartPosition = FormStartPosition.CenterParent;
             Text = "frmLancamentosDadosContas";
             pnlBarraTitulo.ResumeLayout(false);
             pnlBarraTitulo.PerformLayout();

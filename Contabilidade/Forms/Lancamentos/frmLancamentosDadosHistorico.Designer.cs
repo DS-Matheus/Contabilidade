@@ -187,6 +187,7 @@
             Controls.Add(pnlBarraTitulo);
             FormBorderStyle = FormBorderStyle.None;
             Name = "frmLancamentosDadosHistorico";
+            StartPosition = FormStartPosition.CenterParent;
             Text = "frmLancamentosDadosHistorico";
             pnlBarraTitulo.ResumeLayout(false);
             pnlBarraTitulo.PerformLayout();

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Contabilidade.Forms.Relatorios
 {
@@ -17,6 +18,7 @@ namespace Contabilidade.Forms.Relatorios
         Conexao con;
         static DataTable dtDados = new DataTable();
         DataView dv = dtDados.DefaultView;
+        private string nivel = "";
         public frmSaldo(Conexao conaxaoBanco)
         {
             InitializeComponent();
@@ -169,6 +171,7 @@ namespace Contabilidade.Forms.Relatorios
             {
                 DataGridViewRow row = dgvContas.Rows[e.RowIndex];
                 txtConta.Text = row.Cells["Conta"].Value.ToString();
+                nivel = row.Cells["Nível"].Value.ToString();
             }
         }
 
@@ -181,7 +184,28 @@ namespace Contabilidade.Forms.Relatorios
             }
             else
             {
+                var sql = "";
+                if (nivel == "S")
+                {
+                    sql = "SELECT l.conta, c.descricao, l.saldo_atualizado FROM (SELECT l.conta, l.saldo_atualizado, ROW_NUMBER() OVER (PARTITION BY l.conta ORDER BY l.data DESC, l.id DESC) AS rn FROM lancamentos l) l JOIN contas c ON l.conta = c.conta WHERE l.rn = 1 AND l.conta LIKE @conta || '%' ORDER BY l.conta;";
+                }
+                else
+                {
+                    sql = "SELECT c.descricao, COALESCE((SELECT l.saldo_atualizado FROM lancamentos l WHERE l.conta = @conta AND l.data <= @data ORDER BY l.data DESC, l.id DESC LIMIT 1), 0) AS saldo_atualizado FROM contas c WHERE c.conta = @conta;";
+                }
+                var comando = new SQLiteCommand(sql, con.conn);
+                comando.Parameters.AddWithValue("@data", dtpData.Value);
+                comando.Parameters.AddWithValue("@conta", txtConta.Text);
 
+                // Criar uma instância do formulário de dados e aguardar um retorno
+                using (var frmDados = new frmExibirRelatorio("Criar usuário", comando))
+                {
+                    // O usuário apertou o botão de salvar
+                    if (frmDados.ShowDialog() == DialogResult.OK)
+                    {
+                        nivel = "";
+                    }
+                }
             }
         }
     }

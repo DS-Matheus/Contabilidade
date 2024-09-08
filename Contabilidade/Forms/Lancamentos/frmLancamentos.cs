@@ -70,10 +70,11 @@ public frmLancamentos(Conexao conexaoBanco)
                     if (diferenciaDias < 0)
                     {
                         // Obter valor de saldo da conta antes do lançamento
-                        string sql = "SELECT saldo_atualizado FROM lancamentos WHERE data <= @data ORDER BY data DESC, id DESC LIMIT 1;";
+                        string sql = "SELECT saldo_atualizado FROM lancamentos WHERE data <= @data and conta = @conta ORDER BY data DESC, id DESC LIMIT 1;";
                         using (var comando = new SQLiteCommand(sql, con.conn))
                         {
                             comando.Parameters.AddWithValue("@data", data);
+                            comando.Parameters.AddWithValue("@conta", conta);
 
                             using (SQLiteDataReader reader = comando.ExecuteReader())
                             {
@@ -100,9 +101,10 @@ public frmLancamentos(Conexao conexaoBanco)
                             if (retornoBD > 0)
                             {
                                 // Seleciona todos os registros após a data especificada para atualizar os valores de saldo_anterior e saldo_atualizado (após)
-                                comando.CommandText = "SELECT id, saldo_anterior, saldo_atualizado FROM lancamentos WHERE data > @data";
+                                comando.CommandText = "SELECT id, saldo_anterior, saldo_atualizado FROM lancamentos WHERE data > @data and conta = @conta";
                                 comando.Parameters.Clear();
                                 comando.Parameters.AddWithValue("@data", data);
+                                comando.Parameters.AddWithValue("@conta", conta);
 
                                 // Inicia leitor de registros
                                 using (var reader = comando.ExecuteReader())
