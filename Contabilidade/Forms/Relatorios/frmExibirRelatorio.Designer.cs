@@ -39,6 +39,8 @@
             // 
             // dgvRelatorio
             // 
+            dgvRelatorio.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvRelatorio.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             dgvRelatorio.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvRelatorio.Location = new Point(12, 12);
             dgvRelatorio.Name = "dgvRelatorio";
