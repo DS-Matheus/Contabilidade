@@ -28,21 +28,22 @@
         /// </summary>
         private void InitializeComponent()
         {
-            button1 = new Button();
+            btnVisualizar = new Button();
             label3 = new Label();
             label2 = new Label();
             dtpFinal = new DateTimePicker();
             dtpInicial = new DateTimePicker();
             SuspendLayout();
             // 
-            // button1
+            // btnVisualizar
             // 
-            button1.Location = new Point(315, 277);
-            button1.Name = "button1";
-            button1.Size = new Size(250, 38);
-            button1.TabIndex = 31;
-            button1.Text = "Visualizar relatório";
-            button1.UseVisualStyleBackColor = true;
+            btnVisualizar.Location = new Point(315, 277);
+            btnVisualizar.Name = "btnVisualizar";
+            btnVisualizar.Size = new Size(250, 38);
+            btnVisualizar.TabIndex = 31;
+            btnVisualizar.Text = "Visualizar relatório";
+            btnVisualizar.UseVisualStyleBackColor = true;
+            btnVisualizar.Click += btnVisualizar_Click;
             // 
             // label3
             // 
@@ -81,7 +82,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(880, 500);
-            Controls.Add(button1);
+            Controls.Add(btnVisualizar);
             Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(dtpFinal);
@@ -95,7 +96,7 @@
 
         #endregion
 
-        private Button button1;
+        private Button btnVisualizar;
         private Label label3;
         private Label label2;
         private DateTimePicker dtpFinal;

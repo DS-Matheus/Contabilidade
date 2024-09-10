@@ -25,7 +25,7 @@ namespace Contabilidade.Forms.Relatorios
 
             con = conaxaoBanco;
 
-            // Defina a propriedade MaxDate para a data atual
+            // Defina a propriedade MaxDate para az data atual
             dtpData.MaxDate = DateTime.Today;
 
             atualizarDataGrid();
@@ -198,7 +198,7 @@ namespace Contabilidade.Forms.Relatorios
                 comando.Parameters.AddWithValue("@conta", txtConta.Text);
 
                 // Criar uma instância do formulário de dados e aguardar um retorno
-                using (var frmDados = new frmExibirRelatorio("Criar usuário", comando))
+                using (var frmDados = new frmExibirRelatorio("Relatório de Saldo", comando))
                 {
                     // O usuário apertou o botão de salvar
                     if (frmDados.ShowDialog() == DialogResult.OK)
