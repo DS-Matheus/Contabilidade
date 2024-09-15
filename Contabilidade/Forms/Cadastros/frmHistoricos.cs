@@ -173,5 +173,10 @@ namespace Contabilidade.Forms.Cadastros
                 printer.PrintDataGridView(dgvHistoricos);
             }
         }
+
+        private void btnExcluir_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

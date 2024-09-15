@@ -157,7 +157,7 @@
             // 
             txtConta.Location = new Point(25, 43);
             txtConta.Margin = new Padding(25, 3, 3, 3);
-            txtConta.MaxLength = 14;
+            txtConta.MaxLength = 15;
             txtConta.Name = "txtConta";
             txtConta.Size = new Size(171, 23);
             txtConta.TabIndex = 1;

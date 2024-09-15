@@ -17,20 +17,20 @@ namespace Contabilidade.Forms.Relatorios
 {
     public partial class frmRelDiario : Form
     {
-        private class Lancamento
-        {
-            public string Conta { get; set; }
-            public string Descricao { get; set; }
-            public string Historico { get; set; }
-            public decimal Valor { get; set; }
-        }
-
         Conexao con;
         public frmRelDiario(Conexao conexaoBanco)
         {
             InitializeComponent();
 
             con = conexaoBanco;
+        }
+
+        private class Lancamento
+        {
+            public string Conta { get; set; }
+            public string Descricao { get; set; }
+            public string Historico { get; set; }
+            public decimal Valor { get; set; }
         }
 
         private void btnVisualizar_Click(object sender, EventArgs e)
@@ -91,12 +91,6 @@ namespace Contabilidade.Forms.Relatorios
 
                 // Fechando o documento
                 document.Close();
-
-                // Exibir os valores no console
-                //foreach (var lancamento in listLancamentos)
-                //{
-                //    Console.WriteLine($"Conta: {lancamento.Conta}, Descrição: {lancamento.Descricao}, Histórico: {lancamento.Historico}, Valor: {lancamento.Valor}");
-                //}
             }
         }
     }

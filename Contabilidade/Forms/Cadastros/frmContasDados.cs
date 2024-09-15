@@ -136,6 +136,12 @@ namespace Contabilidade.Forms.Cadastros
                     MessageBox.Show("Hierarquia de contas inválida!\n\nÉ preciso criar uma conta sintética de nível menor antes.", "'Numero de conta inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     cbbNivel.Focus();
                 }
+                // Se a conta seguir o padrão xx.xxx.xxx.xxxx e for do tipo sintética
+                else if (Regex.IsMatch(txtConta.Text, @"^[A-Z0-9]{2}\.[A-Z0-9]{3}\.[A-Z0-9]{3}\.[A-Z0-9]{4}$") && cbbNivel.SelectedIndex == 1)
+                {
+                    MessageBox.Show("Hierarquia de contas inválida!\n\nNão é possível criar uma conta sintética no último nível de conta, apenas analíticas.", "Número de conta inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    cbbNivel.Focus();
+                }
                 else
                 {
                     var tipoConta = getTipoConta(cbbNivel.SelectedIndex);

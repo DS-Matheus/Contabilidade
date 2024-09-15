@@ -28,10 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle10 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle11 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle12 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             groupBox1 = new GroupBox();
             cbbNivel = new ComboBox();
             txtFiltrar2 = new TextBox();
@@ -47,6 +47,8 @@
             dtpData = new DateTimePicker();
             label1 = new Label();
             txtConta = new TextBox();
+            label3 = new Label();
+            txtSubtitulo = new TextBox();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvContas).BeginInit();
             SuspendLayout();
@@ -124,8 +126,8 @@
             // 
             Nível.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             Nível.DataPropertyName = "nivel";
-            dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Nível.DefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            Nível.DefaultCellStyle = dataGridViewCellStyle1;
             Nível.HeaderText = "Nível";
             Nível.Name = "Nível";
             Nível.ReadOnly = true;
@@ -135,8 +137,8 @@
             // 
             Conta.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             Conta.DataPropertyName = "conta";
-            dataGridViewCellStyle10.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Conta.DefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            Conta.DefaultCellStyle = dataGridViewCellStyle2;
             Conta.HeaderText = "Conta";
             Conta.Name = "Conta";
             Conta.ReadOnly = true;
@@ -146,8 +148,8 @@
             // 
             Descrição.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             Descrição.DataPropertyName = "descricao";
-            dataGridViewCellStyle11.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            Descrição.DefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            Descrição.DefaultCellStyle = dataGridViewCellStyle3;
             Descrição.HeaderText = "Descrição";
             Descrição.Name = "Descrição";
             Descrição.ReadOnly = true;
@@ -156,8 +158,8 @@
             // 
             Saldo.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             Saldo.DataPropertyName = "saldo";
-            dataGridViewCellStyle12.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Saldo.DefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            Saldo.DefaultCellStyle = dataGridViewCellStyle4;
             Saldo.HeaderText = "Saldo";
             Saldo.Name = "Saldo";
             Saldo.ReadOnly = true;
@@ -176,7 +178,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(268, 447);
+            label2.Location = new Point(423, 403);
             label2.Name = "label2";
             label2.Size = new Size(31, 15);
             label2.TabIndex = 38;
@@ -184,7 +186,7 @@
             // 
             // dtpData
             // 
-            dtpData.Location = new Point(268, 465);
+            dtpData.Location = new Point(423, 421);
             dtpData.Name = "dtpData";
             dtpData.Size = new Size(264, 23);
             dtpData.TabIndex = 36;
@@ -206,11 +208,30 @@
             txtConta.Size = new Size(149, 23);
             txtConta.TabIndex = 34;
             // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(268, 447);
+            label3.Name = "label3";
+            label3.Size = new Size(131, 15);
+            label3.TabIndex = 48;
+            label3.Text = "Subtítulo personalizado";
+            // 
+            // txtSubtitulo
+            // 
+            txtSubtitulo.Location = new Point(268, 465);
+            txtSubtitulo.MaxLength = 86;
+            txtSubtitulo.Name = "txtSubtitulo";
+            txtSubtitulo.Size = new Size(419, 23);
+            txtSubtitulo.TabIndex = 47;
+            // 
             // frmSaldo
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(880, 500);
+            Controls.Add(label3);
+            Controls.Add(txtSubtitulo);
             Controls.Add(groupBox1);
             Controls.Add(dgvContas);
             Controls.Add(btnVisualizar);
@@ -245,5 +266,7 @@
         private DateTimePicker dtpData;
         private Label label1;
         private TextBox txtConta;
+        private Label label3;
+        private TextBox txtSubtitulo;
     }
 }

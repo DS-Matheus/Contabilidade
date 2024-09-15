@@ -167,7 +167,7 @@ namespace Contabilidade.Forms.Cadastros
 
         public static bool verificarExistenciaConta(string conta)
         {
-            return dtDados.AsEnumerable().Any(row => conta == row.Field<string>("conta"));
+            return dtDados.AsEnumerable().Any(row => conta == row.Field<string>("conta") && row.Field<string>("nivel") == "S");
         }
 
         public static bool verificarContaSintetica(string conta)
@@ -269,7 +269,7 @@ namespace Contabilidade.Forms.Cadastros
         {
             // Obter conta selecionada
             int numLinha = frmUsuarios.obterNumLinhaSelecionada(dgvContas);
-            var (conta, descricaoAntiga, nivel)  = obterDadosDGV(numLinha);
+            var (conta, descricaoAntiga, nivel) = obterDadosDGV(numLinha);
 
             // Criar uma instância do formulário de dados e aguardar um retorno
             using (var frmDados = new frmContasDados("Editar Conta", conta, descricaoAntiga, nivel, 1))
@@ -305,6 +305,11 @@ namespace Contabilidade.Forms.Cadastros
                     }
                 }
             }
+        }
+
+        private void btnExcluir_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
