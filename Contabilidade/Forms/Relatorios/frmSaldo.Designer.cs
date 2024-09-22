@@ -220,7 +220,7 @@
             // txtSubtitulo
             // 
             txtSubtitulo.Location = new Point(268, 465);
-            txtSubtitulo.MaxLength = 86;
+            txtSubtitulo.MaxLength = 110;
             txtSubtitulo.Name = "txtSubtitulo";
             txtSubtitulo.Size = new Size(419, 23);
             txtSubtitulo.TabIndex = 47;

@@ -187,7 +187,7 @@ namespace Contabilidade.Forms.Relatorios
         }
 
         // Função para dividir a descrição
-        public static string[] DividirDescricao(string descricao, int limite)
+        public static string[] DividirDescricao(string descricao, int limiteComEspaco)
         {
             string[] palavras = descricao.Split(' ');
             StringBuilder linha1 = new StringBuilder();
@@ -198,7 +198,7 @@ namespace Contabilidade.Forms.Relatorios
             foreach (string palavra in palavras)
             {
                 // Se ao adicionar mais uma palavra o tamanho for menor ou igual ao limite: adicionar com espaço
-                if ((comprimentoAtual + palavra.Length + 1) <= limite)
+                if ((comprimentoAtual + palavra.Length + 1) <= limiteComEspaco)
                 {
                     linha1.Append(palavra + " ");
                     comprimentoAtual += palavra.Length + 1;
@@ -207,12 +207,12 @@ namespace Contabilidade.Forms.Relatorios
                 else
                 {
                     // Travar a inserção de palavras muito pequenas na linha 1
-                    comprimentoAtual = limite;
+                    comprimentoAtual = limiteComEspaco;
                     linha2.Append(palavra + " ");
                 }
             }
 
-            return new string[] { linha1.ToString().PadRight(limite), linha2.ToString().PadRight(limite) };
+            return new string[] { linha1.ToString().PadRight(limiteComEspaco), linha2.ToString().PadRight(limiteComEspaco) };
         }
 
         private void btnVisualizar_Click(object sender, EventArgs e)
@@ -270,7 +270,7 @@ namespace Contabilidade.Forms.Relatorios
                             string pdfPath = saveFileDialog.FileName;
 
                             // Criação do documento
-                            Document pdf = new Document(PageSize.A4, 36, 36, 36, 36); // Margens padrão (36 pontos)
+                            Document pdf = new Document(PageSize.A4, 25, 25, 25, 25); // Margens padrão (36 pontos)
 
                             // Caminho do arquivo de fonte Consolas
                             string fontPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Fontes", "consola.ttf");
@@ -293,11 +293,11 @@ namespace Contabilidade.Forms.Relatorios
 
                                 // Configuração da fonte Consola
                                 BaseFont bf = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-                                var fonte = new iTextSharp.text.Font(bf, 11);
+                                var fonte = new iTextSharp.text.Font(bf, 9);
 
                                 // Obter data formatada                    
                                 string dataFormatada = $"{data:dd}/{data:MM}/{data:yyyy}";
-                                var linhasDisponiveis = 45;
+                                var linhasDisponiveis = 57;
 
                                 // Operações com o subtítulo
                                 string subtitulo = "";
@@ -305,7 +305,7 @@ namespace Contabilidade.Forms.Relatorios
                                 {
                                     subtitulo = txtSubtitulo.Text;
 
-                                    int espacosTotais = 86 - subtitulo.Length;
+                                    int espacosTotais = 110 - subtitulo.Length;
                                     int espacosAntes = (int)Math.Ceiling(espacosTotais / 2.0);
                                     int espacosDepois = espacosTotais - espacosAntes;
 
@@ -316,11 +316,11 @@ namespace Contabilidade.Forms.Relatorios
                                 void adicionarCabecalho(string subtitulo)
                                 {
                                     // Adicionando parágrafos ao documento
-                                    pdf.Add(new Paragraph($"                           LISTAGEM DE SALDOS - {dataFormatada}                 PÁGINA: {(pdf.PageNumber + 1).ToString("D3")}", fonte));
-                                    pdf.Add(new Paragraph($"{subtitulo.PadLeft(86)}", fonte));
-                                    pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
-                                    pdf.Add(new Paragraph("CONTA           DESCRIÇÃO                                                        SALDO", fonte));
-                                    pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
+                                    pdf.Add(new Paragraph($"                                       LISTAGEM DE SALDOS - {dataFormatada}                             PÁGINA: {(pdf.PageNumber + 1).ToString("D3")}", fonte));
+                                    pdf.Add(new Paragraph($"{subtitulo.PadLeft(110)}", fonte));
+                                    pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
+                                    pdf.Add(new Paragraph("CONTA           DESCRIÇÃO                                                                                SALDO", fonte));
+                                    pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
                                     pdf.Add(new Paragraph("", fonte));
 
                                     // Contar linhas usadas após adição do cabeçalho
@@ -336,29 +336,32 @@ namespace Contabilidade.Forms.Relatorios
                                     // Obter dados
                                     var (conta, descricao, saldo) = (lancamento.Conta, lancamento.Descricao, lancamento.Saldo);
 
-                                    // Verificar quantas linhas serão necessárias para o lançamento
-                                    var linhasNecessarias = lancamento.Descricao.Length >= 59 ? 2 : 1;
+                                    // Verificar quantas linhas serão necessárias para o lançamento - Não contar o espaço entre as colunas
+                                    var linhasNecessarias = lancamento.Descricao.Length >= 80 ? 2 : 1;
 
                                     // Verificar se há linhas nessa página para incluir o lançamento, caso não haja: criar nova página com cabeçalho
                                     if ((linhasDisponiveis - linhasNecessarias) < 0)
                                     {
                                         pdf.NewPage();
-                                        linhasDisponiveis = 45;
+                                        linhasDisponiveis = 57;
                                         adicionarCabecalho(subtitulo);
                                     }
 
                                     // Iniciar criação da linha
                                     var linha = new StringBuilder();
 
+                                    // Tamanho da conta com todos dígitos e pontuações + 1 de espaço para a outra coluna
                                     linha.Append(conta.PadRight(16));
 
                                     // Testar se serão necessárias 1 ou 2 linhas por causa do comprimento da descrição
                                     if (linhasNecessarias == 2)
                                     {
-                                        string[] linhasDescricao = DividirDescricao(descricao, 59);
+                                        // Dividir considerando o tamanho máximo que pode ter + 1 de espaço para a outra coluna
+                                        string[] linhasDescricao = DividirDescricao(descricao, 81);
 
                                         linha.Append(linhasDescricao[0]);
-                                        linha.Append(saldo.ToString("#,##0.00").PadLeft(11));
+                                        // Por ser a última coluna, não considerar o espaçamento no tamanho limite
+                                        linha.Append(saldo.ToString("#,##0.00").PadLeft(13));
 
                                         // Adicionar primeira linha
                                         pdf.Add(new Paragraph(linha.ToString(), fonte));
@@ -378,8 +381,9 @@ namespace Contabilidade.Forms.Relatorios
                                     }
                                     else
                                     {
-                                        linha.Append(descricao.PadRight(59));
-                                        linha.Append(saldo.ToString("#,##0.00").PadLeft(11));
+                                        // Considerar o limite + 1 de espaçamento entre as colunas
+                                        linha.Append(descricao.PadRight(81));
+                                        linha.Append(saldo.ToString("#,##0.00").PadLeft(13));
 
                                         pdf.Add(new Paragraph(linha.ToString(), fonte));
 

@@ -142,6 +142,7 @@
             cbbBD.FormattingEnabled = true;
             cbbBD.Location = new Point(17, 31);
             cbbBD.Margin = new Padding(20);
+            cbbBD.MaxLength = 30;
             cbbBD.Name = "cbbBD";
             cbbBD.Size = new Size(260, 23);
             cbbBD.Sorted = true;

@@ -115,6 +115,7 @@
             // txtSenha
             // 
             txtSenha.Location = new Point(32, 89);
+            txtSenha.MaxLength = 30;
             txtSenha.Name = "txtSenha";
             txtSenha.Size = new Size(335, 23);
             txtSenha.TabIndex = 2;
@@ -131,6 +132,7 @@
             // txtUsuario
             // 
             txtUsuario.Location = new Point(32, 39);
+            txtUsuario.MaxLength = 20;
             txtUsuario.Name = "txtUsuario";
             txtUsuario.Size = new Size(224, 23);
             txtUsuario.TabIndex = 1;

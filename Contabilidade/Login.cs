@@ -183,7 +183,7 @@ namespace Contabilidade
                 MessageBox.Show("A senha não pode ser vázia ou conter espaços!", "Erro ao registrar senha", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
-            else if (senha.Length >= 30)
+            else if (senha.Length > 30)
             {
                 MessageBox.Show("A senha não pode ter mais que 30 caracteres!", "Erro ao registrar senha", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
@@ -203,7 +203,7 @@ namespace Contabilidade
                 MessageBox.Show("O nome de usuário não pode ser vázio ou conter espaços!", "Erro ao registrar usuário", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
-            else if (usuario.Length >= 20)
+            else if (usuario.Length > 20)
             {
                 MessageBox.Show("O nome de usuário não pode ter mais que 20 caracteres!", "Erro ao registrar usuário", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
@@ -273,7 +273,7 @@ namespace Contabilidade
                 cbbBD.Focus();
             }
             // Verifica se a string é maior que 30 caracteres
-            else if (cbbBD.Text.Length >= 30)
+            else if (cbbBD.Text.Length > 30)
             {
                 MessageBox.Show("O nome do banco não deve conter mais que 30 caracteres!", "Erro ao criar o banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cbbBD.Text = "";
