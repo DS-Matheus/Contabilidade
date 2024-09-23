@@ -1,6 +1,6 @@
 ﻿namespace Contabilidade.Forms.Relatorios
 {
-    partial class frmRelAnalitico
+    partial class frmRazaoAnalitico
     {
         /// <summary>
         /// Required designer variable.

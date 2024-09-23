@@ -12,12 +12,12 @@ using System.Windows.Forms;
 
 namespace Contabilidade.Forms.Relatorios
 {
-    public partial class frmRelAnalitico : Form
+    public partial class frmRazaoAnalitico : Form
     {
         Conexao con;
         static DataTable dtDados = new DataTable();
         DataView dv = dtDados.DefaultView;
-        public frmRelAnalitico(Conexao conexaoBanco)
+        public frmRazaoAnalitico(Conexao conexaoBanco)
         {
             InitializeComponent();
 

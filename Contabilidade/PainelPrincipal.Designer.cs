@@ -257,7 +257,7 @@
             btnSaldo.Padding = new Padding(30, 0, 0, 0);
             btnSaldo.Size = new Size(203, 40);
             btnSaldo.TabIndex = 11;
-            btnSaldo.Text = "Saldo";
+            btnSaldo.Text = "Saldo de Contas";
             btnSaldo.TextAlign = ContentAlignment.MiddleLeft;
             btnSaldo.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnSaldo.UseVisualStyleBackColor = false;
@@ -317,7 +317,7 @@
             btnRelAnalitico.Padding = new Padding(30, 0, 0, 0);
             btnRelAnalitico.Size = new Size(203, 40);
             btnRelAnalitico.TabIndex = 8;
-            btnRelAnalitico.Text = "Analítico";
+            btnRelAnalitico.Text = "Razão Analítico";
             btnRelAnalitico.TextAlign = ContentAlignment.MiddleLeft;
             btnRelAnalitico.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnRelAnalitico.UseVisualStyleBackColor = false;

@@ -333,7 +333,7 @@ namespace Contabilidade
 
         private void btnRelAnalitico_Click(object sender, EventArgs e)
         {
-            abrirFormulario(new Forms.Relatorios.frmRelAnalitico(con), sender, "relatórios");
+            abrirFormulario(new Forms.Relatorios.frmRazaoAnalitico(con), sender, "relatórios");
         }
 
         private void btnBalanceteGeral_Click(object sender, EventArgs e)
