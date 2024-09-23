@@ -43,6 +43,7 @@
             txtNome = new TextBox();
             label1 = new Label();
             pnlSidebar = new Panel();
+            label5 = new Label();
             label3 = new Label();
             pnlBarraTitulo = new Panel();
             btnMinimizar = new Button();
@@ -231,6 +232,7 @@
             // pnlSidebar
             // 
             pnlSidebar.BackColor = Color.FromArgb(50, 52, 77);
+            pnlSidebar.Controls.Add(label5);
             pnlSidebar.Controls.Add(label3);
             pnlSidebar.Dock = DockStyle.Left;
             pnlSidebar.Location = new Point(0, 30);
@@ -238,6 +240,17 @@
             pnlSidebar.Name = "pnlSidebar";
             pnlSidebar.Size = new Size(260, 340);
             pnlSidebar.TabIndex = 5;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Font = new Font("Lucida Sans", 9.75F);
+            label5.ForeColor = Color.White;
+            label5.Location = new Point(86, 313);
+            label5.Name = "label5";
+            label5.Size = new Size(88, 15);
+            label5.TabIndex = 4;
+            label5.Text = "Versão: Beta";
             // 
             // label3
             // 
@@ -367,5 +380,6 @@
         private CheckBox chbVisibilidadeSenha;
         private Button btnRestaurar;
         private Button btnBackup;
+        private Label label5;
     }
 }

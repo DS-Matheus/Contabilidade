@@ -31,13 +31,15 @@
             btnVisualizar = new Button();
             label2 = new Label();
             dtpData = new DateTimePicker();
+            label3 = new Label();
+            txtSubtitulo = new TextBox();
             SuspendLayout();
             // 
             // btnVisualizar
             // 
-            btnVisualizar.Location = new Point(326, 262);
+            btnVisualizar.Location = new Point(366, 294);
             btnVisualizar.Name = "btnVisualizar";
-            btnVisualizar.Size = new Size(229, 23);
+            btnVisualizar.Size = new Size(148, 41);
             btnVisualizar.TabIndex = 44;
             btnVisualizar.Text = "Visualizar relatório";
             btnVisualizar.UseVisualStyleBackColor = true;
@@ -46,7 +48,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(326, 215);
+            label2.Location = new Point(231, 184);
             label2.Name = "label2";
             label2.Size = new Size(31, 15);
             label2.TabIndex = 38;
@@ -54,16 +56,37 @@
             // 
             // dtpData
             // 
-            dtpData.Location = new Point(326, 233);
+            dtpData.Location = new Point(231, 202);
             dtpData.Name = "dtpData";
-            dtpData.Size = new Size(229, 23);
+            dtpData.Size = new Size(252, 23);
             dtpData.TabIndex = 36;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(231, 231);
+            label3.Name = "label3";
+            label3.Size = new Size(131, 15);
+            label3.TabIndex = 50;
+            label3.Text = "Subtítulo personalizado";
+            // 
+            // txtSubtitulo
+            // 
+            txtSubtitulo.Location = new Point(231, 249);
+            txtSubtitulo.MaxLength = 110;
+            txtSubtitulo.Multiline = true;
+            txtSubtitulo.Name = "txtSubtitulo";
+            txtSubtitulo.Size = new Size(419, 39);
+            txtSubtitulo.TabIndex = 49;
+            txtSubtitulo.KeyPress += txtSubtitulo_KeyPress;
             // 
             // frmRelDiario
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(880, 500);
+            Controls.Add(label3);
+            Controls.Add(txtSubtitulo);
             Controls.Add(btnVisualizar);
             Controls.Add(label2);
             Controls.Add(dtpData);
@@ -79,5 +102,7 @@
         private Button btnVisualizar;
         private Label label2;
         private DateTimePicker dtpData;
+        private Label label3;
+        private TextBox txtSubtitulo;
     }
 }

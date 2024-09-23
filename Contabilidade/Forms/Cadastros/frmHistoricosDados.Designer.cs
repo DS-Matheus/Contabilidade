@@ -116,6 +116,7 @@
             txtHistorico.Name = "txtHistorico";
             txtHistorico.Size = new Size(336, 40);
             txtHistorico.TabIndex = 4;
+            txtHistorico.KeyPress += txtHistorico_KeyPress;
             // 
             // label1
             // 

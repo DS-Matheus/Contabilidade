@@ -187,9 +187,10 @@ namespace Contabilidade.Forms.Relatorios
         }
 
         // Função para dividir a descrição
-        public static string[] DividirDescricao(string descricao, int limiteComEspaco)
+        public static string[] QuebrarLinhaString(string texto, int limiteCaracteres)
         {
-            string[] palavras = descricao.Split(' ');
+            // Dividir a string em palavras e remover os espaços vázios (ocasionados por espaçamento duplo ou maior).
+            string[] palavras = texto.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             StringBuilder linha1 = new StringBuilder();
             StringBuilder linha2 = new StringBuilder();
             int comprimentoAtual = 0;
@@ -197,22 +198,43 @@ namespace Contabilidade.Forms.Relatorios
             // Para cada palavra testar
             foreach (string palavra in palavras)
             {
-                // Se ao adicionar mais uma palavra o tamanho for menor ou igual ao limite: adicionar com espaço
-                if ((comprimentoAtual + palavra.Length + 1) <= limiteComEspaco)
+                // Se é possível adicionar mais uma palavra
+                var comprimentoEsperado = comprimentoAtual + palavra.Length;
+                if (comprimentoEsperado <= limiteCaracteres)
                 {
-                    linha1.Append(palavra + " ");
-                    comprimentoAtual += palavra.Length + 1;
+                    // Verificar se é possível incluir o espaço
+                    if ((comprimentoEsperado + 1) <= limiteCaracteres)
+                    {
+                        linha1.Append(palavra + " ");
+                        comprimentoAtual += palavra.Length + 1;
+                    }
+                    // Senão: incluir sem espaço e finalizar a linha
+                    else
+                    {
+                        linha1.Append(palavra);
+                        comprimentoAtual = limiteCaracteres;
+                    }
                 }
                 // Senão adicionar na linha 2
                 else
                 {
-                    // Travar a inserção de palavras muito pequenas na linha 1
-                    comprimentoAtual = limiteComEspaco;
+                    // Travar a inserção de palavras na primeira linha, caso isso ainda não tenha sido feito anteriormente por causa de uma palavra muito grande
+                    comprimentoAtual = limiteCaracteres;
                     linha2.Append(palavra + " ");
                 }
             }
 
-            return new string[] { linha1.ToString().PadRight(limiteComEspaco), linha2.ToString().PadRight(limiteComEspaco) };
+            return new string[] { linha1.ToString().PadRight(limiteCaracteres), linha2.ToString().PadRight(limiteCaracteres) };
+        }
+
+        public static string CentralizarString(string texto, int limite)
+        {
+            int espacosTotais = limite - texto.Length;
+            int espacosAntes = (int)Math.Ceiling(espacosTotais / 2.0);
+            int espacosDepois = espacosTotais - espacosAntes;
+
+            texto = $"{"".PadRight(espacosAntes)}{texto}{"".PadRight(espacosDepois)}";
+            return texto;
         }
 
         private void btnVisualizar_Click(object sender, EventArgs e)
@@ -257,147 +279,157 @@ namespace Contabilidade.Forms.Relatorios
                         listLancamentos.Add(lancamento);
                     }
 
-                    // Exibir caixa de diálogo para o usuário escolher onde salvar o arquivo PDF
-                    using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                    // Verificar se pelo menos 1 registro foi encontrado
+                    if (listLancamentos.Count > 0)
                     {
-                        saveFileDialog.Filter = "PDF Files|*.pdf";
-                        saveFileDialog.Title = "Salvar relatório como";
-                        saveFileDialog.FileName = "relatorio.pdf";
-
-                        if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                        // Exibir caixa de diálogo para o usuário escolher onde salvar o arquivo PDF
+                        using (SaveFileDialog saveFileDialog = new SaveFileDialog())
                         {
-                            // Caminho do arquivo PDF selecionado pelo usuário
-                            string pdfPath = saveFileDialog.FileName;
+                            saveFileDialog.Filter = "PDF Files|*.pdf";
+                            saveFileDialog.Title = "Salvar relatório como";
+                            saveFileDialog.FileName = "relatorio.pdf";
 
-                            // Criação do documento
-                            Document pdf = new Document(PageSize.A4, 25, 25, 25, 25); // Margens padrão (36 pontos)
-
-                            // Caminho do arquivo de fonte Consolas
-                            string fontPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Fontes", "consola.ttf");
-
-                            // Verifica se o arquivo de fonte existe
-                            if (!File.Exists(fontPath))
+                            if (saveFileDialog.ShowDialog() == DialogResult.OK)
                             {
-                                Console.Error.WriteLine("Arquivo de fonte não encontrado, faça backup dos bancos de dados e reinstale o programa");
-                                return;
-                            }
+                                // Caminho do arquivo PDF selecionado pelo usuário
+                                string pdfPath = saveFileDialog.FileName;
 
-                            // Usar `using` para garantir que o arquivo será liberado após ser usado
-                            using (FileStream fileStream = new FileStream(pdfPath, FileMode.Create, FileAccess.Write, FileShare.None))
-                            {
-                                // Criação do escritor de PDF
-                                PdfWriter writer = PdfWriter.GetInstance(pdf, fileStream);
+                                // Criação do documento
+                                var pdf = new iTextSharp.text.Document(PageSize.A4, 25, 25, 25, 25); // Margens padrão (36 pontos)
 
-                                // Abrindo o documento
-                                pdf.Open();
+                                // Caminho do arquivo de fonte Consolas
+                                string fontPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Fontes", "consola.ttf");
 
-                                // Configuração da fonte Consola
-                                BaseFont bf = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-                                var fonte = new iTextSharp.text.Font(bf, 9);
-
-                                // Obter data formatada                    
-                                string dataFormatada = $"{data:dd}/{data:MM}/{data:yyyy}";
-                                var linhasDisponiveis = 57;
-
-                                // Operações com o subtítulo
-                                string subtitulo = "";
-                                if (!string.IsNullOrWhiteSpace(txtSubtitulo.Text))
+                                // Verifica se o arquivo de fonte existe
+                                if (!File.Exists(fontPath))
                                 {
-                                    subtitulo = txtSubtitulo.Text;
-
-                                    int espacosTotais = 110 - subtitulo.Length;
-                                    int espacosAntes = (int)Math.Ceiling(espacosTotais / 2.0);
-                                    int espacosDepois = espacosTotais - espacosAntes;
-
-                                    subtitulo = $"{"".PadRight(espacosAntes)}{subtitulo}{"".PadRight(espacosDepois)}";
+                                    MessageBox.Show("Arquivo de fonte não encontrado, faça backup dos bancos de dados e reinstale o programa", "Erro ao buscar aquivo de fonte", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return;
                                 }
 
-                                // Função local para adicionar o cabeçalho
-                                void adicionarCabecalho(string subtitulo)
+                                // Usar `using` para garantir que o arquivo será liberado após ser usado
+                                using (FileStream fileStream = new FileStream(pdfPath, FileMode.Create, FileAccess.Write, FileShare.None))
                                 {
-                                    // Adicionando parágrafos ao documento
-                                    pdf.Add(new Paragraph($"                                       LISTAGEM DE SALDOS - {dataFormatada}                             PÁGINA: {(pdf.PageNumber + 1).ToString("D3")}", fonte));
-                                    pdf.Add(new Paragraph($"{subtitulo.PadLeft(110)}", fonte));
-                                    pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
-                                    pdf.Add(new Paragraph("CONTA           DESCRIÇÃO                                                                                SALDO", fonte));
-                                    pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
-                                    pdf.Add(new Paragraph("", fonte));
+                                    // Criação do escritor de PDF
+                                    PdfWriter writer = PdfWriter.GetInstance(pdf, fileStream);
 
-                                    // Contar linhas usadas após adição do cabeçalho
-                                    linhasDisponiveis -= 6;
-                                };
+                                    // Abrindo o documento
+                                    pdf.Open();
 
-                                // Adicionar cabeçalho da primeira página
-                                adicionarCabecalho(subtitulo);
+                                    // Configuração da fonte Consola
+                                    BaseFont bf = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+                                    var fonte = new iTextSharp.text.Font(bf, 9);
 
-                                // Para cada lançamento
-                                foreach (var lancamento in listLancamentos)
-                                {
-                                    // Obter dados
-                                    var (conta, descricao, saldo) = (lancamento.Conta, lancamento.Descricao, lancamento.Saldo);
+                                    // Obter data formatada                    
+                                    string dataFormatada = $"{data:dd}/{data:MM}/{data:yyyy}";
+                                    var linhasDisponiveis = 57;
 
-                                    // Verificar quantas linhas serão necessárias para o lançamento - Não contar o espaço entre as colunas
-                                    var linhasNecessarias = lancamento.Descricao.Length >= 80 ? 2 : 1;
-
-                                    // Verificar se há linhas nessa página para incluir o lançamento, caso não haja: criar nova página com cabeçalho
-                                    if ((linhasDisponiveis - linhasNecessarias) < 0)
+                                    // Operações com o subtítulo
+                                    string subtitulo = "   ";
+                                    if (!string.IsNullOrWhiteSpace(txtSubtitulo.Text))
                                     {
-                                        pdf.NewPage();
-                                        linhasDisponiveis = 57;
-                                        adicionarCabecalho(subtitulo);
+                                        subtitulo = CentralizarString(txtSubtitulo.Text, 110);
                                     }
 
-                                    // Iniciar criação da linha
-                                    var linha = new StringBuilder();
-
-                                    // Tamanho da conta com todos dígitos e pontuações + 1 de espaço para a outra coluna
-                                    linha.Append(conta.PadRight(16));
-
-                                    // Testar se serão necessárias 1 ou 2 linhas por causa do comprimento da descrição
-                                    if (linhasNecessarias == 2)
+                                    // Função local para adicionar o cabeçalho
+                                    void adicionarCabecalho(string subtitulo)
                                     {
-                                        // Dividir considerando o tamanho máximo que pode ter + 1 de espaço para a outra coluna
-                                        string[] linhasDescricao = DividirDescricao(descricao, 81);
+                                        // Adicionando parágrafos ao documento
+                                        pdf.Add(new Paragraph($"                                       LISTAGEM DE SALDOS - {dataFormatada}                             PÁGINA: {(pdf.PageNumber + 1).ToString("D3")}", fonte));
+                                        pdf.Add(new Paragraph($"{subtitulo}", fonte));
+                                        pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
+                                        pdf.Add(new Paragraph("CONTA           DESCRIÇÃO                                                                                SALDO", fonte));
+                                        pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
+                                        pdf.Add(new Paragraph("    ", fonte));
 
-                                        linha.Append(linhasDescricao[0]);
-                                        // Por ser a última coluna, não considerar o espaçamento no tamanho limite
-                                        linha.Append(saldo.ToString("#,##0.00").PadLeft(13));
+                                        // Contar linhas usadas após adição do cabeçalho
+                                        linhasDisponiveis -= 6;
+                                    };
 
-                                        // Adicionar primeira linha
-                                        pdf.Add(new Paragraph(linha.ToString(), fonte));
+                                    // Adicionar cabeçalho da primeira página
+                                    adicionarCabecalho(subtitulo);
 
-                                        // Limpar o StringBuilder e iniciar a criação da segunda linha (com conta e saldos vázios).
-                                        linha.Clear();
-
-                                        // Espaço vázio referente a conta
-                                        linha.Append("".ToString().PadRight(16));
-
-                                        // Adicionar segunda linha
-                                        linha.Append(linhasDescricao[1]);
-                                        pdf.Add(new Paragraph(linha.ToString(), fonte));
-
-                                        // Contabilizar linhas
-                                        linhasDisponiveis -= 2;
-                                    }
-                                    else
+                                    // Para cada lançamento
+                                    foreach (var lancamento in listLancamentos)
                                     {
-                                        // Considerar o limite + 1 de espaçamento entre as colunas
-                                        linha.Append(descricao.PadRight(81));
-                                        linha.Append(saldo.ToString("#,##0.00").PadLeft(13));
+                                        // Obter dados
+                                        var (conta, descricao, saldo) = (lancamento.Conta, lancamento.Descricao, lancamento.Saldo);
 
-                                        pdf.Add(new Paragraph(linha.ToString(), fonte));
+                                        // Verificar quantas linhas serão necessárias para o lançamento - Não contar o espaço entre as colunas
+                                        var linhasNecessarias = lancamento.Descricao.Length >= 80 ? 2 : 1;
 
-                                        // Contabilizar linha
-                                        linhasDisponiveis -= 1;
+                                        // Verificar se há linhas nessa página para incluir o lançamento, caso não haja: criar nova página com cabeçalho
+                                        if ((linhasDisponiveis - linhasNecessarias) < 0)
+                                        {
+                                            pdf.NewPage();
+                                            linhasDisponiveis = 57;
+                                            adicionarCabecalho(subtitulo);
+                                        }
+
+                                        // Iniciar criação da linha
+                                        var linha = new StringBuilder();
+
+                                        // Tamanho da conta com todos dígitos e pontuações + 1 de espaço para a outra coluna
+                                        linha.Append(conta.PadRight(16));
+
+                                        // Testar se serão necessárias 1 ou 2 linhas por causa do comprimento da descrição
+                                        if (linhasNecessarias == 2)
+                                        {
+                                            // Dividir considerando o tamanho máximo que pode ter (sem contar o espaço para a outra coluna)
+                                            string[] linhasDescricao = QuebrarLinhaString(descricao, 80);
+
+                                            linha.Append(linhasDescricao[0]);
+                                            // Espaçamento do saldo + 1 para a divisão entre as colunas
+                                            linha.Append(saldo.ToString("#,##0.00").PadLeft(14));
+
+                                            // Adicionar primeira linha
+                                            pdf.Add(new Paragraph(linha.ToString(), fonte));
+
+                                            // Limpar o StringBuilder e iniciar a criação da segunda linha (com conta e saldos vázios).
+                                            linha.Clear();
+
+                                            // Espaço vázio referente a conta
+                                            linha.Append("".ToString().PadRight(16));
+
+                                            // Adicionar segunda linha
+                                            linha.Append(linhasDescricao[1]);
+                                            pdf.Add(new Paragraph(linha.ToString(), fonte));
+
+                                            // Contabilizar linhas
+                                            linhasDisponiveis -= 2;
+                                        }
+                                        else
+                                        {
+                                            linha.Append(descricao.PadRight(80));
+                                            // Espaçamento do saldo + 1 para a divisão entre as colunas
+                                            linha.Append(saldo.ToString("#,##0.00").PadLeft(14));
+
+                                            pdf.Add(new Paragraph(linha.ToString(), fonte));
+
+                                            // Contabilizar linha
+                                            linhasDisponiveis -= 1;
+                                        }
                                     }
+
+                                    // Fechando o documento
+                                    pdf.Close();
                                 }
 
-                                // Fechando o documento
-                                pdf.Close();
+                                // Abrir o arquivo PDF gerado
+                                Process.Start(new ProcessStartInfo(pdfPath) { UseShellExecute = true });
                             }
-
-                            // Abrir o arquivo PDF gerado
-                            Process.Start(new ProcessStartInfo(pdfPath) { UseShellExecute = true });
+                        }
+                    }
+                    // Senão: informar ao usuário
+                    else
+                    {
+                        if (nivel == "S")
+                        {
+                            MessageBox.Show($"A conta sintética {txtConta.Text} não possuí nenhuma conta analítica registrada para consultar o saldo", "O relatório não foi gerado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        }
+                        else
+                        {
+                            MessageBox.Show($"Houve um erro ao buscar o saldo da conta analítica {txtConta.Text}, por favor contate o desenvolvedor.", "O relatório não foi gerado", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                 }

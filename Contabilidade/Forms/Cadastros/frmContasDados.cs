@@ -153,7 +153,7 @@ namespace Contabilidade.Forms.Cadastros
 
                     this.DialogResult = DialogResult.OK;
                     this.Dispose();
-                }    
+                }
             }
             // Caso seja outra operação
             else
@@ -230,10 +230,22 @@ namespace Contabilidade.Forms.Cadastros
             if (opcTipoConta == 0)
             {
                 return "A";
-            }   
+            }
             else
             {
                 return "S";
+            }
+        }
+
+        private void txtDescricao_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Verifica se a tecla pressionada é Enter
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                // Impede a quebra de linha
+                e.Handled = true;
+
+                btnSalvar.PerformClick();
             }
         }
     }

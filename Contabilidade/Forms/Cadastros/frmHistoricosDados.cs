@@ -73,5 +73,17 @@ namespace Contabilidade.Forms.Cadastros
                 this.Dispose();
             }
         }
+
+        private void txtHistorico_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Verifica se a tecla pressionada é Enter
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                // Impede a quebra de linha
+                e.Handled = true;
+
+                btnSalvar.PerformClick();
+            }
+        }
     }
 }

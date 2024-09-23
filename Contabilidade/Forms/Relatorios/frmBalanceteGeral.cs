@@ -43,15 +43,6 @@ namespace Contabilidade.Forms.Relatorios
             comando.Parameters.AddWithValue("@data1", data1);
             comando.Parameters.AddWithValue("@data2", data2);
 
-            // Criar uma instância do formulário de dados e aguardar um retorno
-            using (var frmDados = new frmExibirRelatorio("Balancete Geral", comando))
-            {
-                // O usuário apertou o botão de salvar
-                if (frmDados.ShowDialog() == DialogResult.OK)
-                {
-                    dtpInicial.Focus();
-                }
-            }
         }
     }
 }
