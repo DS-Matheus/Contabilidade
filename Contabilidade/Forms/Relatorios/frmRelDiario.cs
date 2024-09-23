@@ -177,7 +177,7 @@ namespace Contabilidade.Forms.Relatorios
                                         contaAnterior = conta;
 
                                         // Adicionar linha vázia para separar da conta anterior / cabeçalho
-                                        pdf.Add(new Paragraph("    ", fonte));
+                                        pdf.Add(new Paragraph("   ", fonte));
 
                                         // Verificar quantas linhas serão necessárias para a identificação da conta
                                         if (linhasNecessariasDescricao == 2)
@@ -196,7 +196,7 @@ namespace Contabilidade.Forms.Relatorios
                                             linha.Clear();
 
                                             // Espaço vázio referente a conta
-                                            linha.Append("".PadRight(16));
+                                            linha.Append("   ".PadRight(16));
 
                                             // Adicionar segunda linha
                                             linha.Append(linhasDescricao[1]);
@@ -233,7 +233,7 @@ namespace Contabilidade.Forms.Relatorios
                                             totalCreditos += valor;
 
                                             // String composta de caracteres vázios para ocupar o espaço do débito
-                                            linha.Append(valor.ToString("".PadLeft(14)));
+                                            linha.Append("   ".PadLeft(14));
                                             // Espaçamento do crédito + 1 para a divisão entre as colunas
                                             linha.Append(valor.ToString("#,##0.00").PadLeft(14));
                                         }
@@ -254,7 +254,7 @@ namespace Contabilidade.Forms.Relatorios
                                         linha.Clear();
 
                                         // Espaço vázio referente a conta
-                                        linha.Append("".ToString().PadRight(16));
+                                        linha.Append("   ".PadRight(16));
 
                                         // Adicionar segunda linha
                                         linha.Append(linhasHistorico[1]);
@@ -275,7 +275,7 @@ namespace Contabilidade.Forms.Relatorios
                                             totalCreditos += valor;
 
                                             // String composta de caracteres vázios para ocupar o espaço do débito
-                                            linha.Append(valor.ToString("".PadLeft(14)));
+                                            linha.Append(valor.ToString("   ".PadLeft(14)));
                                             // Espaçamento do crédito + 1 para a divisão entre as colunas
                                             linha.Append(valor.ToString("#,##0.00").PadLeft(14));
                                         }

@@ -28,10 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             groupBox1 = new GroupBox();
             cbbNivel = new ComboBox();
             txtFiltrar2 = new TextBox();
@@ -128,8 +128,8 @@
             // 
             Nível.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             Nível.DataPropertyName = "nivel";
-            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Nível.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            Nível.DefaultCellStyle = dataGridViewCellStyle1;
             Nível.HeaderText = "Nível";
             Nível.Name = "Nível";
             Nível.ReadOnly = true;
@@ -139,8 +139,8 @@
             // 
             Conta.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             Conta.DataPropertyName = "conta";
-            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Conta.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            Conta.DefaultCellStyle = dataGridViewCellStyle2;
             Conta.HeaderText = "Conta";
             Conta.Name = "Conta";
             Conta.ReadOnly = true;
@@ -150,8 +150,8 @@
             // 
             Descrição.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             Descrição.DataPropertyName = "descricao";
-            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            Descrição.DefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            Descrição.DefaultCellStyle = dataGridViewCellStyle3;
             Descrição.HeaderText = "Descrição";
             Descrição.Name = "Descrição";
             Descrição.ReadOnly = true;
@@ -160,8 +160,8 @@
             // 
             Saldo.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             Saldo.DataPropertyName = "saldo";
-            dataGridViewCellStyle8.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Saldo.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            Saldo.DefaultCellStyle = dataGridViewCellStyle4;
             Saldo.HeaderText = "Saldo";
             Saldo.Name = "Saldo";
             Saldo.ReadOnly = true;

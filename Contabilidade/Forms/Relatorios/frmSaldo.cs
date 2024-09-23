@@ -181,9 +181,9 @@ namespace Contabilidade.Forms.Relatorios
 
         private class Lancamento
         {
-            public string Conta { get; set; }
-            public string Descricao { get; set; }
-            public decimal Saldo { get; set; }
+            public string conta { get; set; }
+            public string descricao { get; set; }
+            public decimal saldo { get; set; }
         }
 
         // Função para dividir a descrição
@@ -272,9 +272,9 @@ namespace Contabilidade.Forms.Relatorios
                     {
                         Lancamento lancamento = new Lancamento
                         {
-                            Conta = reader["conta"].ToString(),
-                            Descricao = reader["descricao"].ToString(),
-                            Saldo = Convert.ToDecimal(reader["saldo_atualizado"])
+                            conta = reader["conta"].ToString(),
+                            descricao = reader["descricao"].ToString(),
+                            saldo = Convert.ToDecimal(reader["saldo_atualizado"])
                         };
                         listLancamentos.Add(lancamento);
                     }
@@ -353,10 +353,10 @@ namespace Contabilidade.Forms.Relatorios
                                     foreach (var lancamento in listLancamentos)
                                     {
                                         // Obter dados
-                                        var (conta, descricao, saldo) = (lancamento.Conta, lancamento.Descricao, lancamento.Saldo);
+                                        var (conta, descricao, saldo) = (lancamento.conta, lancamento.descricao, lancamento.saldo);
 
                                         // Verificar quantas linhas serão necessárias para o lançamento - Não contar o espaço entre as colunas
-                                        var linhasNecessarias = lancamento.Descricao.Length >= 80 ? 2 : 1;
+                                        var linhasNecessarias = lancamento.descricao.Length >= 80 ? 2 : 1;
 
                                         // Verificar se há linhas nessa página para incluir o lançamento, caso não haja: criar nova página com cabeçalho
                                         if ((linhasDisponiveis - linhasNecessarias) < 0)
