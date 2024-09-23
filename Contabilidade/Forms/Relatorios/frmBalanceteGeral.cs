@@ -32,17 +32,6 @@ namespace Contabilidade.Forms.Relatorios
             var data2 = dtpFinal.Value;
 
             // Se a data 2 for mais recente, trocar de variável com a mais antiga
-            if (data1 < data2)
-            {
-                data1 = data2;
-                data2 = dtpInicial.Value;
-            }
-
-            var sql = "";
-            var comando = new SQLiteCommand(sql, con.conn);
-            comando.Parameters.AddWithValue("@data1", data1);
-            comando.Parameters.AddWithValue("@data2", data2);
-
         }
     }
 }
