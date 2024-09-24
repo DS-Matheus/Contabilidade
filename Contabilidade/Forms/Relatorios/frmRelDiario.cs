@@ -296,23 +296,28 @@ namespace Contabilidade.Forms.Relatorios
                                     }
                                 }
                                 // Verificar se existe espaço para o rodapé, senão: criar nova página
-                                if ((linhasDisponiveis - 3) < 0)
+                                if (linhasDisponiveis < 2)
                                 {
                                     pdf.NewPage();
                                     linhasDisponiveis = 57;
                                     adicionarCabecalho(subtitulo);
                                 }
 
-                                // Verificar se existe local para um espaço antes do rodapé
-                                if ((linhasDisponiveis - 4) >= 0)
+                                // Verificar se existe linhas sobrando para inserir um espaço antes do rodapé
+                                if (linhasDisponiveis >= 3)
                                 {
                                     pdf.Add(new Paragraph($"   ", fonte));
+                                    linhasDisponiveis--;
                                 }
 
                                 // Inserindo rodapé
                                 pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
                                 pdf.Add(new Paragraph($"{"TOTAL DO DIA:".PadLeft(82)}{totalDebitos.ToString("#,##0.00").PadLeft(14)}{totalCreditos.ToString("#,##0.00").PadLeft(14)}", fonte));
-                                pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
+                                linhasDisponiveis -= 2;
+                                if (linhasDisponiveis > 0)
+                                {
+                                    pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
+                                }
 
                                 // Fechando o documento
                                 pdf.Close();
