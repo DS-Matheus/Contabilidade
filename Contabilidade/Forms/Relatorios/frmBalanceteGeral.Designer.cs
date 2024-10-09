@@ -33,11 +33,13 @@
             label2 = new Label();
             dtpFinal = new DateTimePicker();
             dtpInicial = new DateTimePicker();
+            label4 = new Label();
+            txtSubtitulo = new TextBox();
             SuspendLayout();
             // 
             // btnVisualizar
             // 
-            btnVisualizar.Location = new Point(315, 277);
+            btnVisualizar.Location = new Point(315, 329);
             btnVisualizar.Name = "btnVisualizar";
             btnVisualizar.Size = new Size(250, 38);
             btnVisualizar.TabIndex = 31;
@@ -77,11 +79,30 @@
             dtpInicial.Size = new Size(250, 23);
             dtpInicial.TabIndex = 23;
             // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(315, 282);
+            label4.Name = "label4";
+            label4.Size = new Size(131, 15);
+            label4.TabIndex = 52;
+            label4.Text = "Subtítulo personalizado";
+            // 
+            // txtSubtitulo
+            // 
+            txtSubtitulo.Location = new Point(315, 300);
+            txtSubtitulo.MaxLength = 110;
+            txtSubtitulo.Name = "txtSubtitulo";
+            txtSubtitulo.Size = new Size(445, 23);
+            txtSubtitulo.TabIndex = 51;
+            // 
             // frmBalanceteGeral
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(880, 500);
+            Controls.Add(label4);
+            Controls.Add(txtSubtitulo);
             Controls.Add(btnVisualizar);
             Controls.Add(label3);
             Controls.Add(label2);
@@ -101,5 +122,7 @@
         private Label label2;
         private DateTimePicker dtpFinal;
         private DateTimePicker dtpInicial;
+        private Label label4;
+        private TextBox txtSubtitulo;
     }
 }

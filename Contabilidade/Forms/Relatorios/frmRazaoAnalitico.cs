@@ -176,7 +176,6 @@ namespace Contabilidade.Forms.Relatorios
                 nivel = row.Cells["Nível"].Value.ToString();
             }
         }
-
         private class Lancamento
         {
             public DateTime data {  get; set; }
@@ -184,22 +183,8 @@ namespace Contabilidade.Forms.Relatorios
             public decimal valor { get; set; }
             public decimal saldo {  get; set; }
         }
-        
-        public static (string, string) ordenarDatasEObterStrings(DateTime data1, DateTime data2)
-        {
-            // Se a data1 for menor ou igual a data2
-            if (data1 <= data2)
-            {
-                return (data1.ToString("yyyy-MM-dd"), data2.ToString("yyyy-MM-dd"));
-            }
-            // Se a data2 for menor que a data1
-            else
-            {
-                return (data2.ToString("yyyy-MM-dd"), data1.ToString("yyyy-MM-dd"));
-            }
-        }
 
-        public static (string, string, string, string) ordenarDatasEObterTodasStrings(DateTime data1, DateTime data2)
+        public static (string, string, string, string) ordenarDatasEObterStrings(DateTime data1, DateTime data2)
         {
             // Se a data1 for menor ou igual a data2
             if (data1 <= data2)
@@ -227,7 +212,7 @@ namespace Contabilidade.Forms.Relatorios
             else
             {
                 // Obter datas
-                var (dataInicial, dataInicialFormatada, dataFinal, dataFinalFormatada) = ordenarDatasEObterTodasStrings(dtpInicial.Value, dtpFinal.Value);
+                var (dataInicial, dataInicialFormatada, dataFinal, dataFinalFormatada) = ordenarDatasEObterStrings(dtpInicial.Value, dtpFinal.Value);
 
                 // Consulta de lançamentos para a conta no período informado
                 var sql = "SELECT l.data, h.historico, l.valor, l.saldo_atualizado FROM lancamentos l JOIN historicos h ON l.id_historico = h.id WHERE l.conta = @conta AND l.data BETWEEN @dataInicial AND @dataFinal ORDER BY l.data ASC, l.id ASC;";
