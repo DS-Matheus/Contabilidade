@@ -1,19 +1,10 @@
 ﻿using Contabilidade.Models;
 using iTextSharp.text.pdf;
 using iTextSharp.text;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Data.SQLite;
-using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
 using System.Diagnostics;
-using System.Drawing.Printing;
+using Microsoft.Data.Sqlite;
 
 namespace Contabilidade.Forms.Relatorios
 {
@@ -39,11 +30,13 @@ namespace Contabilidade.Forms.Relatorios
         {
             // Query de pesquisa
             string sql = "SELECT * FROM contas ORDER BY conta;";
-            using (var command = new SQLiteCommand(sql, con.conn))
+            using (var command = new SqliteCommand(sql, con.conn))
             {
-                SQLiteDataAdapter sqlDA = new SQLiteDataAdapter(sql, con.conn);
                 dtDados.Clear();
-                sqlDA.Fill(dtDados);
+                using (var reader = command.ExecuteReader())
+                {
+                    dtDados.Load(reader);
+                }
 
                 dgvContas.DataSource = dtDados;
 
@@ -256,14 +249,14 @@ namespace Contabilidade.Forms.Relatorios
                 {
                     sql = "SELECT c.conta, c.descricao, COALESCE((SELECT l.saldo_atualizado FROM lancamentos l WHERE c.conta = l.conta AND l.data <= @data ORDER BY l.data DESC, l.id DESC LIMIT 1), 0) AS saldo_atualizado FROM contas c WHERE c.conta = @conta;";
                 }
-                var comando = new SQLiteCommand(sql, con.conn);
+                var comando = new SqliteCommand(sql, con.conn);
 
                 var data = dtpData.Value;
                 comando.Parameters.AddWithValue("@data", data);
                 comando.Parameters.AddWithValue("@conta", txtConta.Text);
 
                 // Executar comando e obter os dados
-                using (SQLiteDataReader reader = comando.ExecuteReader())
+                using (var reader = comando.ExecuteReader())
                 {
                     List<Lancamento> listLancamentos = new List<Lancamento>();
 

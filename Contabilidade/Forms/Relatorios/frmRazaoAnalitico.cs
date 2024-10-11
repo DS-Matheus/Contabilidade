@@ -1,20 +1,10 @@
 ﻿using Contabilidade.Models;
 using iTextSharp.text.pdf;
 using iTextSharp.text;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Data.SQLite;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Diagnostics.Eventing.Reader;
-using iTextSharp.text.pdf.codec.wmf;
+using Microsoft.Data.Sqlite;
 
 namespace Contabilidade.Forms.Relatorios
 {
@@ -37,11 +27,13 @@ namespace Contabilidade.Forms.Relatorios
         {
             // Query de pesquisa
             string sql = "SELECT * FROM contas ORDER BY conta;";
-            using (var command = new SQLiteCommand(sql, con.conn))
+            using (var command = new SqliteCommand(sql, con.conn))
             {
-                SQLiteDataAdapter sqlDA = new SQLiteDataAdapter(sql, con.conn);
                 dtDados.Clear();
-                sqlDA.Fill(dtDados);
+                using (var reader = command.ExecuteReader())
+                {
+                    dtDados.Load(reader);
+                }
 
                 dgvContas.DataSource = dtDados;
 
@@ -216,7 +208,7 @@ namespace Contabilidade.Forms.Relatorios
 
                 // Consulta de lançamentos para a conta no período informado
                 var sql = "SELECT l.data, h.historico, l.valor, l.saldo_atualizado FROM lancamentos l JOIN historicos h ON l.id_historico = h.id WHERE l.conta = @conta AND l.data BETWEEN @dataInicial AND @dataFinal ORDER BY l.data ASC, l.id ASC;";
-                using (var comando = new SQLiteCommand(sql, con.conn))
+                using (var comando = new SqliteCommand(sql, con.conn))
                 {
                     var conta = txtConta.Text;
                     comando.Parameters.AddWithValue("@conta", conta);
@@ -226,7 +218,7 @@ namespace Contabilidade.Forms.Relatorios
                     List<Lancamento> listLancamentos = new List<Lancamento>();
 
                     // Obter dados
-                    using (SQLiteDataReader reader = comando.ExecuteReader())
+                    using (var reader = comando.ExecuteReader())
                     {
                         while (reader.Read())
                         {
@@ -246,7 +238,6 @@ namespace Contabilidade.Forms.Relatorios
                     {
                         // Obter a descrição da conta
                         comando.CommandText = "SELECT descricao FROM contas WHERE conta = @conta;";
-                        comando.Parameters.AddWithValue("@conta", conta);
                         var descricao = comando.ExecuteScalar()?.ToString();
 
                         // Obter saldo anterior (ou deixar como 0 se não possuir nenhum registro no período ou antes do período) - CONFERIR SE ESTA CORRETO !!!!!!!!!!!!!!!
@@ -548,7 +539,7 @@ namespace Contabilidade.Forms.Relatorios
                                     }
 
                                     // Inserindo rodapé
-                                    pdf.Add(new Paragraph($"{$"TOTAL DO PERÍODO: {dataInicialFormatada} A {dataFinalFormatada}".PadLeft(68)}{totalDebitos.ToString("#,##0.00").PadLeft(14)}{totalCreditos.ToString("#,##0.00").PadLeft(14)}{(totalCreditos + totalDebitos).ToString("#,##0.00").PadLeft(14)}", fonte));
+                                    pdf.Add(new Paragraph($"{$"TOTAL DO PERÍODO ({dataInicialFormatada} A {dataFinalFormatada}):".PadLeft(68)}{totalDebitos.ToString("#,##0.00").PadLeft(14)}{totalCreditos.ToString("#,##0.00").PadLeft(14)}{(totalCreditos + totalDebitos).ToString("#,##0.00").PadLeft(14)}", fonte));
                                     linhasDisponiveis--;
                                     if (linhasDisponiveis > 0)
                                     {

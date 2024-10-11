@@ -1,18 +1,9 @@
 ﻿using Contabilidade.Forms.Cadastros;
 using Contabilidade.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Data.SQLite;
-using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
+using Microsoft.Data.Sqlite;
 
 namespace Contabilidade.Forms.Lancamentos
 {
@@ -41,11 +32,13 @@ namespace Contabilidade.Forms.Lancamentos
         {
             // Query de pesquisa
             string sql = "SELECT * FROM contas ORDER BY conta;";
-            using (var command = new SQLiteCommand(sql, con.conn))
+            using (var command = new SqliteCommand(sql, con.conn))
             {
-                SQLiteDataAdapter sqlDA = new SQLiteDataAdapter(sql, con.conn);
                 dtDados.Clear();
-                sqlDA.Fill(dtDados);
+                using (var reader = command.ExecuteReader())
+                {
+                    dtDados.Load(reader);
+                }
 
                 dgvContas.DataSource = dtDados;
 
@@ -106,7 +99,7 @@ namespace Contabilidade.Forms.Lancamentos
 
                     // Criar conta
                     string sql = "INSERT INTO contas (conta, descricao, nivel, saldo) VALUES(@conta, @descricao, @nivel, @saldo);";
-                    using (var comando = new SQLiteCommand(sql, con.conn))
+                    using (var comando = new SqliteCommand(sql, con.conn))
                     {
                         comando.Parameters.AddWithValue("@conta", txtConta.Text);
                         comando.Parameters.AddWithValue("@descricao", txtDescricao.Text);

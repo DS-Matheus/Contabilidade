@@ -1,18 +1,10 @@
-﻿using Contabilidade.Forms.Lancamentos;
-using Contabilidade.Models;
+﻿using Contabilidade.Models;
 using iTextSharp.text.pdf;
 using iTextSharp.text;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Data.SQLite;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using Microsoft.Data.Sqlite;
 
 namespace Contabilidade.Forms.Relatorios
 {
@@ -35,11 +27,13 @@ namespace Contabilidade.Forms.Relatorios
         {
             // Query de pesquisa
             string sql = "SELECT * FROM contas ORDER BY conta;";
-            using (var command = new SQLiteCommand(sql, con.conn))
+            using (var command = new SqliteCommand(sql, con.conn))
             {
-                SQLiteDataAdapter sqlDA = new SQLiteDataAdapter(sql, con.conn);
                 dtDados.Clear();
-                sqlDA.Fill(dtDados);
+                using (var reader = command.ExecuteReader())
+                {
+                    dtDados.Load(reader);
+                }
 
                 dgvContas.DataSource = dtDados;
 
@@ -207,15 +201,16 @@ namespace Contabilidade.Forms.Relatorios
                 {
                     // Consulta de dados no período informado
                     var sql = "WITH LancamentosOrdenados AS (SELECT l.conta, l.valor, l.saldo_anterior, l.saldo_atualizado, l.data, l.id, ROW_NUMBER() OVER (PARTITION BY l.conta ORDER BY l.data ASC, l.id ASC) AS rn_asc, ROW_NUMBER() OVER (PARTITION BY l.conta ORDER BY l.data DESC, l.id DESC) AS rn_desc FROM lancamentos l WHERE l.data BETWEEN @dataInicial AND @dataFinal AND l.conta LIKE @conta || '.%') SELECT c.conta, c.descricao, SUM(CASE WHEN lo.valor > 0 THEN lo.valor ELSE 0 END) AS creditos, SUM(CASE WHEN lo.valor < 0 THEN lo.valor ELSE 0 END) AS debitos, MAX(CASE WHEN lo.rn_asc = 1 THEN lo.saldo_anterior ELSE NULL END) AS saldo_anterior, MAX(CASE WHEN lo.rn_desc = 1 THEN lo.saldo_atualizado ELSE NULL END) AS saldo_atualizado FROM LancamentosOrdenados lo JOIN contas c ON lo.conta = c.conta GROUP BY c.conta, c.descricao ORDER BY MIN(lo.conta) ASC;";
-                    using (var comando = new SQLiteCommand(sql, con.conn))
+                    using (var comando = new SqliteCommand(sql, con.conn))
                     {
                         comando.Parameters.AddWithValue("@dataInicial", dataInicial);
                         comando.Parameters.AddWithValue("@dataFinal", dataFinal);
+                        comando.Parameters.AddWithValue("@conta", txtConta.Text);
 
                         List<LancamentoSintetico> listLancamentos = new List<LancamentoSintetico>();
 
                         // Obter dados
-                        using (SQLiteDataReader reader = comando.ExecuteReader())
+                        using (var reader = comando.ExecuteReader())
                         {
                             while (reader.Read())
                             {
@@ -422,7 +417,7 @@ namespace Contabilidade.Forms.Relatorios
                 {
                     // Consulta de lançamentos para a conta no período informado
                     var sql = "SELECT l.data, h.historico, l.valor, l.saldo_atualizado FROM lancamentos l JOIN historicos h ON l.id_historico = h.id WHERE l.conta = @conta AND l.data BETWEEN @dataInicial AND @dataFinal ORDER BY l.data ASC, l.id ASC;";
-                    using (var comando = new SQLiteCommand(sql, con.conn))
+                    using (var comando = new SqliteCommand(sql, con.conn))
                     {
                         var conta = txtConta.Text;
                         comando.Parameters.AddWithValue("@conta", conta);
@@ -432,7 +427,7 @@ namespace Contabilidade.Forms.Relatorios
                         List<LancamentoAnalitico> listLancamentos = new List<LancamentoAnalitico>();
 
                         // Obter dados
-                        using (SQLiteDataReader reader = comando.ExecuteReader())
+                        using (var reader = comando.ExecuteReader())
                         {
                             while (reader.Read())
                             {
@@ -452,7 +447,6 @@ namespace Contabilidade.Forms.Relatorios
                         {
                             // Obter a descrição da conta
                             comando.CommandText = "SELECT descricao FROM contas WHERE conta = @conta;";
-                            comando.Parameters.AddWithValue("@conta", conta);
                             var descricao = comando.ExecuteScalar()?.ToString();
 
                             // Obter saldo anterior (ou deixar como 0 se não possuir nenhum registro no período ou antes do período) - CONFERIR SE ESTA CORRETO !!!!!!!!!!!!!!!

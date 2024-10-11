@@ -12,9 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="iTextSharp.LGPLv2.Core" Version="3.4.21" />
-    <PackageReference Include="Microsoft.ReportViewer.WinForms" Version="10.0.40219.1" />
-    <PackageReference Include="SQLite.Interop" Version="1.0.0" />
-    <PackageReference Include="System.Data.SQLite" Version="1.0.117" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.10" />
   </ItemGroup>
 
   <ItemGroup>

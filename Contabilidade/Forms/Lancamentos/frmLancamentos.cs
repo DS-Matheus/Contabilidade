@@ -1,16 +1,6 @@
-﻿using Contabilidade.Forms.Cadastros;
-using Contabilidade.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using Contabilidade.Models;
 using System.Data;
-using System.Data.SQLite;
-using System.Drawing;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using Microsoft.Data.Sqlite;
 
 namespace Contabilidade.Forms.Lancamentos
 {
@@ -37,11 +27,13 @@ public frmLancamentos(Conexao conexaoBanco)
         {
             // Query de pesquisa
             string sql = "SELECT l.id, l.conta, c.descricao, l.valor, l.data, h.historico FROM lancamentos l JOIN contas c ON l.conta = c.conta JOIN historicos h ON l.id_historico = h.id ORDER BY l.conta, l.data";
-            using (var command = new SQLiteCommand(sql, con.conn))
+            using (var command = new SqliteCommand(sql, con.conn))
             {
-                SQLiteDataAdapter sqlDA = new SQLiteDataAdapter(sql, con.conn);
                 dtDados.Clear();
-                sqlDA.Fill(dtDados);
+                using (var reader = command.ExecuteReader())
+                {
+                    dtDados.Load(reader);
+                }
 
                 dgvLancamentos.DataSource = dtDados;
 
@@ -71,12 +63,12 @@ public frmLancamentos(Conexao conexaoBanco)
                     {
                         // Obter valor de saldo da conta antes do lançamento
                         string sql = "SELECT saldo_atualizado FROM lancamentos WHERE data <= @data and conta = @conta ORDER BY data DESC, id DESC LIMIT 1;";
-                        using (var comando = new SQLiteCommand(sql, con.conn))
+                        using (var comando = new SqliteCommand(sql, con.conn))
                         {
                             comando.Parameters.AddWithValue("@data", data);
                             comando.Parameters.AddWithValue("@conta", conta);
 
-                            using (SQLiteDataReader reader = comando.ExecuteReader())
+                            using (var reader = comando.ExecuteReader())
                             {
                                 if (reader.Read())
                                 {
@@ -111,7 +103,7 @@ public frmLancamentos(Conexao conexaoBanco)
                                 {
                                     // Criar comando para atualizar os campos
                                     sql = "UPDATE lancamentos SET saldo_anterior = (saldo_anterior + @valor), saldo_atualizado = (saldo_atualizado + @valor) WHERE id = @id";
-                                    using (var comando2 = new SQLiteCommand(sql, con.conn))
+                                    using (var comando2 = new SqliteCommand(sql, con.conn))
                                     {
                                         // Para cada campo encontrado
                                         while (reader.Read())
@@ -156,7 +148,7 @@ public frmLancamentos(Conexao conexaoBanco)
                     {
                         // Obter valor de saldo da conta antes do lançamento
                         string sql = "SELECT saldo FROM contas WHERE conta = @conta";
-                        using (var comando = new SQLiteCommand(sql, con.conn))
+                        using (var comando = new SqliteCommand(sql, con.conn))
                         {
                             comando.Parameters.AddWithValue("@conta", conta);
 

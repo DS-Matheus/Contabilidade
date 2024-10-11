@@ -1,15 +1,7 @@
 ﻿using Contabilidade.Forms.Cadastros;
 using Contabilidade.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Data.SQLite;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using Microsoft.Data.Sqlite;
 
 namespace Contabilidade.Forms.Lancamentos
 {
@@ -31,11 +23,13 @@ namespace Contabilidade.Forms.Lancamentos
         {
             // Query de pesquisa
             string sql = "SELECT * FROM historicos;";
-            using (var command = new SQLiteCommand(sql, con.conn))
+            using (var command = new SqliteCommand(sql, con.conn))
             {
-                SQLiteDataAdapter sqlDA = new SQLiteDataAdapter(sql, con.conn);
                 dtDados.Clear();
-                sqlDA.Fill(dtDados);
+                using (var reader = command.ExecuteReader())
+                {
+                    dtDados.Load(reader);
+                }
 
                 dgvHistoricos.DataSource = dtDados;
 
@@ -58,7 +52,7 @@ namespace Contabilidade.Forms.Lancamentos
             {
                 // Criar histórico
                 string sql = "INSERT INTO historicos (historico) VALUES(@historico);";
-                using (var comando = new SQLiteCommand(sql, con.conn))
+                using (var comando = new SqliteCommand(sql, con.conn))
                 {
                     comando.Parameters.AddWithValue("@historico", historicoNovo);
 
@@ -67,19 +61,22 @@ namespace Contabilidade.Forms.Lancamentos
                     // Verificar se houve a criação da linha (0 = negativo)
                     if (retornoBD > 0)
                     {
-                        var id = comando.Connection.LastInsertRowId;
+                        using (var command = new SqliteCommand("SELECT last_insert_rowid();", con.conn))
+                        {
+                            var id = (Int64)command.ExecuteScalar();
 
-                        // Adicionar dados na tabela
-                        DataRow row = dtDados.NewRow();
-                        row["id"] = id;
-                        row["historico"] = historicoNovo;
-                        dtDados.Rows.Add(row);
+                            // Adicionar dados na tabela
+                            DataRow row = dtDados.NewRow();
+                            row["id"] = id;
+                            row["historico"] = historicoNovo;
+                            dtDados.Rows.Add(row);
 
-                        dgvHistoricos.Refresh();
+                            dgvHistoricos.Refresh();
 
-                        txtHistorico.Text = txtHistorico.Text.Trim();
+                            txtHistorico.Text = txtHistorico.Text.Trim();
 
-                        MessageBox.Show("Histórico criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            MessageBox.Show("Histórico criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        }
                     }
                     else
                     {

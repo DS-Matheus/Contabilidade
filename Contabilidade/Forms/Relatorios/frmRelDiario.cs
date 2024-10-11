@@ -1,21 +1,9 @@
-﻿using Contabilidade.Forms.Cadastros;
-using Contabilidade.Models;
+﻿using Contabilidade.Models;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Data.SQLite;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Reflection.Metadata;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.Data.Sqlite;
 
 namespace Contabilidade.Forms.Relatorios
 {
@@ -40,13 +28,13 @@ namespace Contabilidade.Forms.Relatorios
         private void btnVisualizar_Click(object sender, EventArgs e)
         {
             var sql = "SELECT l.conta, c.descricao, h.historico, l.valor FROM lancamentos l JOIN contas c ON l.conta = c.conta JOIN historicos h ON l.id_historico = h.id WHERE date(l.data) = @data ORDER BY l.conta ASC, l.id ASC;";
-            var comando = new SQLiteCommand(sql, con.conn);
+            var comando = new SqliteCommand(sql, con.conn);
 
             // Obter data selecionada
             DateTime data = dtpData.Value;
             comando.Parameters.AddWithValue("@data", data.ToString("yyyy-MM-dd"));
 
-            using (SQLiteDataReader reader = comando.ExecuteReader())
+            using (var reader = comando.ExecuteReader())
             {
                 List<Lancamento> listLancamentos = new List<Lancamento>();
 

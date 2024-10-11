@@ -1,9 +1,9 @@
 using Contabilidade.Models;
 using System.Data;
-using System.Data.SQLite;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.Data.Sqlite;
 
 namespace Contabilidade
 {
@@ -108,9 +108,6 @@ namespace Contabilidade
         {
             string caminhoBD = $"{pastaDatabases}\\{nomeBD}";
 
-            // Criar banco
-            SQLiteConnection.CreateFile(caminhoBD);
-
             // Conectar ao banco
             Conexao con = new Conexao(caminhoBD);
             con.conectar();
@@ -119,7 +116,7 @@ namespace Contabilidade
             {
                 // Criar tabela de usuários
                 string sql = "CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY AUTOINCREMENT, nome VARCHAR(20) NOT NULL UNIQUE, senha VARCHAR(30) NOT NULL);";
-                SQLiteCommand comando = new SQLiteCommand(sql, con.conn);
+                SqliteCommand comando = new SqliteCommand(sql, con.conn);
                 comando.ExecuteNonQuery();
 
                 // Inserir usuário na tabela
@@ -542,16 +539,18 @@ namespace Contabilidade
 
                     // Query de pesquisa
                     string sql = "SELECT * FROM usuarios WHERE nome= @nome AND senha= @senha;";
-                    SQLiteCommand comando = new SQLiteCommand(sql, con.conn);
+                    SqliteCommand comando = new SqliteCommand(sql, con.conn);
                     // Parâmetros
                     comando.Parameters.AddWithValue("@nome", txtNome.Text);
                     comando.Parameters.AddWithValue("@senha", txtSenha.Text);
 
                     // Consultar usuários com os parâmetros informados
-                    SQLiteDataAdapter dados = new SQLiteDataAdapter(comando);
                     DataTable dtUsuario = new DataTable();
-                    // Passando os dados encontrados pelo DataAdapter para o DataTable
-                    dados.Fill(dtUsuario);
+
+                    using (var reader = comando.ExecuteReader())
+                    {
+                        dtUsuario.Load(reader);
+                    }
 
                     // Liberar recursos;
                     comando.Dispose();
