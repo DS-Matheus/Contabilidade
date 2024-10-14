@@ -124,9 +124,14 @@ namespace Contabilidade
                 comando.Parameters.AddWithValue("@nome", usuarioBD);
                 comando.Parameters.AddWithValue("@senha", senhaUsuarioBD);
                 comando.ExecuteNonQuery();
+                comando.Parameters.Clear();
 
                 // Criar tabela de contas
                 comando.CommandText = "CREATE TABLE IF NOT EXISTS contas (conta VARCHAR(15) PRIMARY KEY, descricao VARCHAR(100) NOT NULL, nivel CHAR(1) NOT NULL CHECK (nivel IN ('S', 'A')), saldo NUMERIC(15,2));";
+                comando.ExecuteNonQuery();
+
+                // INSERIR CONTA 0 (CAIXA)
+                comando.CommandText = "INSERT INTO contas (conta, descricao, nivel, saldo) VALUES ('0', 'Valores no caixa', 'A', 0);";
                 comando.ExecuteNonQuery();
 
                 // Criar tabela de históricos
