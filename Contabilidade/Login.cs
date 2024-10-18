@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Data.Sqlite;
+using Contabilidade.Classes;
 
 namespace Contabilidade
 {
@@ -104,6 +105,14 @@ namespace Contabilidade
             }
         }
 
+        public static void testarResultadoComando(int resultado, string mensagem)
+        {
+            if (resultado == 0)
+            {
+                throw new CustomException(mensagem);
+            }
+        }
+
         private void criarBD()
         {
             string caminhoBD = $"{pastaDatabases}\\{nomeBD}";
@@ -117,30 +126,41 @@ namespace Contabilidade
                 // Criar tabela de usuários
                 string sql = "CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY AUTOINCREMENT, nome VARCHAR(20) NOT NULL UNIQUE, senha VARCHAR(30) NOT NULL);";
                 SqliteCommand comando = new SqliteCommand(sql, con.conn);
-                comando.ExecuteNonQuery();
+                var resultado = comando.ExecuteNonQuery();
+                testarResultadoComando(resultado, "Erro ao criar a tabela de usuários.");
 
                 // Inserir usuário na tabela
                 comando.CommandText = "INSERT INTO usuarios (nome, senha) VALUES(@nome, @senha);";
                 comando.Parameters.AddWithValue("@nome", usuarioBD);
                 comando.Parameters.AddWithValue("@senha", senhaUsuarioBD);
-                comando.ExecuteNonQuery();
+                resultado = comando.ExecuteNonQuery();
                 comando.Parameters.Clear();
+                testarResultadoComando(resultado, "Erro ao criar o usuário no banco de dados.");
 
                 // Criar tabela de contas
-                comando.CommandText = "CREATE TABLE IF NOT EXISTS contas (conta VARCHAR(15) PRIMARY KEY, descricao VARCHAR(100) NOT NULL, nivel CHAR(1) NOT NULL CHECK (nivel IN ('S', 'A')), saldo NUMERIC(15,2));";
-                comando.ExecuteNonQuery();
+                comando.CommandText = "CREATE TABLE IF NOT EXISTS contas (conta VARCHAR(15) PRIMARY KEY, descricao VARCHAR(100) NOT NULL, nivel CHAR(1) NOT NULL CHECK (nivel IN ('S', 'A')), saldo NUMERIC(8,2));";
+                resultado = comando.ExecuteNonQuery();
+                testarResultadoComando(resultado, "Erro ao criar a tabela de contas.");
 
                 // INSERIR CONTA 0 (CAIXA)
                 comando.CommandText = "INSERT INTO contas (conta, descricao, nivel, saldo) VALUES ('0', 'Valores no caixa', 'A', 0);";
-                comando.ExecuteNonQuery();
+                resultado = comando.ExecuteNonQuery();
+                testarResultadoComando(resultado, "Erro ao criar a conta 0 (referênte ao caixa)");
 
                 // Criar tabela de históricos
                 comando.CommandText = "CREATE TABLE IF NOT EXISTS historicos (id INTEGER PRIMARY KEY AUTOINCREMENT, historico VARCHAR(100) NOT NULL UNIQUE);";
-                comando.ExecuteNonQuery();
+                resultado = comando.ExecuteNonQuery();
+                testarResultadoComando(resultado, "Erro ao criar a tabela de históricos.");
 
                 // Criar tabela de lançamentos
-                comando.CommandText = "CREATE TABLE IF NOT EXISTS lancamentos (id INTEGER PRIMARY KEY AUTOINCREMENT, conta VARCHAR(15) NOT NULL, valor NUMERIC(15,2) NOT NULL, data DATE DEFAULT (DATE('now')), id_historico INTEGER NOT NULL, saldo_anterior NUMERIC(15,2) NOT NULL, saldo_atualizado NUMERIC(15,2) NOT NULL, FOREIGN KEY (conta) REFERENCES contas(conta), FOREIGN KEY (id_historico) REFERENCES historicos(id));";
-                comando.ExecuteNonQuery();
+                comando.CommandText = "CREATE TABLE IF NOT EXISTS lancamentos (id INTEGER PRIMARY KEY AUTOINCREMENT, conta VARCHAR(15) NOT NULL, valor NUMERIC(8,2) NOT NULL, data DATE DEFAULT (DATE('now')), id_historico INTEGER NOT NULL, saldo_anterior NUMERIC(8,2) NOT NULL, saldo_atualizado NUMERIC(8,2) NOT NULL, FOREIGN KEY (conta) REFERENCES contas(conta), FOREIGN KEY (id_historico) REFERENCES historicos(id));";
+                resultado = comando.ExecuteNonQuery();
+                testarResultadoComando(resultado, "Erro ao criar a tabela de lançamentos.");
+
+                // Criar tabela para registro dos saldos do caixa
+                comando.CommandText = "CREATE TABLE registros_caixa (data DATE PRIMARY KEY NOT NULL UNIQUE, saldo NUMERIC (8, 2) NOT NULL);";
+                resultado = comando.ExecuteNonQuery();
+                testarResultadoComando(resultado, "Erro ao criar a tabela para registros do caixa");
 
                 carregarBDs();
 
@@ -159,7 +179,7 @@ namespace Contabilidade
             {
                 MessageBox.Show(error.Message.ToString(), "Erro ao criar o banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-                // Se der erro mas o arquivo de banco foi criado sem usuário: excluir
+                // Se der algum erro mas o arquivo de banco já foi criado: excluir
                 if (File.Exists(caminhoBD))
                 {
                     try
@@ -169,7 +189,7 @@ namespace Contabilidade
                     }
                     catch (Exception erro)
                     {
-                        MessageBox.Show(erro.Message.ToString(), "Erro ao excluir o banco de dados incompleto", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show($"Não foi possível excluir o banco de dados, por favor, remova ele manualmente na pasta databases (dentro da instalação do programa) e anote o código de erro: \n\n{erro.Message.ToString()}", "Erro ao excluir o banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
 
@@ -383,39 +403,61 @@ namespace Contabilidade
         private void btnExcluirBD_Click(object sender, EventArgs e)
         {
             // Exibe uma caixa de diálogo de confirmação
-            DialogResult resultado = MessageBox.Show("Você realmente deseja excluir o banco de dados? Esse processo é irreversível.", "Excluir banco de dados", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+            DialogResult resultado = MessageBox.Show("Você deseja excluir o banco de dados? Esse processo é irreversível e todos os dados armazenados serão perdidos!", "Excluir banco de dados", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
 
             // Verifica a resposta do usuário
             if (resultado == DialogResult.Yes)
             {
-                if (verificarExistenciaBD("Erro ao excluir banco de dados"))
+                resultado = MessageBox.Show("Você realmente DESEJA EXCLUIR o banco de dados? (dupla checagem)", "Excluir banco de dados", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+                // Verifica a resposta do usuário
+                if (resultado == DialogResult.Yes)
                 {
-                    caminhoBD = $"{pastaDatabases}\\{nomeBD}";
+                    if (verificarExistenciaBD("Erro ao excluir banco de dados"))
+                    {
+                        caminhoBD = $"{pastaDatabases}\\{nomeBD}";
 
-                    excluirBD(caminhoBD);
-                    carregarBDs();
+                        excluirBD(caminhoBD);
+                        carregarBDs();
 
-                    cbbBD.Text = "";
-                    cbbBD.Focus();
+                        cbbBD.Text = "";
+                        cbbBD.Focus();
+                    }
                 }
-            }
-            else
-            {
-                Console.WriteLine("Operação de exclusão cancelada pelo usuário.");
             }
         }
 
         private void renomearBD(string nomeBDNovo)
         {
             caminhoBD = $"{pastaDatabases}\\{nomeBD}";
-            // Renomear
-            File.Move(caminhoBD, $"{Path.GetDirectoryName(caminhoBD)}\\{nomeBDNovo}");
 
-            MessageBox.Show("O banco de dados foi renomeado com sucesso!", "Operação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            try
+            {
+                // Renomear
+                File.Move(caminhoBD, $"{Path.GetDirectoryName(caminhoBD)}\\{nomeBDNovo}");
 
-            resetarForm();
+                // Verificar se o arquivo foi movido
+                if (File.Exists($"{Path.GetDirectoryName(caminhoBD)}\\{nomeBDNovo}") && !File.Exists(caminhoBD))
+                {
+                    MessageBox.Show("O banco de dados foi renomeado com sucesso!", "Operação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    throw new Exception("Não foi possível renomear o arquivo, tente novamente com outro nome ou em outra pasta.");
+                }
 
-            carregarBDs();
+                // Resetar o formulário e carregar os bancos de dados
+                resetarForm();
+                carregarBDs();
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show($"Erro de IO, anote a mensagem de erro: \n\n{ex.Message}", "Erro ao renomear o arquivo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{ex.Message}", "Erro ao renomear o arquivo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void btnRenomearBD_Click(object sender, EventArgs e)
@@ -475,17 +517,10 @@ namespace Contabilidade
                         cbbBD.Text = "";
                         cbbBD.Focus();
                     }
-                    // Passou nas verificações, tentar renomear
+                    // Passou nas verificações: renomear
                     else
                     {
-                        try
-                        {
-                            renomearBD(nomeBDNovo);
-                        }
-                        catch (Exception error)
-                        {
-                            MessageBox.Show(error.Message.ToString(), "Erro ao renomear banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
+                        renomearBD(nomeBDNovo);
                     }
                 }
                 else
@@ -589,7 +624,7 @@ namespace Contabilidade
                 }
                 catch (Exception error)
                 {
-                    MessageBox.Show(error.Message.ToString(), "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Não foi possível fazer login, anote a mensagem de erro: \n\n{error.Message.ToString()}", "Erro ao fazer login", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }

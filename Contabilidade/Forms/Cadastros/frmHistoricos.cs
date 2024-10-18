@@ -57,34 +57,41 @@ namespace Contabilidade.Forms.Cadastros
                     string sql = "INSERT INTO historicos (historico) VALUES(@historico);";
                     using (var comando = new SqliteCommand(sql, con.conn))
                     {
-                        comando.Parameters.AddWithValue("@historico", historico);
-
-                        int retornoBD = comando.ExecuteNonQuery();
-
-                        // Verificar se houve a criação da linha (0 = negativo)
-                        if (retornoBD > 0)
+                        try
                         {
-                            using (var command = new SqliteCommand("SELECT last_insert_rowid();", con.conn))
+                            comando.Parameters.AddWithValue("@historico", historico);
+
+                            int retornoBD = comando.ExecuteNonQuery();
+
+                            // Verificar se houve a criação da linha (0 = negativo)
+                            if (retornoBD > 0)
                             {
-                                var id = (Int64)command.ExecuteScalar();
+                                using (var command = new SqliteCommand("SELECT last_insert_rowid();", con.conn))
+                                {
+                                    var id = (Int64)command.ExecuteScalar();
 
-                                // Adicionar dados na tabela
-                                DataRow row = dtDados.NewRow();
-                                row["id"] = id;
-                                row["historico"] = historico;
-                                dtDados.Rows.Add(row);
+                                    // Adicionar dados na tabela
+                                    DataRow row = dtDados.NewRow();
+                                    row["id"] = id;
+                                    row["historico"] = historico;
+                                    dtDados.Rows.Add(row);
 
-                                dgvHistoricos.Refresh();
+                                    dgvHistoricos.Refresh();
 
-                                // Remover dados das variáveis
-                                historico = "";
+                                    // Remover dados das variáveis
+                                    historico = "";
 
-                                MessageBox.Show("Histórico criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                    MessageBox.Show("Histórico criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                }
+                            }
+                            else
+                            {
+                                throw new Exception("Não foi possível criar o novo histórico.");
                             }
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            MessageBox.Show("Não foi possível criar o novo histórico.", "Histórico não criado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show(ex.Message.ToString(), "Histórico não criado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                     }
                 }
@@ -120,27 +127,34 @@ namespace Contabilidade.Forms.Cadastros
                     // Editar histórico
                     using (var comando = new SqliteCommand("UPDATE historicos SET historico = @historico WHERE id = @id;", con.conn))
                     {
-                        comando.Parameters.AddWithValue("@historico", historico);
-                        comando.Parameters.AddWithValue("@id", id);
-
-                        int retornoBD = comando.ExecuteNonQuery();
-
-                        // Verificar se houve a edição de alguma linha (0 = negativo)
-                        if (retornoBD > 0)
+                        try
                         {
-                            // Atualizar DataTable
-                            dgvHistoricos.Rows[numLinha].Cells["Histórico"].Value = historico;
+                            comando.Parameters.AddWithValue("@historico", historico);
+                            comando.Parameters.AddWithValue("@id", id);
 
-                            dgvHistoricos.Refresh();
+                            int retornoBD = comando.ExecuteNonQuery();
 
-                            // Remover dados das variáveis
-                            historico = "";
+                            // Verificar se houve a edição de alguma linha (0 = negativo)
+                            if (retornoBD > 0)
+                            {
+                                // Atualizar DataTable
+                                dgvHistoricos.Rows[numLinha].Cells["Histórico"].Value = historico;
 
-                            MessageBox.Show("Histórico editado com sucesso!", "Edição bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                dgvHistoricos.Refresh();
+
+                                // Remover dados das variáveis
+                                historico = "";
+
+                                MessageBox.Show("Histórico editado com sucesso!", "Edição bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            }
+                            else
+                            {
+                                throw new Exception("Não foi possível encontrar o histórico ou ocorreu um erro na edição.");
+                            }
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            MessageBox.Show("Não foi possível encontrar o histórico ou ocorreu um erro na edição.", "Exclusão não realizada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show(ex.Message.ToString(), "Exclusão não realizada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                     }
                 }

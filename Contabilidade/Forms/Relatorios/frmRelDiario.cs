@@ -125,6 +125,39 @@ namespace Contabilidade.Forms.Relatorios
                                 decimal totalDebitos = 0;
                                 decimal totalCreditos = 0;
 
+                                // Obter nome da conta referente ao caixa
+                                comando.CommandText = "SELECT descricao FROM contas WHERE conta = '0';";
+                                var descricaoCaixa = comando.ExecuteScalar()?.ToString();
+
+                                // Obter saldo anterior do caixa (ou deixar como 0 se não possuir nenhum registro na data informada ou antes dela) - CONFERIR SE ESTA CORRETO !!!!!!!!!!!!!!!
+                                comando.CommandText = "SELECT COALESCE((SELECT saldo_anterior FROM lancamentos WHERE conta = '0' AND data = @data ORDER BY data ASC, id ASC LIMIT 1), (SELECT saldo_anterior FROM lancamentos WHERE conta = '0' AND data < @data ORDER BY data DESC, id DESC LIMIT 1), 0) AS saldo_anterior;";
+                                var saldoAnterior = Convert.ToDecimal(comando.ExecuteScalar());
+
+                                // Obter saldo atual do caixa (ou deixar como 0 se não possuir nenhum registro na data informada ou antes dela) - CONFERIR SE ESTA CORRETO !!!!!!!!!!!!!!!
+                                comando.CommandText = "SELECT COALESCE((SELECT saldo_atualizado FROM lancamentos WHERE conta = '0' AND data <= @data ORDER BY data DESC, id DESC LIMIT 1), 0) AS saldo_atualizado;";
+                                var saldoAtual = Convert.ToDecimal(comando.ExecuteScalar());
+
+                                // Adicionar saldo anterior (crédito) e saldo atual (débito) do caixa
+                                // Verificação para alinhar a linha mais a direita nos casos do caixa ter uma descrição muito grande OU usar mais espaço p/ esquerda
+                                if (descricaoCaixa?.Length > 94)
+                                {
+                                    pdf.Add(new Paragraph($"{0.ToString().PadRight(10)}{descricaoCaixa?.PadRight(100)}"));
+                                }
+                                else
+                                {
+                                    pdf.Add(new Paragraph($"{0.ToString().PadRight(16)}{descricaoCaixa?.PadRight(94)}"));
+                                }
+
+                                totalCreditos += saldoAnterior;
+                                totalDebitos += saldoAtual;
+
+                                // VERIFICAR SE O TRATAMENTO DOS VALORES ESTÁ CERTO (SE REALMENTE É CRÉDITO/DÉBITO EM CADA CASO)
+                                pdf.Add(new Paragraph($"{"SALDO ANTERIOR".PadRight(82)}{saldoAnterior.ToString().PadLeft(28)}"));
+                                pdf.Add(new Paragraph($"{"SALDO ATUAL".PadRight(82)}{saldoAtual.ToString().PadLeft(14)}"));
+      
+
+                                linhasDisponiveis -= 3;
+
                                 // Para cada lançamento
                                 foreach (var lancamento in listLancamentos)
                                 {

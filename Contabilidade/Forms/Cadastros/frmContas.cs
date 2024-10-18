@@ -189,36 +189,43 @@ namespace Contabilidade.Forms.Cadastros
                     string sql = "INSERT INTO contas (conta, descricao, nivel, saldo) VALUES(@conta, @descricao, @nivel, @saldo);";
                     using (var comando = new SqliteCommand(sql, con.conn))
                     {
-                        comando.Parameters.AddWithValue("@conta", conta);
-                        comando.Parameters.AddWithValue("@descricao", descricao);
-                        comando.Parameters.AddWithValue("@nivel", nivel);
-                        comando.Parameters.AddWithValue("@saldo", nivel == "S" ? null : 0);
-
-                        int retornoBD = comando.ExecuteNonQuery();
-
-                        // Verificar se houve a criação da linha (0 = negativo)
-                        if (retornoBD > 0)
+                        try
                         {
-                            // Adicionar dados na tabela
-                            DataRow row = dtDados.NewRow();
-                            row["conta"] = conta;
-                            row["descricao"] = descricao;
-                            row["nivel"] = nivel;
-                            row["saldo"] = (nivel == "S" ? DBNull.Value : 0);
-                            dtDados.Rows.Add(row);
+                            comando.Parameters.AddWithValue("@conta", conta);
+                            comando.Parameters.AddWithValue("@descricao", descricao);
+                            comando.Parameters.AddWithValue("@nivel", nivel);
+                            comando.Parameters.AddWithValue("@saldo", nivel == "S" ? null : 0);
 
-                            dgvContas.Refresh();
+                            int retornoBD = comando.ExecuteNonQuery();
 
-                            // Remover dados das variáveis
-                            conta = "";
-                            descricao = "";
-                            nivel = "";
+                            // Verificar se houve a criação da linha (0 = negativo)
+                            if (retornoBD > 0)
+                            {
+                                // Adicionar dados na tabela
+                                DataRow row = dtDados.NewRow();
+                                row["conta"] = conta;
+                                row["descricao"] = descricao;
+                                row["nivel"] = nivel;
+                                row["saldo"] = (nivel == "S" ? DBNull.Value : 0);
+                                dtDados.Rows.Add(row);
 
-                            MessageBox.Show("Conta criada com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                dgvContas.Refresh();
+
+                                // Remover dados das variáveis
+                                conta = "";
+                                descricao = "";
+                                nivel = "";
+
+                                MessageBox.Show("Conta criada com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            }
+                            else
+                            {
+                                throw new Exception("Não foi possível criar a nova conta.");
+                            }
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            MessageBox.Show("Não foi possível criar a nova conta.", "Conta não criada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show(ex.Message.ToString(), "Conta não criada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                     }
                 }
@@ -273,27 +280,34 @@ namespace Contabilidade.Forms.Cadastros
                     // Editar conta
                     using (var comando = new SqliteCommand("UPDATE contas SET descricao = @descricao WHERE conta = @conta;", con.conn))
                     {
-                        comando.Parameters.AddWithValue("@descricao", descricao);
-                        comando.Parameters.AddWithValue("@conta", conta);
-
-                        int retornoBD = comando.ExecuteNonQuery();
-
-                        // Verificar se houve a edição de alguma linha (0 = negativo)
-                        if (retornoBD > 0)
+                        try
                         {
-                            // Atualizar DataTable
-                            dgvContas.Rows[numLinha].Cells["Descrição"].Value = descricao;
+                            comando.Parameters.AddWithValue("@descricao", descricao);
+                            comando.Parameters.AddWithValue("@conta", conta);
 
-                            dgvContas.Refresh();
+                            int retornoBD = comando.ExecuteNonQuery();
 
-                            // Remover dados das variáveis
-                            descricao = "";
+                            // Verificar se houve a edição de alguma linha (0 = negativo)
+                            if (retornoBD > 0)
+                            {
+                                // Atualizar DataTable
+                                dgvContas.Rows[numLinha].Cells["Descrição"].Value = descricao;
 
-                            MessageBox.Show("Conta editada com sucesso!", "Edição bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                dgvContas.Refresh();
+
+                                // Remover dados das variáveis
+                                descricao = "";
+
+                                MessageBox.Show("Conta editada com sucesso!", "Edição bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            }
+                            else
+                            {
+                                throw new Exception("Não foi possível encontrar a conta ou ocorreu um erro na edição.");
+                            }
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            MessageBox.Show("Não foi possível encontrar a conta ou ocorreu um erro na edição.", "Exclusão não realizada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show(ex.Message.ToString(), "Edição não realizada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                     }
                 }

@@ -46,6 +46,7 @@
             txtConta = new TextBox();
             label1 = new Label();
             btnSalvar = new Button();
+            btnAlterarSinal = new Button();
             pnlBarraTitulo.SuspendLayout();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudValor).BeginInit();
@@ -110,6 +111,7 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(btnAlterarSinal);
             panel1.Controls.Add(txtDescricao);
             panel1.Controls.Add(label5);
             panel1.Controls.Add(txtHistorico);
@@ -188,11 +190,11 @@
             // nudValor
             // 
             nudValor.DecimalPlaces = 2;
-            nudValor.Location = new Point(239, 44);
-            nudValor.Maximum = new decimal(new int[] { 1569325055, 23283064, 0, 131072 });
-            nudValor.Minimum = new decimal(new int[] { 1569325055, 23283064, 0, -2147352576 });
+            nudValor.Location = new Point(225, 43);
+            nudValor.Maximum = new decimal(new int[] { 1410065407, 2, 0, 131072 });
+            nudValor.Minimum = new decimal(new int[] { 999999999, 0, 0, -2147352576 });
             nudValor.Name = "nudValor";
-            nudValor.Size = new Size(166, 23);
+            nudValor.Size = new Size(151, 23);
             nudValor.TabIndex = 8;
             nudValor.ThousandsSeparator = true;
             // 
@@ -209,7 +211,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(239, 25);
+            label3.Location = new Point(225, 24);
             label3.Name = "label3";
             label3.Size = new Size(33, 15);
             label3.TabIndex = 5;
@@ -255,6 +257,15 @@
             btnSalvar.UseVisualStyleBackColor = true;
             btnSalvar.Click += btnSalvar_Click;
             // 
+            // btnAlterarSinal
+            // 
+            btnAlterarSinal.Location = new Point(382, 44);
+            btnAlterarSinal.Name = "btnAlterarSinal";
+            btnAlterarSinal.Size = new Size(23, 23);
+            btnAlterarSinal.TabIndex = 17;
+            btnAlterarSinal.UseVisualStyleBackColor = true;
+            btnAlterarSinal.Click += btnAlterarSinal_Click;
+            // 
             // frmLancamentosDados
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -294,5 +305,6 @@
         private TextBox txtHistorico;
         private TextBox txtDescricao;
         private Label label5;
+        private Button btnAlterarSinal;
     }
 }

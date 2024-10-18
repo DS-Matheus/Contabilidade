@@ -110,5 +110,30 @@ namespace Contabilidade.Forms.Lancamentos
                 this.Dispose();
             }
         }
+
+        private void btnAlterarSinal_Click(object sender, EventArgs e)
+        {
+            var valor = nudValor.Value;
+
+            if (valor > 9999999.99m)
+            {
+                decimal novoValor;
+                if (decimal.TryParse(valor.ToString().Substring(1), out novoValor))
+                {
+                    valor = novoValor;
+                }
+                else
+                {
+                    // Trate o erro de conversão aqui, se necessário
+                    Console.WriteLine("Erro ao converter o valor.");
+                }
+                nudValor.Value = valor;
+            }
+            else
+            {
+                nudValor.Value = valor * -1;
+            }
+
+        }
     }
 }
