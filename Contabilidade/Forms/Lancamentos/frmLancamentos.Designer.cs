@@ -30,8 +30,6 @@
         {
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             groupBox1 = new GroupBox();
-            txtFiltrar2 = new TextBox();
-            cbbFiltrar2 = new ComboBox();
             cbbFiltrar = new ComboBox();
             txtFiltrar = new TextBox();
             btnImprimir = new Button();
@@ -52,8 +50,6 @@
             // 
             // groupBox1
             // 
-            groupBox1.Controls.Add(txtFiltrar2);
-            groupBox1.Controls.Add(cbbFiltrar2);
             groupBox1.Controls.Add(cbbFiltrar);
             groupBox1.Controls.Add(txtFiltrar);
             groupBox1.Location = new Point(524, 409);
@@ -63,28 +59,11 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "Filtrar por";
             // 
-            // txtFiltrar2
-            // 
-            txtFiltrar2.Location = new Point(178, 49);
-            txtFiltrar2.Name = "txtFiltrar2";
-            txtFiltrar2.Size = new Size(160, 23);
-            txtFiltrar2.TabIndex = 13;
-            // 
-            // cbbFiltrar2
-            // 
-            cbbFiltrar2.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbbFiltrar2.FormattingEnabled = true;
-            cbbFiltrar2.Items.AddRange(new object[] { "menor que", "maior que", "entre" });
-            cbbFiltrar2.Location = new Point(178, 20);
-            cbbFiltrar2.Name = "cbbFiltrar2";
-            cbbFiltrar2.Size = new Size(160, 23);
-            cbbFiltrar2.TabIndex = 12;
-            // 
             // cbbFiltrar
             // 
             cbbFiltrar.DropDownStyle = ComboBoxStyle.DropDownList;
             cbbFiltrar.FormattingEnabled = true;
-            cbbFiltrar.Items.AddRange(new object[] { "Conta", "Descrição", "Valor", "Débito", "Crédito", "Data", "Histórico" });
+            cbbFiltrar.Items.AddRange(new object[] { "Data", "Conta", "Descrição", "Valor", "Débitos", "Créditos", "Histórico" });
             cbbFiltrar.Location = new Point(6, 20);
             cbbFiltrar.Name = "cbbFiltrar";
             cbbFiltrar.Size = new Size(332, 23);
@@ -236,8 +215,6 @@
         private Button btnCriar;
         private DataGridView dgvLancamentos;
         private ComboBox cbbFiltrar;
-        private TextBox txtFiltrar2;
-        private ComboBox cbbFiltrar2;
         private DataGridViewTextBoxColumn ID;
         private DataGridViewTextBoxColumn Data;
         private DataGridViewTextBoxColumn Conta;

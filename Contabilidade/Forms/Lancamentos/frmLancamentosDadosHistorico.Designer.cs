@@ -35,6 +35,8 @@
             lblTitulo = new Label();
             btnFechar = new Button();
             panel1 = new Panel();
+            groupBox1 = new GroupBox();
+            txtFiltrar = new TextBox();
             dgvHistoricos = new DataGridView();
             ID = new DataGridViewTextBoxColumn();
             Histórico = new DataGridViewTextBoxColumn();
@@ -43,6 +45,7 @@
             label1 = new Label();
             pnlBarraTitulo.SuspendLayout();
             panel1.SuspendLayout();
+            groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvHistoricos).BeginInit();
             SuspendLayout();
             // 
@@ -57,6 +60,7 @@
             pnlBarraTitulo.Name = "pnlBarraTitulo";
             pnlBarraTitulo.Size = new Size(500, 30);
             pnlBarraTitulo.TabIndex = 7;
+            pnlBarraTitulo.MouseDown += pnlBarraTitulo_MouseDown;
             // 
             // btnMinimizar
             // 
@@ -72,6 +76,7 @@
             btnMinimizar.TabIndex = 4;
             btnMinimizar.Text = "--";
             btnMinimizar.UseVisualStyleBackColor = true;
+            btnMinimizar.Click += btnMinimizar_Click;
             // 
             // lblTitulo
             // 
@@ -83,6 +88,7 @@
             lblTitulo.Size = new Size(201, 16);
             lblTitulo.TabIndex = 1;
             lblTitulo.Text = "Formulário de dados de históricos";
+            lblTitulo.MouseDown += lblTitulo_MouseDown;
             // 
             // btnFechar
             // 
@@ -98,9 +104,11 @@
             btnFechar.TabIndex = 5;
             btnFechar.Text = "X";
             btnFechar.UseVisualStyleBackColor = true;
+            btnFechar.Click += btnFechar_Click;
             // 
             // panel1
             // 
+            panel1.Controls.Add(groupBox1);
             panel1.Controls.Add(dgvHistoricos);
             panel1.Controls.Add(btnCriar);
             panel1.Controls.Add(txtHistorico);
@@ -108,8 +116,26 @@
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 30);
             panel1.Name = "panel1";
-            panel1.Size = new Size(500, 320);
+            panel1.Size = new Size(500, 400);
             panel1.TabIndex = 8;
+            // 
+            // groupBox1
+            // 
+            groupBox1.Controls.Add(txtFiltrar);
+            groupBox1.Location = new Point(32, 314);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(438, 66);
+            groupBox1.TabIndex = 20;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Filtrar por";
+            // 
+            // txtFiltrar
+            // 
+            txtFiltrar.Location = new Point(6, 22);
+            txtFiltrar.Name = "txtFiltrar";
+            txtFiltrar.Size = new Size(426, 23);
+            txtFiltrar.TabIndex = 10;
+            txtFiltrar.TextChanged += txtFiltrar_TextChanged;
             // 
             // dgvHistoricos
             // 
@@ -182,7 +208,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(500, 350);
+            ClientSize = new Size(500, 430);
             Controls.Add(panel1);
             Controls.Add(pnlBarraTitulo);
             FormBorderStyle = FormBorderStyle.None;
@@ -193,6 +219,8 @@
             pnlBarraTitulo.PerformLayout();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvHistoricos).EndInit();
             ResumeLayout(false);
         }
@@ -210,5 +238,7 @@
         private DataGridView dgvHistoricos;
         private DataGridViewTextBoxColumn ID;
         private DataGridViewTextBoxColumn Histórico;
+        private GroupBox groupBox1;
+        private TextBox txtFiltrar;
     }
 }

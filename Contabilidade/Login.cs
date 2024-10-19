@@ -138,12 +138,12 @@ namespace Contabilidade
                 testarResultadoComando(resultado, "Erro ao criar o usuário no banco de dados.");
 
                 // Criar tabela de contas
-                comando.CommandText = "CREATE TABLE IF NOT EXISTS contas (conta VARCHAR(15) PRIMARY KEY, descricao VARCHAR(100) NOT NULL, nivel CHAR(1) NOT NULL CHECK (nivel IN ('S', 'A')), saldo NUMERIC(8,2));";
+                comando.CommandText = "CREATE TABLE IF NOT EXISTS contas (conta VARCHAR(15) PRIMARY KEY, descricao VARCHAR(100) NOT NULL, nivel CHAR(1) NOT NULL CHECK (nivel IN ('S', 'A')));";
                 resultado = comando.ExecuteNonQuery();
                 testarResultadoComando(resultado, "Erro ao criar a tabela de contas.");
 
                 // INSERIR CONTA 0 (CAIXA)
-                comando.CommandText = "INSERT INTO contas (conta, descricao, nivel, saldo) VALUES ('0', 'Valores no caixa', 'A', 0);";
+                comando.CommandText = "INSERT INTO contas (conta, descricao, nivel) VALUES ('0', 'Valores no caixa', 'A');";
                 resultado = comando.ExecuteNonQuery();
                 testarResultadoComando(resultado, "Erro ao criar a conta 0 (referênte ao caixa)");
 
@@ -153,7 +153,7 @@ namespace Contabilidade
                 testarResultadoComando(resultado, "Erro ao criar a tabela de históricos.");
 
                 // Criar tabela de lançamentos
-                comando.CommandText = "CREATE TABLE IF NOT EXISTS lancamentos (id INTEGER PRIMARY KEY AUTOINCREMENT, conta VARCHAR(15) NOT NULL, valor NUMERIC(8,2) NOT NULL, data DATE DEFAULT (DATE('now')), id_historico INTEGER NOT NULL, saldo_anterior NUMERIC(8,2) NOT NULL, saldo_atualizado NUMERIC(8,2) NOT NULL, FOREIGN KEY (conta) REFERENCES contas(conta), FOREIGN KEY (id_historico) REFERENCES historicos(id));";
+                comando.CommandText = "CREATE TABLE IF NOT EXISTS lancamentos (id INTEGER PRIMARY KEY AUTOINCREMENT, conta VARCHAR(15) NOT NULL, valor NUMERIC(8,2) NOT NULL, data DATE DEFAULT (DATE('now')), id_historico INTEGER NOT NULL, saldo NUMERIC(8,2) NOT NULL, FOREIGN KEY (conta) REFERENCES contas(conta), FOREIGN KEY (id_historico) REFERENCES historicos(id));";
                 resultado = comando.ExecuteNonQuery();
                 testarResultadoComando(resultado, "Erro ao criar a tabela de lançamentos.");
 

@@ -72,7 +72,7 @@ namespace Contabilidade.Forms.Lancamentos
                                 var dataConvertida = data.ToString("yyyy-MM-dd");
 
                                 // Obter valor de saldo da conta antes do lançamento
-                                comando.CommandText = "SELECT COALESCE ((SELECT saldo_atualizado FROM lancamentos WHERE data <= @data and conta = @conta ORDER BY data DESC, id DESC LIMIT 1), 0);";
+                                comando.CommandText = "SELECT COALESCE ((SELECT saldo FROM lancamentos WHERE data <= @data and conta = @conta ORDER BY data DESC, id DESC LIMIT 1), 0);";
                                 comando.Parameters.AddWithValue("@data", dataConvertida);
                                 comando.Parameters.AddWithValue("@conta", conta);
 
@@ -88,12 +88,11 @@ namespace Contabilidade.Forms.Lancamentos
                                 }
 
                                 // Criar lançamento
-                                comando.CommandText = "INSERT INTO lancamentos (conta, valor, id_historico, data, saldo_anterior, saldo_atualizado) VALUES(@conta, @valor, @id_historico, @data, @saldo_anterior, @saldo_atualizado);";
+                                comando.CommandText = "INSERT INTO lancamentos (conta, valor, id_historico, data, saldo) VALUES(@conta, @valor, @id_historico, @data, @saldo);";
 
                                 comando.Parameters.AddWithValue("@valor", valor);
                                 comando.Parameters.AddWithValue("@id_historico", id_historico);
-                                comando.Parameters.AddWithValue("@saldo_anterior", saldo);
-                                comando.Parameters.AddWithValue("@saldo_atualizado", saldo + valor);
+                                comando.Parameters.AddWithValue("@saldo", saldo + valor);
 
                                 int retornoBD = comando.ExecuteNonQuery();
 
@@ -108,7 +107,7 @@ namespace Contabilidade.Forms.Lancamentos
                                     using (var reader = comando.ExecuteReader())
                                     {
                                         // Criar comando para atualizar os campos
-                                        var sql = "UPDATE lancamentos SET saldo_anterior = (saldo_anterior + @valor), saldo_atualizado = (saldo_atualizado + @valor) WHERE id = @id";
+                                        var sql = "UPDATE lancamentos SET saldo = (saldo + @valor) WHERE id = @id";
                                         using (var comando2 = new SqliteCommand(sql, con.conn))
                                         {
                                             // Atribuir transação ao comando 2
@@ -144,11 +143,6 @@ namespace Contabilidade.Forms.Lancamentos
                                 {
                                     throw new CustomException("Não foi possível criar um novo lançamento, por favor, anote os dados inseridos e tire um print da tela para contatar o desenvolvedor");
                                 }
-
-                                // Alterar saldo da conta
-                                comando.CommandText = "UPDATE contas SET saldo = saldo + @valor WHERE conta = @conta";
-                                var resultado2 = comando.ExecuteNonQuery();
-                                frmLogin.testarResultadoComando(resultado2, "Houve um erro na hora de atualizar o saldo da conta");
 
                                 // Após inserir o lançamento: fazer o registro do lançamento no caixa
                                 // Verificar se a data já existe

@@ -2,11 +2,17 @@
 using Contabilidade.Models;
 using System.Data;
 using Microsoft.Data.Sqlite;
+using System.Runtime.InteropServices;
 
 namespace Contabilidade.Forms.Lancamentos
 {
     public partial class frmLancamentosDadosHistorico : Form
     {
+        // Funções usadas para permitir que a janela se movimente através da barra superior customizada
+        [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
+        private extern static void ReleaseCapture();
+        [DllImport("user32.DLL", EntryPoint = "SendMessage")]
+        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
         Conexao con;
         static DataTable dtDados = new DataTable();
         DataView dv = dtDados.DefaultView;
@@ -104,6 +110,35 @@ namespace Contabilidade.Forms.Lancamentos
                 this.DialogResult = DialogResult.OK;
                 this.Dispose();
             }
+        }
+
+        private void btnFechar_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+            this.Dispose();
+        }
+
+        private void btnMinimizar_Click(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Minimized;
+        }
+
+        private void pnlBarraTitulo_MouseDown(object sender, MouseEventArgs e)
+        {
+            ReleaseCapture();
+            SendMessage(this.Handle, 0x112, 0xf012, 0);
+        }
+
+        private void lblTitulo_MouseDown(object sender, MouseEventArgs e)
+        {
+            ReleaseCapture();
+            SendMessage(this.Handle, 0x112, 0xf012, 0);
+        }
+
+        private void txtFiltrar_TextChanged(object sender, EventArgs e)
+        {
+            dv.RowFilter = $"historico LIKE '%{txtFiltrar.Text}%'";
+            dgvHistoricos.DataSource = dv;
         }
     }
 }

@@ -98,13 +98,12 @@ namespace Contabilidade.Forms.Lancamentos
                     var tipoConta = getTipoConta(cbbNivel.SelectedIndex);
 
                     // Criar conta
-                    string sql = "INSERT INTO contas (conta, descricao, nivel, saldo) VALUES(@conta, @descricao, @nivel, @saldo);";
+                    string sql = "INSERT INTO contas (conta, descricao, nivel) VALUES(@conta, @descricao, @nivel);";
                     using (var comando = new SqliteCommand(sql, con.conn))
                     {
                         comando.Parameters.AddWithValue("@conta", txtConta.Text);
                         comando.Parameters.AddWithValue("@descricao", txtDescricao.Text);
                         comando.Parameters.AddWithValue("@nivel", tipoConta);
-                        comando.Parameters.AddWithValue("@saldo", tipoConta == "S" ? null : 0);
 
                         int retornoBD = comando.ExecuteNonQuery();
 
@@ -116,7 +115,6 @@ namespace Contabilidade.Forms.Lancamentos
                             row["conta"] = conta;
                             row["descricao"] = descricao;
                             row["nivel"] = tipoConta;
-                            row["saldo"] = (tipoConta == "S" ? DBNull.Value : 0);
                             dtDados.Rows.Add(row);
 
                             dgvContas.Refresh();
@@ -162,29 +160,14 @@ namespace Contabilidade.Forms.Lancamentos
             {
                 cbbNivel2.Visible = true;
                 txtFiltrar.Visible = false;
-                txtFiltrar2.Visible = false;
-            }
-            // Filtrar por Saldo entre
-            else if (cbbFiltrar.SelectedIndex == 5)
-            {
-                cbbNivel2.Visible = false;
-                txtFiltrar.Visible = true;
-                txtFiltrar2.Visible = true;
-                txtFiltrar.Width = 115;
             }
             else
             {
                 cbbNivel2.Visible = false;
                 txtFiltrar.Visible = true;
-                txtFiltrar2.Visible = false;
                 txtFiltrar.Width = 238;
             }
 
-            txtFiltrar_TextChanged(sender, e);
-        }
-
-        private void txtFiltrar2_TextChanged(object sender, EventArgs e)
-        {
             txtFiltrar_TextChanged(sender, e);
         }
 
@@ -222,34 +205,6 @@ namespace Contabilidade.Forms.Lancamentos
                 }
 
                 dgvContas.DataSource = dv;
-            }
-            // Saldo menor que
-            else if (cbbFiltrar.SelectedIndex == 3)
-            {
-                if (IsNumeric(txtFiltrar.Text))
-                {
-                    dv.RowFilter = $"saldo <= {txtFiltrar.Text}";
-                    dgvContas.DataSource = dv;
-                }
-            }
-            // Saldo maior que
-            else if (cbbFiltrar.SelectedIndex == 4)
-            {
-                if (IsNumeric(txtFiltrar.Text))
-                {
-                    dv.RowFilter = $"saldo >= {txtFiltrar.Text}";
-                    dgvContas.DataSource = dv;
-                }
-            }
-            // Saldo entre
-            else if (cbbFiltrar.SelectedIndex == 5)
-            {
-                if (IsNumeric(txtFiltrar.Text) && IsNumeric(txtFiltrar2.Text))
-                {
-                    var valores = ObterMenorEMaior(int.Parse(txtFiltrar.Text), int.Parse(txtFiltrar2.Text));
-                    dv.RowFilter = $"saldo >= {valores.Item1} AND saldo <= {valores.Item2}";
-                    dgvContas.DataSource = dv;
-                }
             }
         }
 

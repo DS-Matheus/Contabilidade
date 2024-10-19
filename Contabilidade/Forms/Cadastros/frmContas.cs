@@ -50,29 +50,14 @@ namespace Contabilidade.Forms.Cadastros
             {
                 cbbNivel.Visible = true;
                 txtFiltrar.Visible = false;
-                txtFiltrar2.Visible = false;
-            }
-            // Filtrar por Saldo entre
-            else if (cbbFiltrar.SelectedIndex == 5)
-            {
-                cbbNivel.Visible = false;
-                txtFiltrar.Visible = true;
-                txtFiltrar2.Visible = true;
-                txtFiltrar.Width = 115;
             }
             else
             {
                 cbbNivel.Visible = false;
                 txtFiltrar.Visible = true;
-                txtFiltrar2.Visible = false;
                 txtFiltrar.Width = 238;
             }
 
-            txtFiltrar_TextChanged(sender, e);
-        }
-
-        private void txtFiltrar2_TextChanged(object sender, EventArgs e)
-        {
             txtFiltrar_TextChanged(sender, e);
         }
 
@@ -123,34 +108,6 @@ namespace Contabilidade.Forms.Cadastros
 
                 dgvContas.DataSource = dv;
             }
-            // Saldo menor que
-            else if (cbbFiltrar.SelectedIndex == 3)
-            {
-                if (IsNumeric(txtFiltrar.Text))
-                {
-                    dv.RowFilter = $"saldo <= {txtFiltrar.Text}";
-                    dgvContas.DataSource = dv;
-                }
-            }
-            // Saldo maior que
-            else if (cbbFiltrar.SelectedIndex == 4)
-            {
-                if (IsNumeric(txtFiltrar.Text))
-                {
-                    dv.RowFilter = $"saldo >= {txtFiltrar.Text}";
-                    dgvContas.DataSource = dv;
-                }
-            }
-            // Saldo entre
-            else if (cbbFiltrar.SelectedIndex == 5)
-            {
-                if (IsNumeric(txtFiltrar.Text) && IsNumeric(txtFiltrar2.Text))
-                {
-                    var valores = ObterMenorEMaior(int.Parse(txtFiltrar.Text), int.Parse(txtFiltrar2.Text));
-                    dv.RowFilter = $"saldo BETWEEN {valores.Item1} AND {valores.Item2}";
-                    dgvContas.DataSource = dv;
-                }
-            }
         }
 
         private bool IsNumeric(string text)
@@ -186,7 +143,7 @@ namespace Contabilidade.Forms.Cadastros
                 if (frmDados.ShowDialog() == DialogResult.OK)
                 {
                     // Criar conta
-                    string sql = "INSERT INTO contas (conta, descricao, nivel, saldo) VALUES(@conta, @descricao, @nivel, @saldo);";
+                    string sql = "INSERT INTO contas (conta, descricao, nivel) VALUES(@conta, @descricao, @nivel);";
                     using (var comando = new SqliteCommand(sql, con.conn))
                     {
                         try
@@ -194,7 +151,6 @@ namespace Contabilidade.Forms.Cadastros
                             comando.Parameters.AddWithValue("@conta", conta);
                             comando.Parameters.AddWithValue("@descricao", descricao);
                             comando.Parameters.AddWithValue("@nivel", nivel);
-                            comando.Parameters.AddWithValue("@saldo", nivel == "S" ? null : 0);
 
                             int retornoBD = comando.ExecuteNonQuery();
 
@@ -206,7 +162,6 @@ namespace Contabilidade.Forms.Cadastros
                                 row["conta"] = conta;
                                 row["descricao"] = descricao;
                                 row["nivel"] = nivel;
-                                row["saldo"] = (nivel == "S" ? DBNull.Value : 0);
                                 dtDados.Rows.Add(row);
 
                                 dgvContas.Refresh();

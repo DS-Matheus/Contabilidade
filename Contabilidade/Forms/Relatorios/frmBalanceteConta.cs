@@ -51,29 +51,14 @@ namespace Contabilidade.Forms.Relatorios
             {
                 cbbNivel.Visible = true;
                 txtFiltrar.Visible = false;
-                txtFiltrar2.Visible = false;
-            }
-            // Filtrar por Saldo entre
-            else if (cbbFiltrar.SelectedIndex == 5)
-            {
-                cbbNivel.Visible = false;
-                txtFiltrar.Visible = true;
-                txtFiltrar2.Visible = true;
-                txtFiltrar.Width = 115;
             }
             else
             {
                 cbbNivel.Visible = false;
                 txtFiltrar.Visible = true;
-                txtFiltrar2.Visible = false;
                 txtFiltrar.Width = 238;
             }
 
-            txtFiltrar_TextChanged(sender, e);
-        }
-
-        private void txtFiltrar2_TextChanged(object sender, EventArgs e)
-        {
             txtFiltrar_TextChanged(sender, e);
         }
 
@@ -111,34 +96,6 @@ namespace Contabilidade.Forms.Relatorios
                 }
 
                 dgvContas.DataSource = dv;
-            }
-            // Saldo menor que
-            else if (cbbFiltrar.SelectedIndex == 3)
-            {
-                if (IsNumeric(txtFiltrar.Text))
-                {
-                    dv.RowFilter = $"saldo <= {txtFiltrar.Text}";
-                    dgvContas.DataSource = dv;
-                }
-            }
-            // Saldo maior que
-            else if (cbbFiltrar.SelectedIndex == 4)
-            {
-                if (IsNumeric(txtFiltrar.Text))
-                {
-                    dv.RowFilter = $"saldo >= {txtFiltrar.Text}";
-                    dgvContas.DataSource = dv;
-                }
-            }
-            // Saldo entre
-            else if (cbbFiltrar.SelectedIndex == 5)
-            {
-                if (IsNumeric(txtFiltrar.Text) && IsNumeric(txtFiltrar2.Text))
-                {
-                    var valores = ObterMenorEMaior(int.Parse(txtFiltrar.Text), int.Parse(txtFiltrar2.Text));
-                    dv.RowFilter = $"saldo BETWEEN {valores.Item1} AND {valores.Item2}";
-                    dgvContas.DataSource = dv;
-                }
             }
         }
 
@@ -181,12 +138,12 @@ namespace Contabilidade.Forms.Relatorios
             public string descricao { get; set; }
             public decimal debitos { get; set; }
             public decimal creditos { get; set; }
-            public decimal saldo_anterior { get; set; }
-            public decimal saldo_atualizado { get; set; }
+            public decimal saldo { get; set; }
         }
 
         private void btnVisualizar_Click(object sender, EventArgs e)
         {
+            /*
             // Verificar se a conta foi preenchida
             if (string.IsNullOrWhiteSpace(txtConta.Text))
             {
@@ -771,6 +728,7 @@ namespace Contabilidade.Forms.Relatorios
                     }
                 }
             }
+            */
         }
     }
 }

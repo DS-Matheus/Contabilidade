@@ -31,15 +31,12 @@
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             dgvContas = new DataGridView();
-            Nível = new DataGridViewTextBoxColumn();
             Conta = new DataGridViewTextBoxColumn();
+            Nível = new DataGridViewTextBoxColumn();
             Descrição = new DataGridViewTextBoxColumn();
-            Saldo = new DataGridViewTextBoxColumn();
             groupBox1 = new GroupBox();
             cbbNivel = new ComboBox();
-            txtFiltrar2 = new TextBox();
             cbbFiltrar = new ComboBox();
             txtFiltrar = new TextBox();
             btnImprimir = new Button();
@@ -57,7 +54,7 @@
             dgvContas.AllowUserToOrderColumns = true;
             dgvContas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvContas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvContas.Columns.AddRange(new DataGridViewColumn[] { Nível, Conta, Descrição, Saldo });
+            dgvContas.Columns.AddRange(new DataGridViewColumn[] { Conta, Nível, Descrição });
             dgvContas.Location = new Point(12, 12);
             dgvContas.MultiSelect = false;
             dgvContas.Name = "dgvContas";
@@ -66,27 +63,27 @@
             dgvContas.Size = new Size(599, 476);
             dgvContas.TabIndex = 0;
             // 
-            // Nível
-            // 
-            Nível.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            Nível.DataPropertyName = "nivel";
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Nível.DefaultCellStyle = dataGridViewCellStyle1;
-            Nível.HeaderText = "Nível";
-            Nível.Name = "Nível";
-            Nível.ReadOnly = true;
-            Nível.Width = 59;
-            // 
             // Conta
             // 
             Conta.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             Conta.DataPropertyName = "conta";
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Conta.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            Conta.DefaultCellStyle = dataGridViewCellStyle1;
             Conta.HeaderText = "Conta";
             Conta.Name = "Conta";
             Conta.ReadOnly = true;
             Conta.Width = 64;
+            // 
+            // Nível
+            // 
+            Nível.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            Nível.DataPropertyName = "nivel";
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            Nível.DefaultCellStyle = dataGridViewCellStyle2;
+            Nível.HeaderText = "Nível";
+            Nível.Name = "Nível";
+            Nível.ReadOnly = true;
+            Nível.Width = 59;
             // 
             // Descrição
             // 
@@ -98,21 +95,9 @@
             Descrição.Name = "Descrição";
             Descrição.ReadOnly = true;
             // 
-            // Saldo
-            // 
-            Saldo.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            Saldo.DataPropertyName = "saldo";
-            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Saldo.DefaultCellStyle = dataGridViewCellStyle4;
-            Saldo.HeaderText = "Saldo";
-            Saldo.Name = "Saldo";
-            Saldo.ReadOnly = true;
-            Saldo.Width = 61;
-            // 
             // groupBox1
             // 
             groupBox1.Controls.Add(cbbNivel);
-            groupBox1.Controls.Add(txtFiltrar2);
             groupBox1.Controls.Add(cbbFiltrar);
             groupBox1.Controls.Add(txtFiltrar);
             groupBox1.Location = new Point(618, 262);
@@ -133,20 +118,11 @@
             cbbNivel.TabIndex = 19;
             cbbNivel.Visible = false;
             // 
-            // txtFiltrar2
-            // 
-            txtFiltrar2.Location = new Point(129, 51);
-            txtFiltrar2.Name = "txtFiltrar2";
-            txtFiltrar2.Size = new Size(115, 23);
-            txtFiltrar2.TabIndex = 11;
-            txtFiltrar2.Visible = false;
-            txtFiltrar2.TextChanged += txtFiltrar2_TextChanged;
-            // 
             // cbbFiltrar
             // 
             cbbFiltrar.DropDownStyle = ComboBoxStyle.DropDownList;
             cbbFiltrar.FormattingEnabled = true;
-            cbbFiltrar.Items.AddRange(new object[] { "Conta", "Descrição", "Nível", "Saldo menor que", "Saldo maior que", "Saldo entre" });
+            cbbFiltrar.Items.AddRange(new object[] { "Conta", "Descrição", "Nível" });
             cbbFiltrar.Location = new Point(6, 22);
             cbbFiltrar.Name = "cbbFiltrar";
             cbbFiltrar.Size = new Size(238, 23);
@@ -231,11 +207,9 @@
         private Button btnEditar;
         private Button btnExcluir;
         private Button btnCriar;
-        private TextBox txtFiltrar2;
         private ComboBox cbbNivel;
-        private DataGridViewTextBoxColumn Nível;
         private DataGridViewTextBoxColumn Conta;
+        private DataGridViewTextBoxColumn Nível;
         private DataGridViewTextBoxColumn Descrição;
-        private DataGridViewTextBoxColumn Saldo;
     }
 }

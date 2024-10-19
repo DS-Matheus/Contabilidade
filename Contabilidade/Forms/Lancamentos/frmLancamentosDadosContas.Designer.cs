@@ -28,10 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             pnlBarraTitulo = new Panel();
             btnMinimizar = new Button();
             lblTitulo = new Label();
@@ -39,14 +38,11 @@
             panel1 = new Panel();
             groupBox1 = new GroupBox();
             cbbNivel2 = new ComboBox();
-            txtFiltrar2 = new TextBox();
             cbbFiltrar = new ComboBox();
-            txtFiltrar = new TextBox();
             dgvContas = new DataGridView();
-            Nível = new DataGridViewTextBoxColumn();
             Conta = new DataGridViewTextBoxColumn();
+            Nível = new DataGridViewTextBoxColumn();
             Descrição = new DataGridViewTextBoxColumn();
-            Saldo = new DataGridViewTextBoxColumn();
             cbbNivel = new ComboBox();
             label3 = new Label();
             txtDescricao = new TextBox();
@@ -54,6 +50,7 @@
             txtConta = new TextBox();
             label1 = new Label();
             btnCriar = new Button();
+            txtFiltrar = new TextBox();
             pnlBarraTitulo.SuspendLayout();
             panel1.SuspendLayout();
             groupBox1.SuspendLayout();
@@ -137,10 +134,9 @@
             // groupBox1
             // 
             groupBox1.Controls.Add(cbbNivel2);
-            groupBox1.Controls.Add(txtFiltrar2);
             groupBox1.Controls.Add(cbbFiltrar);
             groupBox1.Controls.Add(txtFiltrar);
-            groupBox1.Location = new Point(90, 373);
+            groupBox1.Location = new Point(90, 202);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(250, 85);
             groupBox1.TabIndex = 19;
@@ -158,33 +154,16 @@
             cbbNivel2.TabIndex = 19;
             cbbNivel2.Visible = false;
             // 
-            // txtFiltrar2
-            // 
-            txtFiltrar2.Location = new Point(129, 51);
-            txtFiltrar2.Name = "txtFiltrar2";
-            txtFiltrar2.Size = new Size(115, 23);
-            txtFiltrar2.TabIndex = 11;
-            txtFiltrar2.Visible = false;
-            txtFiltrar2.TextChanged += txtFiltrar2_TextChanged;
-            // 
             // cbbFiltrar
             // 
             cbbFiltrar.DropDownStyle = ComboBoxStyle.DropDownList;
             cbbFiltrar.FormattingEnabled = true;
-            cbbFiltrar.Items.AddRange(new object[] { "Conta", "Descrição", "Nível", "Saldo menor que", "Saldo maior que", "Saldo entre" });
+            cbbFiltrar.Items.AddRange(new object[] { "Conta", "Descrição", "Nível" });
             cbbFiltrar.Location = new Point(6, 22);
             cbbFiltrar.Name = "cbbFiltrar";
             cbbFiltrar.Size = new Size(238, 23);
             cbbFiltrar.TabIndex = 9;
             cbbFiltrar.SelectedIndexChanged += cbbFiltrar_SelectedIndexChanged;
-            // 
-            // txtFiltrar
-            // 
-            txtFiltrar.Location = new Point(6, 51);
-            txtFiltrar.Name = "txtFiltrar";
-            txtFiltrar.Size = new Size(238, 23);
-            txtFiltrar.TabIndex = 10;
-            txtFiltrar.TextChanged += txtFiltrar_TextChanged;
             // 
             // dgvContas
             // 
@@ -193,8 +172,8 @@
             dgvContas.AllowUserToOrderColumns = true;
             dgvContas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvContas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvContas.Columns.AddRange(new DataGridViewColumn[] { Nível, Conta, Descrição, Saldo });
-            dgvContas.Location = new Point(25, 190);
+            dgvContas.Columns.AddRange(new DataGridViewColumn[] { Conta, Nível, Descrição });
+            dgvContas.Location = new Point(25, 18);
             dgvContas.MultiSelect = false;
             dgvContas.Name = "dgvContas";
             dgvContas.ReadOnly = true;
@@ -203,55 +182,44 @@
             dgvContas.TabIndex = 7;
             dgvContas.CellDoubleClick += dgvContas_CellDoubleClick;
             // 
-            // Nível
-            // 
-            Nível.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            Nível.DataPropertyName = "nivel";
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Nível.DefaultCellStyle = dataGridViewCellStyle1;
-            Nível.HeaderText = "Nível";
-            Nível.Name = "Nível";
-            Nível.ReadOnly = true;
-            Nível.Width = 59;
-            // 
             // Conta
             // 
             Conta.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             Conta.DataPropertyName = "conta";
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Conta.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            Conta.DefaultCellStyle = dataGridViewCellStyle4;
             Conta.HeaderText = "Conta";
             Conta.Name = "Conta";
             Conta.ReadOnly = true;
             Conta.Width = 64;
             // 
+            // Nível
+            // 
+            Nível.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            Nível.DataPropertyName = "nivel";
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            Nível.DefaultCellStyle = dataGridViewCellStyle5;
+            Nível.HeaderText = "Nível";
+            Nível.Name = "Nível";
+            Nível.ReadOnly = true;
+            Nível.Width = 59;
+            // 
             // Descrição
             // 
             Descrição.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             Descrição.DataPropertyName = "descricao";
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            Descrição.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            Descrição.DefaultCellStyle = dataGridViewCellStyle6;
             Descrição.HeaderText = "Descrição";
             Descrição.Name = "Descrição";
             Descrição.ReadOnly = true;
-            // 
-            // Saldo
-            // 
-            Saldo.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            Saldo.DataPropertyName = "saldo";
-            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Saldo.DefaultCellStyle = dataGridViewCellStyle4;
-            Saldo.HeaderText = "Saldo";
-            Saldo.Name = "Saldo";
-            Saldo.ReadOnly = true;
-            Saldo.Width = 61;
             // 
             // cbbNivel
             // 
             cbbNivel.DropDownStyle = ComboBoxStyle.DropDownList;
             cbbNivel.FormattingEnabled = true;
             cbbNivel.Items.AddRange(new object[] { "Analítico", "Sintético" });
-            cbbNivel.Location = new Point(234, 43);
+            cbbNivel.Location = new Point(234, 317);
             cbbNivel.Name = "cbbNivel";
             cbbNivel.Size = new Size(171, 23);
             cbbNivel.TabIndex = 6;
@@ -259,7 +227,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(234, 25);
+            label3.Location = new Point(234, 299);
             label3.Name = "label3";
             label3.Size = new Size(34, 15);
             label3.TabIndex = 5;
@@ -267,7 +235,7 @@
             // 
             // txtDescricao
             // 
-            txtDescricao.Location = new Point(25, 93);
+            txtDescricao.Location = new Point(25, 367);
             txtDescricao.MaxLength = 100;
             txtDescricao.Multiline = true;
             txtDescricao.Name = "txtDescricao";
@@ -277,7 +245,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(25, 75);
+            label2.Location = new Point(25, 349);
             label2.Name = "label2";
             label2.Size = new Size(58, 15);
             label2.TabIndex = 3;
@@ -285,7 +253,7 @@
             // 
             // txtConta
             // 
-            txtConta.Location = new Point(25, 43);
+            txtConta.Location = new Point(25, 317);
             txtConta.Margin = new Padding(25, 3, 3, 3);
             txtConta.MaxLength = 14;
             txtConta.Name = "txtConta";
@@ -297,7 +265,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(25, 25);
+            label1.Location = new Point(25, 299);
             label1.Name = "label1";
             label1.Size = new Size(39, 15);
             label1.TabIndex = 1;
@@ -305,7 +273,7 @@
             // 
             // btnCriar
             // 
-            btnCriar.Location = new Point(25, 152);
+            btnCriar.Location = new Point(25, 426);
             btnCriar.Margin = new Padding(3, 10, 3, 3);
             btnCriar.Name = "btnCriar";
             btnCriar.Size = new Size(380, 32);
@@ -313,6 +281,14 @@
             btnCriar.Text = "Criar";
             btnCriar.UseVisualStyleBackColor = true;
             btnCriar.Click += btnCriar_Click;
+            // 
+            // txtFiltrar
+            // 
+            txtFiltrar.Location = new Point(6, 51);
+            txtFiltrar.Name = "txtFiltrar";
+            txtFiltrar.Size = new Size(238, 23);
+            txtFiltrar.TabIndex = 10;
+            txtFiltrar.TextChanged += txtFiltrar_TextChanged;
             // 
             // frmLancamentosDadosContas
             // 
@@ -350,14 +326,12 @@
         private Label label1;
         private Button btnCriar;
         private DataGridView dgvContas;
-        private DataGridViewTextBoxColumn Nível;
-        private DataGridViewTextBoxColumn Conta;
-        private DataGridViewTextBoxColumn Descrição;
-        private DataGridViewTextBoxColumn Saldo;
         private GroupBox groupBox1;
         private ComboBox cbbNivel2;
-        private TextBox txtFiltrar2;
         private ComboBox cbbFiltrar;
+        private DataGridViewTextBoxColumn Conta;
+        private DataGridViewTextBoxColumn Nível;
+        private DataGridViewTextBoxColumn Descrição;
         private TextBox txtFiltrar;
     }
 }

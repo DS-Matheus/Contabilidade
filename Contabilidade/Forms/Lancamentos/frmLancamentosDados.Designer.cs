@@ -33,6 +33,7 @@
             lblTitulo = new Label();
             btnFechar = new Button();
             panel1 = new Panel();
+            btnAlterarSinal = new Button();
             txtDescricao = new TextBox();
             label5 = new Label();
             txtHistorico = new TextBox();
@@ -46,7 +47,6 @@
             txtConta = new TextBox();
             label1 = new Label();
             btnSalvar = new Button();
-            btnAlterarSinal = new Button();
             pnlBarraTitulo.SuspendLayout();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudValor).BeginInit();
@@ -131,6 +131,15 @@
             panel1.Size = new Size(430, 270);
             panel1.TabIndex = 8;
             // 
+            // btnAlterarSinal
+            // 
+            btnAlterarSinal.Location = new Point(382, 44);
+            btnAlterarSinal.Name = "btnAlterarSinal";
+            btnAlterarSinal.Size = new Size(23, 23);
+            btnAlterarSinal.TabIndex = 17;
+            btnAlterarSinal.UseVisualStyleBackColor = true;
+            btnAlterarSinal.Click += btnAlterarSinal_Click;
+            // 
             // txtDescricao
             // 
             txtDescricao.Enabled = false;
@@ -164,9 +173,9 @@
             // 
             // btnSelecionarHistorico
             // 
-            btnSelecionarHistorico.Location = new Point(378, 164);
+            btnSelecionarHistorico.Location = new Point(370, 164);
             btnSelecionarHistorico.Name = "btnSelecionarHistorico";
-            btnSelecionarHistorico.Size = new Size(27, 40);
+            btnSelecionarHistorico.Size = new Size(23, 22);
             btnSelecionarHistorico.TabIndex = 13;
             btnSelecionarHistorico.UseVisualStyleBackColor = true;
             btnSelecionarHistorico.Click += btnSelecionarHistorico_Click;
@@ -256,15 +265,6 @@
             btnSalvar.Text = "Salvar";
             btnSalvar.UseVisualStyleBackColor = true;
             btnSalvar.Click += btnSalvar_Click;
-            // 
-            // btnAlterarSinal
-            // 
-            btnAlterarSinal.Location = new Point(382, 44);
-            btnAlterarSinal.Name = "btnAlterarSinal";
-            btnAlterarSinal.Size = new Size(23, 23);
-            btnAlterarSinal.TabIndex = 17;
-            btnAlterarSinal.UseVisualStyleBackColor = true;
-            btnAlterarSinal.Click += btnAlterarSinal_Click;
             // 
             // frmLancamentosDados
             // 

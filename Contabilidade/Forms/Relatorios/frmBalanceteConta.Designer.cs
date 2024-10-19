@@ -28,14 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             btnVisualizar = new Button();
             groupBox1 = new GroupBox();
             cbbNivel = new ComboBox();
-            txtFiltrar2 = new TextBox();
             cbbFiltrar = new ComboBox();
             txtFiltrar = new TextBox();
             dgvContas = new DataGridView();
@@ -68,7 +67,6 @@
             // groupBox1
             // 
             groupBox1.Controls.Add(cbbNivel);
-            groupBox1.Controls.Add(txtFiltrar2);
             groupBox1.Controls.Add(cbbFiltrar);
             groupBox1.Controls.Add(txtFiltrar);
             groupBox1.Location = new Point(12, 403);
@@ -89,20 +87,11 @@
             cbbNivel.TabIndex = 19;
             cbbNivel.Visible = false;
             // 
-            // txtFiltrar2
-            // 
-            txtFiltrar2.Location = new Point(129, 51);
-            txtFiltrar2.Name = "txtFiltrar2";
-            txtFiltrar2.Size = new Size(115, 23);
-            txtFiltrar2.TabIndex = 11;
-            txtFiltrar2.Visible = false;
-            txtFiltrar2.TextChanged += txtFiltrar2_TextChanged;
-            // 
             // cbbFiltrar
             // 
             cbbFiltrar.DropDownStyle = ComboBoxStyle.DropDownList;
             cbbFiltrar.FormattingEnabled = true;
-            cbbFiltrar.Items.AddRange(new object[] { "Conta", "Descrição", "Nível", "Saldo menor que", "Saldo maior que", "Saldo entre" });
+            cbbFiltrar.Items.AddRange(new object[] { "Conta", "Descrição", "Nível" });
             cbbFiltrar.Location = new Point(6, 22);
             cbbFiltrar.Name = "cbbFiltrar";
             cbbFiltrar.Size = new Size(238, 23);
@@ -138,8 +127,8 @@
             // 
             Nível.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             Nível.DataPropertyName = "nivel";
-            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Nível.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            Nível.DefaultCellStyle = dataGridViewCellStyle1;
             Nível.HeaderText = "Nível";
             Nível.Name = "Nível";
             Nível.ReadOnly = true;
@@ -149,8 +138,8 @@
             // 
             Conta.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             Conta.DataPropertyName = "conta";
-            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Conta.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            Conta.DefaultCellStyle = dataGridViewCellStyle2;
             Conta.HeaderText = "Conta";
             Conta.Name = "Conta";
             Conta.ReadOnly = true;
@@ -160,8 +149,8 @@
             // 
             Descrição.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             Descrição.DataPropertyName = "descricao";
-            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            Descrição.DefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            Descrição.DefaultCellStyle = dataGridViewCellStyle3;
             Descrição.HeaderText = "Descrição";
             Descrição.Name = "Descrição";
             Descrição.ReadOnly = true;
@@ -170,8 +159,8 @@
             // 
             Saldo.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             Saldo.DataPropertyName = "saldo";
-            dataGridViewCellStyle8.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Saldo.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            Saldo.DefaultCellStyle = dataGridViewCellStyle4;
             Saldo.HeaderText = "Saldo";
             Saldo.Name = "Saldo";
             Saldo.ReadOnly = true;
@@ -275,7 +264,6 @@
         private Button btnVisualizar;
         private GroupBox groupBox1;
         private ComboBox cbbNivel;
-        private TextBox txtFiltrar2;
         private ComboBox cbbFiltrar;
         private TextBox txtFiltrar;
         private DataGridView dgvContas;
