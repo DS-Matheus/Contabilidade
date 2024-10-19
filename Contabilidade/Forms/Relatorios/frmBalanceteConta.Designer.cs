@@ -31,17 +31,12 @@
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             btnVisualizar = new Button();
             groupBox1 = new GroupBox();
             cbbNivel = new ComboBox();
             cbbFiltrar = new ComboBox();
             txtFiltrar = new TextBox();
             dgvContas = new DataGridView();
-            Nível = new DataGridViewTextBoxColumn();
-            Conta = new DataGridViewTextBoxColumn();
-            Descrição = new DataGridViewTextBoxColumn();
-            Saldo = new DataGridViewTextBoxColumn();
             label4 = new Label();
             txtSubtitulo = new TextBox();
             label3 = new Label();
@@ -50,6 +45,9 @@
             dtpInicial = new DateTimePicker();
             label1 = new Label();
             txtConta = new TextBox();
+            Conta = new DataGridViewTextBoxColumn();
+            Nível = new DataGridViewTextBoxColumn();
+            Descrição = new DataGridViewTextBoxColumn();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvContas).BeginInit();
             SuspendLayout();
@@ -113,7 +111,7 @@
             dgvContas.AllowUserToOrderColumns = true;
             dgvContas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvContas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvContas.Columns.AddRange(new DataGridViewColumn[] { Nível, Conta, Descrição, Saldo });
+            dgvContas.Columns.AddRange(new DataGridViewColumn[] { Conta, Nível, Descrição });
             dgvContas.Location = new Point(12, 12);
             dgvContas.MultiSelect = false;
             dgvContas.Name = "dgvContas";
@@ -122,49 +120,6 @@
             dgvContas.Size = new Size(856, 385);
             dgvContas.TabIndex = 19;
             dgvContas.CellDoubleClick += dgvContas_CellDoubleClick;
-            // 
-            // Nível
-            // 
-            Nível.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            Nível.DataPropertyName = "nivel";
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Nível.DefaultCellStyle = dataGridViewCellStyle1;
-            Nível.HeaderText = "Nível";
-            Nível.Name = "Nível";
-            Nível.ReadOnly = true;
-            Nível.Width = 59;
-            // 
-            // Conta
-            // 
-            Conta.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            Conta.DataPropertyName = "conta";
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Conta.DefaultCellStyle = dataGridViewCellStyle2;
-            Conta.HeaderText = "Conta";
-            Conta.Name = "Conta";
-            Conta.ReadOnly = true;
-            Conta.Width = 64;
-            // 
-            // Descrição
-            // 
-            Descrição.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            Descrição.DataPropertyName = "descricao";
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            Descrição.DefaultCellStyle = dataGridViewCellStyle3;
-            Descrição.HeaderText = "Descrição";
-            Descrição.Name = "Descrição";
-            Descrição.ReadOnly = true;
-            // 
-            // Saldo
-            // 
-            Saldo.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            Saldo.DataPropertyName = "saldo";
-            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Saldo.DefaultCellStyle = dataGridViewCellStyle4;
-            Saldo.HeaderText = "Saldo";
-            Saldo.Name = "Saldo";
-            Saldo.ReadOnly = true;
-            Saldo.Width = 61;
             // 
             // label4
             // 
@@ -234,6 +189,38 @@
             txtConta.Size = new Size(149, 23);
             txtConta.TabIndex = 51;
             // 
+            // Conta
+            // 
+            Conta.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            Conta.DataPropertyName = "conta";
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            Conta.DefaultCellStyle = dataGridViewCellStyle1;
+            Conta.HeaderText = "Conta";
+            Conta.Name = "Conta";
+            Conta.ReadOnly = true;
+            Conta.Width = 64;
+            // 
+            // Nível
+            // 
+            Nível.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            Nível.DataPropertyName = "nivel";
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            Nível.DefaultCellStyle = dataGridViewCellStyle2;
+            Nível.HeaderText = "Nível";
+            Nível.Name = "Nível";
+            Nível.ReadOnly = true;
+            Nível.Width = 59;
+            // 
+            // Descrição
+            // 
+            Descrição.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Descrição.DataPropertyName = "descricao";
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            Descrição.DefaultCellStyle = dataGridViewCellStyle3;
+            Descrição.HeaderText = "Descrição";
+            Descrição.Name = "Descrição";
+            Descrição.ReadOnly = true;
+            // 
             // frmBalanceteConta
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -267,10 +254,6 @@
         private ComboBox cbbFiltrar;
         private TextBox txtFiltrar;
         private DataGridView dgvContas;
-        private DataGridViewTextBoxColumn Nível;
-        private DataGridViewTextBoxColumn Conta;
-        private DataGridViewTextBoxColumn Descrição;
-        private DataGridViewTextBoxColumn Saldo;
         private Label label4;
         private TextBox txtSubtitulo;
         private Label label3;
@@ -279,5 +262,8 @@
         private DateTimePicker dtpInicial;
         private Label label1;
         private TextBox txtConta;
+        private DataGridViewTextBoxColumn Conta;
+        private DataGridViewTextBoxColumn Nível;
+        private DataGridViewTextBoxColumn Descrição;
     }
 }

@@ -340,11 +340,18 @@ namespace Contabilidade.Forms.Lancamentos
             {
                 DataGridViewRow row = dgvContas.Rows[e.RowIndex];
 
-                // Verificar o tipo da conta para não permitir a seleção de contas sintéticas
+                var conta = row.Cells["Conta"].Value.ToString();
                 var tipoConta = row.Cells["Nível"].Value.ToString();
-                if (tipoConta == "A")
+
+                // Verificar se a conta selecionada não é a do caixa
+                if (conta == "0")
                 {
-                    frmLancamentosDados.conta = row.Cells["Conta"].Value.ToString();
+                    MessageBox.Show("Não é possível fazer lançamentos diretamente no caixa, use as contas analíticas!", "Operação não permitida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                // Verificar o tipo da conta para não permitir a seleção de contas sintéticas
+                else if (tipoConta == "A")
+                {
+                    frmLancamentosDados.conta = conta;
                     frmLancamentosDados.descricao = row.Cells["Descrição"].Value.ToString();
 
                     this.DialogResult = DialogResult.OK;
