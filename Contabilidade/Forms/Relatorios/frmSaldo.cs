@@ -243,12 +243,22 @@ namespace Contabilidade.Forms.Relatorios
                 else
                 {
                     var incluirCaixa = chkCaixa.Checked;
+                    var incluirSaldosZero = chkSaldosZero.Checked;
 
                     // Criar comando para obter dados das contas
                     var sql = "";
                     if (nivel == "S")
                     {
-                        sql = "SELECT c.conta, c.descricao, COALESCE((SELECT l.saldo FROM lancamentos l WHERE c.conta = l.conta AND l.data <= @data ORDER BY l.data DESC, l.id DESC LIMIT 1), 0) AS saldo FROM contas c WHERE c.conta LIKE @conta || '.%';";
+                        // Verificar se deve incluir as contas com saldo 0
+                        if (incluirSaldosZero)
+                        {
+                            sql = "SELECT c.conta, c.descricao, COALESCE((SELECT l.saldo FROM lancamentos l WHERE c.conta = l.conta AND l.data <= @data ORDER BY l.data DESC, l.id DESC LIMIT 1), 0) AS saldo FROM contas c WHERE c.conta LIKE @conta || '.%';";
+                        }
+                        // Caso não deva incluir
+                        else
+                        {
+                            sql = "WITH contas_saldo AS (SELECT c.conta, c.descricao, COALESCE((SELECT l.saldo FROM lancamentos l WHERE c.conta = l.conta AND l.data <= @data ORDER BY l.data DESC, l.id DESC LIMIT 1), 0) AS saldo FROM contas c WHERE c.conta LIKE @conta || '.%') SELECT * FROM contas_saldo WHERE saldo != 0;";
+                        }
                     }
                     else
                     {

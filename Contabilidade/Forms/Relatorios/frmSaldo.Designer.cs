@@ -50,6 +50,7 @@
             label3 = new Label();
             txtSubtitulo = new TextBox();
             chkCaixa = new CheckBox();
+            chkSaldosZero = new CheckBox();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvContas).BeginInit();
             SuspendLayout();
@@ -168,9 +169,9 @@
             // 
             // btnVisualizar
             // 
-            btnVisualizar.Location = new Point(720, 447);
+            btnVisualizar.Location = new Point(693, 447);
             btnVisualizar.Name = "btnVisualizar";
-            btnVisualizar.Size = new Size(148, 41);
+            btnVisualizar.Size = new Size(175, 41);
             btnVisualizar.TabIndex = 44;
             btnVisualizar.Text = "Visualizar relatório";
             btnVisualizar.UseVisualStyleBackColor = true;
@@ -229,18 +230,29 @@
             // chkCaixa
             // 
             chkCaixa.AutoSize = true;
-            chkCaixa.Location = new Point(720, 421);
+            chkCaixa.Location = new Point(693, 402);
             chkCaixa.Name = "chkCaixa";
             chkCaixa.Size = new Size(134, 19);
             chkCaixa.TabIndex = 49;
             chkCaixa.Text = "Incluir valor do caixa";
             chkCaixa.UseVisualStyleBackColor = true;
             // 
+            // chkSaldosZero
+            // 
+            chkSaldosZero.AutoSize = true;
+            chkSaldosZero.Location = new Point(693, 427);
+            chkSaldosZero.Name = "chkSaldosZero";
+            chkSaldosZero.Size = new Size(164, 19);
+            chkSaldosZero.TabIndex = 50;
+            chkSaldosZero.Text = "Incluir contas com saldo 0";
+            chkSaldosZero.UseVisualStyleBackColor = true;
+            // 
             // frmSaldo
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(880, 500);
+            Controls.Add(chkSaldosZero);
             Controls.Add(chkCaixa);
             Controls.Add(label3);
             Controls.Add(txtSubtitulo);
@@ -281,5 +293,6 @@
         private Label label3;
         private TextBox txtSubtitulo;
         private CheckBox chkCaixa;
+        private CheckBox chkSaldosZero;
     }
 }
