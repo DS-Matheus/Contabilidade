@@ -5,6 +5,10 @@ using System.Data;
 using System.Diagnostics;
 using System.Text;
 using Microsoft.Data.Sqlite;
+using Org.BouncyCastle.Asn1.X509;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace Contabilidade.Forms.Relatorios
 {
@@ -192,374 +196,387 @@ namespace Contabilidade.Forms.Relatorios
 
         private void btnVisualizar_Click(object sender, EventArgs e)
         {
-            // Verificar se a conta foi preenchida
-            if (string.IsNullOrWhiteSpace(txtConta.Text))
+            try
             {
-                MessageBox.Show("Selecione uma conta antes de gerar o relatório, dê um duplo clique na linha desejada.", "Uma conta não foi selecionada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            else if (nivel == "S")
-            {
-                MessageBox.Show("Não é possível gerar um razão analítico de uma conta sintética, por favor selecione uma conta analítica.", "Tipo de conta inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            else
-            {
-                // Obter datas
-                var (dataInicial, dataInicialFormatada, dataFinal, dataFinalFormatada) = ordenarDatasEObterStrings(dtpInicial.Value, dtpFinal.Value);
+                var conta = txtConta.Text;
 
-                // Consulta de lançamentos para a conta no período informado
-                var sql = "SELECT l.data, h.historico, l.valor, l.saldo_atualizado FROM lancamentos l JOIN historicos h ON l.id_historico = h.id WHERE l.conta = @conta AND l.data BETWEEN @dataInicial AND @dataFinal ORDER BY l.data ASC, l.id ASC;";
-                using (var comando = new SqliteCommand(sql, con.conn))
+                // Verificar se a conta foi preenchida
+                if (string.IsNullOrWhiteSpace(txtConta.Text))
                 {
-                    var conta = txtConta.Text;
-                    comando.Parameters.AddWithValue("@conta", conta);
-                    comando.Parameters.AddWithValue("@dataInicial", dataInicial);
-                    comando.Parameters.AddWithValue("@dataFinal", dataFinal);
+                    MessageBox.Show("Selecione uma conta antes de gerar o relatório, dê um duplo clique na linha desejada.", "Uma conta não foi selecionada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                // Testar se a conta selecionada não foi o caixa
+                if (conta == "0")
+                {
+                    MessageBox.Show("Não é possível gerar um razão analítico do caixa, por favor selecione outra conta.", "Operação bloqueada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else if (nivel == "S")
+                {
+                    MessageBox.Show("Não é possível gerar um razão analítico de uma conta sintética, por favor selecione uma conta analítica.", "Tipo de conta inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    // Obter datas
+                    var (dataInicial, dataInicialFormatada, dataFinal, dataFinalFormatada) = ordenarDatasEObterStrings(dtpInicial.Value, dtpFinal.Value);
 
-                    List<Lancamento> listLancamentos = new List<Lancamento>();
-
-                    // Obter dados
-                    using (var reader = comando.ExecuteReader())
+                    // Consulta de lançamentos para a conta no período informado
+                    var sql = "SELECT l.data, h.historico, l.valor, l.saldo FROM lancamentos l JOIN historicos h ON l.id_historico = h.id WHERE l.conta = @conta AND l.data BETWEEN @dataInicial AND @dataFinal ORDER BY l.data ASC, l.id ASC;";
+                    using (var comando = new SqliteCommand(sql, con.conn))
                     {
-                        while (reader.Read())
+                        comando.Parameters.AddWithValue("@conta", conta);
+                        comando.Parameters.AddWithValue("@dataInicial", dataInicial);
+                        comando.Parameters.AddWithValue("@dataFinal", dataFinal);
+
+                        List<Lancamento> listLancamentos = new List<Lancamento>();
+
+                        // Obter dados
+                        using (var reader = comando.ExecuteReader())
                         {
-                            Lancamento lancamento = new Lancamento
+                            while (reader.Read())
                             {
-                                data = Convert.ToDateTime(reader["data"]),
-                                historico = reader["historico"].ToString(),
-                                valor = Convert.ToDecimal(reader["valor"]),
-                                saldo = Convert.ToDecimal(reader["saldo_atualizado"])
-                            };
-                            listLancamentos.Add(lancamento);
+                                Lancamento lancamento = new Lancamento
+                                {
+                                    data = Convert.ToDateTime(reader["data"]),
+                                    historico = reader["historico"].ToString(),
+                                    valor = Convert.ToDecimal(reader["valor"]),
+                                    saldo = Convert.ToDecimal(reader["saldo"])
+                                };
+                                listLancamentos.Add(lancamento);
+                            }
                         }
-                    }
 
-                    // Verificar se pelo menos 1 registro foi encontrado
-                    if (listLancamentos.Count > 0)
-                    {
-                        // Obter a descrição da conta
-                        comando.CommandText = "SELECT descricao FROM contas WHERE conta = @conta;";
-                        var descricao = comando.ExecuteScalar()?.ToString();
-
-                        // Obter saldo anterior (ou deixar como 0 se não possuir nenhum registro no período ou antes do período) - CONFERIR SE ESTA CORRETO !!!!!!!!!!!!!!!
-                        comando.CommandText = "SELECT COALESCE((SELECT saldo_anterior FROM lancamentos WHERE conta = @conta AND data BETWEEN @dataInicial AND @dataFinal ORDER BY data ASC, id ASC LIMIT 1), (SELECT saldo_anterior FROM lancamentos WHERE conta = @conta AND data < @dataInicial ORDER BY data DESC, id DESC LIMIT 1), 0) AS saldo_anterior;";
-                        var saldoAnterior = Convert.ToDecimal(comando.ExecuteScalar());
-
-                        // Exibir caixa de diálogo para o usuário escolher onde salvar o arquivo PDF
-                        using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                        // Verificar se pelo menos 1 registro foi encontrado
+                        if (listLancamentos.Count > 0)
                         {
-                            saveFileDialog.Filter = "PDF Files|*.pdf";
-                            saveFileDialog.Title = "Salvar relatório como";
-                            saveFileDialog.FileName = "relatorio.pdf";
+                            // Obter a descrição da conta
+                            comando.CommandText = "SELECT descricao FROM contas WHERE conta = @conta;";
+                            var descricao = comando.ExecuteScalar()?.ToString();
 
-                            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                            // Obter saldo anterior (ou deixar como 0 se não possuir nenhum registro antes do período)
+                            comando.CommandText = "SELECT COALESCE((SELECT saldo FROM lancamentos WHERE conta = @conta AND data < @dataInicial ORDER BY data DESC, id DESC LIMIT 1), 0) AS saldo_anterior; ";
+                            var saldoAnterior = Convert.ToDecimal(comando.ExecuteScalar());
+
+                            // Exibir caixa de diálogo para o usuário escolher onde salvar o arquivo PDF
+                            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
                             {
-                                // Caminho do arquivo PDF selecionado pelo usuário
-                                string pdfPath = saveFileDialog.FileName;
+                                saveFileDialog.Filter = "PDF Files|*.pdf";
+                                saveFileDialog.Title = "Salvar relatório como";
+                                saveFileDialog.FileName = "relatorio.pdf";
 
-                                // Criação do documento
-                                var pdf = new iTextSharp.text.Document(PageSize.A4, 25, 25, 25, 25); // Margens padrão (36 pontos)
-
-                                // Caminho do arquivo de fonte Consolas
-                                string fontPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Fontes", "consola.ttf");
-
-                                // Verifica se o arquivo de fonte existe
-                                if (!File.Exists(fontPath))
+                                if (saveFileDialog.ShowDialog() == DialogResult.OK)
                                 {
-                                    MessageBox.Show("Arquivo de fonte não encontrado, faça backup dos bancos de dados e reinstale o programa", "Erro ao buscar aquivo de fonte", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                    return;
-                                }
+                                    // Caminho do arquivo PDF selecionado pelo usuário
+                                    string pdfPath = saveFileDialog.FileName;
 
-                                // Usar `using` para garantir que o arquivo será liberado após ser usado
-                                using (FileStream fileStream = new FileStream(pdfPath, FileMode.Create, FileAccess.Write, FileShare.None))
-                                {
-                                    // Criação do escritor de PDF
-                                    PdfWriter writer = PdfWriter.GetInstance(pdf, fileStream);
+                                    // Criação do documento
+                                    var pdf = new iTextSharp.text.Document(PageSize.A4, 25, 25, 25, 25); // Margens padrão (36 pontos)
 
-                                    // Abrindo o documento
-                                    pdf.Open();
+                                    // Caminho do arquivo de fonte Consolas
+                                    string fontPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Fontes", "consola.ttf");
 
-                                    // Configuração da fonte Consola
-                                    BaseFont bf = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-                                    var fonte = new iTextSharp.text.Font(bf, 9);
-
-                                    var linhasDisponiveis = 57;
-
-                                    // Operações com o subtítulo
-                                    string subtitulo = "   ";
-                                    if (!string.IsNullOrWhiteSpace(txtSubtitulo.Text))
+                                    // Verifica se o arquivo de fonte existe
+                                    if (!File.Exists(fontPath))
                                     {
-                                        subtitulo = Contabilidade.Forms.Relatorios.frmSaldo.CentralizarString(txtSubtitulo.Text, 110);
+                                        MessageBox.Show("Arquivo de fonte não encontrado, faça backup dos bancos de dados e reinstale o programa", "Erro ao buscar aquivo de fonte", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        return;
                                     }
 
-                                    string[] linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(descricao, 78);
-
-                                    // Função local para adicionar o cabeçalho
-                                    void adicionarCabecalho(string subtitulo)
+                                    // Usar `using` para garantir que o arquivo será liberado após ser usado
+                                    using (FileStream fileStream = new FileStream(pdfPath, FileMode.Create, FileAccess.Write, FileShare.None))
                                     {
-                                        // Adicionando parágrafos ao documento
-                                        pdf.Add(new Paragraph($"RAZÃO ANALÍTICO                          PERÍODO: {dataInicialFormatada} A {dataFinalFormatada}                          PÁGINA: {(pdf.PageNumber + 1).ToString("D3")}", fonte));
-                                        pdf.Add(new Paragraph($"{subtitulo}", fonte));
-                                        pdf.Add(new Paragraph($"CONTA: {conta.PadRight(15)}          {linhasDescricao[0]}", fonte));
-                                        pdf.Add(new Paragraph($"SALDO ANTERIOR:{saldoAnterior.ToString("#,##0.00").PadLeft(14)}   {linhasDescricao[1]}", fonte));
-                                        pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
-                                        pdf.Add(new Paragraph("DATA       HISTÓRICO                                                       DÉBITOS      CRÉDITOS         SALDO", fonte));
-                                        pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
-                                        pdf.Add(new Paragraph($"   ", fonte));
+                                        // Criação do escritor de PDF
+                                        PdfWriter writer = PdfWriter.GetInstance(pdf, fileStream);
 
-                                        // Contar linhas usadas após adição do cabeçalho
-                                        linhasDisponiveis -= 8;
-                                    };
+                                        // Abrindo o documento
+                                        pdf.Open();
 
-                                    // Adicionar cabeçalho da primeira página
-                                    adicionarCabecalho(subtitulo);
+                                        // Configuração da fonte Consola
+                                        BaseFont bf = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+                                        var fonte = new iTextSharp.text.Font(bf, 9);
 
-                                    // Variáveis para controle
-                                    string mesAnterior = "";
-                                    string dataAnterior = "";
-                                    decimal debitosMes = 0;
-                                    decimal creditosMes = 0;
-                                    decimal totalDebitos = 0;
-                                    decimal totalCreditos = 0;
+                                        var linhasDisponiveis = 57;
 
-                                    // Para cada lançamento
-                                    foreach (var lancamento in listLancamentos)
-                                    {
-                                        // Obter dados
-                                        var (data, historico, valor, saldo) = (lancamento.data, lancamento.historico, lancamento.valor, lancamento.saldo);
-                                        var dataLancamento = data.ToString("dd/MM/yyyy");
-
-                                        // Iniciar criação de linha
-                                        var linha = new StringBuilder();
-
-                                        // Verificar se o mês anterior é diferente do atual 
-                                        if (mesAnterior != data.ToString("MM/yyyy"))
+                                        // Operações com o subtítulo
+                                        string subtitulo = "   ";
+                                        if (!string.IsNullOrWhiteSpace(txtSubtitulo.Text))
                                         {
-                                            // Verificar se é ou não a primeira execução, se não for (IF = TRUE): inserir rodapé com o total do mês anterior
-                                            if (mesAnterior != "")
+                                            subtitulo = Contabilidade.Forms.Relatorios.frmSaldo.CentralizarString(txtSubtitulo.Text, 110);
+                                        }
+
+                                        string[] linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(descricao, 78);
+
+                                        // Função local para adicionar o cabeçalho
+                                        void adicionarCabecalho(string subtitulo)
+                                        {
+                                            // Adicionando parágrafos ao documento
+                                            pdf.Add(new Paragraph($"RAZÃO ANALÍTICO                          PERÍODO: {dataInicialFormatada} A {dataFinalFormatada}                          PÁGINA: {(pdf.PageNumber + 1).ToString("D3")}", fonte));
+                                            pdf.Add(new Paragraph($"{subtitulo}", fonte));
+                                            pdf.Add(new Paragraph($"CONTA: {conta.PadRight(15)}          {linhasDescricao[0]}", fonte));
+                                            pdf.Add(new Paragraph($"SALDO ANTERIOR:{saldoAnterior.ToString("#,##0.00").PadLeft(14)}   {linhasDescricao[1]}", fonte));
+                                            pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
+                                            pdf.Add(new Paragraph("DATA       HISTÓRICO                                                       DÉBITOS      CRÉDITOS         SALDO", fonte));
+                                            pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
+                                            pdf.Add(new Paragraph($"   ", fonte));
+
+                                            // Contar linhas usadas após adição do cabeçalho
+                                            linhasDisponiveis -= 8;
+                                        };
+
+                                        // Adicionar cabeçalho da primeira página
+                                        adicionarCabecalho(subtitulo);
+
+                                        // Variáveis para controle
+                                        string mesAnterior = "";
+                                        string dataAnterior = "";
+                                        decimal debitosMes = 0;
+                                        decimal creditosMes = 0;
+                                        decimal totalDebitos = 0;
+                                        decimal totalCreditos = 0;
+
+                                        // Para cada lançamento
+                                        foreach (var lancamento in listLancamentos)
+                                        {
+                                            // Obter dados
+                                            var (data, historico, valor, saldo) = (lancamento.data, lancamento.historico, lancamento.valor, lancamento.saldo);
+                                            var dataLancamento = data.ToString("dd/MM/yyyy");
+
+                                            // Iniciar criação de linha
+                                            var linha = new StringBuilder();
+
+                                            // Verificar se o mês anterior é diferente do atual 
+                                            if (mesAnterior != data.ToString("MM/yyyy"))
                                             {
-                                                // Verificar se há linhas nessa página para incluir o rodapé, caso não haja: criar nova página com o cabeçalho
-                                                if (linhasDisponiveis < 2)
+                                                // Verificar se é ou não a primeira execução, se não for (IF = TRUE): inserir rodapé com o total do mês anterior
+                                                if (mesAnterior != "")
                                                 {
-                                                    pdf.NewPage();
-                                                    linhasDisponiveis = 57;
-                                                    adicionarCabecalho(subtitulo);
-                                                }
+                                                    // Verificar se há linhas nessa página para incluir o rodapé, caso não haja: criar nova página com o cabeçalho
+                                                    if (linhasDisponiveis < 2)
+                                                    {
+                                                        pdf.NewPage();
+                                                        linhasDisponiveis = 57;
+                                                        adicionarCabecalho(subtitulo);
+                                                    }
 
-                                                var linhasGastas = 2; // padrão do rodapé
+                                                    var linhasGastas = 2; // padrão do rodapé
 
-                                                // Verificar se é possível inserir com espaço superior
-                                                if (linhasDisponiveis >= 3)
-                                                {
-                                                    pdf.Add(new Paragraph($"   ", fonte));
-                                                    linhasGastas++;
-                                                }
+                                                    // Verificar se é possível inserir com espaço superior
+                                                    if (linhasDisponiveis >= 3)
+                                                    {
+                                                        pdf.Add(new Paragraph($"   ", fonte));
+                                                        linhasGastas++;
+                                                    }
 
-                                                // Inserir rodapé
-                                                pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
-                                                pdf.Add(new Paragraph($"{$"TOTAL DO MÊS {mesAnterior}:".PadLeft(68)}{debitosMes.ToString("#,##0.00").PadLeft(14)}{creditosMes.ToString("#,##0.00").PadLeft(14)}{(creditosMes + debitosMes).ToString("#,##0.00").PadLeft(14)}", fonte));
-                                                
-                                                if (linhasDisponiveis >= 4)
-                                                {
+                                                    // Inserir rodapé
                                                     pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
-                                                    linhasGastas++;
-                                                }
+                                                    pdf.Add(new Paragraph($"{$"TOTAL DO MÊS {mesAnterior}:".PadLeft(68)}{debitosMes.ToString("#,##0.00").PadLeft(14)}{creditosMes.ToString("#,##0.00").PadLeft(14)}{(creditosMes + debitosMes).ToString("#,##0.00").PadLeft(14)}", fonte));
 
-                                                // Verificar se é possível inserir com espaço inferior
-                                                if (linhasDisponiveis >= 5)
-                                                {
-                                                    pdf.Add(new Paragraph($"   ", fonte));
-                                                    linhasGastas++;
-                                                }
+                                                    if (linhasDisponiveis >= 4)
+                                                    {
+                                                        pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
+                                                        linhasGastas++;
+                                                    }
 
-                                                linhasDisponiveis -= linhasGastas;
+                                                    // Verificar se é possível inserir com espaço inferior
+                                                    if (linhasDisponiveis >= 5)
+                                                    {
+                                                        pdf.Add(new Paragraph($"   ", fonte));
+                                                        linhasGastas++;
+                                                    }
+
+                                                    linhasDisponiveis -= linhasGastas;
+                                                }
+                                                // Transferir valores para o total
+                                                totalDebitos += debitosMes;
+                                                totalCreditos += creditosMes;
+
+                                                // Zerar variáveis
+                                                debitosMes = 0;
+                                                creditosMes = 0;
+
+                                                // Atualizar mês/ano
+                                                mesAnterior = data.ToString("MM/yyyy");
                                             }
-                                            // Transferir valores para o total
-                                            totalDebitos += debitosMes;
-                                            totalCreditos += creditosMes;
 
-                                            // Zerar variáveis
-                                            debitosMes = 0;
-                                            creditosMes = 0;
+                                            // Verificar se a data anterior é igual a data desse lançamento, se for: não repetir e deixar o espaço vázio
+                                            if (dataAnterior == dataLancamento)
+                                            {
+                                                linha.Append("   ".PadRight(11));
+                                            }
+                                            else
+                                            {
+                                                linha.Append(dataLancamento.PadRight(11));
+                                                dataAnterior = dataLancamento;
+                                            }
 
-                                            // Atualizar mês/ano
-                                            mesAnterior = data.ToString("MM/yyyy");
+                                            // Verificar quantas linhas serão necessárias para cada uso - Não contar o espaço entre as colunas
+                                            var linhasNecessarias = lancamento.historico.Length >= 57 ? 2 : 1;
+
+                                            // Verificar se há linhas nessa página para incluir os registros, caso não haja: criar nova página com o cabeçalho
+                                            if ((linhasDisponiveis - linhasNecessarias) < 0)
+                                            {
+                                                pdf.NewPage();
+                                                linhasDisponiveis = 57;
+                                                adicionarCabecalho(subtitulo);
+                                            }
+
+                                            // Testar se serão necessárias 1 ou 2 linhas por causa do comprimento do histórico
+                                            if (linhasNecessarias == 2)
+                                            {
+                                                // Dividir considerando o tamanho máximo que pode ter
+                                                string[] linhasHistorico = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(historico, 57);
+                                                linha.Append(linhasHistorico[0]);
+
+                                                // Verificar se é um débito/crédito
+                                                // Crédito
+                                                if (valor > 0)
+                                                {
+                                                    // Contabilizar valor do lançamento
+                                                    creditosMes += valor;
+
+                                                    // String composta de caracteres vázios para ocupar o espaço do débito
+                                                    linha.Append("   ".PadLeft(14));
+                                                    // Espaçamento do crédito + 1 para a divisão entre as colunas
+                                                    linha.Append(valor.ToString("#,##0.00").PadLeft(14));
+                                                    // Valores referentes ao saldo_atualizado
+                                                    linha.Append(saldo.ToString("#,##0.00").PadLeft(14));
+                                                }
+                                                // Débito
+                                                else
+                                                {
+                                                    // Contabilizar valor do lançamento
+                                                    debitosMes += valor;
+
+                                                    // Espaçamento do débito + 1 para a divisão entre as colunas
+                                                    linha.Append(valor.ToString("#,##0.00").PadLeft(14));
+                                                    // String composta de caracteres vázios para ocupar o espaço do crédito
+                                                    linha.Append("   ".PadLeft(14));
+                                                    // Valores referentes ao saldo_atualizado
+                                                    linha.Append(saldo.ToString("#,##0.00").PadLeft(14));
+                                                }
+
+                                                // Adicionar primeira linha
+                                                pdf.Add(new Paragraph(linha.ToString(), fonte));
+
+                                                // Limpar o StringBuilder e iniciar a criação da segunda linha (com conta e valores vázios).
+                                                linha.Clear();
+
+                                                // Espaço vázio referente a conta
+                                                linha.Append("   ".PadRight(16));
+
+                                                // Adicionar segunda linha
+                                                linha.Append(linhasHistorico[1]);
+                                                pdf.Add(new Paragraph(linha.ToString(), fonte));
+
+                                                // Contabilizar linhas
+                                                linhasDisponiveis -= 2;
+                                            }
+                                            else
+                                            {
+                                                linha.Append(historico.PadRight(57));
+
+                                                // Verificar se é um débito/crédito
+                                                // Crédito
+                                                if (valor > 0)
+                                                {
+                                                    // Contabilizar valor do lançamento
+                                                    creditosMes += valor;
+
+                                                    // String composta de caracteres vázios para ocupar o espaço do débito
+                                                    linha.Append("   ".PadLeft(14));
+                                                    // Espaçamento do crédito + 1 para a divisão entre as colunas
+                                                    linha.Append(valor.ToString("#,##0.00").PadLeft(14));
+                                                    // Valores referentes ao saldo_atualizado
+                                                    linha.Append(saldo.ToString("#,##0.00").PadLeft(14));
+                                                }
+                                                // Débito
+                                                else
+                                                {
+                                                    // Contabilizar valor do lançamento
+                                                    debitosMes += valor;
+
+                                                    // Espaçamento do débito + 1 para a divisão entre as colunas
+                                                    linha.Append(valor.ToString("#,##0.00").PadLeft(14));
+                                                    // String composta de caracteres vázios para ocupar o espaço do crédito
+                                                    linha.Append("   ".PadLeft(14));
+                                                    // Valores referentes ao saldo_atualizado
+                                                    linha.Append(saldo.ToString("#,##0.00").PadLeft(14));
+                                                }
+
+                                                pdf.Add(new Paragraph(linha.ToString(), fonte));
+
+                                                // Contabilizar linha
+                                                linhasDisponiveis--;
+                                            }
                                         }
 
-                                        // Verificar se a data anterior é igual a data desse lançamento, se for: não repetir e deixar o espaço vázio
-                                        if (dataAnterior == dataLancamento)
-                                        {
-                                            linha.Append("   ".PadRight(11));
-                                        }
-                                        else
-                                        {
-                                            linha.Append(dataLancamento.PadRight(11));
-                                            dataAnterior = dataLancamento;
-                                        }
-
-                                        // Verificar quantas linhas serão necessárias para cada uso - Não contar o espaço entre as colunas
-                                        var linhasNecessarias = lancamento.historico.Length >= 57 ? 2 : 1;
-
-                                        // Verificar se há linhas nessa página para incluir os registros, caso não haja: criar nova página com o cabeçalho
-                                        if ((linhasDisponiveis - linhasNecessarias) < 0)
+                                        // Verificar se há linhas nessa página para incluir o rodapé do último mês, caso não haja: criar nova página com o cabeçalho
+                                        if (linhasDisponiveis < 2)
                                         {
                                             pdf.NewPage();
                                             linhasDisponiveis = 57;
                                             adicionarCabecalho(subtitulo);
                                         }
 
-                                        // Testar se serão necessárias 1 ou 2 linhas por causa do comprimento do histórico
-                                        if (linhasNecessarias == 2)
+                                        var linhasUsadas = 2; // padrão do rodapé
+
+                                        // Verificar se é possível inserir com espaço superior (já considerando o espaço do próximo/último rodapé)
+                                        if (linhasDisponiveis != 4 && linhasDisponiveis >= 3)
                                         {
-                                            // Dividir considerando o tamanho máximo que pode ter
-                                            string[] linhasHistorico = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(historico, 57);
-                                            linha.Append(linhasHistorico[0]);
-
-                                            // Verificar se é um débito/crédito
-                                            // Crédito
-                                            if (valor > 0)
-                                            {
-                                                // Contabilizar valor do lançamento
-                                                creditosMes += valor;
-
-                                                // String composta de caracteres vázios para ocupar o espaço do débito
-                                                linha.Append("   ".PadLeft(14));
-                                                // Espaçamento do crédito + 1 para a divisão entre as colunas
-                                                linha.Append(valor.ToString("#,##0.00").PadLeft(14));
-                                                // Valores referentes ao saldo_atualizado
-                                                linha.Append(saldo.ToString("#,##0.00").PadLeft(14));
-                                            }
-                                            // Débito
-                                            else
-                                            {
-                                                // Contabilizar valor do lançamento
-                                                debitosMes += valor;
-
-                                                // Espaçamento do débito + 1 para a divisão entre as colunas
-                                                linha.Append(valor.ToString("#,##0.00").PadLeft(14));
-                                                // String composta de caracteres vázios para ocupar o espaço do crédito
-                                                linha.Append("   ".PadLeft(14));
-                                                // Valores referentes ao saldo_atualizado
-                                                linha.Append(saldo.ToString("#,##0.00").PadLeft(14));
-                                            }
-
-                                            // Adicionar primeira linha
-                                            pdf.Add(new Paragraph(linha.ToString(), fonte));
-
-                                            // Limpar o StringBuilder e iniciar a criação da segunda linha (com conta e valores vázios).
-                                            linha.Clear();
-
-                                            // Espaço vázio referente a conta
-                                            linha.Append("   ".PadRight(16));
-
-                                            // Adicionar segunda linha
-                                            linha.Append(linhasHistorico[1]);
-                                            pdf.Add(new Paragraph(linha.ToString(), fonte));
-
-                                            // Contabilizar linhas
-                                            linhasDisponiveis -= 2;
+                                            pdf.Add(new Paragraph($"   ", fonte));
+                                            linhasUsadas++;
                                         }
-                                        else
+
+                                        // Inserir rodapé
+                                        pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
+                                        pdf.Add(new Paragraph($"{$"TOTAL DO MÊS {mesAnterior}:".PadLeft(68)}{debitosMes.ToString("#,##0.00").PadLeft(14)}{creditosMes.ToString("#,##0.00").PadLeft(14)}{(creditosMes + debitosMes).ToString("#,##0.00").PadLeft(14)}", fonte));
+
+                                        if (linhasDisponiveis > 3)
                                         {
-                                            linha.Append(historico.PadRight(57));
-
-                                            // Verificar se é um débito/crédito
-                                            // Crédito
-                                            if (valor > 0)
-                                            {
-                                                // Contabilizar valor do lançamento
-                                                creditosMes += valor;
-
-                                                // String composta de caracteres vázios para ocupar o espaço do débito
-                                                linha.Append("   ".PadLeft(14));
-                                                // Espaçamento do crédito + 1 para a divisão entre as colunas
-                                                linha.Append(valor.ToString("#,##0.00").PadLeft(14));
-                                                // Valores referentes ao saldo_atualizado
-                                                linha.Append(saldo.ToString("#,##0.00").PadLeft(14));
-                                            }
-                                            // Débito
-                                            else
-                                            {
-                                                // Contabilizar valor do lançamento
-                                                debitosMes += valor;
-
-                                                // Espaçamento do débito + 1 para a divisão entre as colunas
-                                                linha.Append(valor.ToString("#,##0.00").PadLeft(14));
-                                                // String composta de caracteres vázios para ocupar o espaço do crédito
-                                                linha.Append("   ".PadLeft(14));
-                                                // Valores referentes ao saldo_atualizado
-                                                linha.Append(saldo.ToString("#,##0.00").PadLeft(14));
-                                            }
-
-                                            pdf.Add(new Paragraph(linha.ToString(), fonte));
-
-                                            // Contabilizar linha
-                                            linhasDisponiveis--;
+                                            pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
+                                            linhasUsadas++;
                                         }
+
+                                        linhasDisponiveis -= linhasUsadas;
+
+                                        // Transferir valores para o total
+                                        totalDebitos += debitosMes;
+                                        totalCreditos += creditosMes;
+
+                                        // Verificar se existe espaço para o último rodapé, senão: criar nova página
+                                        if (linhasDisponiveis < 1)
+                                        {
+                                            pdf.NewPage();
+                                            linhasDisponiveis = 57;
+                                            adicionarCabecalho(subtitulo);
+                                        }
+
+                                        // Inserindo rodapé
+                                        pdf.Add(new Paragraph($"{$"TOTAL DO PERÍODO ({dataInicialFormatada} A {dataFinalFormatada}):".PadLeft(68)}{totalDebitos.ToString("#,##0.00").PadLeft(14)}{totalCreditos.ToString("#,##0.00").PadLeft(14)}{(totalCreditos + totalDebitos).ToString("#,##0.00").PadLeft(14)}", fonte));
+                                        linhasDisponiveis--;
+                                        if (linhasDisponiveis > 0)
+                                        {
+                                            pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
+                                        }
+
+                                        // Fechando o documento
+                                        pdf.Close();
                                     }
 
-                                    // Verificar se há linhas nessa página para incluir o rodapé do último mês, caso não haja: criar nova página com o cabeçalho
-                                    if (linhasDisponiveis < 2)
-                                    {
-                                        pdf.NewPage();
-                                        linhasDisponiveis = 57;
-                                        adicionarCabecalho(subtitulo);
-                                    }
-
-                                    var linhasUsadas = 2; // padrão do rodapé
-
-                                    // Verificar se é possível inserir com espaço superior (já considerando o espaço do próximo/último rodapé)
-                                    if (linhasDisponiveis != 4 && linhasDisponiveis >= 3)
-                                    {
-                                        pdf.Add(new Paragraph($"   ", fonte));
-                                        linhasUsadas++;
-                                    }
-
-                                    // Inserir rodapé
-                                    pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
-                                    pdf.Add(new Paragraph($"{$"TOTAL DO MÊS {mesAnterior}:".PadLeft(68)}{debitosMes.ToString("#,##0.00").PadLeft(14)}{creditosMes.ToString("#,##0.00").PadLeft(14)}{(creditosMes + debitosMes).ToString("#,##0.00").PadLeft(14)}", fonte));
-                                    
-                                    if (linhasDisponiveis > 3)
-                                    {
-                                        pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
-                                        linhasUsadas++;
-                                    }
-
-                                    linhasDisponiveis -= linhasUsadas;
-                                
-                                    // Transferir valores para o total
-                                    totalDebitos += debitosMes;
-                                    totalCreditos += creditosMes;
-
-                                    // Verificar se existe espaço para o último rodapé, senão: criar nova página
-                                    if (linhasDisponiveis < 1)
-                                    {
-                                        pdf.NewPage();
-                                        linhasDisponiveis = 57;
-                                        adicionarCabecalho(subtitulo);
-                                    }
-
-                                    // Inserindo rodapé
-                                    pdf.Add(new Paragraph($"{$"TOTAL DO PERÍODO ({dataInicialFormatada} A {dataFinalFormatada}):".PadLeft(68)}{totalDebitos.ToString("#,##0.00").PadLeft(14)}{totalCreditos.ToString("#,##0.00").PadLeft(14)}{(totalCreditos + totalDebitos).ToString("#,##0.00").PadLeft(14)}", fonte));
-                                    linhasDisponiveis--;
-                                    if (linhasDisponiveis > 0)
-                                    {
-                                        pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
-                                    }
-
-                                    // Fechando o documento
-                                    pdf.Close();
+                                    // Abrir o arquivo PDF gerado
+                                    Process.Start(new ProcessStartInfo(pdfPath) { UseShellExecute = true });
                                 }
-
-                                // Abrir o arquivo PDF gerado
-                                Process.Start(new ProcessStartInfo(pdfPath) { UseShellExecute = true });
                             }
                         }
-                    }
-                    else
-                    {
-                        MessageBox.Show($"Nenhum lançamento foi realizado entre as datas {dataInicialFormatada} e {dataFinalFormatada}", "O relatório não foi gerado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        else
+                        {
+                            MessageBox.Show($"Nenhum lançamento foi realizado entre as datas {dataInicialFormatada} e {dataFinalFormatada}", "O relatório não foi gerado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao gerar o relatório", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

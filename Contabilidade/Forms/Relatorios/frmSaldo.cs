@@ -5,6 +5,7 @@ using System.Data;
 using System.Text;
 using System.Diagnostics;
 using Microsoft.Data.Sqlite;
+using static System.Windows.Forms.LinkLabel;
 
 namespace Contabilidade.Forms.Relatorios
 {
@@ -232,44 +233,49 @@ namespace Contabilidade.Forms.Relatorios
 
         private void btnVisualizar_Click(object sender, EventArgs e)
         {
-            // Verificar se a conta foi preenchida
-            if (string.IsNullOrWhiteSpace(txtConta.Text))
+            try
             {
-                MessageBox.Show("Selecione uma conta antes de gerar o relatório, dê um duplo clique na linha desejada.", "Uma conta não foi selecionada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            else
-            {
-                // Criar comando para obter dados das contas
-                var sql = "";
-                if (nivel == "S")
+                // Verificar se a conta foi preenchida
+                if (string.IsNullOrWhiteSpace(txtConta.Text))
                 {
-                    sql = "SELECT c.conta, c.descricao, COALESCE((SELECT l.saldo_atualizado FROM lancamentos l WHERE c.conta = l.conta AND l.data <= @data ORDER BY l.data DESC, l.id DESC LIMIT 1), 0) AS saldo_atualizado FROM contas c WHERE c.conta LIKE @conta || '.%';";
+                    MessageBox.Show("Selecione uma conta antes de gerar o relatório, dê um duplo clique na linha desejada.", "Uma conta não foi selecionada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
-                    sql = "SELECT c.conta, c.descricao, COALESCE((SELECT l.saldo_atualizado FROM lancamentos l WHERE c.conta = l.conta AND l.data <= @data ORDER BY l.data DESC, l.id DESC LIMIT 1), 0) AS saldo_atualizado FROM contas c WHERE c.conta = @conta;";
-                }
-                var comando = new SqliteCommand(sql, con.conn);
+                    var incluirCaixa = chkCaixa.Checked;
 
-                var data = dtpData.Value;
-                comando.Parameters.AddWithValue("@data", data);
-                comando.Parameters.AddWithValue("@conta", txtConta.Text);
+                    // Criar comando para obter dados das contas
+                    var sql = "";
+                    if (nivel == "S")
+                    {
+                        sql = "SELECT c.conta, c.descricao, COALESCE((SELECT l.saldo FROM lancamentos l WHERE c.conta = l.conta AND l.data <= @data ORDER BY l.data DESC, l.id DESC LIMIT 1), 0) AS saldo FROM contas c WHERE c.conta LIKE @conta || '.%';";
+                    }
+                    else
+                    {
+                        sql = "SELECT c.conta, c.descricao, COALESCE((SELECT l.saldo FROM lancamentos l WHERE c.conta = l.conta AND l.data <= @data ORDER BY l.data DESC, l.id DESC LIMIT 1), 0) AS saldo FROM contas c WHERE c.conta = @conta;";
+                    }
+                    var comando = new SqliteCommand(sql, con.conn);
 
-                // Executar comando e obter os dados
-                using (var reader = comando.ExecuteReader())
-                {
+                    var data = dtpData.Value;
+                    comando.Parameters.AddWithValue("@data", data);
+                    comando.Parameters.AddWithValue("@conta", txtConta.Text);
+
                     List<Lancamento> listLancamentos = new List<Lancamento>();
 
-                    // Criar uma lista com todos os dados
-                    while (reader.Read())
+                    // Executar comando e obter os dados
+                    using (var reader = comando.ExecuteReader())
                     {
-                        Lancamento lancamento = new Lancamento
+                        // Criar uma lista com todos os dados
+                        while (reader.Read())
                         {
-                            conta = reader["conta"].ToString(),
-                            descricao = reader["descricao"].ToString(),
-                            saldo = Convert.ToDecimal(reader["saldo_atualizado"])
-                        };
-                        listLancamentos.Add(lancamento);
+                            Lancamento lancamento = new Lancamento
+                            {
+                                conta = reader["conta"].ToString(),
+                                descricao = reader["descricao"].ToString(),
+                                saldo = Convert.ToDecimal(reader["saldo"])
+                            };
+                            listLancamentos.Add(lancamento);
+                        }
                     }
 
                     // Verificar se pelo menos 1 registro foi encontrado
@@ -342,6 +348,41 @@ namespace Contabilidade.Forms.Relatorios
                                     // Adicionar cabeçalho da primeira página
                                     adicionarCabecalho(subtitulo);
 
+                                    // Verificar se deve incluir ou não o registro do caixa
+                                    if (incluirCaixa)
+                                    {
+                                        // Obter nome da conta referente ao caixa
+                                        comando.CommandText = "SELECT descricao FROM contas WHERE conta = '0';";
+                                        var descricaoCaixa = comando.ExecuteScalar()?.ToString();
+
+                                        // Obter saldo no dia informado
+                                        comando.CommandText = "SELECT COALESCE((SELECT saldo FROM registros_caixa WHERE data <= @data ORDER BY data DESC LIMIT 1), 0);";
+                                        var saldoCaixa = Convert.ToDecimal(comando.ExecuteScalar());
+
+                                        // Verificar se a descrição do caixa precisa de uma segunda linha (no caso de ser muito grande)
+                                        if (descricaoCaixa?.Length >= 80)
+                                        {
+                                            // Dividir considerando o tamanho máximo que pode ter (sem contar o espaço para a outra coluna)
+                                            string[] linhasDescricao = QuebrarLinhaString(descricaoCaixa, 80);
+
+                                            // Adicionar primeira linha
+                                            pdf.Add(new Paragraph($"{"0".PadRight(16)}{linhasDescricao[0].PadRight(80)}{saldoCaixa.ToString("#,##0.00").PadLeft(14)}", fonte));
+
+                                            // Adicionar segunda linha
+                                            pdf.Add(new Paragraph($"{"    ".ToString().PadRight(16)}{linhasDescricao[1]}", fonte));
+
+                                            // Contabilizar linhas
+                                            linhasDisponiveis -= 2;
+                                        }
+                                        else
+                                        {
+                                            pdf.Add(new Paragraph($"{"0".PadRight(16)}{descricaoCaixa?.PadRight(80)}{saldoCaixa.ToString("#,##0.00").PadLeft(14)}", fonte));
+
+                                            // Contabilizar linha
+                                            linhasDisponiveis -= 1;
+                                        }
+                                    }
+
                                     // Para cada lançamento
                                     foreach (var lancamento in listLancamentos)
                                     {
@@ -382,7 +423,7 @@ namespace Contabilidade.Forms.Relatorios
                                             linha.Clear();
 
                                             // Espaço vázio referente a conta
-                                            linha.Append("".ToString().PadRight(16));
+                                            linha.Append("    ".ToString().PadRight(16));
 
                                             // Adicionar segunda linha
                                             linha.Append(linhasDescricao[1]);
@@ -426,6 +467,10 @@ namespace Contabilidade.Forms.Relatorios
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao gerar o relatório", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

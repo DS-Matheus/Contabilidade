@@ -36,6 +36,7 @@ namespace Contabilidade.Forms.Relatorios
 
             // Ler valores de lançamentos
             List<Lancamento> listLancamentos = new List<Lancamento>();
+
             using (var reader = comando.ExecuteReader())
             {
                 while (reader.Read())

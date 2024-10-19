@@ -49,6 +49,7 @@
             txtConta = new TextBox();
             label3 = new Label();
             txtSubtitulo = new TextBox();
+            chkCaixa = new CheckBox();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvContas).BeginInit();
             SuspendLayout();
@@ -225,11 +226,22 @@
             txtSubtitulo.Size = new Size(419, 23);
             txtSubtitulo.TabIndex = 47;
             // 
+            // chkCaixa
+            // 
+            chkCaixa.AutoSize = true;
+            chkCaixa.Location = new Point(720, 421);
+            chkCaixa.Name = "chkCaixa";
+            chkCaixa.Size = new Size(134, 19);
+            chkCaixa.TabIndex = 49;
+            chkCaixa.Text = "Incluir valor do caixa";
+            chkCaixa.UseVisualStyleBackColor = true;
+            // 
             // frmSaldo
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(880, 500);
+            Controls.Add(chkCaixa);
             Controls.Add(label3);
             Controls.Add(txtSubtitulo);
             Controls.Add(groupBox1);
@@ -268,5 +280,6 @@
         private TextBox txtConta;
         private Label label3;
         private TextBox txtSubtitulo;
+        private CheckBox chkCaixa;
     }
 }
