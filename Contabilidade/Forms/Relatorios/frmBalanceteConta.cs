@@ -155,7 +155,7 @@ namespace Contabilidade.Forms.Relatorios
                     var sql = "";
                     if (nivel == "S")
                     {
-                        sql = "SELECT l.conta, c.descricao, SUM(CASE WHEN l.valor > 0 THEN l.valor ELSE 0 END) AS credito, SUM(CASE WHEN l.valor < 0 THEN l.valor ELSE 0 END) AS debito, (SELECT saldo FROM lancamentos WHERE conta = l.conta ORDER BY data DESC, id DESC LIMIT 1) AS saldo FROM lancamentos l JOIN contas c ON l.conta = c.conta WHERE l.data BETWEEN @dataInicial AND @dataFinal AND l.conta LIKE @conta || '.%' GROUP BY l.conta, c.descricao ORDER BY l.conta;";
+                        sql = "SELECT l.conta, c.descricao, SUM(CASE WHEN l.valor > 0 THEN l.valor ELSE 0 END) AS credito, SUM(CASE WHEN l.valor < 0 THEN l.valor ELSE 0 END) AS debito, (SELECT saldo FROM lancamentos WHERE conta = l.conta ORDER BY data DESC, id DESC LIMIT 1) AS saldo FROM lancamentos l JOIN contas c ON l.conta = c.conta WHERE l.data BETWEEN @dataInicial AND @dataFinal AND l.conta LIKE @conta || '.%' GROUP BY l.conta ORDER BY l.conta;";
                     }
                     else if (nivel == "A")
                     {
@@ -245,7 +245,7 @@ namespace Contabilidade.Forms.Relatorios
                                         void adicionarCabecalho(string subtitulo)
                                         {
                                             // Adicionando parágrafos ao documento
-                                            pdf.Add(new Paragraph($"BALANCETE                                      PERÍODO: {dataInicialFormatada} A {dataFinalFormatada}                                PÁGINA: {(pdf.PageNumber + 1).ToString("D3")}", fonte));
+                                            pdf.Add(new Paragraph($"BALANCETE DA CONTA: {txtConta.Text.PadRight(15)}            PERÍODO: {dataInicialFormatada} A {dataFinalFormatada}                                PÁGINA: {(pdf.PageNumber + 1).ToString("D3")}", fonte));
                                             pdf.Add(new Paragraph($"{subtitulo}", fonte));
                                             pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
                                             pdf.Add(new Paragraph("CONTA           DESCRIÇÃO                                         SALDO ANTERIOR       DEBITOS      CREDITOS   SALDO ATUAL", fonte));
