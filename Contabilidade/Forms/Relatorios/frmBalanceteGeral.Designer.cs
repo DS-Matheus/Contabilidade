@@ -35,11 +35,12 @@
             dtpInicial = new DateTimePicker();
             label4 = new Label();
             txtSubtitulo = new TextBox();
+            chkSaldosZero = new CheckBox();
             SuspendLayout();
             // 
             // btnVisualizar
             // 
-            btnVisualizar.Location = new Point(315, 329);
+            btnVisualizar.Location = new Point(315, 354);
             btnVisualizar.Name = "btnVisualizar";
             btnVisualizar.Size = new Size(250, 38);
             btnVisualizar.TabIndex = 31;
@@ -82,7 +83,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(315, 282);
+            label4.Location = new Point(375, 282);
             label4.Name = "label4";
             label4.Size = new Size(131, 15);
             label4.TabIndex = 52;
@@ -90,17 +91,28 @@
             // 
             // txtSubtitulo
             // 
-            txtSubtitulo.Location = new Point(315, 300);
+            txtSubtitulo.Location = new Point(218, 300);
             txtSubtitulo.MaxLength = 110;
             txtSubtitulo.Name = "txtSubtitulo";
             txtSubtitulo.Size = new Size(445, 23);
             txtSubtitulo.TabIndex = 51;
+            // 
+            // chkSaldosZero
+            // 
+            chkSaldosZero.AutoSize = true;
+            chkSaldosZero.Location = new Point(358, 329);
+            chkSaldosZero.Name = "chkSaldosZero";
+            chkSaldosZero.Size = new Size(164, 19);
+            chkSaldosZero.TabIndex = 53;
+            chkSaldosZero.Text = "Incluir contas com saldo 0";
+            chkSaldosZero.UseVisualStyleBackColor = true;
             // 
             // frmBalanceteGeral
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(880, 500);
+            Controls.Add(chkSaldosZero);
             Controls.Add(label4);
             Controls.Add(txtSubtitulo);
             Controls.Add(btnVisualizar);
@@ -124,5 +136,6 @@
         private DateTimePicker dtpInicial;
         private Label label4;
         private TextBox txtSubtitulo;
+        private CheckBox chkSaldosZero;
     }
 }
