@@ -247,7 +247,7 @@ namespace Contabilidade.Forms.Lancamentos
                 // Variáveis para os dados
                 string dataInicial, dataInicialFormatada, dataFinal, dataFinalFormatada = "";
 
-                using (var formDados = new frmDatasCalcula())
+                using (var formDados = new frmCalcularObterDados())
                 {
                     var resultado = formDados.ShowDialog();
 
@@ -298,14 +298,14 @@ namespace Contabilidade.Forms.Lancamentos
                     comando.CommandText = "SELECT data, saldo FROM registros_caixa WHERE data <= @dataFinal ORDER BY data DESC LIMIT 1;";
 
                     DateTime dataSaldoAtual = DateTime.MinValue;
-                    decimal saldoAtual = 0m;
+                    decimal saldoFinal = 0m;
 
                     using (var reader2 = comando.ExecuteReader())
                     {
                         if (reader2.Read())
                         {
                             dataSaldoAtual = Convert.ToDateTime(reader2["data"]);
-                            saldoAtual = reader2.GetDecimal(1);
+                            saldoFinal = reader2.GetDecimal(1);
                         }
                     }
 
@@ -342,25 +342,12 @@ namespace Contabilidade.Forms.Lancamentos
                     var saldoAnterior = Convert.ToDecimal(comando.ExecuteScalar());
 
                     // Calcular balanço final do periodo
-                    var balanco = creditos + debitos + saldoAnterior - saldoAtual;
+                    var balanco = creditos + debitos + saldoAnterior - saldoFinal;
 
                     // Exibir resultados ao usuário
-                    MessageBox.Show(
-                        $"Período: {dataInicialFormatada} a {dataFinalFormatada}\n\n" +
-
-                        $"Lançamentos:\n" +
-                        $"Créditos: {creditos.ToString("#,##0.00")}\n" +
-                        $"Débitos:  {debitos.ToString("#,##0.00")}\n\n" +
-
-                        $"Valores em caixa:\n" +
-                        $"(+) Saldo anterior: {saldoAnterior.ToString("#,##0.00")}\n" +
-                        $"(-) Saldo atual: {saldoAtual.ToString("#,##0.00")}\n\n" +
-                        
-                        $"Diferença: {balanco.ToString("#,##0.00")}",
-                        "Resultado do periodo",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information
-                    );
+                    var periodo = $"{dataInicialFormatada} a {dataFinalFormatada}";
+                    var formExibir = new frmCalcularExibir(periodo, creditos, debitos, saldoAnterior, saldoFinal, balanco);
+                    formExibir.ShowDialog();
                 }
             }
             catch (CustomException ex)

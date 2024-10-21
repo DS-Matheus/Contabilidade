@@ -1,6 +1,6 @@
 ﻿namespace Contabilidade.Forms.Lancamentos
 {
-    partial class frmDatasCalcula
+    partial class frmCalcularObterDados
     {
         /// <summary>
         /// Required designer variable.

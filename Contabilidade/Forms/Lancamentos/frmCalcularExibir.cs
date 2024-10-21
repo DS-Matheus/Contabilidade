@@ -11,20 +11,23 @@ using System.Windows.Forms;
 
 namespace Contabilidade.Forms.Lancamentos
 {
-    public partial class frmDatasCalcula : Form
+    public partial class frmCalcularExibir : Form
     {
         // Funções usadas para permitir que a janela se movimente através da barra superior customizada
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
         private extern static void ReleaseCapture();
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
         private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
-        public string dataInicial { get; private set; }
-        public string dataInicialFormatada { get; private set; }
-        public string dataFinal { get; private set; }
-        public string dataFinalFormatada { get; private set; }
-        public frmDatasCalcula()
+        public frmCalcularExibir(string periodo, decimal creditos, decimal debitos, decimal saldoAnterior, decimal saldoFinal, decimal diferenca)
         {
             InitializeComponent();
+
+            txtPeriodo.Text = periodo;
+            txtCreditos.Text = creditos.ToString("#,##0.00");
+            txtDebitos.Text = debitos.ToString("#,##0.00");
+            txtSaldoAnterior.Text = saldoAnterior.ToString("#,##0.00");
+            txtSaldoFinal.Text = saldoFinal.ToString("#,##0.00");
+            txtDiferenca.Text = diferenca.ToString("#,##0.00");
         }
 
         private void btnFechar_Click(object sender, EventArgs e)
@@ -50,20 +53,9 @@ namespace Contabilidade.Forms.Lancamentos
             SendMessage(this.Handle, 0x112, 0xf012, 0);
         }
 
-        private void btnConfirmar_Click(object sender, EventArgs e)
+        private void btnFechar2_Click(object sender, EventArgs e)
         {
-            try
-            {
-                // Obter datas
-                (dataInicial, dataInicialFormatada, dataFinal, dataFinalFormatada) = Contabilidade.Forms.Relatorios.frmRazaoAnalitico.ordenarDatasEObterStrings(dtpDataInicial.Value, dtpDataFinal.Value);
-
-                this.DialogResult = DialogResult.OK;
-                this.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao calcular valores", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            btnFechar.PerformClick();
         }
     }
 }
