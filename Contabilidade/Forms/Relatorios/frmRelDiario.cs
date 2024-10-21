@@ -131,7 +131,7 @@ namespace Contabilidade.Forms.Relatorios
                             comando.CommandText = "SELECT descricao FROM contas WHERE conta = '0';";
                             var descricaoCaixa = comando.ExecuteScalar()?.ToString();
 
-                            // Obter saldo anterior e atual do caixa (ou deixar como 0 se não possuir nenhum registro na data informada ou antes dela) - CONFERIR SE ESTA CORRETO !!!!!!!!!!!!!!!
+                            // Obter saldo anterior e atual do caixa (ou deixar como 0 se não possuir nenhum registro na data informada ou antes dela)
                             comando.CommandText = "SELECT saldo FROM registros_caixa WHERE data <= @data ORDER BY data DESC LIMIT 2;";
 
                             decimal saldoAtual = 0;
@@ -160,11 +160,8 @@ namespace Contabilidade.Forms.Relatorios
                                 pdf.Add(new Paragraph($"{0.ToString().PadRight(16)}{descricaoCaixa?.PadRight(94)}", fonte));
                             }
 
-                            // Inverter sinal do saldo atual (pois irá para a coluna de débitos)
-                            saldoAtual *= -1;
-
                             totalCreditos += saldoAnterior;
-                            totalDebitos += saldoAtual;
+                            totalDebitos -= saldoAtual;
 
                             pdf.Add(new Paragraph($"{"(+) SALDO ANTERIOR".PadRight(82)}{saldoAnterior.ToString("#,##0.00").PadLeft(28)}", fonte));
                             pdf.Add(new Paragraph($"{"(-) SALDO ATUAL".PadRight(82)}{saldoAtual.ToString("#,##0.00").PadLeft(14)}", fonte));

@@ -239,5 +239,140 @@ namespace Contabilidade.Forms.Lancamentos
                 }
             }
         }
+
+        private void btnCalcular_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Variáveis para os dados
+                string dataInicial, dataInicialFormatada, dataFinal, dataFinalFormatada = "";
+
+                using (var formDados = new frmDatasCalcula())
+                {
+                    var resultado = formDados.ShowDialog();
+
+                    if (resultado == DialogResult.OK)
+                    {
+                        (dataInicial, dataInicialFormatada, dataFinal, dataFinalFormatada) = (formDados.dataInicial, formDados.dataInicialFormatada, formDados.dataFinal, formDados.dataFinalFormatada);
+                    }
+                    else if (resultado == DialogResult.Cancel)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        throw new CustomException("Houve um erro na hora de obter as datas informadas, por favor, tente novamente ou contate o desenvolvedor");
+                    }
+                }
+
+                // Obter valores de crédito e débito de todos os lançamentos
+                var sql = "SELECT SUM(CASE WHEN l.valor > 0 THEN l.valor ELSE 0 END) AS creditos, SUM(CASE WHEN l.valor < 0 THEN l.valor ELSE 0 END) AS debitos FROM lancamentos l WHERE l.data BETWEEN @dataInicial AND @dataFinal;";
+                using (var comando = new SqliteCommand(sql, con.conn))
+                {
+                    comando.Parameters.AddWithValue("@dataInicial", dataInicial);
+                    comando.Parameters.AddWithValue("@dataFinal", dataFinal);
+
+                    // Criação de variáveis
+                    var creditos = 0m;
+                    var debitos = 0m;
+
+                    using (var reader = comando.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            // Obter valor de crédito
+                            var valorBD = reader.GetOrdinal("creditos");
+                            creditos = reader.IsDBNull(valorBD) ? 0 : reader.GetDecimal(valorBD);
+
+                            // Obter valor de débito
+                            valorBD = reader.GetOrdinal("debitos");
+                            debitos = reader.IsDBNull(valorBD) ? 0 : reader.GetDecimal(valorBD);
+                        }
+                        else
+                        {
+                            throw new CustomException("Nenhum lançamento encontrado no periodo informado.");
+                        }
+                    }
+
+                    // Obter saldo do caixa na data final (ou deixar como 0 se não possuir nenhum registro na data informada ou antes dela)
+                    comando.CommandText = "SELECT data, saldo FROM registros_caixa WHERE data <= @dataFinal ORDER BY data DESC LIMIT 1;";
+
+                    DateTime dataSaldoAtual = DateTime.MinValue;
+                    decimal saldoAtual = 0m;
+
+                    using (var reader2 = comando.ExecuteReader())
+                    {
+                        if (reader2.Read())
+                        {
+                            dataSaldoAtual = Convert.ToDateTime(reader2["data"]);
+                            saldoAtual = reader2.GetDecimal(1);
+                        }
+                    }
+
+                    // Verificar se obteve a data corretamente
+                    if (dataSaldoAtual == DateTime.MinValue)
+                    {
+                        throw new CustomException("Houve ume erro na hora de obter a data do saldo mais recente, por favor, tente novamente ou contate o desenvolvedor");
+                    }
+
+                    // Limpar parâmetros para evitar erros
+                    comando.Parameters.Clear();
+
+                    // Verificar a data do saldo atualizado, obtido anteriormente 
+                    var dataReferencia = DateTime.ParseExact(dataInicial, "yyyy-MM-dd", null);
+
+                    // Comando para obter o saldo anterior
+                    comando.CommandText = "SELECT COALESCE ((SELECT saldo FROM registros_caixa WHERE data < @data ORDER BY data DESC LIMIT 1), 0) AS saldo;";
+
+                    // Se a data do saldo obtido for antes da inicial (referencia): obter o saldo antes da data do saldo obtido (ou igualar a 0 se não houver registros)
+                    if (dataSaldoAtual < dataReferencia)
+                    {
+                        comando.Parameters.AddWithValue("@data", dataSaldoAtual.ToString("yyyy-MM-dd"));
+                    }
+                    // Se a data do saldo obtido for igual ou depois da inicial (referencia): obter o saldo antes da data inicial (referencia) (ou igualar a 0 se não houver registros)
+                    else if (dataSaldoAtual == dataReferencia || dataSaldoAtual > dataReferencia)
+                    {
+                        comando.Parameters.AddWithValue("@data", dataInicial);
+                    }
+                    else
+                    {
+                        throw new CustomException("Houve um erro na hora de obter o saldo inicial do caixa, por favor, tente novamente ou contate o desenvolvedor");
+                    }
+
+                    var saldoAnterior = Convert.ToDecimal(comando.ExecuteScalar());
+
+                    // Calcular balanço final do periodo
+                    var balanco = creditos + debitos + saldoAnterior - saldoAtual;
+
+                    // Exibir resultados ao usuário
+                    MessageBox.Show(
+                        $"Período: {dataInicialFormatada} a {dataFinalFormatada}\n\n" +
+
+                        $"Lançamentos:\n" +
+                        $"Créditos: {creditos.ToString("#,##0.00")}\n" +
+                        $"Débitos:  {debitos.ToString("#,##0.00")}\n\n" +
+
+                        $"Valores em caixa:\n" +
+                        $"(+) Saldo anterior: {saldoAnterior.ToString("#,##0.00")}\n" +
+                        $"(-) Saldo atual: {saldoAtual.ToString("#,##0.00")}\n\n" +
+                        
+                        $"Diferença: {balanco.ToString("#,##0.00")}",
+                        "Resultado do periodo",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+                }
+            }
+            catch (CustomException ex)
+            {
+                MessageBox.Show($"{ex.Message?.ToString()}", "Erro ao criar o lançamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao calcular valores", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+        }
     }
 }
