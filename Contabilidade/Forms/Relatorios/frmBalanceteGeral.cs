@@ -68,8 +68,8 @@ namespace Contabilidade.Forms.Relatorios
                 }
 
                 // Obter descrição da conta
-                var sql = "SELECT descricao FROM contas WHERE conta = @conta;";
-                using (var comando = new SqliteCommand(sql, conexao.conn))
+                var comandoSql = "SELECT descricao FROM contas WHERE conta = @conta;";
+                using (var comando = new SqliteCommand(comandoSql, conexao.conn))
                 {
                     var descricao = comando.ExecuteScalar()?.ToString();
                     listaContasSinteticas.Add(new ContaSintetica(conta, descricao, grau));
@@ -240,12 +240,14 @@ namespace Contabilidade.Forms.Relatorios
                                             while (pilhaContas.Count > 0 && pilhaContas.Peek().Grau >= contaSintetica.Grau)
                                             {
                                                 ContaSintetica contaFechada = pilhaContas.Pop();
-                                                Console.WriteLine($"{contaFechada.Conta} - (Fechamento do grupo)");
-                                                Console.WriteLine($"Débitos: {contaFechada.Debitos}, Créditos: {contaFechada.Creditos}, Saldo: {contaFechada.Saldo}");
+                                                pdf.Add(new Paragraph($"{contaFechada.Conta.PadRight(16)}{contaFechada.Descricao.PadRight(65)}{contaFechada.Debitos.ToString("#,##0.00").PadLeft(14)}{contaFechada.Creditos.ToString("#,##0.00").PadLeft(14)}{contaFechada.Saldo.ToString("#,##0.00").PadLeft(14)}", fonte));
+                                                linhasDisponiveis -= 1;
                                             }
 
                                             // Abrir a conta sintética desta iteração
-                                            Console.WriteLine($"{contaSintetica.Conta} - (Abertura do grupo)");
+                                            pdf.Add(new Paragraph($"{contaSintetica?.Conta.PadRight(16)}", fonte));
+                                            Console.WriteLine($"{contaSintetica?.Conta.PadRight(16)}{contaSintetica?.Descricao.PadRight(65)}");
+                                            linhasDisponiveis -= 1;
                                             pilhaContas.Push(contaSintetica);
                                         }
                                         // Se a conta for analítica
@@ -255,7 +257,8 @@ namespace Contabilidade.Forms.Relatorios
                                             ContaAnalitica lancamento = conta as ContaAnalitica;
 
                                             // Adicionar linha ao pdf com os valores da conta
-                                            Console.WriteLine($"{lancamento?.Conta} - {lancamento?.Descricao} - Débitos: {lancamento?.Debitos}, Créditos: {lancamento?.Creditos}, Saldo: {lancamento?.Saldo}");
+                                            pdf.Add(new Paragraph($"{lancamento?.Conta.PadRight(16)}{lancamento?.Descricao.PadRight(65)}{lancamento?.Debitos.ToString("#,##0.00").PadLeft(14)}{lancamento?.Creditos.ToString("#,##0.00").PadLeft(14)}{lancamento?.Saldo.ToString("#,##0.00").PadLeft(14)}"));
+                                            linhasDisponiveis -= 1;
 
                                             // Adicionando os valores em todas as contas sintéticas na pilha
                                             foreach (var contaSintetica in pilhaContas)
@@ -271,8 +274,8 @@ namespace Contabilidade.Forms.Relatorios
                                     while (pilhaContas.Count > 0)
                                     {
                                         ContaSintetica contaFechada = pilhaContas.Pop();
-                                        Console.WriteLine($"{contaFechada.Conta} - (Fechamento do grupo)");
-                                        Console.WriteLine($"Débitos: {contaFechada.Debitos}, Créditos: {contaFechada.Creditos}, Saldo: {contaFechada.Saldo}");
+                                        pdf.Add(new Paragraph($"{contaFechada.Conta.PadRight(16)}{contaFechada.Descricao.PadRight(65)}{contaFechada.Debitos.ToString("#,##0.00").PadLeft(14)}{contaFechada.Creditos.ToString("#,##0.00").PadLeft(14)}{contaFechada.Saldo.ToString("#,##0.00").PadLeft(14)}", fonte));
+                                        linhasDisponiveis -= 1;
                                     }
 
 
