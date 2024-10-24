@@ -181,45 +181,43 @@ namespace Contabilidade.Forms.Relatorios
         }
 
         // Função para dividir a descrição
-        public static string[] QuebrarLinhaString(string texto, int limiteCaracteres)
+        public static List<string> QuebrarLinhaString(string texto, int limiteCaracteres)
         {
-            // Dividir a string em palavras e remover os espaços vázios (ocasionados por espaçamento duplo ou maior).
             string[] palavras = texto.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            StringBuilder linha1 = new StringBuilder();
-            StringBuilder linha2 = new StringBuilder();
+            List<string> linhas = new List<string>();
+            StringBuilder linhaAtual = new StringBuilder();
             int comprimentoAtual = 0;
 
-            // Para cada palavra testar
             foreach (string palavra in palavras)
             {
-                // Se é possível adicionar mais uma palavra
                 var comprimentoEsperado = comprimentoAtual + palavra.Length;
                 if (comprimentoEsperado <= limiteCaracteres)
                 {
-                    // Verificar se é possível incluir o espaço
                     if ((comprimentoEsperado + 1) <= limiteCaracteres)
                     {
-                        linha1.Append(palavra + " ");
+                        linhaAtual.Append(palavra + " ");
                         comprimentoAtual += palavra.Length + 1;
                     }
-                    // Senão: incluir sem espaço e finalizar a linha
                     else
                     {
-                        linha1.Append(palavra);
+                        linhaAtual.Append(palavra);
                         comprimentoAtual = limiteCaracteres;
                     }
                 }
-                // Senão adicionar na linha 2
                 else
                 {
-                    // Travar a inserção de palavras na primeira linha, caso isso ainda não tenha sido feito anteriormente por causa de uma palavra muito grande
-                    comprimentoAtual = limiteCaracteres;
-                    linha2.Append(palavra + " ");
+                    linhas.Add(linhaAtual.ToString().Trim());
+                    linhaAtual.Clear();
+                    linhaAtual.Append(palavra + " ");
+                    comprimentoAtual = palavra.Length + 1;
                 }
             }
 
-            return new string[] { linha1.ToString().PadRight(limiteCaracteres), linha2.ToString().PadRight(limiteCaracteres) };
+            linhas.Add(linhaAtual.ToString().Trim());
+
+            return linhas;
         }
+
 
         public static string CentralizarString(string texto, int limite)
         {
@@ -373,7 +371,7 @@ namespace Contabilidade.Forms.Relatorios
                                         if (descricaoCaixa?.Length >= 80)
                                         {
                                             // Dividir considerando o tamanho máximo que pode ter (sem contar o espaço para a outra coluna)
-                                            string[] linhasDescricao = QuebrarLinhaString(descricaoCaixa, 80);
+                                            var linhasDescricao = QuebrarLinhaString(descricaoCaixa, 80);
 
                                             // Adicionar primeira linha
                                             pdf.Add(new Paragraph($"{"0".PadRight(16)}{linhasDescricao[0].PadRight(80)}{saldoCaixa.ToString("#,##0.00").PadLeft(14)}", fonte));
@@ -420,7 +418,7 @@ namespace Contabilidade.Forms.Relatorios
                                         if (linhasNecessarias == 2)
                                         {
                                             // Dividir considerando o tamanho máximo que pode ter (sem contar o espaço para a outra coluna)
-                                            string[] linhasDescricao = QuebrarLinhaString(descricao, 80);
+                                            var linhasDescricao = QuebrarLinhaString(descricao, 80);
 
                                             linha.Append(linhasDescricao[0]);
                                             // Espaçamento do saldo + 1 para a divisão entre as colunas

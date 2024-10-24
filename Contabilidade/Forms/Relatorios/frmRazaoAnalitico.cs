@@ -303,7 +303,7 @@ namespace Contabilidade.Forms.Relatorios
                                             subtitulo = Contabilidade.Forms.Relatorios.frmSaldo.CentralizarString(txtSubtitulo.Text, 110);
                                         }
 
-                                        string[] linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(descricao, 78);
+                                        var linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(descricao, 78);
 
                                         // Função local para adicionar o cabeçalho
                                         void adicionarCabecalho(string subtitulo)
@@ -423,7 +423,7 @@ namespace Contabilidade.Forms.Relatorios
                                             if (linhasNecessarias == 2)
                                             {
                                                 // Dividir considerando o tamanho máximo que pode ter
-                                                string[] linhasHistorico = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(historico, 57);
+                                                var linhasHistorico = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(historico, 57);
                                                 linha.Append(linhasHistorico[0]);
 
                                                 // Verificar se é um débito/crédito

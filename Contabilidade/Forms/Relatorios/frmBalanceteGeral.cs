@@ -291,7 +291,7 @@ namespace Contabilidade.Forms.Relatorios
                                                 else
                                                 {
                                                     // Dividir considerando o tamanho máximo que pode ter
-                                                    string[] linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(contaFechada.Descricao, espacosDescricaoRemover);
+                                                    var linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(contaFechada.Descricao, espacosDescricaoRemover);
                                                     
                                                     // Adicionar primeira linha
                                                     pdf.Add(new Paragraph($"{"".PadRight(espacosInicioRemover)}{contaFechada.Conta.PadRight(tamanhoContaRemover)} - {linhasDescricao[0].PadRight(espacosDescricaoRemover)}{saldoAnteriorRemover.ToString("#,##0.00").PadLeft(14)}{contaFechada.Debitos.ToString("#,##0.00").PadLeft(14)}{contaFechada.Creditos.ToString("#,##0.00").PadLeft(14)}{contaFechada.Saldo.ToString("#,##0.00").PadLeft(14)}", fonte));
@@ -337,7 +337,7 @@ namespace Contabilidade.Forms.Relatorios
                                             else
                                             {
                                                 // Dividir considerando o tamanho máximo que pode ter
-                                                string[] linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(contaSintetica.Descricao, espacosDescricao);
+                                                var linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(contaSintetica.Descricao, espacosDescricao);
 
                                                 // Adicionar primeira linha
                                                 pdf.Add(new Paragraph($"{"".PadRight(espacosInicio)}{contaSintetica?.Conta.PadRight(tamanhoConta)} - {linhasDescricao[0].PadRight(espacosDescricao)}", fonte));
@@ -392,7 +392,7 @@ namespace Contabilidade.Forms.Relatorios
                                             else
                                             {
                                                 // Dividir considerando o tamanho máximo que pode ter
-                                                string[] linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(lancamento.Descricao, espacosDescricao);
+                                                var linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(lancamento.Descricao, espacosDescricao);
 
                                                 // Adicionar primeira linha
                                                 pdf.Add(new Paragraph($"{"".PadRight(espacosInicio)}{lancamento?.Conta.PadRight(tamanhoConta)} - {linhasDescricao[0].PadRight(espacosDescricao)}{saldoAnterior.ToString("#,##0.00").PadLeft(14)}{lancamento?.Debitos.ToString("#,##0.00").PadLeft(14)}{lancamento?.Creditos.ToString("#,##0.00").PadLeft(14)}{lancamento?.Saldo.ToString("#,##0.00").PadLeft(14)}", fonte));
@@ -454,7 +454,7 @@ namespace Contabilidade.Forms.Relatorios
                                         else
                                         {
                                             // Dividir considerando o tamanho máximo que pode ter
-                                            string[] linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(contaFechada.Descricao, espacosDescricao);
+                                            var linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(contaFechada.Descricao, espacosDescricao);
 
                                             // Adicionar primeira linha
                                             pdf.Add(new Paragraph($"{"".PadRight(espacosInicio)}{contaFechada?.Conta.PadRight(tamanhoConta)} - {linhasDescricao[0].PadRight(espacosDescricao)}{saldoAnterior.ToString("#,##0.00").PadLeft(14)}{contaFechada?.Debitos.ToString("#,##0.00").PadLeft(14)}{contaFechada?.Creditos.ToString("#,##0.00").PadLeft(14)}{contaFechada?.Saldo.ToString("#,##0.00").PadLeft(14)}", fonte));

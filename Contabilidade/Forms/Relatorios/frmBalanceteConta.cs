@@ -309,7 +309,7 @@ namespace Contabilidade.Forms.Relatorios
                                             if (linhasNecessarias == 2)
                                             {
                                                 // Dividir considerando o tamanho máximo que pode ter
-                                                string[] linhasHistorico = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(descricao, 50);
+                                                var linhasHistorico = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(descricao, 50);
                                                 linha.Append(linhasHistorico[0]);
 
                                                 linha.Append(saldo_anterior.ToString("#,##0.00").PadLeft(14));

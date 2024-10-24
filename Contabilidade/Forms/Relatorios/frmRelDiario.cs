@@ -217,7 +217,7 @@ namespace Contabilidade.Forms.Relatorios
                                         linha.Append(conta.PadRight(16));
 
                                         // Dividir a descrição considerando o tamanho máximo que pode ter
-                                        string[] linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(descricao, 66);
+                                        var linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(descricao, 66);
                                         linha.Append(linhasDescricao[0]);
 
                                         // Adicionar primeira linha
@@ -253,7 +253,7 @@ namespace Contabilidade.Forms.Relatorios
                                 if (linhasNecessariasHistorico == 2)
                                 {
                                     // Dividir considerando o tamanho máximo que pode ter
-                                    string[] linhasHistorico = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(historico, 82);
+                                    var linhasHistorico = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(historico, 82);
                                     linha.Append(linhasHistorico[0]);
 
                                     // Verificar se é um débito/crédito
