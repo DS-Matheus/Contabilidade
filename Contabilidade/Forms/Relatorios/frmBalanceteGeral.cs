@@ -77,16 +77,24 @@ namespace Contabilidade.Forms.Relatorios
                 var comandoSql = "SELECT descricao FROM contas WHERE conta = @conta;";
                 using (var comando = new SqliteCommand(comandoSql, conexao.conn))
                 {
+                    comando.Parameters.AddWithValue("@conta", conta);
                     var descricao = comando.ExecuteScalar()?.ToString();
                     listaContasSinteticas.Add(new ContaSintetica(conta, descricao, grau));
                 }
             }
 
             // Adicionar a conta de grau 1 (sem nenhum ponto)
+            // Verificar se a conta já existe na lista
+            if (listaContasSinteticas.Any(cs => cs.Conta == conta))
+            {
+                return; // Cancelar a função se a conta já existir na lista
+            }
+
             // Obter descrição da conta
             var sql = "SELECT descricao FROM contas WHERE conta = @conta;";
             using (var comando = new SqliteCommand(sql, conexao.conn))
             {
+                comando.Parameters.AddWithValue("@conta", conta);
                 var descricao = comando.ExecuteScalar()?.ToString();
                 listaContasSinteticas.Add(new ContaSintetica(conta, descricao, 1));
             }
@@ -259,7 +267,7 @@ namespace Contabilidade.Forms.Relatorios
                                                 // Calcular espaços para a descrição
                                                 var grauContaRemover = verificarGrauConta(contaFechada.Conta);
                                                 var espacosInicioRemover = 3 * (grauContaRemover - 1);
-                                                var espacosDescricaoRemover = 65 - espacosInicioRemover;
+                                                var espacosDescricaoRemover = 64 - espacosInicioRemover;
 
                                                 // Verificar se há linhas nessa página para incluir os registros, caso não haja: criar nova página com o cabeçalho
                                                 var linhasNecessariasRemover = verificarLinhasDisponiveis(contaFechada.Descricao, espacosDescricaoRemover);
@@ -293,7 +301,7 @@ namespace Contabilidade.Forms.Relatorios
                                             // Calcular espaços para a descrição
                                             var grauConta = verificarGrauConta(contaSintetica.Conta);
                                             var espacosInicio = 3 * (grauConta - 1);
-                                            var espacosDescricao = 65 - espacosInicio;
+                                            var espacosDescricao = 64 - espacosInicio;
 
                                             // Verificar se há linhas nessa página para incluir os registros, caso não haja: criar nova página com o cabeçalho
                                             var linhasNecessarias = verificarLinhasDisponiveis(contaSintetica.Descricao, espacosDescricao);
@@ -335,7 +343,7 @@ namespace Contabilidade.Forms.Relatorios
                                             // Calcular espaços para a descrição
                                             var grauConta = verificarGrauConta(lancamento.Conta);
                                             var espacosInicio = 3 * (grauConta - 1);
-                                            var espacosDescricao = 65 - espacosInicio;
+                                            var espacosDescricao = 64 - espacosInicio;
 
                                             // Verificar se há linhas nessa página para incluir os registros, caso não haja: criar nova página com o cabeçalho
                                             var linhasNecessarias = verificarLinhasDisponiveis(lancamento.Descricao, espacosDescricao);
@@ -349,7 +357,7 @@ namespace Contabilidade.Forms.Relatorios
                                             // Adicionar linha ao pdf com os valores da conta
                                             if (linhasNecessarias == 1)
                                             {
-                                                pdf.Add(new Paragraph($"{"".PadRight(espacosInicio)}{lancamento?.Conta.PadRight(16)}{lancamento?.Descricao.PadRight(espacosDescricao)}{lancamento?.Debitos.ToString("#,##0.00").PadLeft(14)}{lancamento?.Creditos.ToString("#,##0.00").PadLeft(14)}{lancamento?.Saldo.ToString("#,##0.00").PadLeft(14)}"));
+                                                pdf.Add(new Paragraph($"{"".PadRight(espacosInicio)}{lancamento?.Conta.PadRight(16)}{lancamento?.Descricao.PadRight(espacosDescricao)}{lancamento?.Debitos.ToString("#,##0.00").PadLeft(14)}{lancamento?.Creditos.ToString("#,##0.00").PadLeft(14)}{lancamento?.Saldo.ToString("#,##0.00").PadLeft(14)}", fonte));
                                                 linhasDisponiveis -= 1;
                                             }
                                             else
@@ -358,10 +366,10 @@ namespace Contabilidade.Forms.Relatorios
                                                 string[] linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(lancamento.Descricao, espacosDescricao);
 
                                                 // Adicionar primeira linha
-                                                pdf.Add(new Paragraph($"{"".PadRight(espacosInicio)}{lancamento?.Conta.PadRight(16)}{linhasDescricao[0].PadRight(espacosDescricao)}{lancamento?.Debitos.ToString("#,##0.00").PadLeft(14)}{lancamento?.Creditos.ToString("#,##0.00").PadLeft(14)}{lancamento?.Saldo.ToString("#,##0.00").PadLeft(14)}"));
+                                                pdf.Add(new Paragraph($"{"".PadRight(espacosInicio)}{lancamento?.Conta.PadRight(16)}{linhasDescricao[0].PadRight(espacosDescricao)}{lancamento?.Debitos.ToString("#,##0.00").PadLeft(14)}{lancamento?.Creditos.ToString("#,##0.00").PadLeft(14)}{lancamento?.Saldo.ToString("#,##0.00").PadLeft(14)}", fonte));
 
                                                 // Adicionar segunda linha
-                                                pdf.Add(new Paragraph($"{"    ".PadRight(espacosInicio + 16)}{linhasDescricao[1].PadRight(espacosDescricao)}"));
+                                                pdf.Add(new Paragraph($"{"    ".PadRight(espacosInicio + 16)}{linhasDescricao[1].PadRight(espacosDescricao)}", fonte));
 
                                                 linhasDisponiveis -= 2;
                                             }
@@ -385,7 +393,7 @@ namespace Contabilidade.Forms.Relatorios
                                         // Calcular espaços para a descrição
                                         var grauConta = verificarGrauConta(contaFechada.Conta);
                                         var espacosInicio = 3 * (grauConta - 1);
-                                        var espacosDescricao = 65 - espacosInicio;
+                                        var espacosDescricao = 64 - espacosInicio;
 
                                         // Verificar se há linhas nessa página para incluir os registros, caso não haja: criar nova página com o cabeçalho
                                         var linhasNecessarias = verificarLinhasDisponiveis(contaFechada.Descricao, espacosDescricao);
@@ -398,7 +406,7 @@ namespace Contabilidade.Forms.Relatorios
 
                                         if (linhasNecessarias == 1)
                                         {
-                                            pdf.Add(new Paragraph($"{"".PadRight(espacosInicio)}{contaFechada?.Conta.PadRight(16)}{contaFechada?.Descricao.PadRight(espacosDescricao)}{contaFechada?.Debitos.ToString("#,##0.00").PadLeft(14)}{contaFechada?.Creditos.ToString("#,##0.00").PadLeft(14)}{contaFechada?.Saldo.ToString("#,##0.00").PadLeft(14)}"));
+                                            pdf.Add(new Paragraph($"{"".PadRight(espacosInicio)}{contaFechada?.Conta.PadRight(16)}{contaFechada?.Descricao.PadRight(espacosDescricao)}{contaFechada?.Debitos.ToString("#,##0.00").PadLeft(14)}{contaFechada?.Creditos.ToString("#,##0.00").PadLeft(14)}{contaFechada?.Saldo.ToString("#,##0.00").PadLeft(14)}", fonte));
                                             linhasDisponiveis -= 1;
                                         }
                                         else
@@ -407,10 +415,10 @@ namespace Contabilidade.Forms.Relatorios
                                             string[] linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(contaFechada.Descricao, espacosDescricao);
 
                                             // Adicionar primeira linha
-                                            pdf.Add(new Paragraph($"{"".PadRight(espacosInicio)}{contaFechada?.Conta.PadRight(16)}{linhasDescricao[0].PadRight(espacosDescricao)}{contaFechada?.Debitos.ToString("#,##0.00").PadLeft(14)}{contaFechada?.Creditos.ToString("#,##0.00").PadLeft(14)}{contaFechada?.Saldo.ToString("#,##0.00").PadLeft(14)}"));
+                                            pdf.Add(new Paragraph($"{"".PadRight(espacosInicio)}{contaFechada?.Conta.PadRight(16)}{linhasDescricao[0].PadRight(espacosDescricao)}{contaFechada?.Debitos.ToString("#,##0.00").PadLeft(14)}{contaFechada?.Creditos.ToString("#,##0.00").PadLeft(14)}{contaFechada?.Saldo.ToString("#,##0.00").PadLeft(14)}", fonte));
 
                                             // Adicionar segunda linha
-                                            pdf.Add(new Paragraph($"{"    ".PadRight(espacosInicio + 16)}{linhasDescricao[1].PadRight(espacosDescricao)}"));
+                                            pdf.Add(new Paragraph($"{"    ".PadRight(espacosInicio + 16)}{linhasDescricao[1].PadRight(espacosDescricao)}", fonte));
 
                                             linhasDisponiveis -= 2;
                                         }
