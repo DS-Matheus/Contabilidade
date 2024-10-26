@@ -129,13 +129,13 @@ namespace Contabilidade.Forms.Relatorios
             }
         }
 
-        private class Lancamento
+        private class ContaAnalitica
         {
-            public string conta { get; set; }
-            public string descricao { get; set; }
-            public decimal debitos { get; set; }
-            public decimal creditos { get; set; }
-            public decimal saldo { get; set; }
+            public string Conta { get; set; }
+            public string Descricao { get; set; }
+            public decimal Debitos { get; set; }
+            public decimal Creditos { get; set; }
+            public decimal Saldo { get; set; }
         }
 
         private void btnVisualizar_Click(object sender, EventArgs e)
@@ -185,14 +185,14 @@ namespace Contabilidade.Forms.Relatorios
                         comando.Parameters.AddWithValue("@dataFinal", dataFinal);
                         comando.Parameters.AddWithValue("@conta", txtConta.Text);
 
-                        List<ContaAnalitica> listLancamentos = new List<ContaAnalitica>();
+                        List<frmBalanceteGeral.ContaAnalitica> listContasAnaliticas = new List<frmBalanceteGeral.ContaAnalitica>();
 
                         // Obter dados
                         using (var reader = comando.ExecuteReader())
                         {
                             while (reader.Read())
                             {
-                                ContaAnalitica lancamento = new ContaAnalitica
+                                frmBalanceteGeral.ContaAnalitica contaAnalitica = new frmBalanceteGeral.ContaAnalitica
                                 {
                                     Conta = reader["conta"].ToString(),
                                     Descricao = reader["descricao"].ToString(),
@@ -200,12 +200,12 @@ namespace Contabilidade.Forms.Relatorios
                                     Creditos = Convert.ToDecimal(reader["credito"]),
                                     Saldo = Convert.ToDecimal(reader["saldo"])
                                 };
-                                listLancamentos.Add(lancamento);
+                                listContasAnaliticas.Add(contaAnalitica);
                             }
                         }
 
                         // Verificar se pelo menos 1 registro foi encontrado
-                        if (listLancamentos.Count > 0)
+                        if (listContasAnaliticas.Count > 0)
                         {
                             // Exibir caixa de diálogo para o usuário escolher onde salvar o arquivo PDF
                             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
@@ -275,16 +275,23 @@ namespace Contabilidade.Forms.Relatorios
                                         var listContasSinteticas = new List<ContaSintetica>();
 
                                         // Para cada lançamento: obter as contas sintéticas
-                                        foreach (var lancamento in listLancamentos)
+                                        foreach (var contaAnalitica in listContasAnaliticas)
                                         {
-                                            DecomporContaAnalitica(lancamento.Conta, listContasSinteticas, con);
+                                            DecomporContaAnalitica(contaAnalitica.Conta, listContasSinteticas, con);
                                         }
 
                                         // Armazenar todos os registros em uma lista de objetos e ordenar
-                                        var todasContas = listContasSinteticas.Cast<object>().Concat(listLancamentos)
+                                        var todasContas = listContasSinteticas.Cast<object>().Concat(listContasAnaliticas)
                                             .OrderBy(c => c is ContaSintetica ? ((ContaSintetica)c).Conta : ((ContaAnalitica)c).Conta)
                                             .ThenBy(c => c is ContaSintetica ? 1 : 0)
                                             .ToList();
+
+                                        // Liberar a memória das listas anteriores
+                                        listContasSinteticas = null;
+                                        listContasAnaliticas = null;
+
+                                        // Solicitar coleta de lixo
+                                        GC.Collect();
 
                                         // Pilha para armazenar as contas sintéticas "abertas"
                                         Stack<ContaSintetica> pilhaContas = new Stack<ContaSintetica>();
@@ -356,14 +363,14 @@ namespace Contabilidade.Forms.Relatorios
                                                 pilhaContas.Push(contaSintetica);
                                             }
                                             // Se for analitica
-                                            else if (conta is ContaAnalitica lancamento)
+                                            else if (conta is frmBalanceteGeral.ContaAnalitica contaAnalitica)
                                             {
                                                 // Obter dados e calcular espaços
-                                                var grauConta = verificarGrauConta(lancamento.Conta);
+                                                var grauConta = verificarGrauConta(contaAnalitica.Conta);
                                                 int espacosInicio = 2 * (grauConta - 1);
-                                                int espacosDescricao = 66 - espacosInicio - lancamento.Conta.Length - 3;
-                                                var saldoAnterior = lancamento.Saldo - (lancamento.Creditos + lancamento.Debitos);
-                                                var linhasNecessarias = obterQuantidadeLinhasString(lancamento.Descricao, espacosDescricao);
+                                                int espacosDescricao = 66 - espacosInicio - contaAnalitica.Conta.Length - 3;
+                                                var saldoAnterior = contaAnalitica.Saldo - (contaAnalitica.Creditos + contaAnalitica.Debitos);
+                                                var linhasNecessarias = obterQuantidadeLinhasString(contaAnalitica.Descricao, espacosDescricao);
 
                                                 // Verificar se a quantidade de linhas disponiveis é suficiente
                                                 if ((linhasDisponiveis - linhasNecessarias) < 0)
@@ -373,14 +380,14 @@ namespace Contabilidade.Forms.Relatorios
                                                     adicionarCabecalho(subtitulo);
                                                 }
 
-                                                AdicionarParagrafosPdf(lancamento.Conta, lancamento.Descricao, saldoAnterior, lancamento.Debitos, lancamento.Creditos, lancamento.Saldo, espacosInicio, espacosDescricao, linhasNecessarias);
+                                                AdicionarParagrafosPdf(contaAnalitica.Conta, contaAnalitica.Descricao, saldoAnterior, contaAnalitica.Debitos, contaAnalitica.Creditos, contaAnalitica.Saldo, espacosInicio, espacosDescricao, linhasNecessarias);
 
                                                 // Adicionar valores em cada conta sintética aberta
                                                 foreach (var grupoAberto in pilhaContas)
                                                 {
-                                                    grupoAberto.Debitos += lancamento.Debitos;
-                                                    grupoAberto.Creditos += lancamento.Creditos;
-                                                    grupoAberto.Saldo += lancamento.Saldo;
+                                                    grupoAberto.Debitos += contaAnalitica.Debitos;
+                                                    grupoAberto.Creditos += contaAnalitica.Creditos;
+                                                    grupoAberto.Saldo += contaAnalitica.Saldo;
                                                 }
                                             }
                                         }
