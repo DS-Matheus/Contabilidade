@@ -44,7 +44,7 @@ namespace Contabilidade.Forms.Relatorios
             }
         }
 
-        private class ContaAnalitica
+        public class ContaAnalitica
         {
             public string Conta { get; set; }
             public string Descricao { get; set; }
