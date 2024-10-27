@@ -20,9 +20,6 @@ namespace Contabilidade.Forms.Relatorios
 
             con = conaxaoBanco;
 
-            // Defina a propriedade MaxDate para az data atual
-            dtpData.MaxDate = DateTime.Today;
-
             atualizarDataGrid();
         }
 

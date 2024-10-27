@@ -27,11 +27,11 @@ namespace Contabilidade.Forms.Lancamentos
             txtDescricao.Text = descricao;
             txtHistorico.Text = historico;
             nudValor.Value = valor;
+            frmLancamentosDados.conta = conta;
+            frmLancamentosDados.descricao = descricao;
             frmLancamentosDados.id_historico = id_historico;
+            frmLancamentosDados.historico = historico;
             dtpData.Value = data;
-
-            // Defina a propriedade MaxDate para a data atual
-            dtpData.MaxDate = DateTime.Today;
         }
 
         private void btnFechar_Click(object sender, EventArgs e)

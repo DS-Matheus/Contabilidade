@@ -2,6 +2,7 @@
 using System.Data;
 using Microsoft.Data.Sqlite;
 using Contabilidade.Classes;
+using System.Windows.Forms;
 
 namespace Contabilidade.Forms.Lancamentos
 {
@@ -27,7 +28,7 @@ namespace Contabilidade.Forms.Lancamentos
         public void atualizarDataGrid()
         {
             // Query de pesquisa
-            string sql = "SELECT l.id, l.conta, c.descricao, l.valor, l.data, h.historico FROM lancamentos l JOIN contas c ON l.conta = c.conta JOIN historicos h ON l.id_historico = h.id ORDER BY l.conta, l.data";
+            string sql = "SELECT l.id, l.conta, c.descricao, l.valor, l.data, l.id_historico, h.historico FROM lancamentos l JOIN contas c ON l.conta = c.conta JOIN historicos h ON l.id_historico = h.id ORDER BY l.conta, l.data";
             using (var command = new SqliteCommand(sql, con.conn))
             {
                 dtDados.Clear();
@@ -46,198 +47,345 @@ namespace Contabilidade.Forms.Lancamentos
             }
         }
 
+        public void reverterRegistrosCaixa(SqliteCommand comando, decimal valorOriginal, SqliteTransaction transacao)
+        {
+            using (var reader = comando.ExecuteReader())
+            {
+                // Criar comando para reverter os registros
+                var sql2 = "UPDATE registros_caixa SET saldo = (saldo - @valor) WHERE data >= @data";
+                using (var comando2 = new SqliteCommand(sql2, con.conn))
+                {
+                    // Atribuir transação ao comando 2
+                    comando2.Transaction = transacao;
+
+                    // Variáveis para controle dos campos modificados
+                    var totalCampos = 0;
+                    var totalAlterado = 0;
+
+                    // Para cada campo encontrado
+                    while (reader.Read())
+                    {
+                        var dataRegistro = reader.ToString();
+
+                        // Atualizar os campos de referência (valor apenas é inserido novamente por causa do .Clear())
+                        comando2.Parameters.Clear();
+                        comando2.Parameters.AddWithValue("@valor", valorOriginal);
+                        comando2.Parameters.AddWithValue("@data", dataRegistro);
+
+                        totalCampos++;
+                        totalAlterado += comando2.ExecuteNonQuery();
+                    }
+
+                    // Testar se todos os registros foram alterados
+                    if (totalCampos != totalAlterado)
+                    {
+                        throw new CustomException("Houve um erro na hora de atualizar os valores de saldo");
+                    }
+                }
+            }
+        }
+
+        public void reverterLancamentos(SqliteCommand comando, decimal valorOriginal, SqliteTransaction transacao)
+        {
+            using (var reader = comando.ExecuteReader())
+            {
+                // Criar comando para reverter os registros
+                var sql2 = "UPDATE lancamentos SET saldo = (saldo - @valor) WHERE id = @id";
+                using (var comando2 = new SqliteCommand(sql2, con.conn))
+                {
+                    // Atribuir transação ao comando 2
+                    comando2.Transaction = transacao;
+
+                    // Variáveis para controle dos campos modificados
+                    var totalCampos = 0;
+                    var totalAlterado = 0;
+
+                    // Para cada campo encontrado
+                    while (reader.Read())
+                    {
+                        int id = reader.GetInt32(0);
+
+                        // Atualizar os campos de referência (valor apenas é inserido novamente por causa do .Clear())
+                        comando2.Parameters.Clear();
+                        comando2.Parameters.AddWithValue("@valor", valorOriginal);
+                        comando2.Parameters.AddWithValue("@id", id);
+
+                        totalCampos++;
+                        totalAlterado += comando2.ExecuteNonQuery();
+                    }
+
+                    // Testar se todos os registros foram alterados
+                    if (totalCampos != totalAlterado)
+                    {
+                        throw new CustomException("Houve um erro na hora de atualizar os valores de saldo");
+                    }
+                }
+            }
+        }
+
+        // Caso tenha apenas o ID
+        public void excluirLancamento(string ID, SqliteTransaction transacao)
+        {
+            // Obter data do lançamento
+            var sql = "SELECT data FROM lancamentos WHERE id = @id;";
+            using (var comando = new SqliteCommand(sql, con.conn))
+            {
+                comando.Parameters.AddWithValue("@id", ID);
+                var data = Convert.ToDateTime(comando.ExecuteScalar());
+                var dataConvertida = data.ToString("yyyy-MM-dd");
+
+                // Obter valor do lançamento
+                comando.CommandText = "SELECT valor FROM lancamentos WHERE id = @id;";
+                var valorOriginal = Convert.ToDecimal(comando.ExecuteScalar());
+
+                // Reverter valores do lançamento na sua data
+                comando.CommandText = "SELECT id FROM lancamentos WHERE data = @data AND id > @id;";
+                reverterLancamentos(comando, valorOriginal, transacao);
+
+                // Reverter valor do lançamento nas datas seguintes
+                comando.CommandText = "SELECT id FROM lancamentos WHERE data > @data";
+                reverterLancamentos(comando, valorOriginal, transacao);
+
+                // Reverter valor do lançamento nos registros do caixa nas datas >= sua data
+                comando.CommandText = "SELECT data FROM registros_caixa WHERE data >= @data;";
+                reverterRegistrosCaixa(comando, valorOriginal, transacao);
+            }
+        }
+
+        // Caso tenha todos os valores
+        public void excluirLancamento(string ID, string dataConvertida, decimal valorOriginal, SqliteTransaction transacao)
+        {
+            using (var comando = new SqliteCommand("", con.conn))
+            {
+                // Reverter valores do lançamento na sua data
+                comando.CommandText = "SELECT id FROM lancamentos WHERE data = @data AND id > @id;";
+                comando.Parameters.AddWithValue("@id", ID);
+                reverterLancamentos(comando, valorOriginal, transacao);
+
+                // Reverter valor do lançamento nas datas seguintes
+                comando.CommandText = "SELECT id FROM lancamentos WHERE data > @data";
+                comando.Parameters.AddWithValue("@data", dataConvertida);
+                reverterLancamentos(comando, valorOriginal, transacao);
+
+                // Reverter valor do lançamento nos registros do caixa nas datas >= sua data
+                comando.CommandText = "SELECT data FROM registros_caixa WHERE data >= @data;";
+                reverterRegistrosCaixa(comando, valorOriginal, transacao);
+
+                // Excluir lançamento
+                comando.CommandText = "DELETE FROM lancamentos WHERE id = @id;";
+                var resultado = comando.ExecuteNonQuery();
+
+                if (resultado == 0) {
+                    throw new CustomException("Não foi possivel excluir o lançamento");
+                }
+            }
+        }
+
+        public void criarLancamento(SqliteCommand comando, SqliteTransaction transacao)
+        {
+            // Variável para armazenar o saldo da conta antes do lançamento
+            decimal saldo = 0;
+
+            // Converter data para o formato do banco (sem as horas)
+            var dataConvertida = data.ToString("yyyy-MM-dd");
+
+            // Obter valor de saldo da conta antes do lançamento
+            comando.CommandText = "SELECT COALESCE ((SELECT saldo FROM lancamentos WHERE data <= @data and conta = @conta ORDER BY data DESC, id DESC LIMIT 1), 0);";
+            comando.Parameters.AddWithValue("@data", dataConvertida);
+            comando.Parameters.AddWithValue("@conta", conta);
+
+            // Atribuir valor encontrado na variável de saldo
+            var result = comando.ExecuteScalar();
+            if (result != null)
+            {
+                saldo = Convert.ToDecimal(result);
+            }
+            else
+            {
+                throw new CustomException("Não foi possível obter o saldo da conta, por favor anote os valores inseridos e contate o desenvolvedor");
+            }
+
+            // Criar lançamento
+            comando.CommandText = "INSERT INTO lancamentos (conta, valor, id_historico, data, saldo) VALUES(@conta, @valor, @id_historico, @data, @saldo);";
+
+            comando.Parameters.AddWithValue("@valor", valor);
+            comando.Parameters.AddWithValue("@id_historico", id_historico);
+            comando.Parameters.AddWithValue("@saldo", saldo + valor);
+
+            int retornoBD = comando.ExecuteNonQuery();
+
+            // Verificar se houve a criação da linha (0 = negativo)
+            if (retornoBD > 0)
+            {
+                // Seleciona todos os registros após a data especificada para atualizar os valores de saldo
+                comando.CommandText = "SELECT id FROM lancamentos WHERE data > @data and conta = @conta";
+
+                // Inicia leitor de registros
+                using (var reader = comando.ExecuteReader())
+                {
+                    // Criar comando para atualizar os campos
+                    var sql = "UPDATE lancamentos SET saldo = (saldo + @valor) WHERE id = @id";
+                    using (var comando2 = new SqliteCommand(sql, con.conn))
+                    {
+                        // Atribuir transação ao comando 2
+                        comando2.Transaction = transacao;
+
+                        // Variáveis para controle dos campos modificados
+                        var totalCampos = 0;
+                        var totalAlterado = 0;
+
+                        // Para cada campo encontrado
+                        while (reader.Read())
+                        {
+                            int id = reader.GetInt32(0);
+
+                            // Atualizar os campos no banco de dados
+                            comando2.Parameters.Clear();
+                            comando2.Parameters.AddWithValue("@valor", valor);
+                            comando2.Parameters.AddWithValue("@id", id);
+
+                            totalCampos++;
+                            totalAlterado += comando2.ExecuteNonQuery();
+                        }
+
+                        // Testar se todos os registros foram alterados
+                        if (totalCampos != totalAlterado)
+                        {
+                            throw new CustomException("Houve um erro na hora de atualizar os valores de saldo após a data informada");
+                        }
+                    }
+                }
+            }
+            else
+            {
+                throw new CustomException("Não foi possível criar um novo lançamento, por favor, anote os dados inseridos e tire um print da tela para contatar o desenvolvedor");
+            }
+
+            // Após inserir o lançamento: fazer o registro do lançamento no caixa
+            // Verificar se a data já existe
+            comando.Parameters.Clear();
+            comando.CommandText = "SELECT COUNT(*) FROM registros_caixa WHERE data = @data";
+            comando.Parameters.AddWithValue("@data", dataConvertida);
+            int count = Convert.ToInt32(comando.ExecuteScalar());
+
+            // Se a data existe: atualizar o saldo
+            if (count > 0)
+            {
+                comando.CommandText = "UPDATE registros_caixa SET saldo = saldo + @valor WHERE data = @data;";
+                comando.Parameters.AddWithValue("@valor", valor);
+            }
+            // Se a data não existe: criar o novo registro
+            else
+            {
+                // Obter valor de saldo anterior
+                comando.CommandText = "SELECT COALESCE((SELECT saldo FROM registros_caixa WHERE data <= @data ORDER BY data DESC LIMIT 1), 0);";
+                var saldoAnterior = Convert.ToDecimal(comando.ExecuteScalar());
+
+                comando.CommandText = "INSERT INTO registros_caixa (data, saldo) VALUES (@data, @saldo);";
+                comando.Parameters.AddWithValue("@saldo", (saldoAnterior + valor));
+            }
+
+            var resultado = comando.ExecuteNonQuery();
+            frmLogin.testarResultadoComando(resultado, "Não foi possível atualizar o valor do caixa");
+
+            // Seleciona todos os registros após a data especificada para atualizar os valores de saldo_anterior e saldo_atualizado (após)
+            comando.CommandText = "SELECT data FROM registros_caixa WHERE data > @data;";
+
+            // Inicia leitor de registros
+            using (var reader = comando.ExecuteReader())
+            {
+                // Criar comando para atualizar os campos
+                var sql = "UPDATE registros_caixa SET saldo = saldo + @valor WHERE data = @data;";
+                using (var comando2 = new SqliteCommand(sql, con.conn))
+                {
+                    // Atribuir transação ao comando 3
+                    comando2.Transaction = transacao;
+
+                    // Variáveis para controle dos campos modificados
+                    var totalCampos = 0;
+                    var totalAlterado = 0;
+
+                    // Para cada campo encontrado
+                    while (reader.Read())
+                    {
+                        string data = reader["data"]?.ToString();
+
+                        // Atualizar os campos no banco de dados
+                        comando2.Parameters.Clear();
+                        comando2.Parameters.AddWithValue("@valor", valor);
+                        comando2.Parameters.AddWithValue("@data", data);
+
+                        totalCampos++;
+                        totalAlterado += comando2.ExecuteNonQuery();
+                    }
+
+                    // Testar se todos os registros foram alterados
+                    if (totalCampos != totalAlterado)
+                    {
+                        throw new CustomException("Houve um erro na hora de atualizar os valores do caixa após a data informada");
+                    }
+                }
+            }
+        }
+
         private void btnCriar_Click(object sender, EventArgs e)
         {
-            // Criar uma instância do formulário de dados e aguardar um retorno
-            using (var frmDados = new frmLancamentosDados(con, "Criar conta", "", "", 0, "", "", DateTime.Today))
+            try
             {
-                // O usuário apertou o botão de salvar
-                if (frmDados.ShowDialog() == DialogResult.OK)
+                // Criar uma instância do formulário de dados e aguardar um retorno
+                using (var frmDados = new frmLancamentosDados(con, "Criar lançamento", "", "", 0, "", "", DateTime.Today))
                 {
-                    // Iniciar transação
-                    using (var transacao = con.conn.BeginTransaction())
+                    // O usuário apertou o botão de salvar
+                    if (frmDados.ShowDialog() == DialogResult.OK)
                     {
-                        // Inciar o comando
-                        using (var comando = new SqliteCommand("", con.conn))
+                        // Iniciar transação
+                        using (var transacao = con.conn.BeginTransaction())
                         {
-                            // Atribuir o comando a transação
-                            comando.Transaction = transacao;
-
-                            try
+                            // Inciar o comando
+                            using (var comando = new SqliteCommand("", con.conn))
                             {
-                                // Variável para armazenar o saldo da conta antes do lançamento
-                                decimal saldo = 0;
+                                // Atribuir o comando a transação
+                                comando.Transaction = transacao;
 
-                                // Converter data para o formato do banco (sem as horas)
-                                var dataConvertida = data.ToString("yyyy-MM-dd");
-
-                                // Obter valor de saldo da conta antes do lançamento
-                                comando.CommandText = "SELECT COALESCE ((SELECT saldo FROM lancamentos WHERE data <= @data and conta = @conta ORDER BY data DESC, id DESC LIMIT 1), 0);";
-                                comando.Parameters.AddWithValue("@data", dataConvertida);
-                                comando.Parameters.AddWithValue("@conta", conta);
-
-                                // Atribuir valor encontrado na variável de saldo
-                                var result = comando.ExecuteScalar();
-                                if (result != null)
+                                try
                                 {
-                                    saldo = Convert.ToDecimal(result);
+                                    // Criar lançamento e atualizar valores de saldos posteriores e no registro de caixa
+                                    criarLancamento(comando, transacao);
+
+                                    // Efetivar operações
+                                    transacao.Commit();
+
+                                    // Adicionar dados na tabela - Recarregar completamente
+                                    atualizarDataGrid();
+
+                                    // Remover dados das variáveis
+                                    conta = "";
+                                    valor = 0;
+                                    id_historico = "";
+                                    data = DateTime.Today;
+
+                                    MessageBox.Show("Lançamento criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                 }
-                                else
+                                catch (CustomException ex)
                                 {
-                                    throw new CustomException("Não foi possível obter o saldo da conta, por favor anote os valores inseridos e contate o desenvolvedor");
+                                    transacao.Rollback();
+                                    MessageBox.Show($"{ex.Message?.ToString()}", "Erro ao criar o lançamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 }
-
-                                // Criar lançamento
-                                comando.CommandText = "INSERT INTO lancamentos (conta, valor, id_historico, data, saldo) VALUES(@conta, @valor, @id_historico, @data, @saldo);";
-
-                                comando.Parameters.AddWithValue("@valor", valor);
-                                comando.Parameters.AddWithValue("@id_historico", id_historico);
-                                comando.Parameters.AddWithValue("@saldo", saldo + valor);
-
-                                int retornoBD = comando.ExecuteNonQuery();
-
-                                // Verificar se houve a criação da linha (0 = negativo)
-                                if (retornoBD > 0)
+                                catch (Exception ex)
                                 {
-                                    // Seleciona todos os registros após a data especificada para atualizar os valores de saldo_anterior e saldo_atualizado (após)
-                                    // comando.CommandText = "SELECT id, saldo_anterior, saldo_atualizado FROM lancamentos WHERE data > @data and conta = @conta";
-                                    comando.CommandText = "SELECT id FROM lancamentos WHERE data > @data and conta = @conta";
-
-                                    // Inicia leitor de registros
-                                    using (var reader = comando.ExecuteReader())
-                                    {
-                                        // Criar comando para atualizar os campos
-                                        var sql = "UPDATE lancamentos SET saldo = (saldo + @valor) WHERE id = @id";
-                                        using (var comando2 = new SqliteCommand(sql, con.conn))
-                                        {
-                                            // Atribuir transação ao comando 2
-                                            comando2.Transaction = transacao;
-
-                                            // Variáveis para controle dos campos modificados
-                                            var totalCampos = 0;
-                                            var totalAlterado = 0;
-
-                                            // Para cada campo encontrado
-                                            while (reader.Read())
-                                            {
-                                                int id = reader.GetInt32(0);
-
-                                                // Atualizar os campos no banco de dados
-                                                comando2.Parameters.Clear();
-                                                comando2.Parameters.AddWithValue("@valor", valor);
-                                                comando2.Parameters.AddWithValue("@id", id);
-
-                                                totalCampos++;
-                                                totalAlterado += comando2.ExecuteNonQuery();
-                                            }
-
-                                            // Testar se todos os registros foram alterados
-                                            if (totalCampos != totalAlterado)
-                                            {
-                                                throw new CustomException("Houve um erro na hora de atualizar os valores de saldo após a data informada");
-                                            }
-                                        }
-                                    }
+                                    transacao.Rollback();
+                                    MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao criar o lançamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 }
-                                else
-                                {
-                                    throw new CustomException("Não foi possível criar um novo lançamento, por favor, anote os dados inseridos e tire um print da tela para contatar o desenvolvedor");
-                                }
-
-                                // Após inserir o lançamento: fazer o registro do lançamento no caixa
-                                // Verificar se a data já existe
-                                comando.Parameters.Clear();
-                                comando.CommandText = "SELECT COUNT(*) FROM registros_caixa WHERE data = @data";
-                                comando.Parameters.AddWithValue("@data", dataConvertida);
-                                int count = Convert.ToInt32(comando.ExecuteScalar());
-
-                                // Se a data existe: atualizar o saldo
-                                if (count > 0)
-                                {
-                                    comando.CommandText = "UPDATE registros_caixa SET saldo = saldo + @valor WHERE data = @data;";
-                                    comando.Parameters.AddWithValue("@valor", valor);
-                                }
-                                // Se a data não existe: criar o novo registro
-                                else
-                                {
-                                    // Obter valor de saldo anterior
-                                    comando.CommandText = "SELECT COALESCE((SELECT saldo FROM registros_caixa WHERE data <= @data ORDER BY data DESC LIMIT 1), 0);";
-                                    var saldoAnterior = Convert.ToDecimal(comando.ExecuteScalar());
-
-                                    comando.CommandText = "INSERT INTO registros_caixa (data, saldo) VALUES (@data, @saldo);";
-                                    comando.Parameters.AddWithValue("@saldo", (saldoAnterior + valor));
-                                }
-
-                                var resultado = comando.ExecuteNonQuery();
-                                frmLogin.testarResultadoComando(resultado, "Não foi possível atualizar o valor do caixa");
-
-                                // Seleciona todos os registros após a data especificada para atualizar os valores de saldo_anterior e saldo_atualizado (após)
-                                comando.CommandText = "SELECT data FROM registros_caixa WHERE data > @data;";
-
-                                // Inicia leitor de registros
-                                using (var reader = comando.ExecuteReader())
-                                {
-                                    // Criar comando para atualizar os campos
-                                    var sql = "UPDATE registros_caixa SET saldo = saldo + @valor WHERE data = @data;";
-                                    using (var comando2 = new SqliteCommand(sql, con.conn))
-                                    {
-                                        // Atribuir transação ao comando 3
-                                        comando2.Transaction = transacao;
-
-                                        // Variáveis para controle dos campos modificados
-                                        var totalCampos = 0;
-                                        var totalAlterado = 0;
-
-                                        // Para cada campo encontrado
-                                        while (reader.Read())
-                                        {
-                                            string data = reader["data"]?.ToString();
-
-                                            // Atualizar os campos no banco de dados
-                                            comando2.Parameters.Clear();
-                                            comando2.Parameters.AddWithValue("@valor", valor);
-                                            comando2.Parameters.AddWithValue("@data", data);
-
-                                            totalCampos++;
-                                            totalAlterado += comando2.ExecuteNonQuery();
-                                        }
-
-                                        // Testar se todos os registros foram alterados
-                                        if (totalCampos != totalAlterado)
-                                        {
-                                            throw new CustomException("Houve um erro na hora de atualizar os valores do caixa após a data informada");
-                                        }
-                                    }
-                                }
-
-                                // Efetivar operações
-                                transacao.Commit();
-
-                                // Adicionar dados na tabela - Recarregar completamente
-                                atualizarDataGrid();
-
-                                // Remover dados das variáveis
-                                conta = "";
-                                valor = 0;
-                                id_historico = "";
-                                data = DateTime.Today;
-
-                                MessageBox.Show("Lançamento criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            }
-                            catch (CustomException ex)
-                            {
-                                transacao.Rollback();
-                                MessageBox.Show($"{ex.Message?.ToString()}", "Erro ao criar o lançamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-                            catch (Exception ex)
-                            {
-                                transacao.Rollback();
-                                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao criar o lançamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
                         }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao criar o lançamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            
         }
 
         private void btnCalcular_Click(object sender, EventArgs e)
@@ -359,6 +507,140 @@ namespace Contabilidade.Forms.Lancamentos
             {
                 MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao calcular valores", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
+            }
+        }
+
+        private void btnEditar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Verifica se uma linha foi selecionada
+                if (dgvLancamentos.SelectedRows.Count > 0)
+                {
+                    // Obtem a linha selecionada
+                    DataGridViewRow selectedRow = dgvLancamentos.SelectedRows[0];
+
+                    // Obter valores do lançamento antigo (antes da edição)
+                    var idAntigo = selectedRow.Cells["ID"].Value.ToString();
+                    var dataAntigo = Convert.ToDateTime(selectedRow.Cells["Data"].Value);
+                    var contaAntiga = selectedRow.Cells["Conta"].Value.ToString();
+                    var descricaoAntiga = selectedRow.Cells["Descricao"].Value.ToString();
+                    var valorAntigo = Convert.ToDecimal(selectedRow.Cells["Valor"].Value);
+                    var id_historicoAntigo = selectedRow.Cells["ID_Historico"].ToString();
+                    var historicoAntigo = selectedRow.Cells["Historico"].ToString();
+
+                    // Criar uma instância do formulário de dados e aguardar um retorno
+                    using (var frmDados = new frmLancamentosDados(con, "Editar conta", contaAntiga, descricaoAntiga, valorAntigo, id_historicoAntigo, historicoAntigo, dataAntigo))
+                    {
+                        // O usuário apertou o botão de salvar
+                        if (frmDados.ShowDialog() == DialogResult.OK)
+                        {
+                            // Iniciar transação
+                            using (var transacao = con.conn.BeginTransaction())
+                            {
+                                // Inciar o comando
+                                using (var comando = new SqliteCommand("", con.conn))
+                                {
+                                    // Atribuir o comando a transação
+                                    comando.Transaction = transacao;
+
+                                    try
+                                    {
+                                        // Excluir registro anterior e atualizar valoress
+                                        excluirLancamento(idAntigo, dataAntigo.ToString("yyyy-MM-dd"), valorAntigo, transacao);
+
+                                        // Converter dataNova para o formato do banco (sem as horas)
+                                        var dataConvertida = data.ToString("yyyy-MM-dd");
+
+                                        // Criar lançamento com os valores novos
+                                        criarLancamento(comando, transacao);
+
+                                        // Efetivar operações
+                                        transacao.Commit();
+
+                                        // Adicionar dados na tabela - Recarregar completamente
+                                        atualizarDataGrid();
+
+                                        // Remover dados das variáveis
+                                        conta = "";
+                                        valor = 0;
+                                        id_historico = "";
+                                        data = DateTime.Today;
+
+                                        MessageBox.Show("Lançamento editado com sucesso!", "Edição bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                    }
+                                    catch (CustomException ex)
+                                    {
+                                        transacao.Rollback();
+                                        MessageBox.Show($"{ex.Message?.ToString()}", "Erro ao editar o lançamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        transacao.Rollback();
+                                        MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao editar o lançamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao editar o lançamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnExcluir_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Verifica se uma linha foi selecionada
+                if (dgvLancamentos.SelectedRows.Count > 0)
+                {
+                    // Obtem a linha selecionada
+                    DataGridViewRow selectedRow = dgvLancamentos.SelectedRows[0];
+
+                    // Obtem os valores do lançamento a ser excluido
+                    var idExcluir = selectedRow.Cells["ID"].Value.ToString();
+                    var dataExcluir = Convert.ToDateTime(selectedRow.Cells["Data"].Value);
+                    var valorAntigo = Convert.ToDecimal(selectedRow.Cells["Valor"].Value);
+
+                    using (var transacao = con.conn.BeginTransaction())
+                    {
+                        try
+                        {
+                            using (var comando = new SqliteCommand("", con.conn))
+                            {
+                                comando.Transaction = transacao;
+
+                                excluirLancamento(idExcluir, dataExcluir.ToString("yyyy-MM-dd"), valorAntigo, transacao);
+
+                                // Efetivar alterações
+                                transacao.Commit();
+
+                                // Adicionar dados na tabela - Recarregar completamente
+                                atualizarDataGrid();
+
+                                MessageBox.Show("Registro excluido com sucesso.", "Operação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                        }
+                        catch (CustomException ex)
+                        {
+                            transacao.Rollback();
+                            MessageBox.Show($"{ex.Message?.ToString()}", "Erro ao excluir o lançamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        catch (Exception ex)
+                        {
+                            transacao.Rollback();
+                            MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao excluir o lançamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao excluir o lançamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

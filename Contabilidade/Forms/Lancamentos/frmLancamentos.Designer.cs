@@ -37,13 +37,14 @@
             btnExcluir = new Button();
             btnCriar = new Button();
             dgvLancamentos = new DataGridView();
+            btnCalcular = new Button();
             ID = new DataGridViewTextBoxColumn();
             Data = new DataGridViewTextBoxColumn();
             Conta = new DataGridViewTextBoxColumn();
             Descrição = new DataGridViewTextBoxColumn();
             Valor = new DataGridViewTextBoxColumn();
+            ID_Historico = new DataGridViewTextBoxColumn();
             Histórico = new DataGridViewTextBoxColumn();
-            btnCalcular = new Button();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvLancamentos).BeginInit();
             SuspendLayout();
@@ -93,6 +94,7 @@
             btnEditar.TabIndex = 23;
             btnEditar.Text = "Editar";
             btnEditar.UseVisualStyleBackColor = true;
+            btnEditar.Click += btnEditar_Click;
             // 
             // btnExcluir
             // 
@@ -102,6 +104,7 @@
             btnExcluir.TabIndex = 22;
             btnExcluir.Text = "Excluir";
             btnExcluir.UseVisualStyleBackColor = true;
+            btnExcluir.Click += btnExcluir_Click;
             // 
             // btnCriar
             // 
@@ -120,7 +123,7 @@
             dgvLancamentos.AllowUserToOrderColumns = true;
             dgvLancamentos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvLancamentos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvLancamentos.Columns.AddRange(new DataGridViewColumn[] { ID, Data, Conta, Descrição, Valor, Histórico });
+            dgvLancamentos.Columns.AddRange(new DataGridViewColumn[] { ID, Data, Conta, Descrição, Valor, ID_Historico, Histórico });
             dgvLancamentos.Location = new Point(12, 12);
             dgvLancamentos.MultiSelect = false;
             dgvLancamentos.Name = "dgvLancamentos";
@@ -128,6 +131,16 @@
             dgvLancamentos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvLancamentos.Size = new Size(856, 391);
             dgvLancamentos.TabIndex = 20;
+            // 
+            // btnCalcular
+            // 
+            btnCalcular.Location = new Point(398, 419);
+            btnCalcular.Name = "btnCalcular";
+            btnCalcular.Size = new Size(120, 30);
+            btnCalcular.TabIndex = 26;
+            btnCalcular.Text = "Calcular";
+            btnCalcular.UseVisualStyleBackColor = true;
+            btnCalcular.Click += btnCalcular_Click;
             // 
             // ID
             // 
@@ -139,6 +152,7 @@
             ID.Name = "ID";
             ID.ReadOnly = true;
             ID.Visible = false;
+            ID.Width = 43;
             // 
             // Data
             // 
@@ -168,22 +182,20 @@
             Valor.Name = "Valor";
             Valor.ReadOnly = true;
             // 
+            // ID_Historico
+            // 
+            ID_Historico.DataPropertyName = "id_historico";
+            ID_Historico.HeaderText = "ID_Historico";
+            ID_Historico.Name = "ID_Historico";
+            ID_Historico.ReadOnly = true;
+            ID_Historico.Visible = false;
+            // 
             // Histórico
             // 
             Histórico.DataPropertyName = "historico";
             Histórico.HeaderText = "Histórico";
             Histórico.Name = "Histórico";
             Histórico.ReadOnly = true;
-            // 
-            // btnCalcular
-            // 
-            btnCalcular.Location = new Point(398, 419);
-            btnCalcular.Name = "btnCalcular";
-            btnCalcular.Size = new Size(120, 30);
-            btnCalcular.TabIndex = 26;
-            btnCalcular.Text = "Calcular";
-            btnCalcular.UseVisualStyleBackColor = true;
-            btnCalcular.Click += btnCalcular_Click;
             // 
             // frmLancamentos
             // 
@@ -216,12 +228,13 @@
         private Button btnCriar;
         private DataGridView dgvLancamentos;
         private ComboBox cbbFiltrar;
+        private Button btnCalcular;
         private DataGridViewTextBoxColumn ID;
         private DataGridViewTextBoxColumn Data;
         private DataGridViewTextBoxColumn Conta;
         private DataGridViewTextBoxColumn Descrição;
         private DataGridViewTextBoxColumn Valor;
+        private DataGridViewTextBoxColumn ID_Historico;
         private DataGridViewTextBoxColumn Histórico;
-        private Button btnCalcular;
     }
 }

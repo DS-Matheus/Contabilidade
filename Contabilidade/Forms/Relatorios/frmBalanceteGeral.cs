@@ -18,10 +18,6 @@ namespace Contabilidade.Forms.Relatorios
             InitializeComponent();
 
             con = conexaoBanco;
-
-            // Defina a propriedade MaxDate para a data atual
-            dtpInicial.MaxDate = DateTime.Today;
-            dtpFinal.MaxDate = DateTime.Today;
         }
 
         public class ContaSintetica
