@@ -2,6 +2,8 @@
 using DGVPrinterHelper;
 using System.Data;
 using Microsoft.Data.Sqlite;
+using Contabilidade.Classes;
+using System.Drawing;
 
 namespace Contabilidade.Forms.Cadastros
 {
@@ -185,9 +187,164 @@ namespace Contabilidade.Forms.Cadastros
             }
         }
 
+        private class Lancamento
+        {
+            public string ID { get; set; }
+            public decimal Valor { get; set; }
+            public string Data {  get; set; }
+        }
+
         private void btnExcluir_Click(object sender, EventArgs e)
         {
+            try
+            {
+                var dialogResult = MessageBox.Show("Deseja realmente excluir o histórico selecionado? Esse processo não pode ser desfeito!", "Confirmação de exclusão do histórico", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    // Verifica se uma linha foi selecionada
+                    if (dgvHistoricos.SelectedRows.Count > 0)
+                    {
+                        // Obtem a linha selecionada
+                        DataGridViewRow selectedRow = dgvHistoricos.SelectedRows[0];
 
+                        // Obtem o id do histórico a ser excluido
+                        var idExcluir = selectedRow.Cells["ID"].Value.ToString();
+
+                        using (var transacao = con.conn.BeginTransaction())
+                        {
+                            try
+                            {
+                                // Verifica se tem algum lançamento usando esse histórico
+                                var sql = "SELECT count(id) FROM lancamentos WHERE id_historico = @id_historico;";
+                                using (var comando = new SqliteCommand(sql, con.conn))
+                                {
+                                    comando.Transaction = transacao;
+
+                                    comando.Parameters.AddWithValue("@id_historico", idExcluir);
+                                    var registros = Convert.ToInt32(comando.ExecuteScalar());
+
+                                    if (registros > 0)
+                                    {
+                                        dialogResult = MessageBox.Show("Alguns lançamentos utilizam o histórico informado, deseja alterar todos eles para um histórico diferente?", "Confirmação de alteração do histórico de lançamentos", MessageBoxButtons.YesNoCancel);
+
+                                        // Se sim, alterar o id_historico de todos os lançamentos
+                                        if (dialogResult == DialogResult.Yes)
+                                        {
+                                            // Variável para armazenar o id recebido do formulário filho
+                                            string idNovo = "";
+                                            
+                                            // Abrir formulário para seleção do id_histórico que irá substituir os demais (confirmar que o id não é o mesmo antes de retornar)
+                                            using (var formFilho = new frmHistoricosSelecionar(con, idExcluir))
+                                            {
+                                                formFilho.DadosEnviados += (string id) =>
+                                                {
+                                                    idNovo = id;
+                                                };
+
+                                                formFilho.ShowDialog(); // Exibir o formulário filho
+                                            }
+
+                                            // Comando para atualizar os históricos
+                                            comando.CommandText = "UPDATE lancamentos SET id_historico = @idNovo WHERE id_historico = @idExcluir;";
+                                            comando.Parameters.Clear();
+                                            comando.Parameters.AddWithValue("@idNovo", idNovo);
+                                            comando.Parameters.AddWithValue("@idExcluir", idExcluir);
+
+                                            // Executar o comando e verificar se todos os registros foram alterados corretamente
+                                            var registrosAlterados = comando.ExecuteNonQuery();
+
+                                            if (registros != registrosAlterados)
+                                            {
+                                                throw new CustomException("Houve um erro ao atualizar os históricos dos lançamentos");
+                                            }
+                                        }
+                                        // Se não, considerar que deseja excluir, mas pedir a confirmação da exclusão mais uma vez
+                                        else
+                                        {
+                                            dialogResult = MessageBox.Show("Você deseja então excluir todos os lançamentos associados a esse histórico? Esse processo é irreversível!", "Confirmação de exclusão de histórico e lançamentos", MessageBoxButtons.YesNoCancel);
+
+                                            // Se aceitar, verificar uma última vez a decisão
+                                            if (dialogResult == DialogResult.Yes)
+                                            {
+                                                dialogResult = MessageBox.Show("Você realmente deseja excluir todos os lançamentos associados a esse histórico? Esse processo é irreversível! (verificação dupla)", "Confirmação de exclusão de histórico e lançamentos", MessageBoxButtons.YesNoCancel);
+
+                                                // Se a resposta for sim, excluir todos os lançamentos com o id_historico e atualizar os seus valores no caixa/saldos posteriores
+                                                if (dialogResult == DialogResult.Yes)
+                                                {
+                                                    // Obter lista de lançamentos com o histórico informado
+                                                    comando.CommandText = "SELECT id, data, valor FROM lancamentos WHERE id_historico = @id_historico;";
+
+                                                    // Ler valores de lançamentos
+                                                    List<Lancamento> listLancamentos = new List<Lancamento>();
+
+                                                    using (var reader = comando.ExecuteReader())
+                                                    {
+                                                        while (reader.Read())
+                                                        {
+                                                            Lancamento lancamento = new Lancamento
+                                                            {
+                                                                ID = reader["id"].ToString(),
+                                                                Valor = Convert.ToDecimal(reader["valor"]),
+                                                                Data = reader["data"].ToString()
+                                                            };
+                                                            listLancamentos.Add(lancamento);
+                                                        }
+                                                    }
+
+                                                    // Excluir cada lançamento na lista
+                                                    foreach (var lancamento in listLancamentos)
+                                                    {
+                                                        Contabilidade.Forms.Lancamentos.frmLancamentos.excluirLancamento(con, lancamento.ID, lancamento.Data, lancamento.Valor, transacao);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    return;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                return;
+                                            }
+                                        }
+                                    }
+
+                                    // Excluir histórico
+                                    comando.CommandText = "DELETE FROM historicos WHERE id_historico = @id_historico;";
+                                    var result = comando.ExecuteNonQuery();
+
+                                    if (result == 0)
+                                    {
+                                        throw new CustomException("Erro ao excluir o histórico selecionado");
+                                    }
+
+                                    // Efetivar alterações
+                                    transacao.Commit();
+
+                                    // Adicionar dados na tabela - Recarregar completamente
+                                    atualizarDataGrid();
+
+                                    MessageBox.Show("Histórico excluido com sucesso.", "Operação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                }
+                            }
+                            catch (CustomException ex)
+                            {
+                                transacao.Rollback();
+                                MessageBox.Show($"{ex.Message?.ToString()}", "Erro ao excluir o histórico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            catch (Exception ex)
+                            {
+                                transacao.Rollback();
+                                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao excluir o histórico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao excluir o histórico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

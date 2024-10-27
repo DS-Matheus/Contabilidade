@@ -1,6 +1,6 @@
-﻿namespace Contabilidade.Forms.Lancamentos
+﻿namespace Contabilidade.Forms.Cadastros
 {
-    partial class frmLancamentosDadosHistorico
+    partial class frmHistoricosSelecionar
     {
         /// <summary>
         /// Required designer variable.
@@ -59,7 +59,7 @@
             pnlBarraTitulo.Location = new Point(0, 0);
             pnlBarraTitulo.Name = "pnlBarraTitulo";
             pnlBarraTitulo.Size = new Size(500, 30);
-            pnlBarraTitulo.TabIndex = 7;
+            pnlBarraTitulo.TabIndex = 8;
             pnlBarraTitulo.MouseDown += pnlBarraTitulo_MouseDown;
             // 
             // btnMinimizar
@@ -117,7 +117,7 @@
             panel1.Location = new Point(0, 30);
             panel1.Name = "panel1";
             panel1.Size = new Size(500, 400);
-            panel1.TabIndex = 8;
+            panel1.TabIndex = 9;
             // 
             // groupBox1
             // 
@@ -203,7 +203,7 @@
             label1.TabIndex = 1;
             label1.Text = "Histórico";
             // 
-            // frmLancamentosDadosHistorico
+            // frmHistoricosSelecionar
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -211,9 +211,9 @@
             Controls.Add(panel1);
             Controls.Add(pnlBarraTitulo);
             FormBorderStyle = FormBorderStyle.None;
-            Name = "frmLancamentosDadosHistorico";
+            Name = "frmHistoricosSelecionar";
             StartPosition = FormStartPosition.CenterParent;
-            Text = "frmLancamentosDadosHistorico";
+            Text = "frmHistoricosSelecionar";
             pnlBarraTitulo.ResumeLayout(false);
             pnlBarraTitulo.PerformLayout();
             panel1.ResumeLayout(false);
@@ -231,13 +231,13 @@
         private Label lblTitulo;
         private Button btnFechar;
         private Panel panel1;
-        private Button btnCriar;
-        private TextBox txtHistorico;
-        private Label label1;
+        private GroupBox groupBox1;
+        private TextBox txtFiltrar;
         private DataGridView dgvHistoricos;
         private DataGridViewTextBoxColumn ID;
         private DataGridViewTextBoxColumn Histórico;
-        private GroupBox groupBox1;
-        private TextBox txtFiltrar;
+        private Button btnCriar;
+        private TextBox txtHistorico;
+        private Label label1;
     }
 }

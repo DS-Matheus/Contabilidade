@@ -1,13 +1,24 @@
-﻿using Contabilidade.Forms.Cadastros;
+﻿using Contabilidade.Forms.Lancamentos;
 using Contabilidade.Models;
-using System.Data;
 using Microsoft.Data.Sqlite;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
-namespace Contabilidade.Forms.Lancamentos
+namespace Contabilidade.Forms.Cadastros
 {
-    public partial class frmLancamentosDadosHistorico : Form
+    public partial class frmHistoricosSelecionar : Form
     {
+        // Ação para passar os dados para o formulário pai
+        public event Action<string> DadosEnviados;
+
         // Funções usadas para permitir que a janela se movimente através da barra superior customizada
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
         private extern static void ReleaseCapture();
@@ -16,11 +27,14 @@ namespace Contabilidade.Forms.Lancamentos
         Conexao con;
         static DataTable dtDados = new DataTable();
         DataView dv = dtDados.DefaultView;
-        public frmLancamentosDadosHistorico(Conexao conexaoBanco)
+        string idAntigo = "";
+
+        public frmHistoricosSelecionar(Conexao conexaoBanco, string idAntigo)
         {
             InitializeComponent();
 
             this.con = conexaoBanco;
+            this.idAntigo = idAntigo;
 
             atualizarDataGrid();
         }
@@ -42,6 +56,29 @@ namespace Contabilidade.Forms.Lancamentos
                 dv.RowFilter = $"historico LIKE '{txtHistorico.Text}%'";
                 dgvHistoricos.DataSource = dv;
             }
+        }
+
+        private void btnFechar_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+            this.Dispose();
+        }
+
+        private void btnMinimizar_Click(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Minimized;
+        }
+
+        private void pnlBarraTitulo_MouseDown(object sender, MouseEventArgs e)
+        {
+            ReleaseCapture();
+            SendMessage(this.Handle, 0x112, 0xf012, 0);
+        }
+
+        private void lblTitulo_MouseDown(object sender, MouseEventArgs e)
+        {
+            ReleaseCapture();
+            SendMessage(this.Handle, 0x112, 0xf012, 0);
         }
 
         private void btnCriar_Click(object sender, EventArgs e)
@@ -97,36 +134,21 @@ namespace Contabilidade.Forms.Lancamentos
             if (e.RowIndex >= 0)
             {
                 DataGridViewRow row = dgvHistoricos.Rows[e.RowIndex];
+                var id = row.Cells["ID"].Value.ToString();
 
-                frmLancamentosDados.id_historico = row.Cells["ID"].Value.ToString();
-                frmLancamentosDados.historico = row.Cells["Histórico"].Value.ToString();
+                if (id == idAntigo)
+                {
+                    MessageBox.Show("O histórico selecionado é o mesmo ao qual se deseja excluir, selecione um diferente!", "Histórico inválido selecionado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    // Dispara o evento, passando os dados
+                    DadosEnviados?.Invoke(id);
 
-                this.DialogResult = DialogResult.OK;
-                this.Dispose();
+                    this.DialogResult = DialogResult.OK;
+                    this.Dispose();
+                }
             }
-        }
-
-        private void btnFechar_Click(object sender, EventArgs e)
-        {
-            this.DialogResult = DialogResult.Cancel;
-            this.Dispose();
-        }
-
-        private void btnMinimizar_Click(object sender, EventArgs e)
-        {
-            this.WindowState = FormWindowState.Minimized;
-        }
-
-        private void pnlBarraTitulo_MouseDown(object sender, MouseEventArgs e)
-        {
-            ReleaseCapture();
-            SendMessage(this.Handle, 0x112, 0xf012, 0);
-        }
-
-        private void lblTitulo_MouseDown(object sender, MouseEventArgs e)
-        {
-            ReleaseCapture();
-            SendMessage(this.Handle, 0x112, 0xf012, 0);
         }
 
         private void txtFiltrar_TextChanged(object sender, EventArgs e)

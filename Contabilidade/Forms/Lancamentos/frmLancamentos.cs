@@ -47,7 +47,7 @@ namespace Contabilidade.Forms.Lancamentos
             }
         }
 
-        public void reverterRegistrosCaixa(SqliteCommand comando, decimal valorOriginal, SqliteTransaction transacao)
+        public static void reverterRegistrosCaixa(Conexao con, SqliteCommand comando, decimal valorOriginal, SqliteTransaction transacao)
         {
             using (var reader = comando.ExecuteReader())
             {
@@ -85,7 +85,7 @@ namespace Contabilidade.Forms.Lancamentos
             }
         }
 
-        public void reverterLancamentos(SqliteCommand comando, decimal valorOriginal, SqliteTransaction transacao)
+        public static void reverterLancamentos(Conexao con, SqliteCommand comando, decimal valorOriginal, SqliteTransaction transacao)
         {
             using (var reader = comando.ExecuteReader())
             {
@@ -123,53 +123,23 @@ namespace Contabilidade.Forms.Lancamentos
             }
         }
 
-        // Caso tenha apenas o ID
-        public void excluirLancamento(string ID, SqliteTransaction transacao)
-        {
-            // Obter data do lançamento
-            var sql = "SELECT data FROM lancamentos WHERE id = @id;";
-            using (var comando = new SqliteCommand(sql, con.conn))
-            {
-                comando.Parameters.AddWithValue("@id", ID);
-                var data = Convert.ToDateTime(comando.ExecuteScalar());
-                var dataConvertida = data.ToString("yyyy-MM-dd");
-
-                // Obter valor do lançamento
-                comando.CommandText = "SELECT valor FROM lancamentos WHERE id = @id;";
-                var valorOriginal = Convert.ToDecimal(comando.ExecuteScalar());
-
-                // Reverter valores do lançamento na sua data
-                comando.CommandText = "SELECT id FROM lancamentos WHERE data = @data AND id > @id;";
-                reverterLancamentos(comando, valorOriginal, transacao);
-
-                // Reverter valor do lançamento nas datas seguintes
-                comando.CommandText = "SELECT id FROM lancamentos WHERE data > @data";
-                reverterLancamentos(comando, valorOriginal, transacao);
-
-                // Reverter valor do lançamento nos registros do caixa nas datas >= sua data
-                comando.CommandText = "SELECT data FROM registros_caixa WHERE data >= @data;";
-                reverterRegistrosCaixa(comando, valorOriginal, transacao);
-            }
-        }
-
-        // Caso tenha todos os valores
-        public void excluirLancamento(string ID, string dataConvertida, decimal valorOriginal, SqliteTransaction transacao)
+        public static void excluirLancamento(Conexao con, string ID, string dataConvertida, decimal valorOriginal, SqliteTransaction transacao)
         {
             using (var comando = new SqliteCommand("", con.conn))
             {
                 // Reverter valores do lançamento na sua data
                 comando.CommandText = "SELECT id FROM lancamentos WHERE data = @data AND id > @id;";
                 comando.Parameters.AddWithValue("@id", ID);
-                reverterLancamentos(comando, valorOriginal, transacao);
+                reverterLancamentos(con, comando, valorOriginal, transacao);
 
                 // Reverter valor do lançamento nas datas seguintes
                 comando.CommandText = "SELECT id FROM lancamentos WHERE data > @data";
                 comando.Parameters.AddWithValue("@data", dataConvertida);
-                reverterLancamentos(comando, valorOriginal, transacao);
+                reverterLancamentos(con, comando, valorOriginal, transacao);
 
                 // Reverter valor do lançamento nos registros do caixa nas datas >= sua data
                 comando.CommandText = "SELECT data FROM registros_caixa WHERE data >= @data;";
-                reverterRegistrosCaixa(comando, valorOriginal, transacao);
+                reverterRegistrosCaixa(con, comando, valorOriginal, transacao);
 
                 // Excluir lançamento
                 comando.CommandText = "DELETE FROM lancamentos WHERE id = @id;";
@@ -547,7 +517,7 @@ namespace Contabilidade.Forms.Lancamentos
                                     try
                                     {
                                         // Excluir registro anterior e atualizar valoress
-                                        excluirLancamento(idAntigo, dataAntigo.ToString("yyyy-MM-dd"), valorAntigo, transacao);
+                                        excluirLancamento(con, idAntigo, dataAntigo.ToString("yyyy-MM-dd"), valorAntigo, transacao);
 
                                         // Converter dataNova para o formato do banco (sem as horas)
                                         var dataConvertida = data.ToString("yyyy-MM-dd");
@@ -595,47 +565,54 @@ namespace Contabilidade.Forms.Lancamentos
         {
             try
             {
-                // Verifica se uma linha foi selecionada
-                if (dgvLancamentos.SelectedRows.Count > 0)
+                // Verificar se o usuário realmente quer excluir o lançamento
+                var dialogResult = MessageBox.Show("Deseja realmente excluir esse lançamento? Essa operação não poderá ser desfeita!", "Confirmação de exclusão do lançamento", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+
+                if (dialogResult == DialogResult.Yes)
                 {
-                    // Obtem a linha selecionada
-                    DataGridViewRow selectedRow = dgvLancamentos.SelectedRows[0];
-
-                    // Obtem os valores do lançamento a ser excluido
-                    var idExcluir = selectedRow.Cells["ID"].Value.ToString();
-                    var dataExcluir = Convert.ToDateTime(selectedRow.Cells["Data"].Value);
-                    var valorAntigo = Convert.ToDecimal(selectedRow.Cells["Valor"].Value);
-
-                    using (var transacao = con.conn.BeginTransaction())
+                    // Verifica se uma linha foi selecionada
+                    if (dgvLancamentos.SelectedRows.Count > 0)
                     {
-                        try
+                        // Obtem a linha selecionada
+                        DataGridViewRow selectedRow = dgvLancamentos.SelectedRows[0];
+
+                        // Obtem os valores do lançamento a ser excluido
+                        var idExcluir = selectedRow.Cells["ID"].Value.ToString();
+                        var dataExcluir = Convert.ToDateTime(selectedRow.Cells["Data"].Value);
+                        var valorAntigo = Convert.ToDecimal(selectedRow.Cells["Valor"].Value);
+
+                        using (var transacao = con.conn.BeginTransaction())
                         {
-                            using (var comando = new SqliteCommand("", con.conn))
+                            try
                             {
-                                comando.Transaction = transacao;
+                                using (var comando = new SqliteCommand("", con.conn))
+                                {
+                                    comando.Transaction = transacao;
 
-                                excluirLancamento(idExcluir, dataExcluir.ToString("yyyy-MM-dd"), valorAntigo, transacao);
+                                    excluirLancamento(con, idExcluir, dataExcluir.ToString("yyyy-MM-dd"), valorAntigo, transacao);
 
-                                // Efetivar alterações
-                                transacao.Commit();
+                                    // Efetivar alterações
+                                    transacao.Commit();
 
-                                // Adicionar dados na tabela - Recarregar completamente
-                                atualizarDataGrid();
+                                    // Adicionar dados na tabela - Recarregar completamente
+                                    atualizarDataGrid();
 
-                                MessageBox.Show("Registro excluido com sucesso.", "Operação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    MessageBox.Show("Registro excluido com sucesso.", "Operação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                }
+                            }
+                            catch (CustomException ex)
+                            {
+                                transacao.Rollback();
+                                MessageBox.Show($"{ex.Message?.ToString()}", "Erro ao excluir o lançamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            catch (Exception ex)
+                            {
+                                transacao.Rollback();
+                                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao excluir o lançamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
                         }
-                        catch (CustomException ex)
-                        {
-                            transacao.Rollback();
-                            MessageBox.Show($"{ex.Message?.ToString()}", "Erro ao excluir o lançamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                        catch (Exception ex)
-                        {
-                            transacao.Rollback();
-                            MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao excluir o lançamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
                     }
+
                 }
             }
             catch (Exception ex)
