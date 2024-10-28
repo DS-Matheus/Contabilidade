@@ -321,7 +321,7 @@ namespace Contabilidade.Forms.Cadastros
                                     // Efetivar alterações
                                     transacao.Commit();
 
-                                    // Adicionar dados na tabela - Recarregar completamente
+                                    // Remover dados da tabela - Recarregar completamente
                                     atualizarDataGrid();
 
                                     MessageBox.Show("Histórico excluido com sucesso.", "Operação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);

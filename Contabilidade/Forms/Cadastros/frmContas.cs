@@ -2,6 +2,8 @@
 using DGVPrinterHelper;
 using System.Data;
 using Microsoft.Data.Sqlite;
+using Contabilidade.Classes;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Contabilidade.Forms.Cadastros
 {
@@ -269,9 +271,199 @@ namespace Contabilidade.Forms.Cadastros
             }
         }
 
+        private class TotalLancamentos
+        {
+            public string data { get; set; }
+            public decimal total { get; set; }
+
+            public TotalLancamentos(string data,  decimal total)
+            {
+                this.data = data;
+                this.total = total;
+            }
+        }
+
+        public void excluirConta(Conexao con, string conta, string nivel, SqliteTransaction transacao)
+        {
+            using (var comando = new SqliteCommand("", con.conn))
+            {
+                comando.Transaction = transacao;
+
+                // Se for uma conta analítica:
+                if (nivel == "A")
+                {
+                    // Obter a lista de datas que possuem lançamentos
+                    var listDatas = new List<string>();
+                    comando.CommandText = "SELECT DISTINCT data FROM lancamentos WHERE conta = @conta ORDER BY data;";
+                    comando.Parameters.AddWithValue("@conta", conta);
+
+                    using (var reader = comando.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            listDatas.Add(reader["data"].ToString());
+                        }
+                    }
+
+                    // Verificar se foi encontrado algum lançamento
+                    if (listDatas.Any())
+                    {
+                        // Obter relação de datas e valores líquidos dos lançamentos em cada data
+                        var listLancamentos = new List<TotalLancamentos>();
+                        foreach (var data in listDatas)
+                        {
+                            // Obter o valor total dos lançamentos em cada data -> obter saldo mais recente em uma data e somar esse valor a um total, a cada operação reduzir do saldo encontrado o total (esse será o real valor dos lançamentos no período)
+                            var saldoAnterior = 0m;
+
+                            comando.CommandText = "SELECT COALESCE((SELECT saldo FROM lancamentos WHERE conta = @conta ORDER BY data DESC, id DESC LIMIT 1), 0);";
+                            var saldoEncontrado = Convert.ToDecimal(comando.ExecuteScalar());
+
+                            // Valor líquido do periodo (o que será reduzido do caixa) = saldoEncontrado - saldoAnterior
+                            saldoEncontrado -= saldoAnterior;
+                            saldoAnterior += saldoEncontrado;
+
+                            var novoLancamento = new TotalLancamentos(data, saldoEncontrado);
+                            listLancamentos.Add(novoLancamento);
+                        }
+
+                        // Atualizar registros do caixa com os valores encontrados (reverter os lançamentos)
+                        comando.CommandText = "UPDATE registros_caixa SET saldo = (saldo - @valor) WHERE data = @data;";
+                        foreach (var registro in listLancamentos)
+                        {
+                            comando.Parameters.Clear();
+                            comando.Parameters.AddWithValue("@valor", registro.total);
+                            comando.Parameters.AddWithValue("@data", registro.data);
+                            comando.ExecuteNonQuery();
+                        }
+
+                        // Excluir todos os lançamentos da conta
+                        comando.CommandText = "DELETE FROM lancamentos WHERE conta = @conta;";
+                        comando.Parameters.Clear();
+                        comando.Parameters.AddWithValue("@conta", conta);
+                        comando.ExecuteNonQuery();
+                    }
+                }
+
+                // Excluir a conta
+                comando.CommandText = "DELETE FROM contas WHERE conta = @conta;";
+                comando.Parameters.Clear();
+                comando.Parameters.AddWithValue("@conta", conta);
+                var result = comando.ExecuteNonQuery();
+
+                if (result == 0) {
+                    throw new CustomException("Houve um erro ao excluir a conta");
+                }
+            }
+        }
+
+        private class Contas
+        {
+            public string Conta { get; set; }
+            public string Nivel { get; set; }
+
+            public Contas(string conta, string nivel)
+            {
+                this.Conta = conta;
+                this.Nivel = nivel;
+            }
+        }
+
         private void btnExcluir_Click(object sender, EventArgs e)
         {
+            try
+            {
+                var dialogResult = MessageBox.Show("Deseja excluir a conta selecionada? Esse processo não pode ser desfeito!", "Confirmação de exclusão da conta", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    // Verifica se uma linha foi selecionada
+                    if (dgvContas.SelectedRows.Count > 0)
+                    {
+                        // Obtem a linha selecionada
+                        DataGridViewRow selectedRow = dgvContas.SelectedRows[0];
 
+                        // Obtem a conta a ser excluida
+                        var contaExcluir = selectedRow.Cells["Conta"].Value.ToString();
+                        var nivelExcluir = selectedRow.Cells["Nível"].Value.ToString();
+
+                        using (var transacao = con.conn.BeginTransaction())
+                        {
+                            try
+                            {
+                                using (var comando = new SqliteCommand("", con.conn))
+                                {
+                                    comando.Transaction = transacao;
+
+                                    // Se o nível for sintético, avisar sobre a exclusão de todas as contas analiticas associadas
+                                    if (nivelExcluir == "S")
+                                    {
+                                        dialogResult = MessageBox.Show("A conta selecionada é do tipo sintético, isso quer dizer que ao excluí-la todas as contas analíticas associadas também serão removidas, deseja continuar? Esse processo é irreversível!", "Confirmação de exclusão de conta sintética", MessageBoxButtons.YesNoCancel);
+
+                                        if (dialogResult != DialogResult.Yes)
+                                        {
+                                            return;
+                                        }
+                                    }
+
+                                    // Confirmar uma última vez sobre a exclusão dos registros/lançamentos
+                                    dialogResult = MessageBox.Show("Deseja realmente excluir a conta e, se existirem, todos os seus lancamentos associados? Este é o último aviso!", "Confirmação da exclusão da conta", MessageBoxButtons.YesNo);
+
+                                    if (dialogResult == DialogResult.Yes)
+                                    {
+                                        // Verificar tipo da conta
+                                        if (nivelExcluir == "S")
+                                        {
+                                            // Obter relação de contas a serem excluidas
+                                            comando.CommandText = "SELECT conta, nivel FROM contas WHERE conta LIKE @conta || '.%';";
+                                            var listContas = new List<Contas>();
+
+                                            // Ler e atribuir na lista as contas a serem excluídas
+                                            using (var reader = comando.ExecuteReader())
+                                            {
+                                                while (reader.Read())
+                                                {
+                                                    var novaConta = new Contas(reader["conta"].ToString(), reader["nivel"].ToString());
+                                                    listContas.Add(novaConta);
+                                                }
+                                            }
+                                            
+                                            // Excluir cada conta presente na lista
+                                            foreach(var conta in listContas)
+                                            {
+                                                excluirConta(con, conta.Conta, conta.Nivel, transacao);
+                                            }
+                                        }
+
+                                        // Excluir a conta selecionada
+                                        excluirConta(con, contaExcluir, nivelExcluir, transacao);
+
+                                        // Efetivar alterações
+                                        transacao.Commit();
+
+                                        // Remover dados da tabela - Recarregar completamente
+                                        atualizarDataGrid();
+
+                                        MessageBox.Show("Conta excluida com sucesso.", "Operação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    }
+                                }
+                            }
+                            catch (CustomException ex)
+                            {
+                                transacao.Rollback();
+                                MessageBox.Show($"{ex.Message?.ToString()}", "Erro ao excluir a conta", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            catch (Exception ex)
+                            {
+                                transacao.Rollback();
+                                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao excluir a conta", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao excluir a conta", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
