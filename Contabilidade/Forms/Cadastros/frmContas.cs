@@ -331,7 +331,7 @@ namespace Contabilidade.Forms.Cadastros
                                     }
                                 }
 
-                                // Atualizar conta (se o número dela alterou, os lançamentos também serão atualizados por causa do ON UPDATE da chave extrangeira)
+                                // Atualizar conta (se o número dela alterou, os lançamentos também serão atualizados por causa do ON UPDATE da chave estrangeira)
                                 comando.CommandText = "UPDATE contas SET conta = @contaNova, descricao = @descricao, nivel = @nivel WHERE conta = @contaAntiga;";
                                 comando.Parameters.Clear();
                                 comando.Parameters.AddWithValue("@contaNova", conta);
