@@ -15,6 +15,7 @@ namespace Contabilidade.Forms.Cadastros
         public static string conta { get; set; } = "";
         public static string descricao { get; set; } = "";
         public static string nivel { get; set; } = "";
+        public static bool alterouNivel { get; set; } = false;
 
         public frmContas(Conexao conexaoBanco)
         {
@@ -119,7 +120,12 @@ namespace Contabilidade.Forms.Cadastros
 
         public static bool verificarExistenciaConta(string conta)
         {
-            return dtDados.AsEnumerable().Any(row => conta == row.Field<string>("conta") && row.Field<string>("nivel") == "S");
+            return dtDados.AsEnumerable().Any(row => conta == row.Field<string>("conta"));
+        }
+
+        public static bool verificarExistenciaConta(string conta, string contaAntiga)
+        {
+            return dtDados.AsEnumerable().Any(row => conta == row.Field<string>("conta") && row.Field<string>("conta") != contaAntiga);
         }
 
         public static bool verificarContaSintetica(string conta)
@@ -222,49 +228,149 @@ namespace Contabilidade.Forms.Cadastros
             return (conta, descricao, nivel);
         }
 
+        public static string obterNovaConta(string contaSintetica, string contaAnalitica)
+        {
+            // Encontra o ponto de separação baseado nos pontos
+            int index = contaSintetica.Length;
+
+            // Monta a nova conta com a conta sintética e a parte remanescente da conta original
+            string novaConta = contaSintetica + contaAnalitica.Substring(index);
+
+            return novaConta;
+        }
+
         private void btnEditar_Click(object sender, EventArgs e)
         {
             // Obter conta selecionada
             int numLinha = frmUsuarios.obterNumLinhaSelecionada(dgvContas);
-            var (conta, descricaoAntiga, nivel) = obterDadosDGV(numLinha);
+            var (contaAntiga, descricaoAntiga, nivelAntigo) = obterDadosDGV(numLinha);
 
             // Criar uma instância do formulário de dados e aguardar um retorno
-            using (var frmDados = new frmContasDados("Editar Conta", conta, descricaoAntiga, nivel, 1))
+            using (var frmDados = new frmContasDados("Editar Conta", contaAntiga, descricaoAntiga, nivelAntigo, 1, con))
             {
                 // O usuário apertou o botão de salvar
                 if (frmDados.ShowDialog() == DialogResult.OK)
                 {
-                    // Editar conta
-                    using (var comando = new SqliteCommand("UPDATE contas SET descricao = @descricao WHERE conta = @conta;", con.conn))
+                    using (var transacao = con.conn.BeginTransaction())
                     {
-                        try
+                        using (var comando = new SqliteCommand("", con.conn))
                         {
-                            comando.Parameters.AddWithValue("@descricao", descricao);
-                            comando.Parameters.AddWithValue("@conta", conta);
-
-                            int retornoBD = comando.ExecuteNonQuery();
-
-                            // Verificar se houve a edição de alguma linha (0 = negativo)
-                            if (retornoBD > 0)
+                            try
                             {
-                                // Atualizar DataTable
-                                dgvContas.Rows[numLinha].Cells["Descrição"].Value = descricao;
+                                comando.Transaction = transacao;
 
-                                dgvContas.Refresh();
+                                // Se alterou o nível: excluir todos os registros associados
+                                if (alterouNivel)
+                                {
+                                    // Se era analítico e alterou para sintético:
+                                    if (nivel == "S")
+                                    {
+                                        // Excluir todos os lançamentos dessa conta apenas
+                                        excluirTodosLancamentos(comando, contaAntiga);
+                                    }
+                                    // Se era sintético e alterou para analítico: excluir todas as contas no grupo de chave e os seus lançamentos
+                                    else
+                                    {
+                                        // Obter relação de contas a serem excluidas
+                                        comando.CommandText = "SELECT conta, nivel FROM contas WHERE conta LIKE @conta || '.%';";
+                                        var listContas = new List<Contas>();
 
-                                // Remover dados das variáveis
-                                descricao = "";
+                                        // Ler e atribuir na lista as contas a serem excluídas
+                                        using (var reader = comando.ExecuteReader())
+                                        {
+                                            while (reader.Read())
+                                            {
+                                                var novaConta = new Contas(reader["conta"].ToString(), reader["nivel"].ToString());
+                                                listContas.Add(novaConta);
+                                            }
+                                        }
 
-                                MessageBox.Show("Conta editada com sucesso!", "Edição bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                        // Excluir cada conta presente na lista
+                                        foreach (var conta in listContas)
+                                        {
+                                            excluirConta(con, conta.Conta, conta.Nivel, transacao);
+                                        }
+
+                                        // Excluir todas as contas do grupo de chave
+                                        comando.CommandText = "DELETE FROM contas WHERE conta LIKE @conta || '.%';";
+                                        comando.Parameters.AddWithValue("@conta", contaAntiga);
+                                        comando.ExecuteNonQuery();
+                                    }
+                                }
+                                // Se não alterou o nível, testar se o número da conta mudou e se ela é sintética -> Se for: atualizar número de conta de todo o grupo
+                                else if (contaAntiga != conta && nivel == "S")
+                                {
+                                    // obter relação de contas
+                                    comando.CommandText = "SELECT conta FROM contas WHERE conta LIKE @conta || '.%';";
+
+                                    var listContas = new List<string>();
+
+                                    // Ler e atribuir na lista as contas a serem alteradas
+                                    using (var reader = comando.ExecuteReader())
+                                    {
+                                        while (reader.Read())
+                                        {
+                                            var novaConta = reader["conta"].ToString();
+                                            listContas.Add(novaConta);
+                                        }
+                                    }
+
+                                    // Comando para atualizar as contas
+                                    comando.CommandText = "UPDATE contas SET conta = @contaNova WHERE conta = @contaAntiga;";
+
+                                    // Alterar cada conta presente na lista
+                                    foreach (var contaFilha in listContas)
+                                    {
+                                        // Número de conta novo (var conta = novo número da conta sintética)
+                                        var numeroNovo = obterNovaConta(conta, contaFilha);
+
+                                        comando.Parameters.Clear();
+                                        comando.Parameters.AddWithValue("@contaNova", numeroNovo);
+                                        comando.Parameters.AddWithValue("@contaAntiga", contaFilha);
+                                        comando.ExecuteNonQuery();
+                                    }
+                                }
+
+                                // Atualizar conta (se o número dela alterou, os lançamentos também serão atualizados por causa do ON UPDATE da chave extrangeira)
+                                comando.CommandText = "UPDATE contas SET conta = @contaNova, descricao = @descricao, nivel = @nivel WHERE conta = @contaAntiga;";
+                                comando.Parameters.Clear();
+                                comando.Parameters.AddWithValue("@contaNova", conta);
+                                comando.Parameters.AddWithValue("@descricao", descricao);
+                                comando.Parameters.AddWithValue("@nivel", nivelAntigo);
+                                comando.Parameters.AddWithValue("@contaAntiga", contaAntiga);
+
+                                int retornoBD = comando.ExecuteNonQuery();
+
+                                // Verificar se houve a edição de alguma linha (0 = negativo)
+                                if (retornoBD > 0)
+                                {
+                                    transacao.Commit();
+                                    
+                                    // Atualizar DataTable
+                                    dgvContas.Rows[numLinha].Cells["Conta"].Value = conta;
+                                    dgvContas.Rows[numLinha].Cells["Descrição"].Value = descricao;
+                                    dgvContas.Rows[numLinha].Cells["Nível"].Value = nivel;
+
+                                    dgvContas.Refresh();
+
+                                    // Remover dados das variáveis
+                                    conta = "";
+                                    descricao = "";
+                                    nivel = "";
+                                    alterouNivel = false;
+
+                                    MessageBox.Show("Conta editada com sucesso!", "Edição bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                }
+                                else
+                                {
+                                    throw new Exception("Não foi possível encontrar a conta ou ocorreu um erro na edição.");
+                                }
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                throw new Exception("Não foi possível encontrar a conta ou ocorreu um erro na edição.");
+                                transacao.Rollback();
+                                MessageBox.Show(ex.Message.ToString(), "Edição não realizada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(ex.Message.ToString(), "Edição não realizada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                     }
                 }
@@ -283,6 +389,60 @@ namespace Contabilidade.Forms.Cadastros
             }
         }
 
+        public void excluirTodosLancamentos(SqliteCommand comando, string conta)
+        {
+            // Obter a lista de datas que possuem lançamentos
+            var listDatas = new List<string>();
+            comando.CommandText = "SELECT DISTINCT data FROM lancamentos WHERE conta = @conta ORDER BY data;";
+            comando.Parameters.AddWithValue("@conta", conta);
+
+            using (var reader = comando.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    listDatas.Add(reader["data"].ToString());
+                }
+            }
+
+            // Verificar se foi encontrado algum lançamento
+            if (listDatas.Any())
+            {
+                // Obter relação de datas e valores líquidos dos lançamentos em cada data
+                var listLancamentos = new List<TotalLancamentos>();
+                foreach (var data in listDatas)
+                {
+                    // Obter o valor total dos lançamentos em cada data -> obter saldo mais recente em uma data e somar esse valor a um total, a cada operação reduzir do saldo encontrado o total (esse será o real valor dos lançamentos no período)
+                    var saldoAnterior = 0m;
+
+                    comando.CommandText = "SELECT COALESCE((SELECT saldo FROM lancamentos WHERE conta = @conta ORDER BY data DESC, id DESC LIMIT 1), 0);";
+                    var saldoEncontrado = Convert.ToDecimal(comando.ExecuteScalar());
+
+                    // Valor líquido do periodo (o que será reduzido do caixa) = saldoEncontrado - saldoAnterior
+                    saldoEncontrado -= saldoAnterior;
+                    saldoAnterior += saldoEncontrado;
+
+                    var novoLancamento = new TotalLancamentos(data, saldoEncontrado);
+                    listLancamentos.Add(novoLancamento);
+                }
+
+                // Atualizar registros do caixa com os valores encontrados (reverter os lançamentos)
+                comando.CommandText = "UPDATE registros_caixa SET saldo = (saldo - @valor) WHERE data = @data;";
+                foreach (var registro in listLancamentos)
+                {
+                    comando.Parameters.Clear();
+                    comando.Parameters.AddWithValue("@valor", registro.total);
+                    comando.Parameters.AddWithValue("@data", registro.data);
+                    comando.ExecuteNonQuery();
+                }
+
+                // Excluir todos os lançamentos da conta
+                comando.CommandText = "DELETE FROM lancamentos WHERE conta = @conta;";
+                comando.Parameters.Clear();
+                comando.Parameters.AddWithValue("@conta", conta);
+                comando.ExecuteNonQuery();
+            }
+        }
+        
         public void excluirConta(Conexao con, string conta, string nivel, SqliteTransaction transacao)
         {
             using (var comando = new SqliteCommand("", con.conn))
@@ -292,56 +452,7 @@ namespace Contabilidade.Forms.Cadastros
                 // Se for uma conta analítica:
                 if (nivel == "A")
                 {
-                    // Obter a lista de datas que possuem lançamentos
-                    var listDatas = new List<string>();
-                    comando.CommandText = "SELECT DISTINCT data FROM lancamentos WHERE conta = @conta ORDER BY data;";
-                    comando.Parameters.AddWithValue("@conta", conta);
-
-                    using (var reader = comando.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            listDatas.Add(reader["data"].ToString());
-                        }
-                    }
-
-                    // Verificar se foi encontrado algum lançamento
-                    if (listDatas.Any())
-                    {
-                        // Obter relação de datas e valores líquidos dos lançamentos em cada data
-                        var listLancamentos = new List<TotalLancamentos>();
-                        foreach (var data in listDatas)
-                        {
-                            // Obter o valor total dos lançamentos em cada data -> obter saldo mais recente em uma data e somar esse valor a um total, a cada operação reduzir do saldo encontrado o total (esse será o real valor dos lançamentos no período)
-                            var saldoAnterior = 0m;
-
-                            comando.CommandText = "SELECT COALESCE((SELECT saldo FROM lancamentos WHERE conta = @conta ORDER BY data DESC, id DESC LIMIT 1), 0);";
-                            var saldoEncontrado = Convert.ToDecimal(comando.ExecuteScalar());
-
-                            // Valor líquido do periodo (o que será reduzido do caixa) = saldoEncontrado - saldoAnterior
-                            saldoEncontrado -= saldoAnterior;
-                            saldoAnterior += saldoEncontrado;
-
-                            var novoLancamento = new TotalLancamentos(data, saldoEncontrado);
-                            listLancamentos.Add(novoLancamento);
-                        }
-
-                        // Atualizar registros do caixa com os valores encontrados (reverter os lançamentos)
-                        comando.CommandText = "UPDATE registros_caixa SET saldo = (saldo - @valor) WHERE data = @data;";
-                        foreach (var registro in listLancamentos)
-                        {
-                            comando.Parameters.Clear();
-                            comando.Parameters.AddWithValue("@valor", registro.total);
-                            comando.Parameters.AddWithValue("@data", registro.data);
-                            comando.ExecuteNonQuery();
-                        }
-
-                        // Excluir todos os lançamentos da conta
-                        comando.CommandText = "DELETE FROM lancamentos WHERE conta = @conta;";
-                        comando.Parameters.Clear();
-                        comando.Parameters.AddWithValue("@conta", conta);
-                        comando.ExecuteNonQuery();
-                    }
+                    excluirTodosLancamentos(comando, conta);
                 }
 
                 // Excluir a conta
