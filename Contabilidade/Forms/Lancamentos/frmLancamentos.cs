@@ -459,10 +459,10 @@ namespace Contabilidade.Forms.Lancamentos
                     var idAntigo = selectedRow.Cells["ID"].Value.ToString();
                     var dataAntigo = Convert.ToDateTime(selectedRow.Cells["Data"].Value);
                     var contaAntiga = selectedRow.Cells["Conta"].Value.ToString();
-                    var descricaoAntiga = selectedRow.Cells["Descricao"].Value.ToString();
+                    var descricaoAntiga = selectedRow.Cells["Descrição"].Value.ToString();
                     var valorAntigo = Convert.ToDecimal(selectedRow.Cells["Valor"].Value);
-                    var id_historicoAntigo = selectedRow.Cells["ID_Historico"].ToString();
-                    var historicoAntigo = selectedRow.Cells["Historico"].ToString();
+                    var id_historicoAntigo = selectedRow.Cells["ID_Historico"].Value.ToString();
+                    var historicoAntigo = selectedRow.Cells["Histórico"].Value.ToString();
 
                     // Criar uma instância do formulário de dados e aguardar um retorno
                     using (var frmDados = new frmLancamentosDados(con, "Editar conta", contaAntiga, descricaoAntiga, valorAntigo, id_historicoAntigo, historicoAntigo, dataAntigo))

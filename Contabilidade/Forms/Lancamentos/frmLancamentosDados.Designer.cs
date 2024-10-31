@@ -142,6 +142,7 @@
             // 
             // txtDescricao
             // 
+            txtDescricao.BackColor = Color.White;
             txtDescricao.Enabled = false;
             txtDescricao.Location = new Point(25, 92);
             txtDescricao.MaxLength = 100;
@@ -162,6 +163,7 @@
             // 
             // txtHistorico
             // 
+            txtHistorico.BackColor = Color.White;
             txtHistorico.Enabled = false;
             txtHistorico.Location = new Point(25, 164);
             txtHistorico.Margin = new Padding(5);
@@ -238,6 +240,7 @@
             // 
             // txtConta
             // 
+            txtConta.BackColor = Color.White;
             txtConta.Enabled = false;
             txtConta.Location = new Point(25, 43);
             txtConta.Margin = new Padding(25, 3, 3, 3);
