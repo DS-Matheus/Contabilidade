@@ -104,7 +104,7 @@ namespace Contabilidade.Forms.Cadastros
 
         public bool verificarResposta(DialogResult dialogResult)
         {
-            if (dialogResult == DialogResult.OK)
+            if (dialogResult == DialogResult.Yes || dialogResult == DialogResult.OK)
             {
                 return true;
             }

@@ -273,6 +273,9 @@ namespace Contabilidade.Forms.Cadastros
                                     {
                                         // Obter relação de contas a serem excluidas
                                         comando.CommandText = "SELECT conta, nivel FROM contas WHERE conta LIKE @conta || '.%';";
+                                        comando.Parameters.Clear();
+                                        comando.Parameters.AddWithValue("@conta", contaAntiga);
+
                                         var listContas = new List<Contas>();
 
                                         // Ler e atribuir na lista as contas a serem excluídas
@@ -290,11 +293,6 @@ namespace Contabilidade.Forms.Cadastros
                                         {
                                             excluirConta(con, conta.Conta, conta.Nivel, transacao);
                                         }
-
-                                        // Excluir todas as contas do grupo de chave
-                                        comando.CommandText = "DELETE FROM contas WHERE conta LIKE @conta || '.%';";
-                                        comando.Parameters.AddWithValue("@conta", contaAntiga);
-                                        comando.ExecuteNonQuery();
                                     }
                                 }
                                 // Se não alterou o nível, testar se o número da conta mudou e se ela é sintética -> Se for: atualizar número de conta de todo o grupo
@@ -302,6 +300,8 @@ namespace Contabilidade.Forms.Cadastros
                                 {
                                     // obter relação de contas
                                     comando.CommandText = "SELECT conta FROM contas WHERE conta LIKE @conta || '.%';";
+                                    comando.Parameters.Clear();
+                                    comando.Parameters.AddWithValue("@conta", contaAntiga);
 
                                     var listContas = new List<string>();
 
@@ -336,7 +336,7 @@ namespace Contabilidade.Forms.Cadastros
                                 comando.Parameters.Clear();
                                 comando.Parameters.AddWithValue("@contaNova", conta);
                                 comando.Parameters.AddWithValue("@descricao", descricao);
-                                comando.Parameters.AddWithValue("@nivel", nivelAntigo);
+                                comando.Parameters.AddWithValue("@nivel", nivel);
                                 comando.Parameters.AddWithValue("@contaAntiga", contaAntiga);
 
                                 int retornoBD = comando.ExecuteNonQuery();
@@ -345,13 +345,9 @@ namespace Contabilidade.Forms.Cadastros
                                 if (retornoBD > 0)
                                 {
                                     transacao.Commit();
-                                    
-                                    // Atualizar DataTable
-                                    dgvContas.Rows[numLinha].Cells["Conta"].Value = conta;
-                                    dgvContas.Rows[numLinha].Cells["Descrição"].Value = descricao;
-                                    dgvContas.Rows[numLinha].Cells["Nível"].Value = nivel;
 
-                                    dgvContas.Refresh();
+                                    // Atualizar DataTable
+                                    atualizarDataGrid();
 
                                     // Remover dados das variáveis
                                     conta = "";
@@ -409,12 +405,16 @@ namespace Contabilidade.Forms.Cadastros
             {
                 // Obter relação de datas e valores líquidos dos lançamentos em cada data
                 var listLancamentos = new List<TotalLancamentos>();
+                
+                // Obter o valor total dos lançamentos em cada data -> obter saldo mais recente em uma data e somar esse valor a um total, a cada operação reduzir do saldo encontrado o total (esse será o real valor dos lançamentos no período)
+                var saldoAnterior = 0m;
                 foreach (var data in listDatas)
                 {
-                    // Obter o valor total dos lançamentos em cada data -> obter saldo mais recente em uma data e somar esse valor a um total, a cada operação reduzir do saldo encontrado o total (esse será o real valor dos lançamentos no período)
-                    var saldoAnterior = 0m;
+                    comando.Parameters.Clear();
+                    comando.Parameters.AddWithValue("@conta", conta);
+                    comando.Parameters.AddWithValue("@data", data);
 
-                    comando.CommandText = "SELECT COALESCE((SELECT saldo FROM lancamentos WHERE conta = @conta ORDER BY data DESC, id DESC LIMIT 1), 0);";
+                    comando.CommandText = "SELECT COALESCE((SELECT saldo FROM lancamentos WHERE conta = @conta and data = @data ORDER BY data DESC, id DESC LIMIT 1), 0);";
                     var saldoEncontrado = Convert.ToDecimal(comando.ExecuteScalar());
 
                     // Valor líquido do periodo (o que será reduzido do caixa) = saldoEncontrado - saldoAnterior
@@ -426,7 +426,7 @@ namespace Contabilidade.Forms.Cadastros
                 }
 
                 // Atualizar registros do caixa com os valores encontrados (reverter os lançamentos)
-                comando.CommandText = "UPDATE registros_caixa SET saldo = (saldo - @valor) WHERE data = @data;";
+                comando.CommandText = "UPDATE registros_caixa SET saldo = (saldo - @valor) WHERE data >= @data;";
                 foreach (var registro in listLancamentos)
                 {
                     comando.Parameters.Clear();
@@ -525,6 +525,8 @@ namespace Contabilidade.Forms.Cadastros
                                         {
                                             // Obter relação de contas a serem excluidas
                                             comando.CommandText = "SELECT conta, nivel FROM contas WHERE conta LIKE @conta || '.%';";
+                                            comando.Parameters.AddWithValue("@conta", contaExcluir);
+
                                             var listContas = new List<Contas>();
 
                                             // Ler e atribuir na lista as contas a serem excluídas
