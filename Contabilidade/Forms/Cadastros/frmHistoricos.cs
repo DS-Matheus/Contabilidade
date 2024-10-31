@@ -13,6 +13,7 @@ namespace Contabilidade.Forms.Cadastros
         static DataTable dtDados = new DataTable();
         DataView dv = dtDados.DefaultView;
         public static string historico { get; set; } = "";
+        public static bool novoHistorico { get; set; } = false;
 
         public frmHistoricos(Conexao conexaoBanco)
         {
@@ -234,7 +235,7 @@ namespace Contabilidade.Forms.Cadastros
                                             string idNovo = "";
                                             
                                             // Abrir formulário para seleção do id_histórico que irá substituir os demais (confirmar que o id não é o mesmo antes de retornar)
-                                            using (var formFilho = new frmHistoricosSelecionar(con, idExcluir))
+                                            using (var formFilho = new frmHistoricosSelecionar(con, transacao, idExcluir))
                                             {
                                                 formFilho.DadosEnviados += (string id) =>
                                                 {
@@ -310,7 +311,9 @@ namespace Contabilidade.Forms.Cadastros
                                     }
 
                                     // Excluir histórico
-                                    comando.CommandText = "DELETE FROM historicos WHERE id_historico = @id_historico;";
+                                    comando.Parameters.Clear();
+                                    comando.CommandText = "DELETE FROM historicos WHERE id = @id_historico;";
+                                    comando.Parameters.AddWithValue("@id_historico", idExcluir);
                                     var result = comando.ExecuteNonQuery();
 
                                     if (result == 0)
@@ -330,11 +333,27 @@ namespace Contabilidade.Forms.Cadastros
                             catch (CustomException ex)
                             {
                                 transacao.Rollback();
+                                
+                                // Atualizar DataGrid, apenas para os casos em que um novo histórico foi criado e deu algum erro após
+                                if (novoHistorico)
+                                {
+                                    novoHistorico = false;
+                                    atualizarDataGrid();
+                                }
+                                
                                 MessageBox.Show($"{ex.Message?.ToString()}", "Erro ao excluir o histórico", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
                             catch (Exception ex)
                             {
                                 transacao.Rollback();
+                                
+                                // Atualizar DataGrid, apenas para os casos em que um novo histórico foi criado e deu algum erro após
+                                if (novoHistorico)
+                                {
+                                    novoHistorico = false;
+                                    atualizarDataGrid();
+                                }
+
                                 MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao excluir o histórico", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
                         }
@@ -343,6 +362,13 @@ namespace Contabilidade.Forms.Cadastros
             }
             catch (Exception ex)
             {
+                // Atualizar DataGrid, apenas para os casos em que um novo histórico foi criado e deu algum erro após
+                if (novoHistorico)
+                {
+                    novoHistorico = false;
+                    atualizarDataGrid();
+                }
+
                 MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao excluir o histórico", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

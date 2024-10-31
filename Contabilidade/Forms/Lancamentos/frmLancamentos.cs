@@ -28,7 +28,7 @@ namespace Contabilidade.Forms.Lancamentos
         public void atualizarDataGrid()
         {
             // Query de pesquisa
-            string sql = "SELECT l.id, l.conta, c.descricao, l.valor, l.data, l.id_historico, h.historico FROM lancamentos l JOIN contas c ON l.conta = c.conta JOIN historicos h ON l.id_historico = h.id ORDER BY l.conta, l.data";
+            string sql = "SELECT l.id, l.conta, c.descricao, l.valor, l.data, l.id_historico, h.historico FROM lancamentos l JOIN contas c ON l.conta = c.conta JOIN historicos h ON l.id_historico = h.id ORDER BY l.data DESC, l.conta";
             using (var command = new SqliteCommand(sql, con.conn))
             {
                 dtDados.Clear();
@@ -44,44 +44,6 @@ namespace Contabilidade.Forms.Lancamentos
                 dgvLancamentos.DataSource = dv;
 
                 cbbFiltrar.SelectedIndex = 0;
-            }
-        }
-
-        public static void reverterRegistrosCaixa(Conexao con, SqliteCommand comando, decimal valorOriginal, SqliteTransaction transacao)
-        {
-            using (var reader = comando.ExecuteReader())
-            {
-                // Criar comando para reverter os registros
-                var sql2 = "UPDATE registros_caixa SET saldo = (saldo - @valor) WHERE data >= @data";
-                using (var comando2 = new SqliteCommand(sql2, con.conn))
-                {
-                    // Atribuir transação ao comando 2
-                    comando2.Transaction = transacao;
-
-                    // Variáveis para controle dos campos modificados
-                    var totalCampos = 0;
-                    var totalAlterado = 0;
-
-                    // Para cada campo encontrado
-                    while (reader.Read())
-                    {
-                        var dataRegistro = reader.ToString();
-
-                        // Atualizar os campos de referência (valor apenas é inserido novamente por causa do .Clear())
-                        comando2.Parameters.Clear();
-                        comando2.Parameters.AddWithValue("@valor", valorOriginal);
-                        comando2.Parameters.AddWithValue("@data", dataRegistro);
-
-                        totalCampos++;
-                        totalAlterado += comando2.ExecuteNonQuery();
-                    }
-
-                    // Testar se todos os registros foram alterados
-                    if (totalCampos != totalAlterado)
-                    {
-                        throw new CustomException("Houve um erro na hora de atualizar os valores de saldo");
-                    }
-                }
             }
         }
 
@@ -123,23 +85,26 @@ namespace Contabilidade.Forms.Lancamentos
             }
         }
 
-        public static void excluirLancamento(Conexao con, string ID, string dataConvertida, decimal valorOriginal, SqliteTransaction transacao)
+        public static void excluirLancamento(Conexao con, string ID, string dataConvertida, decimal valorLancamento, SqliteTransaction transacao)
         {
             using (var comando = new SqliteCommand("", con.conn))
             {
-                // Reverter valores do lançamento na sua data
-                comando.CommandText = "SELECT id FROM lancamentos WHERE data = @data AND id > @id;";
-                comando.Parameters.AddWithValue("@id", ID);
-                reverterLancamentos(con, comando, valorOriginal, transacao);
+                comando.Transaction = transacao;
 
-                // Reverter valor do lançamento nas datas seguintes
-                comando.CommandText = "SELECT id FROM lancamentos WHERE data > @data";
+                // Reverter valores do lançamento na sua data -> atualizar saldos nos lançamentos seguintes
+                comando.CommandText = "SELECT id FROM lancamentos WHERE data = @data AND id > @id;";
                 comando.Parameters.AddWithValue("@data", dataConvertida);
-                reverterLancamentos(con, comando, valorOriginal, transacao);
+                comando.Parameters.AddWithValue("@id", ID);
+                reverterLancamentos(con, comando, valorLancamento, transacao);
+
+                // Reverter valor do lançamento nas datas seguintes -> atualizar saldos dos lançamentos seguintes
+                comando.CommandText = "SELECT id FROM lancamentos WHERE data > @data";
+                reverterLancamentos(con, comando, valorLancamento, transacao);
 
                 // Reverter valor do lançamento nos registros do caixa nas datas >= sua data
-                comando.CommandText = "SELECT data FROM registros_caixa WHERE data >= @data;";
-                reverterRegistrosCaixa(con, comando, valorOriginal, transacao);
+                comando.CommandText = "UPDATE registros_caixa SET saldo = (saldo - @valor) WHERE data >= @data;";
+                comando.Parameters.AddWithValue("@valor", valorLancamento);
+                comando.ExecuteNonQuery();
 
                 // Excluir lançamento
                 comando.CommandText = "DELETE FROM lancamentos WHERE id = @id;";

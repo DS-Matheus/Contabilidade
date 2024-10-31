@@ -25,15 +25,17 @@ namespace Contabilidade.Forms.Cadastros
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
         private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
         Conexao con;
+        SqliteTransaction transacao;
         static DataTable dtDados = new DataTable();
         DataView dv = dtDados.DefaultView;
         string idAntigo = "";
 
-        public frmHistoricosSelecionar(Conexao conexaoBanco, string idAntigo)
+        public frmHistoricosSelecionar(Conexao conexaoBanco, SqliteTransaction transacaoComando, string idAntigo)
         {
             InitializeComponent();
 
             this.con = conexaoBanco;
+            this.transacao = transacaoComando;
             this.idAntigo = idAntigo;
 
             atualizarDataGrid();
@@ -45,6 +47,8 @@ namespace Contabilidade.Forms.Cadastros
             string sql = "SELECT * FROM historicos;";
             using (var command = new SqliteCommand(sql, con.conn))
             {
+                command.Transaction = transacao;
+
                 dtDados.Clear();
                 using (var reader = command.ExecuteReader())
                 {
@@ -97,6 +101,8 @@ namespace Contabilidade.Forms.Cadastros
                 string sql = "INSERT INTO historicos (historico) VALUES(@historico);";
                 using (var comando = new SqliteCommand(sql, con.conn))
                 {
+                    comando.Transaction = transacao;
+
                     comando.Parameters.AddWithValue("@historico", historicoNovo);
 
                     int retornoBD = comando.ExecuteNonQuery();
@@ -104,22 +110,25 @@ namespace Contabilidade.Forms.Cadastros
                     // Verificar se houve a criação da linha (0 = negativo)
                     if (retornoBD > 0)
                     {
-                        using (var command = new SqliteCommand("SELECT last_insert_rowid();", con.conn))
-                        {
-                            var id = (Int64)command.ExecuteScalar();
+                        comando.CommandText = "SELECT last_insert_rowid();";
+                        var id = (Int64)comando.ExecuteScalar();
 
-                            // Adicionar dados na tabela
-                            DataRow row = dtDados.NewRow();
-                            row["id"] = id;
-                            row["historico"] = historicoNovo;
-                            dtDados.Rows.Add(row);
+                        // Adicionar dados na tabela
+                        DataRow row = dtDados.NewRow();
+                        row["id"] = id;
+                        row["historico"] = historicoNovo;
+                        dtDados.Rows.Add(row);
 
-                            dgvHistoricos.Refresh();
+                        dgvHistoricos.Refresh();
 
-                            txtHistorico.Text = txtHistorico.Text.Trim();
+                        txtHistorico.Text = txtHistorico.Text.Trim();
 
-                            MessageBox.Show("Histórico criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                        }
+                        MessageBox.Show("Histórico criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+                        // Salvar registro commitando sua alteração
+                        transacao.Commit();
+
+                        frmHistoricos.novoHistorico = true;
                     }
                     else
                     {
