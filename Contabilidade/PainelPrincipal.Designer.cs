@@ -46,9 +46,6 @@
             btnRelAnalitico = new Button();
             btnRelDiario = new Button();
             btnRelatorios = new Button();
-            pnlLancamentos = new Panel();
-            btnTransporte = new Button();
-            btnMovimentacao = new Button();
             btnLancamentos = new Button();
             pnlCadastros = new Panel();
             btnUsuarios = new Button();
@@ -71,7 +68,6 @@
             pnlMenuLateral.SuspendLayout();
             pnlBackup.SuspendLayout();
             pnlRelatorios.SuspendLayout();
-            pnlLancamentos.SuspendLayout();
             pnlCadastros.SuspendLayout();
             pnlTitulo.SuspendLayout();
             pnlDesktop.SuspendLayout();
@@ -144,7 +140,6 @@
             pnlMenuLateral.Controls.Add(pnlBackup);
             pnlMenuLateral.Controls.Add(pnlRelatorios);
             pnlMenuLateral.Controls.Add(btnRelatorios);
-            pnlMenuLateral.Controls.Add(pnlLancamentos);
             pnlMenuLateral.Controls.Add(btnLancamentos);
             pnlMenuLateral.Controls.Add(pnlCadastros);
             pnlMenuLateral.Controls.Add(btnLogoff);
@@ -166,7 +161,7 @@
             btnSistema.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnSistema.ForeColor = Color.Gainsboro;
             btnSistema.ImageAlign = ContentAlignment.MiddleLeft;
-            btnSistema.Location = new Point(0, 600);
+            btnSistema.Location = new Point(0, 520);
             btnSistema.Name = "btnSistema";
             btnSistema.Padding = new Padding(10, 0, 0, 0);
             btnSistema.Size = new Size(203, 40);
@@ -182,7 +177,7 @@
             pnlBackup.Controls.Add(btnRestaurar);
             pnlBackup.Controls.Add(btnBackup);
             pnlBackup.Dock = DockStyle.Bottom;
-            pnlBackup.Location = new Point(0, 640);
+            pnlBackup.Location = new Point(0, 560);
             pnlBackup.Name = "pnlBackup";
             pnlBackup.Size = new Size(203, 80);
             pnlBackup.TabIndex = 17;
@@ -237,7 +232,7 @@
             pnlRelatorios.Controls.Add(btnRelAnalitico);
             pnlRelatorios.Controls.Add(btnRelDiario);
             pnlRelatorios.Dock = DockStyle.Top;
-            pnlRelatorios.Location = new Point(0, 400);
+            pnlRelatorios.Location = new Point(0, 320);
             pnlRelatorios.Name = "pnlRelatorios";
             pnlRelatorios.Size = new Size(203, 200);
             pnlRelatorios.TabIndex = 16;
@@ -352,7 +347,7 @@
             btnRelatorios.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnRelatorios.ForeColor = Color.Gainsboro;
             btnRelatorios.ImageAlign = ContentAlignment.MiddleLeft;
-            btnRelatorios.Location = new Point(0, 360);
+            btnRelatorios.Location = new Point(0, 280);
             btnRelatorios.Name = "btnRelatorios";
             btnRelatorios.Padding = new Padding(10, 0, 0, 0);
             btnRelatorios.Size = new Size(203, 40);
@@ -362,58 +357,6 @@
             btnRelatorios.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnRelatorios.UseVisualStyleBackColor = false;
             btnRelatorios.Click += btnRelatorios_Click;
-            // 
-            // pnlLancamentos
-            // 
-            pnlLancamentos.BackColor = Color.FromArgb(62, 62, 92);
-            pnlLancamentos.Controls.Add(btnTransporte);
-            pnlLancamentos.Controls.Add(btnMovimentacao);
-            pnlLancamentos.Dock = DockStyle.Top;
-            pnlLancamentos.Location = new Point(0, 280);
-            pnlLancamentos.Name = "pnlLancamentos";
-            pnlLancamentos.Size = new Size(203, 80);
-            pnlLancamentos.TabIndex = 14;
-            pnlLancamentos.Visible = false;
-            // 
-            // btnTransporte
-            // 
-            btnTransporte.BackColor = Color.FromArgb(61, 61, 91);
-            btnTransporte.Dock = DockStyle.Top;
-            btnTransporte.FlatAppearance.BorderSize = 0;
-            btnTransporte.FlatStyle = FlatStyle.Flat;
-            btnTransporte.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnTransporte.ForeColor = Color.Gainsboro;
-            btnTransporte.ImageAlign = ContentAlignment.MiddleLeft;
-            btnTransporte.Location = new Point(0, 40);
-            btnTransporte.Name = "btnTransporte";
-            btnTransporte.Padding = new Padding(30, 0, 0, 0);
-            btnTransporte.Size = new Size(203, 40);
-            btnTransporte.TabIndex = 8;
-            btnTransporte.Text = "Transportar Saldo";
-            btnTransporte.TextAlign = ContentAlignment.MiddleLeft;
-            btnTransporte.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btnTransporte.UseVisualStyleBackColor = false;
-            btnTransporte.Click += btnTransporte_Click;
-            // 
-            // btnMovimentacao
-            // 
-            btnMovimentacao.BackColor = Color.FromArgb(61, 61, 91);
-            btnMovimentacao.Dock = DockStyle.Top;
-            btnMovimentacao.FlatAppearance.BorderSize = 0;
-            btnMovimentacao.FlatStyle = FlatStyle.Flat;
-            btnMovimentacao.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnMovimentacao.ForeColor = Color.Gainsboro;
-            btnMovimentacao.ImageAlign = ContentAlignment.MiddleLeft;
-            btnMovimentacao.Location = new Point(0, 0);
-            btnMovimentacao.Name = "btnMovimentacao";
-            btnMovimentacao.Padding = new Padding(30, 0, 0, 0);
-            btnMovimentacao.Size = new Size(203, 40);
-            btnMovimentacao.TabIndex = 7;
-            btnMovimentacao.Text = "Movimentação";
-            btnMovimentacao.TextAlign = ContentAlignment.MiddleLeft;
-            btnMovimentacao.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btnMovimentacao.UseVisualStyleBackColor = false;
-            btnMovimentacao.Click += btnMovimentacao_Click;
             // 
             // btnLancamentos
             // 
@@ -517,7 +460,7 @@
             btnLogoff.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnLogoff.ForeColor = Color.Gainsboro;
             btnLogoff.ImageAlign = ContentAlignment.MiddleLeft;
-            btnLogoff.Location = new Point(0, 720);
+            btnLogoff.Location = new Point(0, 640);
             btnLogoff.Name = "btnLogoff";
             btnLogoff.Padding = new Padding(10, 0, 0, 0);
             btnLogoff.Size = new Size(203, 40);
@@ -680,7 +623,6 @@
             pnlMenuLateral.ResumeLayout(false);
             pnlBackup.ResumeLayout(false);
             pnlRelatorios.ResumeLayout(false);
-            pnlLancamentos.ResumeLayout(false);
             pnlCadastros.ResumeLayout(false);
             pnlTitulo.ResumeLayout(false);
             pnlDesktop.ResumeLayout(false);
@@ -714,9 +656,6 @@
         private Button btnRelAnalitico;
         private Button btnRelDiario;
         private Button btnRelatorios;
-        private Panel pnlLancamentos;
-        private Button btnTransporte;
-        private Button btnMovimentacao;
         private MonthCalendar calendario;
         private Label lblRelogio;
         private System.Windows.Forms.Timer timerRelogio;

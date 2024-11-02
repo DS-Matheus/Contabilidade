@@ -64,7 +64,6 @@ namespace Contabilidade
                     List<Panel> listaPaineisMenu = [
                         pnlMenuLateral,
                         pnlCadastros,
-                        pnlLancamentos,
                         pnlRelatorios,
                         pnlBackup,
                     ];
@@ -81,8 +80,6 @@ namespace Contabilidade
                         btnContas,
                         btnHistoricos,
                         btnUsuarios,
-                        btnMovimentacao,
-                        btnTransporte,
                         btnRelDiario,
                         btnRelAnalitico,
                         btnBalanceteGeral,
@@ -141,7 +138,6 @@ namespace Contabilidade
             List<Panel> listaPaineis = [
                 pnlMenuLateral,
                 pnlCadastros,
-                pnlLancamentos,
                 pnlRelatorios,
                 pnlBackup,
             ];
@@ -158,8 +154,6 @@ namespace Contabilidade
                 btnContas,
                 btnHistoricos,
                 btnUsuarios,
-                btnMovimentacao,
-                btnTransporte,
                 btnRelDiario,
                 btnRelAnalitico,
                 btnBalanceteGeral,
@@ -243,7 +237,6 @@ namespace Contabilidade
         private void esconderSubMenus()
         {
             pnlCadastros.Visible = false;
-            pnlLancamentos.Visible = false;
             pnlRelatorios.Visible = false;
             pnlBackup.Visible = false;
         }
@@ -308,17 +301,8 @@ namespace Contabilidade
 
         private void btnLancamentos_Click(object sender, EventArgs e)
         {
-            exibirSubMenu(pnlLancamentos);
-        }
-
-        private void btnMovimentacao_Click(object sender, EventArgs e)
-        {
+            esconderSubMenus();
             abrirFormulario(new Forms.Lancamentos.frmLancamentos(con), sender, "lançamentos");
-        }
-
-        private void btnTransporte_Click(object sender, EventArgs e)
-        {
-            abrirFormulario(new Forms.Lancamentos.frmTransportarSaldo(), sender, "lançamentos");
         }
 
         private void btnRelatorios_Click(object sender, EventArgs e)
