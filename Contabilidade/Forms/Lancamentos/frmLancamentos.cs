@@ -531,7 +531,7 @@ namespace Contabilidade.Forms.Lancamentos
             try
             {
                 // Verificar se o usuário realmente quer excluir o lançamento
-                var dialogResult = MessageBox.Show("Deseja realmente excluir esse lançamento? Essa operação não poderá ser desfeita!", "Confirmação de exclusão do lançamento", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                var dialogResult = MessageBox.Show("Deseja realmente excluir esse lançamento? Essa operação não poderá ser desfeita!", "Confirmação de exclusão do lançamento", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
                 if (dialogResult == DialogResult.Yes)
                 {

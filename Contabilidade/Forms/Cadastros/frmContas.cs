@@ -483,7 +483,7 @@ namespace Contabilidade.Forms.Cadastros
         {
             try
             {
-                var dialogResult = MessageBox.Show("Deseja excluir a conta selecionada? Esse processo não pode ser desfeito!", "Confirmação de exclusão da conta", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                var dialogResult = MessageBox.Show("Deseja excluir a conta selecionada? Esse processo não pode ser desfeito!", "Confirmação de exclusão da conta", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (dialogResult == DialogResult.Yes)
                 {
                     // Verifica se uma linha foi selecionada
@@ -507,7 +507,7 @@ namespace Contabilidade.Forms.Cadastros
                                     // Se o nível for sintético, avisar sobre a exclusão de todas as contas analiticas associadas
                                     if (nivelExcluir == "S")
                                     {
-                                        dialogResult = MessageBox.Show("A conta selecionada é do tipo sintético, isso quer dizer que ao excluí-la todas as contas analíticas associadas também serão removidas, deseja continuar? Esse processo é irreversível!", "Confirmação de exclusão de conta sintética", MessageBoxButtons.YesNoCancel);
+                                        dialogResult = MessageBox.Show("A conta selecionada é do tipo sintético, isso quer dizer que ao excluí-la todas as contas analíticas associadas também serão removidas, deseja continuar? Esse processo é irreversível!", "Confirmação de exclusão de conta sintética", MessageBoxButtons.YesNo);
 
                                         if (dialogResult != DialogResult.Yes)
                                         {

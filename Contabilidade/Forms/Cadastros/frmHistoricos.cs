@@ -199,7 +199,7 @@ namespace Contabilidade.Forms.Cadastros
         {
             try
             {
-                var dialogResult = MessageBox.Show("Deseja realmente excluir o histórico selecionado? Esse processo não pode ser desfeito!", "Confirmação de exclusão do histórico", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                var dialogResult = MessageBox.Show("Deseja realmente excluir o histórico selecionado? Esse processo não pode ser desfeito!", "Confirmação de exclusão do histórico", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (dialogResult == DialogResult.Yes)
                 {
                     // Verifica se uma linha foi selecionada
@@ -226,7 +226,7 @@ namespace Contabilidade.Forms.Cadastros
 
                                     if (registros > 0)
                                     {
-                                        dialogResult = MessageBox.Show("Alguns lançamentos utilizam o histórico informado, deseja alterar todos eles para um histórico diferente?", "Confirmação de alteração do histórico de lançamentos", MessageBoxButtons.YesNoCancel);
+                                        dialogResult = MessageBox.Show("Alguns lançamentos utilizam o histórico informado, deseja alterar todos eles para um histórico diferente?", "Confirmação de alteração do histórico de lançamentos", MessageBoxButtons.YesNo);
 
                                         // Se sim, alterar o id_historico de todos os lançamentos
                                         if (dialogResult == DialogResult.Yes)
@@ -262,12 +262,12 @@ namespace Contabilidade.Forms.Cadastros
                                         // Se não, considerar que deseja excluir, mas pedir a confirmação da exclusão mais uma vez
                                         else
                                         {
-                                            dialogResult = MessageBox.Show("Você deseja então excluir todos os lançamentos associados a esse histórico? Esse processo é irreversível!", "Confirmação de exclusão de histórico e lançamentos", MessageBoxButtons.YesNoCancel);
+                                            dialogResult = MessageBox.Show("Você deseja então excluir todos os lançamentos associados a esse histórico? Esse processo é irreversível!", "Confirmação de exclusão de histórico e lançamentos", MessageBoxButtons.YesNo);
 
                                             // Se aceitar, verificar uma última vez a decisão
                                             if (dialogResult == DialogResult.Yes)
                                             {
-                                                dialogResult = MessageBox.Show("Você realmente deseja excluir todos os lançamentos associados a esse histórico? Esse processo é irreversível! (verificação dupla)", "Confirmação de exclusão de histórico e lançamentos", MessageBoxButtons.YesNoCancel);
+                                                dialogResult = MessageBox.Show("Você realmente deseja excluir todos os lançamentos associados a esse histórico? Esse processo é irreversível! (verificação dupla)", "Confirmação de exclusão de histórico e lançamentos", MessageBoxButtons.YesNo);
 
                                                 // Se a resposta for sim, excluir todos os lançamentos com o id_historico e atualizar os seus valores no caixa/saldos posteriores
                                                 if (dialogResult == DialogResult.Yes)
