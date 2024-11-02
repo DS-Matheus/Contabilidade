@@ -39,6 +39,7 @@
             groupBox1 = new GroupBox();
             cbbNivel2 = new ComboBox();
             cbbFiltrar = new ComboBox();
+            txtFiltrar = new TextBox();
             dgvContas = new DataGridView();
             Conta = new DataGridViewTextBoxColumn();
             Nível = new DataGridViewTextBoxColumn();
@@ -50,7 +51,6 @@
             txtConta = new TextBox();
             label1 = new Label();
             btnCriar = new Button();
-            txtFiltrar = new TextBox();
             pnlBarraTitulo.SuspendLayout();
             panel1.SuspendLayout();
             groupBox1.SuspendLayout();
@@ -136,9 +136,9 @@
             groupBox1.Controls.Add(cbbNivel2);
             groupBox1.Controls.Add(cbbFiltrar);
             groupBox1.Controls.Add(txtFiltrar);
-            groupBox1.Location = new Point(90, 202);
+            groupBox1.Location = new Point(25, 202);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(250, 85);
+            groupBox1.Size = new Size(380, 85);
             groupBox1.TabIndex = 19;
             groupBox1.TabStop = false;
             groupBox1.Text = "Filtrar por";
@@ -150,7 +150,7 @@
             cbbNivel2.Items.AddRange(new object[] { "Analítico", "Sintético", "Ambos" });
             cbbNivel2.Location = new Point(6, 51);
             cbbNivel2.Name = "cbbNivel2";
-            cbbNivel2.Size = new Size(238, 23);
+            cbbNivel2.Size = new Size(368, 23);
             cbbNivel2.TabIndex = 19;
             cbbNivel2.Visible = false;
             // 
@@ -161,9 +161,17 @@
             cbbFiltrar.Items.AddRange(new object[] { "Conta", "Descrição", "Nível" });
             cbbFiltrar.Location = new Point(6, 22);
             cbbFiltrar.Name = "cbbFiltrar";
-            cbbFiltrar.Size = new Size(238, 23);
+            cbbFiltrar.Size = new Size(368, 23);
             cbbFiltrar.TabIndex = 9;
             cbbFiltrar.SelectedIndexChanged += cbbFiltrar_SelectedIndexChanged;
+            // 
+            // txtFiltrar
+            // 
+            txtFiltrar.Location = new Point(6, 51);
+            txtFiltrar.Name = "txtFiltrar";
+            txtFiltrar.Size = new Size(368, 23);
+            txtFiltrar.TabIndex = 10;
+            txtFiltrar.TextChanged += txtFiltrar_TextChanged;
             // 
             // dgvContas
             // 
@@ -281,14 +289,6 @@
             btnCriar.Text = "Criar";
             btnCriar.UseVisualStyleBackColor = true;
             btnCriar.Click += btnCriar_Click;
-            // 
-            // txtFiltrar
-            // 
-            txtFiltrar.Location = new Point(6, 51);
-            txtFiltrar.Name = "txtFiltrar";
-            txtFiltrar.Size = new Size(238, 23);
-            txtFiltrar.TabIndex = 10;
-            txtFiltrar.TextChanged += txtFiltrar_TextChanged;
             // 
             // frmLancamentosDadosContas
             // 

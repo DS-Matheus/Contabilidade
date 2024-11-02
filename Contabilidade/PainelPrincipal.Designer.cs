@@ -616,7 +616,7 @@
             FormBorderStyle = FormBorderStyle.None;
             KeyPreview = true;
             Name = "frmPainelPrincipal";
-            StartPosition = FormStartPosition.CenterScreen;
+            StartPosition = FormStartPosition.CenterParent;
             Text = "PainelPrincipal";
             pnlLogo.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)picLogo).EndInit();

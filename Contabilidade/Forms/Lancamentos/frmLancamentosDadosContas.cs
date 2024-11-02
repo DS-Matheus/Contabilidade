@@ -31,7 +31,7 @@ namespace Contabilidade.Forms.Lancamentos
         public void atualizarDataGrid()
         {
             // Query de pesquisa
-            string sql = "SELECT * FROM contas ORDER BY conta;";
+            string sql = "SELECT * FROM contas WHERE conta != '0' ORDER BY conta;";
             using (var command = new SqliteCommand(sql, con.conn))
             {
                 dtDados.Clear();

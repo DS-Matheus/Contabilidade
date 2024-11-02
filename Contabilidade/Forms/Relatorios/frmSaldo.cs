@@ -26,7 +26,7 @@ namespace Contabilidade.Forms.Relatorios
         public void atualizarDataGrid()
         {
             // Query de pesquisa
-            string sql = "SELECT * FROM contas ORDER BY conta;";
+            string sql = "SELECT * FROM contas WHERE conta != '0' ORDER BY conta;";
             using (var command = new SqliteCommand(sql, con.conn))
             {
                 dtDados.Clear();
@@ -291,6 +291,11 @@ namespace Contabilidade.Forms.Relatorios
                 if (string.IsNullOrWhiteSpace(txtConta.Text))
                 {
                     MessageBox.Show("Selecione uma conta antes de gerar o relatório, dê um duplo clique na linha desejada.", "Uma conta não foi selecionada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                // Verificar se a conta selecionada é o caixa (caso ela apareça, de alguma forma)
+                else if (txtConta.Text == "0")
+                {
+                    MessageBox.Show("Não é possível gerar um relatório desse tipo para o caixa, por favor, selecione as outras contas.", "Uma conta válida não foi selecionada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {

@@ -30,7 +30,7 @@ namespace Contabilidade.Forms.Relatorios
         public void atualizarDataGrid()
         {
             // Query de pesquisa
-            string sql = "SELECT * FROM contas ORDER BY conta;";
+            string sql = "SELECT * FROM contas WHERE conta != '0' ORDER BY conta;";
             using (var command = new SqliteCommand(sql, con.conn))
             {
                 dtDados.Clear();
@@ -174,10 +174,10 @@ namespace Contabilidade.Forms.Relatorios
         }
         private class Lancamento
         {
-            public DateTime data {  get; set; }
-            public string historico { get; set; }
-            public decimal valor { get; set; }
-            public decimal saldo {  get; set; }
+            public DateTime Data {  get; set; }
+            public string Historico { get; set; }
+            public decimal Valor { get; set; }
+            public decimal Saldo {  get; set; }
         }
 
         public static (string, string, string, string) ordenarDatasEObterStrings(DateTime data1, DateTime data2)
@@ -236,10 +236,10 @@ namespace Contabilidade.Forms.Relatorios
                             {
                                 Lancamento lancamento = new Lancamento
                                 {
-                                    data = Convert.ToDateTime(reader["data"]),
-                                    historico = reader["historico"].ToString(),
-                                    valor = Convert.ToDecimal(reader["valor"]),
-                                    saldo = Convert.ToDecimal(reader["saldo"])
+                                    Data = Convert.ToDateTime(reader["data"]),
+                                    Historico = reader["historico"].ToString(),
+                                    Valor = Convert.ToDecimal(reader["valor"]),
+                                    Saldo = Convert.ToDecimal(reader["saldo"])
                                 };
                                 listLancamentos.Add(lancamento);
                             }
@@ -337,7 +337,7 @@ namespace Contabilidade.Forms.Relatorios
                                         foreach (var lancamento in listLancamentos)
                                         {
                                             // Obter dados
-                                            var (data, historico, valor, saldo) = (lancamento.data, lancamento.historico, lancamento.valor, lancamento.saldo);
+                                            var (data, historico, valor, saldo) = (lancamento.Data, lancamento.Historico, lancamento.Valor, lancamento.Saldo);
                                             var dataLancamento = data.ToString("dd/MM/yyyy");
 
                                             // Iniciar criação de linha
@@ -409,7 +409,7 @@ namespace Contabilidade.Forms.Relatorios
                                             }
 
                                             // Verificar quantas linhas serão necessárias para cada uso - Não contar o espaço entre as colunas
-                                            var linhasNecessarias = lancamento.historico.Length >= 57 ? 2 : 1;
+                                            var linhasNecessarias = lancamento.Historico.Length >= 57 ? 2 : 1;
 
                                             // Verificar se há linhas nessa página para incluir os registros, caso não haja: criar nova página com o cabeçalho
                                             if ((linhasDisponiveis - linhasNecessarias) < 0)

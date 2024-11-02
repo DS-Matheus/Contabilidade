@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             pnlBarraTitulo = new Panel();
             btnMinimizar = new Button();
             lblTitulo = new Label();
@@ -122,7 +122,7 @@
             // groupBox1
             // 
             groupBox1.Controls.Add(txtFiltrar);
-            groupBox1.Location = new Point(32, 314);
+            groupBox1.Location = new Point(31, 202);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(438, 66);
             groupBox1.TabIndex = 20;
@@ -131,7 +131,7 @@
             // 
             // txtFiltrar
             // 
-            txtFiltrar.Location = new Point(6, 22);
+            txtFiltrar.Location = new Point(6, 24);
             txtFiltrar.Name = "txtFiltrar";
             txtFiltrar.Size = new Size(426, 23);
             txtFiltrar.TabIndex = 10;
@@ -145,7 +145,7 @@
             dgvHistoricos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvHistoricos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvHistoricos.Columns.AddRange(new DataGridViewColumn[] { ID, Histórico });
-            dgvHistoricos.Location = new Point(32, 130);
+            dgvHistoricos.Location = new Point(31, 18);
             dgvHistoricos.MultiSelect = false;
             dgvHistoricos.Name = "dgvHistoricos";
             dgvHistoricos.ReadOnly = true;
@@ -158,8 +158,8 @@
             // 
             ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             ID.DataPropertyName = "id";
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            ID.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            ID.DefaultCellStyle = dataGridViewCellStyle3;
             ID.HeaderText = "ID";
             ID.Name = "ID";
             ID.ReadOnly = true;
@@ -168,15 +168,15 @@
             // Histórico
             // 
             Histórico.DataPropertyName = "historico";
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            Histórico.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            Histórico.DefaultCellStyle = dataGridViewCellStyle4;
             Histórico.HeaderText = "Histórico";
             Histórico.Name = "Histórico";
             Histórico.ReadOnly = true;
             // 
             // btnCriar
             // 
-            btnCriar.Location = new Point(32, 92);
+            btnCriar.Location = new Point(31, 351);
             btnCriar.Margin = new Padding(3, 10, 3, 3);
             btnCriar.Name = "btnCriar";
             btnCriar.Size = new Size(438, 32);
@@ -187,7 +187,7 @@
             // 
             // txtHistorico
             // 
-            txtHistorico.Location = new Point(32, 39);
+            txtHistorico.Location = new Point(31, 298);
             txtHistorico.MaxLength = 100;
             txtHistorico.Multiline = true;
             txtHistorico.Name = "txtHistorico";
@@ -197,7 +197,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(32, 21);
+            label1.Location = new Point(31, 280);
             label1.Name = "label1";
             label1.Size = new Size(55, 15);
             label1.TabIndex = 1;
