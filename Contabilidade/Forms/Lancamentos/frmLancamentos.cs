@@ -14,7 +14,7 @@ namespace Contabilidade.Forms.Lancamentos
         public static string conta { get; set; } = "";
         public static decimal valor { get; set; } = 0;
         public static string id_historico { get; set; } = "";
-        public static DateTime data { get; set; } = DateTime.Today;
+        public static DateTime data { get; set; } = DateTime.MinValue;
 
         public frmLancamentos(Conexao conexaoBanco)
         {
@@ -136,6 +136,13 @@ namespace Contabilidade.Forms.Lancamentos
         {
             // Variável para armazenar o saldo da conta antes do lançamento
             decimal saldo = 0;
+
+            // Verificar se a data obtida não é a padrão (se sim: houve um erro na hora de obter os dados)
+            if (DateTime.MinValue == data)
+            {
+                MessageBox.Show("Houve um erro na hora de obter a data informada", "Erro ao processar dados", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             // Converter data para o formato do banco (sem as horas)
             var dataConvertida = data.ToString("yyyy-MM-dd");
@@ -313,7 +320,7 @@ namespace Contabilidade.Forms.Lancamentos
                                     conta = "";
                                     valor = 0;
                                     id_historico = "";
-                                    data = DateTime.Today;
+                                    data = DateTime.MinValue;
 
                                     MessageBox.Show("Lançamento criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                 }
@@ -500,6 +507,12 @@ namespace Contabilidade.Forms.Lancamentos
                                         // Excluir registro anterior e atualizar valoress
                                         excluirLancamento(con, idAntigo, dataAntigo.ToString("yyyy-MM-dd"), valorAntigo, transacao);
 
+                                        // Verificar se a data obtida não é a padrão (se sim: houve um erro na hora de obter os dados)
+                                        if (DateTime.MinValue == data)
+                                        {
+                                            throw new CustomException("Houve um erro na hora de obter a data informada");
+                                        }
+
                                         // Converter dataNova para o formato do banco (sem as horas)
                                         var dataConvertida = data.ToString("yyyy-MM-dd");
 
@@ -516,7 +529,7 @@ namespace Contabilidade.Forms.Lancamentos
                                         conta = "";
                                         valor = 0;
                                         id_historico = "";
-                                        data = DateTime.Today;
+                                        data = DateTime.MinValue;
 
                                         MessageBox.Show("Lançamento editado com sucesso!", "Edição bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                     }
