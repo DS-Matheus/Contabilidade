@@ -18,6 +18,7 @@ namespace Contabilidade.Forms.Cadastros
         private extern static void ReleaseCapture();
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
         private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
+        private string usuarioAntigo;
 
         public frmUsuariosDados(string titulo, string usuario, string senha)
         {
@@ -27,6 +28,7 @@ namespace Contabilidade.Forms.Cadastros
             this.lblTitulo.Text = titulo;
 
             txtUsuario.Text = usuario;
+            this.usuarioAntigo = usuario;
             txtSenha.Text = senha;
 
             txtUsuario.Select();
@@ -57,8 +59,8 @@ namespace Contabilidade.Forms.Cadastros
                 txtSenha.Text = "";
                 txtSenha.Focus();
             }
-            // Se o usuário já existir
-            else if (frmUsuarios.verificarExistenciaUsuario(txtUsuario.Text))
+            // Verificar se o usuário antigo é diferente do atual, se for: verificar se ele já existe
+            else if (usuarioAntigo != txtUsuario.Text && frmUsuarios.verificarExistenciaUsuario(txtUsuario.Text))
             {
                 MessageBox.Show("O usuário informado já existe!", "Erro ao informar usuário", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtUsuario.Text = "";

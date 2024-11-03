@@ -250,12 +250,12 @@ namespace Contabilidade.Forms.Cadastros
         {
             if (cbbFiltrar.Text == "Usuário")
             {
-                dv.RowFilter = $"nome LIKE '{txtFiltrar.Text}%'";
+                dv.RowFilter = $"nome LIKE '%{txtFiltrar.Text}%'";
                 dgvUsuarios.DataSource = dv;
             }
             else if (cbbFiltrar.Text == "Senha")
             {
-                dv.RowFilter = $"senha LIKE '{txtFiltrar.Text}%'";
+                dv.RowFilter = $"senha LIKE '%{txtFiltrar.Text}%'";
                 dgvUsuarios.DataSource = dv;
             }
         }
@@ -263,6 +263,7 @@ namespace Contabilidade.Forms.Cadastros
         private void cbbFiltrar_SelectedIndexChanged(object sender, EventArgs e)
         {
             txtFiltrar_TextChanged(sender, e);
+            txtFiltrar.Text = "";
         }
 
         private void btnImprimir_Click(object sender, EventArgs e)
