@@ -182,12 +182,16 @@ namespace Contabilidade.Forms.Cadastros
                             }
                             else
                             {
-                                throw new Exception("Não foi possível criar a nova conta.");
+                                throw new CustomException("Não foi possível criar a nova conta.");
                             }
+                        }
+                        catch (CustomException ex)
+                        {
+                            MessageBox.Show($"{ex.Message?.ToString()}", "Erro ao criar a conta", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show(ex.Message.ToString(), "Conta não criada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao criar a conta", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                 }
