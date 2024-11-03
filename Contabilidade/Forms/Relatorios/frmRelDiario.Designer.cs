@@ -37,9 +37,9 @@
             // 
             // btnVisualizar
             // 
-            btnVisualizar.Location = new Point(366, 294);
+            btnVisualizar.Location = new Point(231, 285);
             btnVisualizar.Name = "btnVisualizar";
-            btnVisualizar.Size = new Size(148, 41);
+            btnVisualizar.Size = new Size(419, 41);
             btnVisualizar.TabIndex = 44;
             btnVisualizar.Text = "Visualizar relatório";
             btnVisualizar.UseVisualStyleBackColor = true;
@@ -48,7 +48,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(231, 184);
+            label2.Location = new Point(231, 175);
             label2.Name = "label2";
             label2.Size = new Size(31, 15);
             label2.TabIndex = 38;
@@ -56,7 +56,7 @@
             // 
             // dtpData
             // 
-            dtpData.Location = new Point(231, 202);
+            dtpData.Location = new Point(231, 193);
             dtpData.Name = "dtpData";
             dtpData.Size = new Size(252, 23);
             dtpData.TabIndex = 36;
@@ -64,7 +64,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(231, 231);
+            label3.Location = new Point(231, 222);
             label3.Name = "label3";
             label3.Size = new Size(131, 15);
             label3.TabIndex = 50;
@@ -72,7 +72,7 @@
             // 
             // txtSubtitulo
             // 
-            txtSubtitulo.Location = new Point(231, 249);
+            txtSubtitulo.Location = new Point(231, 240);
             txtSubtitulo.MaxLength = 110;
             txtSubtitulo.Multiline = true;
             txtSubtitulo.Name = "txtSubtitulo";

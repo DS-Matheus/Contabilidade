@@ -116,10 +116,10 @@
             // 
             // btnConfirmar
             // 
-            btnConfirmar.Location = new Point(98, 149);
+            btnConfirmar.Location = new Point(16, 149);
             btnConfirmar.Margin = new Padding(3, 10, 3, 3);
             btnConfirmar.Name = "btnConfirmar";
-            btnConfirmar.Size = new Size(105, 32);
+            btnConfirmar.Size = new Size(269, 32);
             btnConfirmar.TabIndex = 10;
             btnConfirmar.Text = "Confirmar";
             btnConfirmar.UseVisualStyleBackColor = true;
@@ -142,7 +142,7 @@
             label1.TabIndex = 13;
             label1.Text = "Data Final";
             // 
-            // frmDatasCalcula
+            // frmCalcularObterDados
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -154,7 +154,7 @@
             Controls.Add(btnConfirmar);
             Controls.Add(pnlBarraTitulo);
             FormBorderStyle = FormBorderStyle.None;
-            Name = "frmDatasCalcula";
+            Name = "frmCalcularObterDados";
             StartPosition = FormStartPosition.CenterParent;
             Text = "frmDatasCalcula";
             pnlBarraTitulo.ResumeLayout(false);

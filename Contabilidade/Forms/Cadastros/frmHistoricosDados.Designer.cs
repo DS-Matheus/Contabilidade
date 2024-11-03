@@ -129,10 +129,10 @@
             // 
             // btnSalvar
             // 
-            btnSalvar.Location = new Point(162, 92);
+            btnSalvar.Location = new Point(32, 91);
             btnSalvar.Margin = new Padding(3, 10, 3, 3);
             btnSalvar.Name = "btnSalvar";
-            btnSalvar.Size = new Size(75, 32);
+            btnSalvar.Size = new Size(336, 32);
             btnSalvar.TabIndex = 3;
             btnSalvar.Text = "Salvar";
             btnSalvar.UseVisualStyleBackColor = true;

@@ -55,7 +55,7 @@
             // 
             // txtFiltrar
             // 
-            txtFiltrar.Location = new Point(6, 22);
+            txtFiltrar.Location = new Point(6, 25);
             txtFiltrar.Name = "txtFiltrar";
             txtFiltrar.Size = new Size(332, 23);
             txtFiltrar.TabIndex = 10;

@@ -133,9 +133,10 @@
             // 
             // btnAlterarSinal
             // 
-            btnAlterarSinal.Location = new Point(382, 44);
+            btnAlterarSinal.Image = Properties.Resources.Search;
+            btnAlterarSinal.Location = new Point(380, 43);
             btnAlterarSinal.Name = "btnAlterarSinal";
-            btnAlterarSinal.Size = new Size(23, 23);
+            btnAlterarSinal.Size = new Size(25, 25);
             btnAlterarSinal.TabIndex = 17;
             btnAlterarSinal.UseVisualStyleBackColor = true;
             btnAlterarSinal.Click += btnAlterarSinal_Click;
@@ -175,18 +176,20 @@
             // 
             // btnSelecionarHistorico
             // 
+            btnSelecionarHistorico.Image = Properties.Resources.Search;
             btnSelecionarHistorico.Location = new Point(370, 164);
             btnSelecionarHistorico.Name = "btnSelecionarHistorico";
-            btnSelecionarHistorico.Size = new Size(23, 22);
+            btnSelecionarHistorico.Size = new Size(35, 40);
             btnSelecionarHistorico.TabIndex = 13;
             btnSelecionarHistorico.UseVisualStyleBackColor = true;
             btnSelecionarHistorico.Click += btnSelecionarHistorico_Click;
             // 
             // btnSelecionarConta
             // 
-            btnSelecionarConta.Location = new Point(196, 44);
+            btnSelecionarConta.Image = Properties.Resources.Search;
+            btnSelecionarConta.Location = new Point(196, 43);
             btnSelecionarConta.Name = "btnSelecionarConta";
-            btnSelecionarConta.Size = new Size(23, 23);
+            btnSelecionarConta.Size = new Size(25, 25);
             btnSelecionarConta.TabIndex = 12;
             btnSelecionarConta.UseVisualStyleBackColor = true;
             btnSelecionarConta.Click += btnSelecionarConta_Click;

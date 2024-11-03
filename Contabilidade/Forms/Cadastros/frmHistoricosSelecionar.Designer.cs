@@ -122,7 +122,7 @@
             // groupBox1
             // 
             groupBox1.Controls.Add(txtFiltrar);
-            groupBox1.Location = new Point(32, 314);
+            groupBox1.Location = new Point(31, 206);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(438, 66);
             groupBox1.TabIndex = 20;
@@ -145,7 +145,7 @@
             dgvHistoricos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvHistoricos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvHistoricos.Columns.AddRange(new DataGridViewColumn[] { ID, Histórico });
-            dgvHistoricos.Location = new Point(32, 130);
+            dgvHistoricos.Location = new Point(31, 22);
             dgvHistoricos.MultiSelect = false;
             dgvHistoricos.Name = "dgvHistoricos";
             dgvHistoricos.ReadOnly = true;
@@ -176,7 +176,7 @@
             // 
             // btnCriar
             // 
-            btnCriar.Location = new Point(32, 92);
+            btnCriar.Location = new Point(31, 347);
             btnCriar.Margin = new Padding(3, 10, 3, 3);
             btnCriar.Name = "btnCriar";
             btnCriar.Size = new Size(438, 32);
@@ -187,7 +187,7 @@
             // 
             // txtHistorico
             // 
-            txtHistorico.Location = new Point(32, 39);
+            txtHistorico.Location = new Point(31, 298);
             txtHistorico.MaxLength = 100;
             txtHistorico.Multiline = true;
             txtHistorico.Name = "txtHistorico";
@@ -197,7 +197,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(32, 21);
+            label1.Location = new Point(31, 280);
             label1.Name = "label1";
             label1.Size = new Size(55, 15);
             label1.TabIndex = 1;

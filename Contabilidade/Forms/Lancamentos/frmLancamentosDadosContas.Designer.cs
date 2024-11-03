@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             pnlBarraTitulo = new Panel();
             btnMinimizar = new Button();
             lblTitulo = new Label();
@@ -194,8 +194,8 @@
             // 
             Conta.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             Conta.DataPropertyName = "conta";
-            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Conta.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            Conta.DefaultCellStyle = dataGridViewCellStyle1;
             Conta.HeaderText = "Conta";
             Conta.Name = "Conta";
             Conta.ReadOnly = true;
@@ -205,8 +205,8 @@
             // 
             Nível.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             Nível.DataPropertyName = "nivel";
-            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Nível.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            Nível.DefaultCellStyle = dataGridViewCellStyle2;
             Nível.HeaderText = "Nível";
             Nível.Name = "Nível";
             Nível.ReadOnly = true;
@@ -216,8 +216,8 @@
             // 
             Descrição.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             Descrição.DataPropertyName = "descricao";
-            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            Descrição.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            Descrição.DefaultCellStyle = dataGridViewCellStyle3;
             Descrição.HeaderText = "Descrição";
             Descrição.Name = "Descrição";
             Descrição.ReadOnly = true;
@@ -281,7 +281,7 @@
             // 
             // btnCriar
             // 
-            btnCriar.Location = new Point(25, 426);
+            btnCriar.Location = new Point(25, 423);
             btnCriar.Margin = new Padding(3, 10, 3, 3);
             btnCriar.Name = "btnCriar";
             btnCriar.Size = new Size(380, 32);

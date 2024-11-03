@@ -43,6 +43,7 @@
             txtNome = new TextBox();
             label1 = new Label();
             pnlSidebar = new Panel();
+            pictureBox1 = new PictureBox();
             label5 = new Label();
             label3 = new Label();
             pnlBarraTitulo = new Panel();
@@ -53,6 +54,7 @@
             groupBox1.SuspendLayout();
             gpbInfoUsuario.SuspendLayout();
             pnlSidebar.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             pnlBarraTitulo.SuspendLayout();
             pnlLogin.SuspendLayout();
             SuspendLayout();
@@ -232,6 +234,7 @@
             // pnlSidebar
             // 
             pnlSidebar.BackColor = Color.FromArgb(50, 52, 77);
+            pnlSidebar.Controls.Add(pictureBox1);
             pnlSidebar.Controls.Add(label5);
             pnlSidebar.Controls.Add(label3);
             pnlSidebar.Dock = DockStyle.Left;
@@ -240,6 +243,16 @@
             pnlSidebar.Name = "pnlSidebar";
             pnlSidebar.Size = new Size(260, 340);
             pnlSidebar.TabIndex = 5;
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = Properties.Resources.User;
+            pictureBox1.Location = new Point(56, 61);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(148, 164);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 5;
+            pictureBox1.TabStop = false;
             // 
             // label5
             // 
@@ -257,7 +270,7 @@
             label3.AutoSize = true;
             label3.Font = new Font("Forte", 36F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label3.ForeColor = Color.White;
-            label3.Location = new Point(66, 22);
+            label3.Location = new Point(66, 228);
             label3.Name = "label3";
             label3.Size = new Size(128, 52);
             label3.TabIndex = 0;
@@ -351,6 +364,7 @@
             gpbInfoUsuario.PerformLayout();
             pnlSidebar.ResumeLayout(false);
             pnlSidebar.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             pnlBarraTitulo.ResumeLayout(false);
             pnlBarraTitulo.PerformLayout();
             pnlLogin.ResumeLayout(false);
@@ -381,5 +395,6 @@
         private Button btnRestaurar;
         private Button btnBackup;
         private Label label5;
+        private PictureBox pictureBox1;
     }
 }
