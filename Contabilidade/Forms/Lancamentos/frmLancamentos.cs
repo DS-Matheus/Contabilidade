@@ -2,6 +2,7 @@
 using System.Data;
 using Microsoft.Data.Sqlite;
 using Contabilidade.Classes;
+using DGVPrinterHelper;
 
 namespace Contabilidade.Forms.Lancamentos
 {
@@ -21,7 +22,22 @@ namespace Contabilidade.Forms.Lancamentos
 
             con = conexaoBanco;
 
+            configurarColunaValor();
+
             atualizarDataGrid();
+        }
+
+        private void configurarColunaValor()
+        {
+            // Redefinindo o tipo da coluna 'valor' para decimal
+            if (dtDados.Columns.Contains("valor"))
+            {
+                dtDados.Columns.Remove("valor");
+            }
+            dtDados.Columns.Add("valor", typeof(decimal));
+
+            // Exibir 2 casas decimais
+            dgvLancamentos.Columns["valor"].DefaultCellStyle.Format = "N2";
         }
 
         public void atualizarDataGrid()
@@ -109,7 +125,8 @@ namespace Contabilidade.Forms.Lancamentos
                 comando.CommandText = "DELETE FROM lancamentos WHERE id = @id;";
                 var resultado = comando.ExecuteNonQuery();
 
-                if (resultado == 0) {
+                if (resultado == 0)
+                {
                     throw new CustomException("Não foi possivel excluir o lançamento");
                 }
             }
@@ -319,7 +336,7 @@ namespace Contabilidade.Forms.Lancamentos
             {
                 MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao criar o lançamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            
+
         }
 
         private void btnCalcular_Click(object sender, EventArgs e)
@@ -582,6 +599,30 @@ namespace Contabilidade.Forms.Lancamentos
             catch (Exception ex)
             {
                 MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao excluir o lançamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnImprimir_Click(object sender, EventArgs e)
+        {
+            // Solicita o título do arquivo ao usuário
+            string inputTitle = Microsoft.VisualBasic.Interaction.InputBox("Digite o título do arquivo:", "Título do Arquivo", "");
+
+            // Verifica se o usuário clicou em "Cancelar": se clicou não executa
+            if (!string.IsNullOrEmpty(inputTitle))
+            {
+                // Verifica se o título está vazio ou contém apenas espaços
+                string title = string.IsNullOrWhiteSpace(inputTitle) ? "Lançamentos" : inputTitle;
+
+                var printer = new DGVPrinter();
+                printer.Title = title; // Usa o título fornecido pelo usuário
+                printer.SubTitle = string.Format("Data: {0}", System.DateTime.Now.ToString("dd/MM/yyyy"));
+                printer.SubTitleFormatFlags = StringFormatFlags.LineLimit | StringFormatFlags.NoClip;
+                printer.PageNumbers = true;
+                printer.PageNumberInHeader = false;
+                printer.PorportionalColumns = true;
+                printer.HeaderCellAlignment = StringAlignment.Near;
+                printer.FooterSpacing = 15;
+                printer.PrintDataGridView(dgvLancamentos);
             }
         }
     }

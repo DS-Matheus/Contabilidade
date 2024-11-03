@@ -37,7 +37,6 @@
             btnExcluir = new Button();
             btnCriar = new Button();
             dgvLancamentos = new DataGridView();
-            btnCalcular = new Button();
             ID = new DataGridViewTextBoxColumn();
             Data = new DataGridViewTextBoxColumn();
             Conta = new DataGridViewTextBoxColumn();
@@ -45,6 +44,7 @@
             Valor = new DataGridViewTextBoxColumn();
             ID_Historico = new DataGridViewTextBoxColumn();
             Histórico = new DataGridViewTextBoxColumn();
+            btnCalcular = new Button();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvLancamentos).BeginInit();
             SuspendLayout();
@@ -85,6 +85,7 @@
             btnImprimir.TabIndex = 24;
             btnImprimir.Text = "Imprimir";
             btnImprimir.UseVisualStyleBackColor = true;
+            btnImprimir.Click += btnImprimir_Click;
             // 
             // btnEditar
             // 
@@ -132,16 +133,6 @@
             dgvLancamentos.Size = new Size(856, 391);
             dgvLancamentos.TabIndex = 20;
             // 
-            // btnCalcular
-            // 
-            btnCalcular.Location = new Point(398, 419);
-            btnCalcular.Name = "btnCalcular";
-            btnCalcular.Size = new Size(120, 30);
-            btnCalcular.TabIndex = 26;
-            btnCalcular.Text = "Calcular";
-            btnCalcular.UseVisualStyleBackColor = true;
-            btnCalcular.Click += btnCalcular_Click;
-            // 
             // ID
             // 
             ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
@@ -152,7 +143,6 @@
             ID.Name = "ID";
             ID.ReadOnly = true;
             ID.Visible = false;
-            ID.Width = 43;
             // 
             // Data
             // 
@@ -196,6 +186,16 @@
             Histórico.HeaderText = "Histórico";
             Histórico.Name = "Histórico";
             Histórico.ReadOnly = true;
+            // 
+            // btnCalcular
+            // 
+            btnCalcular.Location = new Point(398, 419);
+            btnCalcular.Name = "btnCalcular";
+            btnCalcular.Size = new Size(120, 30);
+            btnCalcular.TabIndex = 26;
+            btnCalcular.Text = "Calcular";
+            btnCalcular.UseVisualStyleBackColor = true;
+            btnCalcular.Click += btnCalcular_Click;
             // 
             // frmLancamentos
             // 
