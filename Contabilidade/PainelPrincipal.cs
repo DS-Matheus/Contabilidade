@@ -1,15 +1,6 @@
-﻿using Contabilidade.Forms.Cadastros;
+﻿using Contabilidade.Classes;
 using Contabilidade.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Contabilidade
 {
@@ -379,9 +370,22 @@ namespace Contabilidade
             }
             else if (result == DialogResult.No)
             {
-                FazerBackupTodosBancos(pastaBDs);
+                if (frmLogin.verificarExistenciaBancosSqlite(pastaBDs))
+                {
+                    FazerBackupTodosBancos(pastaBDs);
+                }
             }
             // Se result for DialogResult.Cancel, não faz nada (cancela a operação)
+        }
+
+        public static bool IsSubDiretorio(string diretorioPai, string subdiretorio)
+        {
+            // Obtém os caminhos absolutos
+            var diretorioPaiInfo = new DirectoryInfo(diretorioPai);
+            var subdiretorioInfo = new DirectoryInfo(subdiretorio);
+
+            // Verifica se o caminho absoluto do subDiretório começa com o caminho absoluto do parentDir
+            return subdiretorioInfo.FullName.StartsWith(diretorioPaiInfo.FullName, StringComparison.OrdinalIgnoreCase);
         }
 
         public static void FazerBackupBancoAtual(string pastaBDs, string nomeBD)
@@ -396,6 +400,13 @@ namespace Contabilidade
                 {
                     string destino = dialog.SelectedPath;
                     string nomeArquivo = $"{nomeBD}.sqlite";
+
+                    // Verificar se a pasta selecionada não está nas dependências do programa
+                    if (IsSubDiretorio(Application.StartupPath, destino))
+                    {
+                        MessageBox.Show("Não é possível fazer backup para as pastas do programa, tente novamente e selecione outro diretório.", "Erro ao realizar backup", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
 
                     string caminhoCompleto = Path.Combine(destino, nomeArquivo);
 
@@ -433,6 +444,13 @@ namespace Contabilidade
                 {
                     string destino = dialog.SelectedPath;
 
+                    // Verificar se a pasta selecionada não está nas dependências do programa
+                    if (IsSubDiretorio(Application.StartupPath, destino))
+                    {
+                        MessageBox.Show("Não é possível fazer backup para as pastas do programa, tente novamente e selecione outro diretório.", "Erro ao realizar backup", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
                     // Verificar se há arquivos na pasta de origem (pastaBDs)
                     if (Directory.Exists(pastaBDs))
                     {
@@ -440,10 +458,10 @@ namespace Contabilidade
                         string[] arquivosOrigem = Directory.GetFiles(pastaBDs, "*.sqlite");
 
                         // Variável para controlar se houve sobrescrita de arquivos
-                        bool houveSobrescrita = false;
+                        bool fezBackup = false;
 
                         // Perguntar ao usuário se deseja sobrescrever todos os arquivos de destino
-                        DialogResult overwriteAllResult = MessageBox.Show("Deseja sobrescrever todos os arquivos de destino?", "Sobrescrever todos", MessageBoxButtons.YesNo);
+                        DialogResult overwriteAllResult = MessageBox.Show("Deseja sobrescrever todos os arquivos de destino?", "Sobrescrever todos", MessageBoxButtons.YesNoCancel);
 
                         if (overwriteAllResult == DialogResult.Yes)
                         {
@@ -456,11 +474,12 @@ namespace Contabilidade
                                 if (File.Exists(caminhoCompletoDestino))
                                 {
                                     File.Copy(arquivoOrigem, caminhoCompletoDestino, true);
-                                    houveSobrescrita = true;
+                                    fezBackup = true;
                                 }
                                 else
                                 {
                                     File.Copy(arquivoOrigem, caminhoCompletoDestino, false);
+                                    fezBackup = true;
                                 }
                             }
                         }
@@ -484,7 +503,7 @@ namespace Contabilidade
                                         if (overwriteResult == DialogResult.Yes)
                                         {
                                             File.Copy(arquivoOrigem, caminhoCompletoDestino, true);
-                                            houveSobrescrita = true;
+                                            fezBackup = true;
                                         }
                                         // Se o usuário escolher não sobrescrever, não faz nada para este arquivo
                                     }
@@ -521,20 +540,29 @@ namespace Contabilidade
                             }
                         }
 
-                        // Exibir mensagem de sucesso apenas se houver sobrescrita
-                        if (houveSobrescrita)
+                        // Exibir mensagem de sucesso apenas se fez o backup
+                        if (fezBackup)
                         {
-                            MessageBox.Show("Todos os arquivos foram copiados com sucesso!", "Sucesso");
+                            MessageBox.Show("Todos os arquivos possíveis foram copiados com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                     }
                     else
                     {
-                        MessageBox.Show("A pasta de banco de dados do programa não existe ou está vazia.", "Erro");
+                        MessageBox.Show("A pasta de banco de dados do programa não existe ou está vazia.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
             }
         }
 
+        public static bool arquivoEstaNoDiretorio(string diretorio, string arquivoCamihno)
+        {
+            // Obtém os caminhos absolutos
+            var diretorioInfo = new DirectoryInfo(diretorio);
+            var arquivoInfo = new FileInfo(arquivoCamihno);
+
+            // Verifica se o caminho absoluto do arquivo começa com o caminho absoluto do diretório pai
+            return arquivoInfo.FullName.StartsWith(diretorioInfo.FullName, StringComparison.OrdinalIgnoreCase);
+        }
 
         private void btnRestaurar_Click(object sender, EventArgs e)
         {
@@ -557,6 +585,13 @@ namespace Contabilidade
                         string arquivoSelecionado = openFileDialog.FileName;
                         string nomeArquivo = Path.GetFileNameWithoutExtension(arquivoSelecionado);
                         string caminhoDestino = $"{pastaBDs }\\{nomeArquivo}.sqlite";
+
+                        // Verificar se o arquivo não está nas dependências do programa
+                        if (arquivoEstaNoDiretorio(Application.StartupPath, arquivoSelecionado))
+                        {
+                            MessageBox.Show("Não é possível restaurar um arquivo que está nas pastas do programa, tente novamente e selecione outro diretório.", "Erro ao realizar backup", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
 
                         if (File.Exists(caminhoDestino))
                         {
@@ -607,6 +642,13 @@ namespace Contabilidade
                         int contadorSucessos = 0;
                         List<string> arquivosNaoRestaurados = new List<string>();
 
+                        // Verificar se a pasta selecionada não está nas dependências do programa
+                        if (IsSubDiretorio(Application.StartupPath, pastaSelecionada))
+                        {
+                            MessageBox.Show("Não é possível restaurar a partir de arquivos que estão nas pastas do programa, tente novamente e selecione outro diretório.", "Erro ao realizar backup", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+
                         // Verificar se há arquivos .sqlite na pasta selecionada
                         string[] arquivosSQLite = Directory.GetFiles(pastaSelecionada, "*.sqlite");
                         if (arquivosSQLite.Length == 0)
@@ -615,15 +657,28 @@ namespace Contabilidade
                             return;
                         }
 
-                        var confirmResult = MessageBox.Show("Deseja sobrescrever todos os arquivos de banco de dados existentes?", "Confirmação", MessageBoxButtons.YesNo);
+                        var confirmResult = MessageBox.Show("Deseja sobrescrever todos os arquivos de banco de dados existentes?", "Confirmação", MessageBoxButtons.YesNoCancel);
+
+                        // Cancelar caso o usuário aperte Cancel ou feche de alguma forma
+                        if (confirmResult != DialogResult.Yes && confirmResult != DialogResult.No)
+                        {
+                            return;
+                        }
+
                         bool sobrescreverTodos = (confirmResult == DialogResult.Yes);
 
                         bool perguntarAntes = false;
 
                         if (!sobrescreverTodos)
                         {
-                            var perguntarResult = MessageBox.Show("Deseja então escolher quais serão sobrescritos e quais não? \n\nEscolher \"não\" fará com que nenhum arquivo existente seja sobrescrito.", "Confirmação", MessageBoxButtons.YesNo);
+                            var perguntarResult = MessageBox.Show("Deseja então escolher quais serão sobrescritos e quais não? \n\nEscolher \"não\" fará com que nenhum arquivo existente seja sobrescrito.", "Confirmação", MessageBoxButtons.YesNoCancel);
                             perguntarAntes = (perguntarResult == DialogResult.Yes);
+                            
+                            // Cancelar caso o usuário aperte Cancel ou feche de alguma forma
+                            if (perguntarResult != DialogResult.Yes && perguntarResult != DialogResult.No)
+                            {
+                                return;
+                            }
                         }
 
                         // Percorrer todos os arquivos na pasta selecionada

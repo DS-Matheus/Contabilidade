@@ -3,7 +3,6 @@ using DGVPrinterHelper;
 using System.Data;
 using Microsoft.Data.Sqlite;
 using Contabilidade.Classes;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Contabilidade.Forms.Cadastros
 {

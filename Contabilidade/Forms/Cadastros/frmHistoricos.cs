@@ -3,7 +3,6 @@ using DGVPrinterHelper;
 using System.Data;
 using Microsoft.Data.Sqlite;
 using Contabilidade.Classes;
-using System.Drawing;
 
 namespace Contabilidade.Forms.Cadastros
 {
@@ -226,7 +225,7 @@ namespace Contabilidade.Forms.Cadastros
 
                                     if (registros > 0)
                                     {
-                                        dialogResult = MessageBox.Show("Alguns lançamentos utilizam o histórico informado, deseja alterar todos eles para um histórico diferente?", "Confirmação de alteração do histórico de lançamentos", MessageBoxButtons.YesNo);
+                                        dialogResult = MessageBox.Show("Alguns lançamentos utilizam o histórico informado, deseja alterar todos eles para um histórico diferente?", "Confirmação de alteração do histórico de lançamentos", MessageBoxButtons.YesNoCancel);
 
                                         // Se sim, alterar o id_historico de todos os lançamentos
                                         if (dialogResult == DialogResult.Yes)
@@ -260,7 +259,7 @@ namespace Contabilidade.Forms.Cadastros
                                             }
                                         }
                                         // Se não, considerar que deseja excluir, mas pedir a confirmação da exclusão mais uma vez
-                                        else
+                                        else if (dialogResult == DialogResult.No)
                                         {
                                             dialogResult = MessageBox.Show("Você deseja então excluir todos os lançamentos associados a esse histórico? Esse processo é irreversível!", "Confirmação de exclusão de histórico e lançamentos", MessageBoxButtons.YesNo);
 
@@ -307,6 +306,10 @@ namespace Contabilidade.Forms.Cadastros
                                             {
                                                 return;
                                             }
+                                        }
+                                        else
+                                        {
+                                            return;
                                         }
                                     }
 

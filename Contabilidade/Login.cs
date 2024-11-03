@@ -735,6 +735,23 @@ namespace Contabilidade
             handleKeyPressEntrar(e);
         }
 
+        public static bool verificarExistenciaBancosSqlite(string caminhoDiretorio)
+        {
+            if (Directory.Exists(caminhoDiretorio))
+            {
+                // Obtém todos os arquivos .sqlite no diretório
+                string[] sqliteFiles = Directory.GetFiles(caminhoDiretorio, "*.sqlite");
+
+                // Verifica se há algum arquivo .sqlite
+                return sqliteFiles.Length > 0;
+            }
+            else
+            {
+                throw new CustomException("O diretório especificado não existe.");
+                return false;
+            }
+        }
+
         private void btnBackup_Click(object sender, EventArgs e)
         {
             // Pergunta inicial ao usuário sobre o tipo de backup
@@ -766,7 +783,14 @@ namespace Contabilidade
             }
             else if (result == DialogResult.No)
             {
-                frmPainelPrincipal.FazerBackupTodosBancos(pastaDatabases);
+                if (verificarExistenciaBancosSqlite(pastaDatabases))
+                {
+                    frmPainelPrincipal.FazerBackupTodosBancos(pastaDatabases);
+                }
+                else
+                {
+                    MessageBox.Show("Não foi encontrado nenhum arquivo de banco de dados na pasta do programa, verifique se realmente existe algum antes de realizar o backup.", "Não é possível fazer o backup", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
             // Se result for DialogResult.Cancel, não faz nada (cancela a operação)
         }
@@ -790,10 +814,17 @@ namespace Contabilidade
                 {
                     string arquivoSelecionado = openFileDialog.FileName;
 
-                    // Verificar se o arquivo já existe na pastaDatabases
                     string nomeArquivo = Path.GetFileNameWithoutExtension(arquivoSelecionado);
                     string destino = Path.Combine(pastaDatabases, Path.GetFileName(arquivoSelecionado));
 
+                    // Verificar se o arquivo não está nas dependências do programa
+                    if (frmPainelPrincipal.arquivoEstaNoDiretorio(Application.StartupPath, arquivoSelecionado))
+                    {
+                        MessageBox.Show("Não é possível restaurar um arquivo que está nas pastas do programa, tente novamente e selecione outro diretório.", "Erro ao realizar backup", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    // Verificar se o arquivo já existe na pastaDatabases
                     if (File.Exists(destino))
                     {
                         // Arquivo existe, perguntar se deseja sobrescrever
@@ -832,6 +863,13 @@ namespace Contabilidade
                     string pastaSelecionada = folderBrowserDialog.SelectedPath;
                     string[] arquivosSQLite = Directory.GetFiles(pastaSelecionada, "*.sqlite");
 
+                    // Verificar se a pasta selecionada não está nas dependências do programa
+                    if (frmPainelPrincipal.IsSubDiretorio(Application.StartupPath, pastaSelecionada))
+                    {
+                        MessageBox.Show("Não é possível restaurar a partir de arquivos que estão nas pastas do programa, tente novamente e selecione outro diretório.", "Erro ao realizar backup", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
                     if (arquivosSQLite.Length == 0)
                     {
                         MessageBox.Show("Não foram encontrados arquivos de banco de dados na pasta selecionada.",
@@ -842,7 +880,7 @@ namespace Contabilidade
                     // Verificar se deseja sobrescrever todos os arquivos na pastaDatabases
                     DialogResult respostaSobrescreverTodos = MessageBox.Show("Deseja sobrescrever todos os arquivos que já existem na pasta do programa?",
                                                                               "Sobrescrever Todos",
-                                                                              MessageBoxButtons.YesNo,
+                                                                              MessageBoxButtons.YesNoCancel,
                                                                               MessageBoxIcon.Question);
 
                     if (respostaSobrescreverTodos == DialogResult.Yes)
@@ -862,7 +900,7 @@ namespace Contabilidade
                         // Perguntar ao usuário se deseja selecionar quais arquivos serão sobrescritos
                         DialogResult respostaSelecionarArquivos = MessageBox.Show("Deseja então selecionar quais arquivos serão sobrescritos?",
                                                                                    "Selecionar Arquivos",
-                                                                                   MessageBoxButtons.YesNo,
+                                                                                   MessageBoxButtons.YesNoCancel,
                                                                                    MessageBoxIcon.Question);
 
                         if (respostaSelecionarArquivos == DialogResult.Yes)

@@ -1,18 +1,7 @@
 ﻿using Contabilidade.Models;
 using Microsoft.Data.Sqlite;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Runtime.Intrinsics.X86;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Contabilidade.Forms.Cadastros
 {
@@ -102,18 +91,6 @@ namespace Contabilidade.Forms.Cadastros
             return false;
         }
 
-        public bool verificarResposta(DialogResult dialogResult)
-        {
-            if (dialogResult == DialogResult.Yes || dialogResult == DialogResult.OK)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
         private void btnSalvar_Click(object sender, EventArgs e)
         {
             var contaNova = txtConta.Text;
@@ -195,7 +172,7 @@ namespace Contabilidade.Forms.Cadastros
                         {
                             // ao alterar o número de uma conta sintética, alterar o número de todas as suas contas filhas também
                             var dialogResult = MessageBox.Show($"Ao alterar o número de uma conta sintética, você estará alterando também o número de {registros} {(registros == 1 ? "conta" : "contas")} analíticas que estão nesse grupo de chave, deseja continuar?", "Confirmação de alteração do número de conta", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                            if (!verificarResposta(dialogResult))
+                            if (dialogResult != DialogResult.Yes)
                             {
                                 return;
                             }
@@ -220,13 +197,13 @@ namespace Contabilidade.Forms.Cadastros
                             if (registros > 0)
                             {
                                 var dialogResult = MessageBox.Show($"Você deseja realmente alterar a conta para o tipo analítico? Isso resultará na exclusão das contas dentro desse grupo de chaves, esse processo NÃO É reversível!", "Confirmação de alteração do tipo de conta", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                                if (!verificarResposta(dialogResult))
+                                if (dialogResult != DialogResult.Yes)
                                 {
                                     return;
                                 }
 
                                 dialogResult = MessageBox.Show($"Ao alterar a conta para o tipo analítico você irá excluir {registros} {(registros == 1 ? "conta" : "contas")} dentro desse grupo sintético, deseja ainda assim continuar? Esta é a última confirmação!", "Confirmação de alteração do tipo de conta", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                                if (!verificarResposta(dialogResult))
+                                if (dialogResult != DialogResult.Yes)
                                 {
                                     return;
                                 }
@@ -242,13 +219,13 @@ namespace Contabilidade.Forms.Cadastros
                             if (registros > 0)
                             {
                                 var dialogResult = MessageBox.Show($"Você deseja realmente alterar a conta para o tipo sintético? Isso resultará na exclusão de todos os lançamentos realizados por ela e esse processo NÃO PODE ser desfeito!", "Confirmação de alteração do tipo de conta", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                                if (!verificarResposta(dialogResult))
+                                if (dialogResult != DialogResult.Yes)
                                 {
                                     return;
                                 }
 
                                 dialogResult = MessageBox.Show($"Ao alterar a conta para o tipo sintético você irá excluir {registros} {(registros == 1 ? "registro feito" : "registros feitos")} por essa conta, deseja ainda assim continuar? Esta é a última confirmação!", "Confirmação de alteração do tipo de conta", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                                if (!verificarResposta(dialogResult))
+                                if (dialogResult != DialogResult.Yes)
                                 {
                                     return;
                                 }
@@ -257,19 +234,12 @@ namespace Contabilidade.Forms.Cadastros
                         // Caso o tipo da conta não é S ou A
                         else
                         {
-                            MessageBox.Show("Erro ao obter o tipo de conta, por favor, tente novamente.", "Erro ao editar a conta", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                            MessageBox.Show("Erro ao obter o tipo de conta, por favor, tente novamente.", "Erro ao editar a conta", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
                         }
                     }
                 }
             }
-
-
-
-
-
-
-
 
             // Envia os dados para o formulário pai se tudo foi bem sucedido
             frmContas.conta = contaNova;

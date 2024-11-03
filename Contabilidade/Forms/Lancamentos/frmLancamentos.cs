@@ -2,7 +2,6 @@
 using System.Data;
 using Microsoft.Data.Sqlite;
 using Contabilidade.Classes;
-using System.Windows.Forms;
 
 namespace Contabilidade.Forms.Lancamentos
 {
