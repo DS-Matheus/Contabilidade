@@ -28,8 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             groupBox1 = new GroupBox();
+            dtpData2 = new DateTimePicker();
+            dtpData1 = new DateTimePicker();
+            txtFiltrar2 = new TextBox();
+            cbbFiltrarValores = new ComboBox();
+            cbbFiltrarDatas = new ComboBox();
             cbbFiltrar = new ComboBox();
             txtFiltrar = new TextBox();
             btnImprimir = new Button();
@@ -51,8 +56,14 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(dtpData2);
+            groupBox1.Controls.Add(dtpData1);
+            groupBox1.Controls.Add(txtFiltrar2);
+            groupBox1.Controls.Add(cbbFiltrarValores);
+            groupBox1.Controls.Add(cbbFiltrarDatas);
             groupBox1.Controls.Add(cbbFiltrar);
             groupBox1.Controls.Add(txtFiltrar);
+            groupBox1.Enabled = false;
             groupBox1.Location = new Point(524, 409);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(344, 79);
@@ -60,11 +71,59 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "Filtrar por";
             // 
+            // dtpData2
+            // 
+            dtpData2.Format = DateTimePickerFormat.Short;
+            dtpData2.Location = new Point(176, 49);
+            dtpData2.Name = "dtpData2";
+            dtpData2.Size = new Size(162, 23);
+            dtpData2.TabIndex = 16;
+            dtpData2.Visible = false;
+            // 
+            // dtpData1
+            // 
+            dtpData1.Format = DateTimePickerFormat.Short;
+            dtpData1.Location = new Point(6, 49);
+            dtpData1.Name = "dtpData1";
+            dtpData1.Size = new Size(332, 23);
+            dtpData1.TabIndex = 15;
+            dtpData1.Visible = false;
+            // 
+            // txtFiltrar2
+            // 
+            txtFiltrar2.Location = new Point(176, 49);
+            txtFiltrar2.Name = "txtFiltrar2";
+            txtFiltrar2.Size = new Size(162, 23);
+            txtFiltrar2.TabIndex = 14;
+            txtFiltrar2.Visible = false;
+            // 
+            // cbbFiltrarValores
+            // 
+            cbbFiltrarValores.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbbFiltrarValores.FormattingEnabled = true;
+            cbbFiltrarValores.Items.AddRange(new object[] { "Somente débitos", "Somente créditos", "Valores iguais a", "Valores maiores que", "Valores menores que", "Valores entre" });
+            cbbFiltrarValores.Location = new Point(176, 20);
+            cbbFiltrarValores.Name = "cbbFiltrarValores";
+            cbbFiltrarValores.Size = new Size(162, 23);
+            cbbFiltrarValores.TabIndex = 13;
+            cbbFiltrarValores.Visible = false;
+            // 
+            // cbbFiltrarDatas
+            // 
+            cbbFiltrarDatas.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbbFiltrarDatas.FormattingEnabled = true;
+            cbbFiltrarDatas.Items.AddRange(new object[] { "Data igual a", "Datas anteriores a", "Datas posteriores a", "Data entre" });
+            cbbFiltrarDatas.Location = new Point(176, 20);
+            cbbFiltrarDatas.Name = "cbbFiltrarDatas";
+            cbbFiltrarDatas.Size = new Size(162, 23);
+            cbbFiltrarDatas.TabIndex = 12;
+            cbbFiltrarDatas.Visible = false;
+            // 
             // cbbFiltrar
             // 
             cbbFiltrar.DropDownStyle = ComboBoxStyle.DropDownList;
             cbbFiltrar.FormattingEnabled = true;
-            cbbFiltrar.Items.AddRange(new object[] { "Data", "Conta", "Descrição", "Valor", "Débitos", "Créditos", "Histórico" });
+            cbbFiltrar.Items.AddRange(new object[] { "Conta", "Descrição", "Histórico", "Data", "Valor" });
             cbbFiltrar.Location = new Point(6, 20);
             cbbFiltrar.Name = "cbbFiltrar";
             cbbFiltrar.Size = new Size(332, 23);
@@ -137,8 +196,8 @@
             // 
             ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             ID.DataPropertyName = "id";
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            ID.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            ID.DefaultCellStyle = dataGridViewCellStyle2;
             ID.HeaderText = "ID";
             ID.Name = "ID";
             ID.ReadOnly = true;
@@ -236,5 +295,10 @@
         private DataGridViewTextBoxColumn Valor;
         private DataGridViewTextBoxColumn ID_Historico;
         private DataGridViewTextBoxColumn Histórico;
+        private ComboBox cbbFiltrarValores;
+        private ComboBox cbbFiltrarDatas;
+        private DateTimePicker dtpData2;
+        private DateTimePicker dtpData1;
+        private TextBox txtFiltrar2;
     }
 }

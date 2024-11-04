@@ -59,6 +59,8 @@ namespace Contabilidade.Forms.Lancamentos
                 dgvLancamentos.DataSource = dv;
 
                 cbbFiltrar.SelectedIndex = 0;
+                cbbFiltrarDatas.SelectedIndex = 0;
+                cbbFiltrarValores.SelectedIndex = 0;
             }
         }
 

@@ -44,13 +44,13 @@
             Conta = new DataGridViewTextBoxColumn();
             Nível = new DataGridViewTextBoxColumn();
             Descrição = new DataGridViewTextBoxColumn();
-            cbbNivel = new ComboBox();
             label3 = new Label();
             txtDescricao = new TextBox();
             label2 = new Label();
             txtConta = new TextBox();
             label1 = new Label();
             btnCriar = new Button();
+            cbbNivel = new ComboBox();
             pnlBarraTitulo.SuspendLayout();
             panel1.SuspendLayout();
             groupBox1.SuspendLayout();
@@ -116,9 +116,9 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(cbbNivel);
             panel1.Controls.Add(groupBox1);
             panel1.Controls.Add(dgvContas);
-            panel1.Controls.Add(cbbNivel);
             panel1.Controls.Add(label3);
             panel1.Controls.Add(txtDescricao);
             panel1.Controls.Add(label2);
@@ -223,16 +223,6 @@
             Descrição.Name = "Descrição";
             Descrição.ReadOnly = true;
             // 
-            // cbbNivel
-            // 
-            cbbNivel.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbbNivel.FormattingEnabled = true;
-            cbbNivel.Items.AddRange(new object[] { "Analítico", "Sintético" });
-            cbbNivel.Location = new Point(234, 317);
-            cbbNivel.Name = "cbbNivel";
-            cbbNivel.Size = new Size(171, 23);
-            cbbNivel.TabIndex = 6;
-            // 
             // label3
             // 
             label3.AutoSize = true;
@@ -291,6 +281,16 @@
             btnCriar.UseVisualStyleBackColor = true;
             btnCriar.Click += btnCriar_Click;
             // 
+            // cbbNivel
+            // 
+            cbbNivel.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbbNivel.FormattingEnabled = true;
+            cbbNivel.Items.AddRange(new object[] { "Analítico", "Sintético" });
+            cbbNivel.Location = new Point(234, 317);
+            cbbNivel.Name = "cbbNivel";
+            cbbNivel.Size = new Size(171, 23);
+            cbbNivel.TabIndex = 20;
+            // 
             // frmLancamentosDadosContas
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -319,7 +319,6 @@
         private Label lblTitulo;
         private Button btnFechar;
         private Panel panel1;
-        private ComboBox cbbNivel;
         private Label label3;
         private TextBox txtDescricao;
         private Label label2;
@@ -334,5 +333,6 @@
         private DataGridViewTextBoxColumn Nível;
         private DataGridViewTextBoxColumn Descrição;
         private TextBox txtFiltrar;
+        private ComboBox cbbNivel;
     }
 }

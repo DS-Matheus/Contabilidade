@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmLancamentosDados));
             pnlBarraTitulo = new Panel();
             btnMinimizar = new Button();
             lblTitulo = new Label();
@@ -133,7 +134,7 @@
             // 
             // btnAlterarSinal
             // 
-            btnAlterarSinal.Image = Properties.Resources.Search;
+            btnAlterarSinal.Image = (Image)resources.GetObject("btnAlterarSinal.Image");
             btnAlterarSinal.Location = new Point(380, 43);
             btnAlterarSinal.Name = "btnAlterarSinal";
             btnAlterarSinal.Size = new Size(25, 25);

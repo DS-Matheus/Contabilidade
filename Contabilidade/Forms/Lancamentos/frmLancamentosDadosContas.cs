@@ -47,6 +47,7 @@ namespace Contabilidade.Forms.Lancamentos
 
                 cbbFiltrar.SelectedIndex = 0;
                 cbbNivel.SelectedIndex = 0;
+                cbbNivel2.SelectedIndex = 0;
                 txtFiltrar.MaxLength = 15;
             }
         }
@@ -158,19 +159,19 @@ namespace Contabilidade.Forms.Lancamentos
         private void cbbFiltrar_SelectedIndexChanged(object sender, EventArgs e)
         {
             txtFiltrar.Text = "";
-            cbbNivel.SelectedIndex = 0;
+            cbbNivel2.SelectedIndex = 0;
 
             // Filtar por nível 
             if (cbbFiltrar.SelectedIndex == 2)
             {
-                cbbNivel.Visible = true;
+                cbbNivel2.Visible = true;
                 txtFiltrar.Visible = false;
                 cbbNivel2_SelectedIndexChanged(sender, e);
             }
             // Filtrar por conta ou descrição 
             else
             {
-                cbbNivel.Visible = false;
+                cbbNivel2.Visible = false;
                 txtFiltrar.Visible = true;
                 txtFiltrar_TextChanged(sender, e);
             }
@@ -179,17 +180,17 @@ namespace Contabilidade.Forms.Lancamentos
         private void cbbNivel2_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Ambos
-            if (cbbNivel.SelectedIndex == 0)
+            if (cbbNivel2.SelectedIndex == 0)
             {
                 dv.RowFilter = "";
             }
             // Analitico
-            else if (cbbNivel.SelectedIndex == 1)
+            else if (cbbNivel2.SelectedIndex == 1)
             {
                 dv.RowFilter = "nivel = 'A'";
             }
             // Sintetico
-            else if (cbbNivel.SelectedIndex == 2)
+            else if (cbbNivel2.SelectedIndex == 2)
             {
                 dv.RowFilter = "nivel = 'S'";
             }
