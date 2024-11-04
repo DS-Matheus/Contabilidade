@@ -9,6 +9,7 @@ using Org.BouncyCastle.Asn1.X509;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using Contabilidade.Forms.Cadastros;
 
 namespace Contabilidade.Forms.Relatorios
 {
@@ -45,35 +46,51 @@ namespace Contabilidade.Forms.Relatorios
                 dgvContas.DataSource = dv;
 
                 cbbFiltrar.SelectedIndex = 0;
+                cbbNivel.SelectedIndex = 0;
+                txtFiltrar.MaxLength = 15;
             }
         }
 
         private void cbbFiltrar_SelectedIndexChanged(object sender, EventArgs e)
         {
+            txtFiltrar.Text = "";
+            cbbNivel.SelectedIndex = 0;
+
             // Filtar por nível 
             if (cbbFiltrar.SelectedIndex == 2)
             {
                 cbbNivel.Visible = true;
                 txtFiltrar.Visible = false;
-                txtFiltrar2.Visible = false;
+                cbbNivel_SelectedIndexChanged(sender, e);
             }
-            // Filtrar por Saldo entre
-            else if (cbbFiltrar.SelectedIndex == 5)
-            {
-                cbbNivel.Visible = false;
-                txtFiltrar.Visible = true;
-                txtFiltrar2.Visible = true;
-                txtFiltrar.Width = 115;
-            }
+            // Filtrar por conta ou descrição 
             else
             {
                 cbbNivel.Visible = false;
                 txtFiltrar.Visible = true;
-                txtFiltrar2.Visible = false;
-                txtFiltrar.Width = 238;
+                txtFiltrar_TextChanged(sender, e);
+            }
+        }
+
+        private void cbbNivel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Ambos
+            if (cbbNivel.SelectedIndex == 0)
+            {
+                dv.RowFilter = "";
+            }
+            // Analitico
+            else if (cbbNivel.SelectedIndex == 1)
+            {
+                dv.RowFilter = "nivel = 'A'";
+            }
+            // Sintetico
+            else if (cbbNivel.SelectedIndex == 2)
+            {
+                dv.RowFilter = "nivel = 'S'";
             }
 
-            txtFiltrar_TextChanged(sender, e);
+            dgvContas.DataSource = dv;
         }
 
         private void txtFiltrar_TextChanged(object sender, EventArgs e)
@@ -81,86 +98,26 @@ namespace Contabilidade.Forms.Relatorios
             // Conta
             if (cbbFiltrar.SelectedIndex == 0)
             {
-                dv.RowFilter = $"conta LIKE '{txtFiltrar.Text}%'";
+                // Impedir da máscara ser aplicada quando não se tem dados inseridos (o que ocasiona erro)
+                if (txtFiltrar.Text.Length > 0)
+                {
+                    TextBox textBox = sender as TextBox;
+                    textBox.Text = frmContasDados.AplicarMascara(textBox.Text);
+                    textBox.SelectionStart = textBox.Text.Length; // Mantém o cursor no final
+                }
+
+                txtFiltrar.MaxLength = 15;
+
+                dv.RowFilter = $"conta LIKE '%{txtFiltrar.Text}%'";
                 dgvContas.DataSource = dv;
             }
             // Descrição
             else if (cbbFiltrar.SelectedIndex == 1)
             {
-                dv.RowFilter = $"descricao LIKE '{txtFiltrar.Text}%'";
+                txtFiltrar.MaxLength = 100;
+                dv.RowFilter = $"descricao LIKE '%{txtFiltrar.Text}%'";
                 dgvContas.DataSource = dv;
             }
-            // Nível
-            else if (cbbFiltrar.SelectedIndex == 2)
-            {
-                // Analitico
-                if (cbbNivel.SelectedIndex == 0)
-                {
-                    dv.RowFilter = "nivel = 'A'";
-                }
-                // Sintetico
-                else if (cbbNivel.SelectedIndex == 1)
-                {
-                    dv.RowFilter = "nivel = 'S'";
-                }
-                // Ambos
-                else if (cbbNivel.SelectedIndex == 2)
-                {
-                    dv.RowFilter = "";
-                }
-
-                dgvContas.DataSource = dv;
-            }
-            // Saldo menor que
-            else if (cbbFiltrar.SelectedIndex == 3)
-            {
-                if (IsNumeric(txtFiltrar.Text))
-                {
-                    dv.RowFilter = $"saldo <= {txtFiltrar.Text}";
-                    dgvContas.DataSource = dv;
-                }
-            }
-            // Saldo maior que
-            else if (cbbFiltrar.SelectedIndex == 4)
-            {
-                if (IsNumeric(txtFiltrar.Text))
-                {
-                    dv.RowFilter = $"saldo >= {txtFiltrar.Text}";
-                    dgvContas.DataSource = dv;
-                }
-            }
-            // Saldo entre
-            else if (cbbFiltrar.SelectedIndex == 5)
-            {
-                if (IsNumeric(txtFiltrar.Text) && IsNumeric(txtFiltrar2.Text))
-                {
-                    var valores = ObterMenorEMaior(int.Parse(txtFiltrar.Text), int.Parse(txtFiltrar2.Text));
-                    dv.RowFilter = $"saldo BETWEEN {valores.Item1} AND {valores.Item2}";
-                    dgvContas.DataSource = dv;
-                }
-            }
-        }
-
-        private void txtFiltrar2_TextChanged(object sender, EventArgs e)
-        {
-            txtFiltrar_TextChanged(sender, e);
-        }
-
-        public static (int, int) ObterMenorEMaior(int valor1, int valor2)
-        {
-            if (valor1 < valor2)
-            {
-                return (valor1, valor2);
-            }
-            else
-            {
-                return (valor2, valor1);
-            }
-        }
-
-        private bool IsNumeric(string text)
-        {
-            return int.TryParse(text, out _);
         }
 
         private void dgvContas_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -174,10 +131,10 @@ namespace Contabilidade.Forms.Relatorios
         }
         private class Lancamento
         {
-            public DateTime Data {  get; set; }
+            public DateTime Data { get; set; }
             public string Historico { get; set; }
             public decimal Valor { get; set; }
-            public decimal Saldo {  get; set; }
+            public decimal Saldo { get; set; }
         }
 
         public static (string, string, string, string) ordenarDatasEObterStrings(DateTime data1, DateTime data2)

@@ -46,6 +46,8 @@ namespace Contabilidade.Forms.Lancamentos
                 dgvContas.DataSource = dv;
 
                 cbbFiltrar.SelectedIndex = 0;
+                cbbNivel.SelectedIndex = 0;
+                txtFiltrar.MaxLength = 15;
             }
         }
 
@@ -155,20 +157,44 @@ namespace Contabilidade.Forms.Lancamentos
 
         private void cbbFiltrar_SelectedIndexChanged(object sender, EventArgs e)
         {
+            txtFiltrar.Text = "";
+            cbbNivel.SelectedIndex = 0;
+
             // Filtar por nível 
             if (cbbFiltrar.SelectedIndex == 2)
             {
-                cbbNivel2.Visible = true;
+                cbbNivel.Visible = true;
                 txtFiltrar.Visible = false;
+                cbbNivel2_SelectedIndexChanged(sender, e);
             }
+            // Filtrar por conta ou descrição 
             else
             {
-                cbbNivel2.Visible = false;
+                cbbNivel.Visible = false;
                 txtFiltrar.Visible = true;
-                txtFiltrar.Width = 238;
+                txtFiltrar_TextChanged(sender, e);
+            }
+        }
+
+        private void cbbNivel2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Ambos
+            if (cbbNivel.SelectedIndex == 0)
+            {
+                dv.RowFilter = "";
+            }
+            // Analitico
+            else if (cbbNivel.SelectedIndex == 1)
+            {
+                dv.RowFilter = "nivel = 'A'";
+            }
+            // Sintetico
+            else if (cbbNivel.SelectedIndex == 2)
+            {
+                dv.RowFilter = "nivel = 'S'";
             }
 
-            txtFiltrar_TextChanged(sender, e);
+            dgvContas.DataSource = dv;
         }
 
         private void txtFiltrar_TextChanged(object sender, EventArgs e)
@@ -176,72 +202,31 @@ namespace Contabilidade.Forms.Lancamentos
             // Conta
             if (cbbFiltrar.SelectedIndex == 0)
             {
-                dv.RowFilter = $"conta LIKE '{txtFiltrar.Text}%'";
+                // Impedir da máscara ser aplicada quando não se tem dados inseridos (o que ocasiona erro)
+                if (txtFiltrar.Text.Length > 0)
+                {
+                    TextBox textBox = sender as TextBox;
+                    textBox.Text = frmContasDados.AplicarMascara(textBox.Text);
+                    textBox.SelectionStart = textBox.Text.Length; // Mantém o cursor no final
+                }
+
+                txtFiltrar.MaxLength = 15;
+
+                dv.RowFilter = $"conta LIKE '%{txtFiltrar.Text}%'";
                 dgvContas.DataSource = dv;
             }
             // Descrição
             else if (cbbFiltrar.SelectedIndex == 1)
             {
-                dv.RowFilter = $"descricao LIKE '{txtFiltrar.Text}%'";
+                txtFiltrar.MaxLength = 100;
+                dv.RowFilter = $"descricao LIKE '%{txtFiltrar.Text}%'";
                 dgvContas.DataSource = dv;
-            }
-            // Nível
-            else if (cbbFiltrar.SelectedIndex == 2)
-            {
-                // Analitico
-                if (cbbNivel2.SelectedIndex == 0)
-                {
-                    dv.RowFilter = "nivel = 'A'";
-                }
-                // Sintetico
-                else if (cbbNivel2.SelectedIndex == 1)
-                {
-                    dv.RowFilter = "nivel = 'S'";
-                }
-                // Ambos
-                else if (cbbNivel2.SelectedIndex == 2)
-                {
-                    dv.RowFilter = "";
-                }
-
-                dgvContas.DataSource = dv;
-            }
-        }
-
-        private bool IsNumeric(string text)
-        {
-            return int.TryParse(text, out _);
-        }
-
-        public static (int, int) ObterMenorEMaior(int valor1, int valor2)
-        {
-            if (valor1 < valor2)
-            {
-                return (valor1, valor2);
-            }
-            else
-            {
-                return (valor2, valor1);
             }
         }
 
         public static bool verificarExistenciaConta(string conta)
         {
             return dtDados.AsEnumerable().Any(row => conta == row.Field<string>("conta"));
-        }
-
-        public static bool verificarContaSintetica(string conta)
-        {
-            // Remove o último grupo de caracteres após o último ponto (assim se obtêm a conta sintética associada)
-            int ultimoPonto = conta.LastIndexOf('.');
-            string contaSintetica = conta;
-            if (ultimoPonto != -1)
-            {
-                contaSintetica = conta.Substring(0, ultimoPonto);
-            }
-
-            // Verificar se a conta existe e retornar
-            return verificarExistenciaConta(contaSintetica);
         }
 
         private void txtConta_TextChanged(object sender, EventArgs e)
@@ -359,7 +344,7 @@ namespace Contabilidade.Forms.Lancamentos
                 }
                 else
                 {
-                    MessageBox.Show("Não é possível fazer lançamentos em contas do tipo sintético (S), por favor, selecione uma conta analítica (A)","O tipo da conta selecionada é inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Não é possível fazer lançamentos em contas do tipo sintético (S), por favor, selecione uma conta analítica (A)", "O tipo da conta selecionada é inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         }

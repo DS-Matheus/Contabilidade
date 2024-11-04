@@ -147,12 +147,13 @@
             // 
             cbbNivel2.DropDownStyle = ComboBoxStyle.DropDownList;
             cbbNivel2.FormattingEnabled = true;
-            cbbNivel2.Items.AddRange(new object[] { "Analítico", "Sintético", "Ambos" });
+            cbbNivel2.Items.AddRange(new object[] { "Ambos", "Analítico", "Sintético" });
             cbbNivel2.Location = new Point(6, 51);
             cbbNivel2.Name = "cbbNivel2";
             cbbNivel2.Size = new Size(368, 23);
             cbbNivel2.TabIndex = 19;
             cbbNivel2.Visible = false;
+            cbbNivel2.SelectedIndexChanged += cbbNivel2_SelectedIndexChanged;
             // 
             // cbbFiltrar
             // 

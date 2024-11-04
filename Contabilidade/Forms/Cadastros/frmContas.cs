@@ -67,6 +67,7 @@ namespace Contabilidade.Forms.Cadastros
                 txtFiltrar_TextChanged(sender, e);
             }
         }
+
         private void cbbNivel_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Ambos
