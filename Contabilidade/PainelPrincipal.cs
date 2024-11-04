@@ -36,7 +36,7 @@ namespace Contabilidade
 
         private void btnFechar_Click(object sender, EventArgs e)
         {
-            con.excluir();
+            con.Desconectar();
             this.Dispose();
             Application.Exit();
         }
@@ -332,7 +332,7 @@ namespace Contabilidade
 
             if (input == DialogResult.Yes)
             {
-                con.excluir();
+                con.Desconectar();
 
                 this.Owner.Show(); // Exibe o Formulário de Login
                 this.Dispose(); // Fecha o formulário atual
@@ -600,7 +600,7 @@ namespace Contabilidade
                                 var confirmResult = MessageBox.Show("Você está prestes a sobrescrever o banco de dados atual. Após a restauração você será enviado para a tela de login. Confirma a restauração?", "Confirmação", MessageBoxButtons.YesNo);
                                 if (confirmResult == DialogResult.Yes)
                                 {
-                                    con.excluir();
+                                    con.Desconectar();
                                     File.Copy(arquivoSelecionado, caminhoDestino, true);
                                     MessageBox.Show("Arquivo restaurado com sucesso!");
 
@@ -694,7 +694,7 @@ namespace Contabilidade
                                     // Verificar se é o mesmo banco de dados atual
                                     if (nomeArquivo == lblBanco.Text)
                                     {
-                                        con.excluir();
+                                        con.Desconectar();
                                         File.Copy(arquivoSelecionado, caminhoDestino, true);
                                         voltarTelaLogin = true;
                                         MessageBox.Show("Arquivo do banco de dados atual restaurado, você será enviado para a tela de Login após a conclusão.");
@@ -717,7 +717,7 @@ namespace Contabilidade
 
                                             if (confirmResult == DialogResult.Yes)
                                             {
-                                                con.excluir();
+                                                con.Desconectar();
                                                 File.Copy(arquivoSelecionado, caminhoDestino, true);
                                                 voltarTelaLogin = true;
                                                 MessageBox.Show("Arquivo do banco de dados atual restaurado, você será enviado para a tela de Login após a conclusão.");

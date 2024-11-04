@@ -6,17 +6,12 @@ namespace Contabilidade.Models
     {
         public SqliteConnection conn = new SqliteConnection("Data Source=" + caminho);
 
-        public void conectar()
+        public void Conectar()
         {
             conn.Open();
         }
 
-        public void desconectar()
-        {
-            conn.Close();
-        }
-
-        public void excluir()
+        public void Desconectar()
         {
             conn.Dispose();
         }
