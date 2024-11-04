@@ -274,7 +274,7 @@ namespace Contabilidade.Forms.Cadastros
             }
         }
 
-        private string AplicarMascara(string input)
+        public static string AplicarMascara(string input)
         {
             // Remove todos os caracteres não alfanuméricos
             string cleanInput = Regex.Replace(input, @"[^a-zA-Z0-9]", "");

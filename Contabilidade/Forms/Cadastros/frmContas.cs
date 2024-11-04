@@ -42,37 +42,50 @@ namespace Contabilidade.Forms.Cadastros
                 dgvContas.DataSource = dv;
 
                 cbbFiltrar.SelectedIndex = 0;
+                cbbNivel.SelectedIndex = 0;
+                txtFiltrar.MaxLength = 15;
             }
         }
 
         private void cbbFiltrar_SelectedIndexChanged(object sender, EventArgs e)
         {
+            txtFiltrar.Text = "";
+            cbbNivel.SelectedIndex = 0;
+
             // Filtar por nível 
             if (cbbFiltrar.SelectedIndex == 2)
             {
                 cbbNivel.Visible = true;
                 txtFiltrar.Visible = false;
+                cbbNivel_SelectedIndexChanged(sender, e);
             }
+            // Filtrar por conta ou descrição 
             else
             {
                 cbbNivel.Visible = false;
                 txtFiltrar.Visible = true;
-                txtFiltrar.Width = 238;
+                txtFiltrar_TextChanged(sender, e);
             }
-
-            txtFiltrar_TextChanged(sender, e);
         }
-
-        public static (int, int) ObterMenorEMaior(int valor1, int valor2)
+        private void cbbNivel_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (valor1 < valor2)
+            // Ambos
+            if (cbbNivel.SelectedIndex == 0)
             {
-                return (valor1, valor2);
+                dv.RowFilter = "";
             }
-            else
+            // Analitico
+            else if (cbbNivel.SelectedIndex == 1)
             {
-                return (valor2, valor1);
+                dv.RowFilter = "nivel = 'A'";
             }
+            // Sintetico
+            else if (cbbNivel.SelectedIndex == 2)
+            {
+                dv.RowFilter = "nivel = 'S'";
+            }
+
+            dgvContas.DataSource = dv;
         }
 
         private void txtFiltrar_TextChanged(object sender, EventArgs e)
@@ -80,41 +93,26 @@ namespace Contabilidade.Forms.Cadastros
             // Conta
             if (cbbFiltrar.SelectedIndex == 0)
             {
-                dv.RowFilter = $"conta LIKE '{txtFiltrar.Text}%'";
+                // Impedir da máscara ser aplicada quando não se tem dados inseridos (o que ocasiona erro)
+                if (txtFiltrar.Text.Length > 0)
+                {
+                    TextBox textBox = sender as TextBox;
+                    textBox.Text = frmContasDados.AplicarMascara(textBox.Text);
+                    textBox.SelectionStart = textBox.Text.Length; // Mantém o cursor no final
+                }
+
+                txtFiltrar.MaxLength = 15;
+
+                dv.RowFilter = $"conta LIKE '%{txtFiltrar.Text}%'";
                 dgvContas.DataSource = dv;
             }
             // Descrição
             else if (cbbFiltrar.SelectedIndex == 1)
             {
-                dv.RowFilter = $"descricao LIKE '{txtFiltrar.Text}%'";
+                txtFiltrar.MaxLength = 100;
+                dv.RowFilter = $"descricao LIKE '%{txtFiltrar.Text}%'";
                 dgvContas.DataSource = dv;
             }
-            // Nível
-            else if (cbbFiltrar.SelectedIndex == 2)
-            {
-                // Analitico
-                if (cbbNivel.SelectedIndex == 0)
-                {
-                    dv.RowFilter = "nivel = 'A'";
-                }
-                // Sintetico
-                else if (cbbNivel.SelectedIndex == 1)
-                {
-                    dv.RowFilter = "nivel = 'S'";
-                }
-                // Ambos
-                else if (cbbNivel.SelectedIndex == 2)
-                {
-                    dv.RowFilter = "";
-                }
-
-                dgvContas.DataSource = dv;
-            }
-        }
-
-        private bool IsNumeric(string text)
-        {
-            return int.TryParse(text, out _);
         }
 
         public static bool verificarExistenciaConta(string conta)
@@ -381,7 +379,7 @@ namespace Contabilidade.Forms.Cadastros
             public string data { get; set; }
             public decimal total { get; set; }
 
-            public TotalLancamentos(string data,  decimal total)
+            public TotalLancamentos(string data, decimal total)
             {
                 this.data = data;
                 this.total = total;
@@ -408,7 +406,7 @@ namespace Contabilidade.Forms.Cadastros
             {
                 // Obter relação de datas e valores líquidos dos lançamentos em cada data
                 var listLancamentos = new List<TotalLancamentos>();
-                
+
                 // Obter o valor total dos lançamentos em cada data -> obter saldo mais recente em uma data e somar esse valor a um total, a cada operação reduzir do saldo encontrado o total (esse será o real valor dos lançamentos no período)
                 var saldoAnterior = 0m;
                 foreach (var data in listDatas)
@@ -445,7 +443,7 @@ namespace Contabilidade.Forms.Cadastros
                 comando.ExecuteNonQuery();
             }
         }
-        
+
         public void excluirConta(Conexao con, string conta, string nivel, SqliteTransaction transacao)
         {
             using (var comando = new SqliteCommand("", con.conn))
@@ -464,7 +462,8 @@ namespace Contabilidade.Forms.Cadastros
                 comando.Parameters.AddWithValue("@conta", conta);
                 var result = comando.ExecuteNonQuery();
 
-                if (result == 0) {
+                if (result == 0)
+                {
                     throw new CustomException("Houve um erro ao excluir a conta");
                 }
             }
@@ -541,9 +540,9 @@ namespace Contabilidade.Forms.Cadastros
                                                     listContas.Add(novaConta);
                                                 }
                                             }
-                                            
+
                                             // Excluir cada conta presente na lista
-                                            foreach(var conta in listContas)
+                                            foreach (var conta in listContas)
                                             {
                                                 excluirConta(con, conta.Conta, conta.Nivel, transacao);
                                             }
