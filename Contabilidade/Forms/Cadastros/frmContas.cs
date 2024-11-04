@@ -486,19 +486,26 @@ namespace Contabilidade.Forms.Cadastros
         {
             try
             {
-                var dialogResult = MessageBox.Show("Deseja excluir a conta selecionada? Esse processo não pode ser desfeito!", "Confirmação de exclusão da conta", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (dialogResult == DialogResult.Yes)
+                // Verifica se uma linha foi selecionada
+                if (dgvContas.SelectedRows.Count > 0)
                 {
-                    // Verifica se uma linha foi selecionada
-                    if (dgvContas.SelectedRows.Count > 0)
+                    // Obtem a linha selecionada
+                    DataGridViewRow selectedRow = dgvContas.SelectedRows[0];
+
+                    // Obtem a conta a ser excluida
+                    var contaExcluir = selectedRow.Cells["Conta"].Value.ToString();
+                    var nivelExcluir = selectedRow.Cells["Nível"].Value.ToString();
+
+                    // Verifica se a conta selecionada não é o caixa
+                    if (contaExcluir == "0")
                     {
-                        // Obtem a linha selecionada
-                        DataGridViewRow selectedRow = dgvContas.SelectedRows[0];
+                        MessageBox.Show("Não é possível excluir a conta do caixa", "Operação finalizada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
 
-                        // Obtem a conta a ser excluida
-                        var contaExcluir = selectedRow.Cells["Conta"].Value.ToString();
-                        var nivelExcluir = selectedRow.Cells["Nível"].Value.ToString();
-
+                    var dialogResult = MessageBox.Show("Deseja excluir a conta selecionada? Esse processo não pode ser desfeito!", "Confirmação de exclusão da conta", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (dialogResult == DialogResult.Yes)
+                    {
                         using (var transacao = con.conn.BeginTransaction())
                         {
                             try

@@ -156,6 +156,7 @@
             // 
             // txtConta
             // 
+            txtConta.BackColor = Color.White;
             txtConta.Location = new Point(25, 43);
             txtConta.Margin = new Padding(25, 3, 3, 3);
             txtConta.MaxLength = 15;

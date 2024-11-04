@@ -36,6 +36,14 @@ namespace Contabilidade.Forms.Cadastros
             // Dados da conta
             txtConta.Text = conta;
             this.contaAntiga = conta;
+
+            // Bloquear alteração do número/nível de conta se for o caixa
+            if (conta == "0")
+            {
+                txtConta.Enabled = false;
+                cbbNivel.Enabled = false;
+            }
+
             txtDescricao.Text = descricao;
             txtConta.Select();
             this.nivelAntigo = nivel;
