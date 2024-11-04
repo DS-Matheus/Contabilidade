@@ -41,6 +41,7 @@ namespace Contabilidade.Forms.Cadastros
                 dv.RowFilter = $"nome LIKE '{txtFiltrar.Text}%'";
                 dgvUsuarios.DataSource = dv;
 
+                txtFiltrar.MaxLength = 20;
                 cbbFiltrar.SelectedIndex = 0;
             }
         }
@@ -248,13 +249,17 @@ namespace Contabilidade.Forms.Cadastros
 
         private void txtFiltrar_TextChanged(object sender, EventArgs e)
         {
-            if (cbbFiltrar.Text == "Usuário")
+            // Filtrar por usuário
+            if (cbbFiltrar.SelectedIndex == 0)
             {
+                txtFiltrar.MaxLength = 20;
                 dv.RowFilter = $"nome LIKE '%{txtFiltrar.Text}%'";
                 dgvUsuarios.DataSource = dv;
             }
-            else if (cbbFiltrar.Text == "Senha")
+            // Filtrar por senha
+            else
             {
+                txtFiltrar.MaxLength = 30;
                 dv.RowFilter = $"senha LIKE '%{txtFiltrar.Text}%'";
                 dgvUsuarios.DataSource = dv;
             }
@@ -262,8 +267,8 @@ namespace Contabilidade.Forms.Cadastros
 
         private void cbbFiltrar_SelectedIndexChanged(object sender, EventArgs e)
         {
-            txtFiltrar_TextChanged(sender, e);
             txtFiltrar.Text = "";
+            txtFiltrar_TextChanged(sender, e);
         }
 
         private void btnImprimir_Click(object sender, EventArgs e)
