@@ -303,60 +303,65 @@ namespace Contabilidade.Forms.Lancamentos
         {
             try
             {
-                // Criar uma instância do formulário de dados e aguardar um retorno
-                using (var frmDados = new frmLancamentosDados(con, "Criar lançamento", "", "", 0, "", "", DateTime.Today))
+                // Variável para controle de fluxo (se irá abrir novamente ou não)
+                var dialogResult = DialogResult.Cancel;
+                
+                do
                 {
-                    // O usuário apertou o botão de salvar
-                    if (frmDados.ShowDialog() == DialogResult.OK)
+                    // Criar uma instância do formulário de dados e aguardar um retorno
+                    using (var frmDados = new frmLancamentosDados(con, "Criar lançamento", "", "", 0, "", "", DateTime.Today))
                     {
-                        // Iniciar transação
-                        using (var transacao = con.conn.BeginTransaction())
+                        dialogResult = frmDados.ShowDialog();
+
+                        // O usuário apertou o botão de salvar
+                        if (dialogResult == DialogResult.OK)
                         {
-                            // Inciar o comando
-                            using (var comando = new SQLiteCommand("", con.conn))
+                            // Iniciar transação
+                            using (var transacao = con.conn.BeginTransaction())
                             {
-                                // Atribuir o comando a transação
-                                comando.Transaction = transacao;
-
-                                try
+                                // Inciar o comando
+                                using (var comando = new SQLiteCommand("", con.conn))
                                 {
-                                    // Criar lançamento e atualizar valores de saldos posteriores e no registro de caixa
-                                    criarLancamento(comando, transacao);
+                                    // Atribuir o comando a transação
+                                    comando.Transaction = transacao;
 
-                                    // Efetivar operações
-                                    transacao.Commit();
+                                    try
+                                    {
+                                        // Criar lançamento e atualizar valores de saldos posteriores e no registro de caixa
+                                        criarLancamento(comando, transacao);
 
-                                    // Adicionar dados na tabela - Recarregar completamente
-                                    atualizarDataGrid();
+                                        // Efetivar operações
+                                        transacao.Commit();
 
-                                    // Remover dados das variáveis
-                                    conta = "";
-                                    valor = 0;
-                                    id_historico = "";
-                                    data = DateTime.MinValue;
+                                        // Adicionar dados na tabela - Recarregar completamente
+                                        atualizarDataGrid();
 
-                                    MessageBox.Show("Lançamento criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                                }
-                                catch (CustomException ex)
-                                {
-                                    transacao.Rollback();
-                                    MessageBox.Show($"{ex.Message?.ToString()}", "Erro ao criar o lançamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                }
-                                catch (Exception ex)
-                                {
-                                    transacao.Rollback();
-                                    MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao criar o lançamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        // Remover dados das variáveis
+                                        conta = "";
+                                        valor = 0;
+                                        id_historico = "";
+                                        data = DateTime.MinValue;
+                                    }
+                                    catch (CustomException ex)
+                                    {
+                                        transacao.Rollback();
+                                        MessageBox.Show($"{ex.Message?.ToString()}", "Erro ao criar o lançamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        transacao.Rollback();
+                                        MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao criar o lançamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    }
                                 }
                             }
                         }
                     }
-                }
+                } while (dialogResult == DialogResult.OK);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao criar o lançamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
         }
 
         private void btnCalcular_Click(object sender, EventArgs e)
