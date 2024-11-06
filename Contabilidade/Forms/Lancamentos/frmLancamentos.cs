@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.SQLite;
 using Contabilidade.Classes;
 using DGVPrinterHelper;
+using Contabilidade.Forms.Cadastros;
 
 namespace Contabilidade.Forms.Lancamentos
 {
@@ -58,9 +59,19 @@ namespace Contabilidade.Forms.Lancamentos
                 dv.RowFilter = $"conta LIKE '{txtFiltrar.Text}%'";
                 dgvLancamentos.DataSource = dv;
 
-                cbbFiltrar.SelectedIndex = 0;
-                cbbFiltrarDatas.SelectedIndex = 0;
-                cbbFiltrarValores.SelectedIndex = 0;
+                // Alterar filtros somente se for diferente - para não acionar os handlers de forma desnecessária
+                if (cbbFiltrar.SelectedIndex != 0)
+                {
+                    cbbFiltrar.SelectedIndex = 0;
+                }
+                if (cbbFiltrarDatas.SelectedIndex != 0)
+                {
+                    cbbFiltrarDatas.SelectedIndex = 0;
+                }
+                if (cbbFiltrarValores.SelectedIndex != 0)
+                {
+                    cbbFiltrarValores.SelectedIndex = 0;
+                }
             }
         }
 
@@ -639,6 +650,350 @@ namespace Contabilidade.Forms.Lancamentos
                 printer.FooterSpacing = 15;
                 printer.PrintDataGridView(dgvLancamentos);
             }
+        }
+
+        private void handleFiltroPrincipal()
+        {
+            resetarTodosFiltros();
+
+            var indexPrincipal = cbbFiltrar.SelectedIndex;
+
+            switch (indexPrincipal) {
+                // Conta
+                case 1:
+                    txtFiltrar.Visible = true;
+                    txtFiltrar.MaxLength = 15;
+                    break;
+                // Descrição
+                // Histórico
+                case 2:
+                case 3:
+                    txtFiltrar.Visible = true;
+                    txtFiltrar.MaxLength = 100;
+                    break;
+                // Data
+                case 4:
+                    cbbFiltrar.Width = 162;
+                    cbbFiltrarDatas.Visible = true;
+                    break;
+
+                // Valores
+                case 5:
+                    cbbFiltrar.Width = 162;
+                    cbbFiltrarValores.Visible = true;
+                    break;
+            }
+        }
+
+        private void resetarTodosFiltros()
+        {
+            // Esconder todos os campos/filtros secundários que não são padrões
+            cbbFiltrarDatas.Visible = false;
+            cbbFiltrarValores.Visible = false;
+            esconderCampos();
+
+            // Resetar o tamanho dos filtros/campos que sofrem mudanças para o padrão
+            cbbFiltrar.Width = 332;
+            resetarTamanhoCampos();
+
+            // Resetar valores de todos os filtros e campos - com exceção do filtro principal
+            // Alterar index dos filtros apenas se for diferente do padrão - assim não aciona o handleFiltroSecundario
+            if (cbbFiltrarDatas.SelectedIndex != 0)
+            {
+                cbbFiltrarDatas.SelectedIndex = 0;
+            }
+            if (cbbFiltrarValores.SelectedIndex != 0)
+            {
+                cbbFiltrarValores.SelectedIndex = 0;
+            }
+            resetarValoresCampos();
+
+            filtrarPor();
+        }
+
+        private void filtrarPor(string query = "")
+        {
+            dv.RowFilter = $"{query}";
+            dgvLancamentos.DataSource = dv;
+        }
+
+        private void esconderCampos()
+        {
+            txtFiltrar.Visible = false;
+            dtpData1.Visible = false;
+            dtpData2.Visible = false;
+            nudValor1.Visible = false;
+            nudValor2.Visible = false;
+        }
+
+        private void resetarTamanhoCampos()
+        {
+            txtFiltrar.Width = 332;
+            dtpData1.Width = 332;
+            nudValor1.Width = 332;
+        }
+
+        private void resetarValoresCampos()
+        {
+            // Apenas alterar valor caso esteja diferente, assim não se ativa o handleMudancaValor sem necessidade
+            if (txtFiltrar.Text != "")
+            {
+                txtFiltrar.Text = "";
+            }
+            if (dtpData1.Value != DateTime.Today)
+            {
+                dtpData1.Value = DateTime.Today;
+            }
+            if (dtpData2.Value != DateTime.Today)
+            {
+                dtpData2.Value = DateTime.Today;
+            }
+            if (nudValor1.Value != 0m)
+            {
+                nudValor1.Value = 0m;
+            }
+            if (nudValor2.Value != 0m)
+            {
+                nudValor2.Value = 0m;
+            }
+        }
+
+        private void handleFiltroSecundario(int indexPrincipal)
+        {
+            esconderCampos();
+            resetarTamanhoCampos();
+            resetarValoresCampos();
+
+            // Datas
+            if (indexPrincipal == 4)
+            {
+                var indexSecundario = cbbFiltrarDatas.SelectedIndex;
+
+                switch (indexSecundario)
+                {
+                    // > Filtros sem campos
+                    // Sem filtro - apenas resetar os filtros
+                    case 0:
+                        filtrarPor();
+                        break;
+                        
+                    // > Filtros com apenas 1 campo
+                    // Data igual a
+                    // Datas anteriores a
+                    // Datas posteriores a
+                    case 1:
+                    case 2:
+                    case 3:
+                        dtpData1.Visible = true;
+                        break;
+                        
+                    // > Filtros com 2 campos
+                    // Datas entre
+                    case 4:
+                        dtpData1.Width = 162;
+                        dtpData1.Visible = true;
+                        dtpData2.Visible = true;
+                        break;
+                }
+            }
+            // Valores
+            else if (indexPrincipal == 5)
+            {
+                var indexSecundario = cbbFiltrarValores.SelectedIndex;
+
+                switch (indexSecundario)
+                {
+                    // > Filtros sem campos
+                    // Sem filtro - apenas resetar os filtros
+                    case 0:
+                        filtrarPor();
+                        break;
+                    // Somente débitos
+                    case 1:
+                        dv.RowFilter = "valor < 0";
+                        dgvLancamentos.DataSource = dv;
+                        break;
+                    // Somente créditos
+                    case 2:
+                        dv.RowFilter = "valor > 0";
+                        dgvLancamentos.DataSource = dv;
+                        break;
+
+                    // > Filtros com apenas 1 campo
+                    // Valores igual a
+                    // Valores menores que
+                    // Valores maiores que
+                    case 3:
+                    case 4:
+                    case 5:
+                        filtrarPor();
+                        nudValor1.Visible = true;
+                        break;
+
+                    // > Filtros com 2 campos
+                    // Valores entre
+                    case 6:
+                        filtrarPor();
+                        nudValor1.Width = 162;
+                        nudValor1.Visible = true;
+                        nudValor2.Visible = true;
+                        break;
+                }
+            }
+        }
+
+        private void cbbFiltrar_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            handleFiltroPrincipal();
+        }
+
+        private void cbbFiltrarDatas_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            handleFiltroSecundario(4);
+        }
+
+        private void cbbFiltrarValores_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            handleFiltroSecundario(5);
+        }
+
+        public static (string, string) ordenarDatasEObterStrings(DateTime data1, DateTime data2)
+        {
+            // Se a data1 for menor ou igual a data2
+            if (data1 <= data2)
+            {
+                return (data1.ToString("yyyy-MM-dd"), data2.ToString("yyyy-MM-dd"));
+            }
+            // Se a data2 for menor que a data1
+            else
+            {
+                return (data2.ToString("yyyy-MM-dd"), data1.ToString("yyyy-MM-dd"));
+            }
+        }
+
+        public static (decimal, decimal) ordenarValoresDecimais(decimal valor1, decimal valor2)
+        {
+            if (valor1 <= valor2)
+            {
+                return (valor1, valor2);
+            }
+            else
+            {
+                return (valor2, valor1);
+            }
+        }
+
+        private void handleMudancaValor()
+        {
+            var indexPrincipal = cbbFiltrar.SelectedIndex;
+
+            switch (indexPrincipal)
+            {
+                // Conta
+                case 1:
+                    var conta = txtFiltrar.Text;
+                    filtrarPor($"conta LIKE '{conta}%'");
+                    break;
+                // Descrição
+                case 2:
+                    var descricao = txtFiltrar.Text;
+                    filtrarPor($"descricao LIKE '%{descricao}%'");
+                    break;
+                // Histórico
+                case 3:
+                    var historico = txtFiltrar.Text;
+                    filtrarPor($"historico LIKE '%{historico}%'");
+                    break;
+                // Data
+                case 4:
+                    var indexSecundario = cbbFiltrarDatas.SelectedIndex;
+
+                    switch (indexSecundario)
+                    {
+                        // Data igual a
+                        case 1:
+                            var dataIgual = dtpData1.Value.ToString("yyyy-MM-dd");
+                            filtrarPor($"data = '{dataIgual}'");
+                            break;
+                        // Datas anteriores a
+                        case 2:
+                            var dataAnterior = dtpData1.Value.ToString("yyyy-MM-dd");
+                            filtrarPor($"data < '{dataAnterior}'");
+                            break;
+                        // Datas posteriores a
+                        case 3:
+                            var dataPosterior = dtpData1.Value.ToString("yyy-MM-dd");
+                            filtrarPor($"data > '{dataPosterior}'");
+                            break;
+                        // Datas entre
+                        case 4:
+                            var (data1, data2) = ordenarDatasEObterStrings(dtpData1.Value, dtpData2.Value);
+                            filtrarPor($"data >= '{data1}' AND data <= '{data2}'");
+                            break;
+                    }
+                    break;
+                // Valores
+                case 5:
+                    var indexSecundario2 = cbbFiltrarValores.SelectedIndex;
+
+                    switch (indexSecundario2)
+                    {
+                        // Valores iguais a
+                        case 3:
+                            var valorIgual = nudValor1.Value;
+                            filtrarPor($"valor = {valorIgual}");
+                            break;
+                        // Valores menores que
+                        case 4:
+                            var valorMenor = nudValor1.Value;
+                            filtrarPor($"valor <= {valorMenor}");
+                            break;
+                        // Valores maiores que
+                        case 5:
+                            var valorMaior = nudValor1.Value;
+                            filtrarPor($"valor >= {valorMaior}");
+                            break;
+                        // Valores entre
+                        case 6:
+                            var (valor1, valor2) = ordenarValoresDecimais(nudValor1.Value, nudValor2.Value);
+                            filtrarPor($"valor >= {valor1} AND valor <= {valor2}");
+                            break;
+                    }
+                    break;
+            }
+        }
+
+        private void txtFiltrar_TextChanged(object sender, EventArgs e)
+        {
+            // Impedir da máscara ser aplicada quando não se tem dados inseridos (o que ocasiona erro) ou quando o filtro não é de conta
+            if (txtFiltrar.Text.Length > 0 && cbbFiltrar.SelectedIndex == 1)
+            {
+                TextBox textBox = sender as TextBox;
+                textBox.Text = frmContasDados.AplicarMascara(textBox.Text);
+                textBox.SelectionStart = textBox.Text.Length; // Mantém o cursor no final
+            }
+
+            handleMudancaValor();
+        }
+
+        private void dtpData1_ValueChanged(object sender, EventArgs e)
+        {
+            handleMudancaValor();
+        }
+
+        private void dtpData2_ValueChanged(object sender, EventArgs e)
+        {
+            handleMudancaValor();
+        }
+
+        private void nudValor1_ValueChanged(object sender, EventArgs e)
+        {
+            handleMudancaValor();
+        }
+
+        private void nudValor2_ValueChanged(object sender, EventArgs e)
+        {
+            handleMudancaValor();
         }
     }
 }
