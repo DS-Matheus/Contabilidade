@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Data.SQLite;
 using Contabilidade.Classes;
+using System.Drawing;
 
 namespace Contabilidade
 {
@@ -28,6 +29,15 @@ namespace Contabilidade
         public frmLogin()
         {
             InitializeComponent();
+
+            // REMOVER - LOGIN AUTOMATICO
+            caminhoBD = $"{pastaDatabases}\\banco-teste.sqlite";
+            Conexao con = new Conexao(caminhoBD);
+            con.Conectar();
+            this.Visible = false;
+            frmPainelPrincipal frmPainelPrincipal = new frmPainelPrincipal("banco-teste", "1", con); // Crie uma instância do frmPainelPrincipal
+            frmPainelPrincipal.Owner = this; // Definir o painel de Login como pai
+            frmPainelPrincipal.ShowDialog(); // Exibe o form como uma janela de diálogo modal
         }
 
         private void carregarBDs()
