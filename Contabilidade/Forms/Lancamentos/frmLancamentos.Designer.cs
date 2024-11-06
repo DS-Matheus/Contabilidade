@@ -79,6 +79,7 @@
             dtpData2.Size = new Size(162, 23);
             dtpData2.TabIndex = 16;
             dtpData2.Visible = false;
+            dtpData2.ValueChanged += dtpData2_ValueChanged;
             // 
             // dtpData1
             // 
@@ -88,6 +89,7 @@
             dtpData1.Size = new Size(332, 23);
             dtpData1.TabIndex = 15;
             dtpData1.Visible = false;
+            dtpData1.ValueChanged += dtpData1_ValueChanged;
             // 
             // txtFiltrar2
             // 
@@ -96,28 +98,31 @@
             txtFiltrar2.Size = new Size(162, 23);
             txtFiltrar2.TabIndex = 14;
             txtFiltrar2.Visible = false;
+            txtFiltrar2.TextChanged += txtFiltrar2_TextChanged;
             // 
             // cbbFiltrarValores
             // 
             cbbFiltrarValores.DropDownStyle = ComboBoxStyle.DropDownList;
             cbbFiltrarValores.FormattingEnabled = true;
-            cbbFiltrarValores.Items.AddRange(new object[] { "Somente débitos", "Somente créditos", "Valores iguais a", "Valores maiores que", "Valores menores que", "Valores entre" });
+            cbbFiltrarValores.Items.AddRange(new object[] { "Sem filtro", "Somente débitos", "Somente créditos", "Valores iguais a", "Valores maiores que", "Valores menores que", "Valores entre" });
             cbbFiltrarValores.Location = new Point(176, 20);
             cbbFiltrarValores.Name = "cbbFiltrarValores";
             cbbFiltrarValores.Size = new Size(162, 23);
             cbbFiltrarValores.TabIndex = 13;
             cbbFiltrarValores.Visible = false;
+            cbbFiltrarValores.SelectedIndexChanged += cbbFiltrarValores_SelectedIndexChanged;
             // 
             // cbbFiltrarDatas
             // 
             cbbFiltrarDatas.DropDownStyle = ComboBoxStyle.DropDownList;
             cbbFiltrarDatas.FormattingEnabled = true;
-            cbbFiltrarDatas.Items.AddRange(new object[] { "Data igual a", "Datas anteriores a", "Datas posteriores a", "Data entre" });
+            cbbFiltrarDatas.Items.AddRange(new object[] { "Sem filtro", "Data igual a", "Datas anteriores a", "Datas posteriores a", "Data entre" });
             cbbFiltrarDatas.Location = new Point(176, 20);
             cbbFiltrarDatas.Name = "cbbFiltrarDatas";
             cbbFiltrarDatas.Size = new Size(162, 23);
             cbbFiltrarDatas.TabIndex = 12;
             cbbFiltrarDatas.Visible = false;
+            cbbFiltrarDatas.SelectedIndexChanged += cbbFiltrarDatas_SelectedIndexChanged;
             // 
             // cbbFiltrar
             // 
@@ -128,6 +133,7 @@
             cbbFiltrar.Name = "cbbFiltrar";
             cbbFiltrar.Size = new Size(332, 23);
             cbbFiltrar.TabIndex = 11;
+            cbbFiltrar.SelectedIndexChanged += cbbFiltrar_SelectedIndexChanged;
             // 
             // txtFiltrar
             // 
@@ -135,6 +141,7 @@
             txtFiltrar.Name = "txtFiltrar";
             txtFiltrar.Size = new Size(332, 23);
             txtFiltrar.TabIndex = 10;
+            txtFiltrar.TextChanged += txtFiltrar_TextChanged;
             // 
             // btnImprimir
             // 

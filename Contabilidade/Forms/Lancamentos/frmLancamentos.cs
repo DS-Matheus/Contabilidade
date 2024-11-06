@@ -640,5 +640,122 @@ namespace Contabilidade.Forms.Lancamentos
                 printer.PrintDataGridView(dgvLancamentos);
             }
         }
+
+        private void resetarTodosFiltros()
+        {
+            cbbFiltrarDatas.SelectedIndex = 0;
+            cbbFiltrarValores.SelectedIndex = 0;
+            resetarFiltrosSecundarios();
+        }
+
+        private void esconderTodosFiltros()
+        {
+            cbbFiltrarDatas.Visible = false;
+            cbbFiltrarValores.Visible = false;
+            esconderFiltrosSecundarios();
+        }
+
+        private void esconderFiltrosSecundarios()
+        {
+            txtFiltrar.Width = 332;
+            txtFiltrar.Visible = true;
+            txtFiltrar2.Visible = false;
+            dtpData1.Visible = false;
+            dtpData2.Visible = false;
+        }
+
+        private void resetarFiltrosSecundarios()
+        {
+            txtFiltrar.Text = "";
+            txtFiltrar2.Text = "";
+            dtpData1.Value = DateTime.Today;
+            dtpData2.Value = DateTime.Today;
+        }
+
+        /*
+         dv.RowFilter = "";
+
+        dgvContas.DataSource = dv;
+
+        - ao alterar filtro, limpar txtFiltros/cbbFiltros e pesquisar por "".
+
+        Conta
+        Descrição
+        Histórico
+        data
+        valores
+
+        Sem filtro
+        Data igual a
+        Datas anteriores a
+        Datas posteriores a
+        Data entre
+
+        Sem filtro
+        Valores iguais a
+        Valores maiores que
+        Valores menores que
+        Valores entre
+        Débitos
+        Créditos
+         
+
+        larguras: 332 e 162
+        */
+
+        private void handleMudancaFiltroPrincipal()
+        {
+            resetarTodosFiltros();
+            esconderFiltrosSecundarios();
+
+            // Código para definir os filtros secundarios a serem exibidos
+        }
+
+        private void handleMudancaFiltroSecundario()
+        {
+            resetarFiltrosSecundarios();
+
+            // Código para definir os elementos que serão exibidos ou não
+        }
+
+        private void handleMudancaValor()
+        {
+            // Código para lidar com os dados dos formulários (levar em conta os cbb selecionados - com index selecionado diferente de 0)
+        }
+
+        private void cbbFiltrar_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cbbFiltrarDatas_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cbbFiltrarValores_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtFiltrar_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtFiltrar2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dtpData1_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dtpData2_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
