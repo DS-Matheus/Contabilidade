@@ -3,7 +3,7 @@ using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System.Diagnostics;
 using System.Text;
-using Microsoft.Data.Sqlite;
+using System.Data.SQLite;
 
 namespace Contabilidade.Forms.Relatorios
 {
@@ -28,7 +28,7 @@ namespace Contabilidade.Forms.Relatorios
         private void btnVisualizar_Click(object sender, EventArgs e)
         {
             var sql = "SELECT l.conta, c.descricao, h.historico, l.valor FROM lancamentos l JOIN contas c ON l.conta = c.conta JOIN historicos h ON l.id_historico = h.id WHERE date(l.data) = @data ORDER BY l.conta ASC, l.id ASC;";
-            var comando = new SqliteCommand(sql, con.conn);
+            var comando = new SQLiteCommand(sql, con.conn);
 
             // Obter data selecionada
             DateTime data = dtpData.Value;

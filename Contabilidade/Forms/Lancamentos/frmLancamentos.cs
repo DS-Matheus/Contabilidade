@@ -1,6 +1,6 @@
 ﻿using Contabilidade.Models;
 using System.Data;
-using Microsoft.Data.Sqlite;
+using System.Data.SQLite;
 using Contabilidade.Classes;
 using DGVPrinterHelper;
 
@@ -40,11 +40,11 @@ namespace Contabilidade.Forms.Lancamentos
             dgvLancamentos.Columns["valor"].DefaultCellStyle.Format = "N2";
         }
 
-        public void atualizarDataGrid()
+        private void atualizarDataGrid()
         {
             // Query de pesquisa
             string sql = "SELECT l.id, l.conta, c.descricao, l.valor, l.data, l.id_historico, h.historico FROM lancamentos l JOIN contas c ON l.conta = c.conta JOIN historicos h ON l.id_historico = h.id ORDER BY l.data DESC, l.conta";
-            using (var command = new SqliteCommand(sql, con.conn))
+            using (var command = new SQLiteCommand(sql, con.conn))
             {
                 dtDados.Clear();
                 using (var reader = command.ExecuteReader())
@@ -64,13 +64,13 @@ namespace Contabilidade.Forms.Lancamentos
             }
         }
 
-        public static void reverterLancamentos(Conexao con, SqliteCommand comando, decimal valorOriginal, SqliteTransaction transacao)
+        public static void reverterLancamentos(Conexao con, SQLiteCommand comando, decimal valorOriginal, SQLiteTransaction transacao)
         {
             using (var reader = comando.ExecuteReader())
             {
                 // Criar comando para reverter os registros
                 var sql2 = "UPDATE lancamentos SET saldo = (saldo - @valor) WHERE id = @id";
-                using (var comando2 = new SqliteCommand(sql2, con.conn))
+                using (var comando2 = new SQLiteCommand(sql2, con.conn))
                 {
                     // Atribuir transação ao comando 2
                     comando2.Transaction = transacao;
@@ -102,9 +102,9 @@ namespace Contabilidade.Forms.Lancamentos
             }
         }
 
-        public static void excluirLancamento(Conexao con, string ID, string dataConvertida, decimal valorLancamento, SqliteTransaction transacao)
+        public static void excluirLancamento(Conexao con, string ID, string dataConvertida, decimal valorLancamento, SQLiteTransaction transacao)
         {
-            using (var comando = new SqliteCommand("", con.conn))
+            using (var comando = new SQLiteCommand("", con.conn))
             {
                 comando.Transaction = transacao;
 
@@ -134,7 +134,7 @@ namespace Contabilidade.Forms.Lancamentos
             }
         }
 
-        public void criarLancamento(SqliteCommand comando, SqliteTransaction transacao)
+        public void criarLancamento(SQLiteCommand comando, SQLiteTransaction transacao)
         {
             // Variável para armazenar o saldo da conta antes do lançamento
             decimal saldo = 0;
@@ -185,7 +185,7 @@ namespace Contabilidade.Forms.Lancamentos
                 {
                     // Criar comando para atualizar os campos
                     var sql = "UPDATE lancamentos SET saldo = (saldo + @valor) WHERE id = @id";
-                    using (var comando2 = new SqliteCommand(sql, con.conn))
+                    using (var comando2 = new SQLiteCommand(sql, con.conn))
                     {
                         // Atribuir transação ao comando 2
                         comando2.Transaction = transacao;
@@ -256,7 +256,7 @@ namespace Contabilidade.Forms.Lancamentos
             {
                 // Criar comando para atualizar os campos
                 var sql = "UPDATE registros_caixa SET saldo = saldo + @valor WHERE data = @data;";
-                using (var comando2 = new SqliteCommand(sql, con.conn))
+                using (var comando2 = new SQLiteCommand(sql, con.conn))
                 {
                     // Atribuir transação ao comando 3
                     comando2.Transaction = transacao;
@@ -302,7 +302,7 @@ namespace Contabilidade.Forms.Lancamentos
                         using (var transacao = con.conn.BeginTransaction())
                         {
                             // Inciar o comando
-                            using (var comando = new SqliteCommand("", con.conn))
+                            using (var comando = new SQLiteCommand("", con.conn))
                             {
                                 // Atribuir o comando a transação
                                 comando.Transaction = transacao;
@@ -375,7 +375,7 @@ namespace Contabilidade.Forms.Lancamentos
 
                 // Obter valores de crédito e débito de todos os lançamentos
                 var sql = "SELECT SUM(CASE WHEN l.valor > 0 THEN l.valor ELSE 0 END) AS creditos, SUM(CASE WHEN l.valor < 0 THEN l.valor ELSE 0 END) AS debitos FROM lancamentos l WHERE l.data BETWEEN @dataInicial AND @dataFinal;";
-                using (var comando = new SqliteCommand(sql, con.conn))
+                using (var comando = new SQLiteCommand(sql, con.conn))
                 {
                     comando.Parameters.AddWithValue("@dataInicial", dataInicial);
                     comando.Parameters.AddWithValue("@dataFinal", dataFinal);
@@ -499,7 +499,7 @@ namespace Contabilidade.Forms.Lancamentos
                             using (var transacao = con.conn.BeginTransaction())
                             {
                                 // Inciar o comando
-                                using (var comando = new SqliteCommand("", con.conn))
+                                using (var comando = new SQLiteCommand("", con.conn))
                                 {
                                     // Atribuir o comando a transação
                                     comando.Transaction = transacao;
@@ -581,7 +581,7 @@ namespace Contabilidade.Forms.Lancamentos
                         {
                             try
                             {
-                                using (var comando = new SqliteCommand("", con.conn))
+                                using (var comando = new SQLiteCommand("", con.conn))
                                 {
                                     comando.Transaction = transacao;
 

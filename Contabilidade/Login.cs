@@ -3,7 +3,7 @@ using System.Data;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
-using Microsoft.Data.Sqlite;
+using System.Data.SQLite;
 using Contabilidade.Classes;
 
 namespace Contabilidade
@@ -117,78 +117,80 @@ namespace Contabilidade
         {
             string caminhoBD = $"{pastaDatabases}\\{nomeBD}";
 
-            // Criar banco de dados e conectar
-            var con = new Conexao(caminhoBD);
-            con.Conectar();
+            // Criar banco de dados
+            SQLiteConnection.CreateFile(caminhoBD);
 
             try
             {
-                using (var comando = new SqliteCommand("", con.conn))
+                // Conectar ao banco criado
+                using (var conexaoBanco = new SQLiteConnection("Data Source=" + caminhoBD))
                 {
-                    // Criar tabela de usuários
-                    comando.CommandText = "CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY AUTOINCREMENT, nome VARCHAR(20) NOT NULL UNIQUE, senha VARCHAR(30) NOT NULL);";
-                    comando.ExecuteNonQuery();
+                    conexaoBanco.Open();
 
-                    // Inserir usuário na tabela
-                    comando.CommandText = "INSERT INTO usuarios (nome, senha) VALUES(@nome, @senha);";
-                    comando.Parameters.AddWithValue("@nome", usuarioBD);
-                    comando.Parameters.AddWithValue("@senha", senhaUsuarioBD);
-                    var resultado = comando.ExecuteNonQuery();
-                    comando.Parameters.Clear();
-                    testarResultadoComando(resultado, "Erro ao criar o usuário no banco de dados.");
+                    using (var comando = new SQLiteCommand("", conexaoBanco))
+                    {
+                        // Criar tabela de usuários
+                        comando.CommandText = "CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY AUTOINCREMENT, nome VARCHAR(20) NOT NULL UNIQUE, senha VARCHAR(30) NOT NULL);";
+                        comando.ExecuteNonQuery();
 
-                    // Criar tabela de contas
-                    comando.CommandText = "CREATE TABLE IF NOT EXISTS contas (conta VARCHAR(15) PRIMARY KEY, descricao VARCHAR(100) NOT NULL, nivel CHAR(1) NOT NULL CHECK (nivel IN ('S', 'A')));";
-                    comando.ExecuteNonQuery();
+                        // Inserir usuário na tabela
+                        comando.CommandText = "INSERT INTO usuarios (nome, senha) VALUES(@nome, @senha);";
+                        comando.Parameters.AddWithValue("@nome", usuarioBD);
+                        comando.Parameters.AddWithValue("@senha", senhaUsuarioBD);
+                        var resultado = comando.ExecuteNonQuery();
+                        comando.Parameters.Clear();
+                        testarResultadoComando(resultado, "Erro ao criar o usuário no banco de dados.");
 
-                    // INSERIR CONTA 0 (CAIXA)
-                    comando.CommandText = "INSERT INTO contas (conta, descricao, nivel) VALUES ('0', 'Valores no caixa', 'A');";
-                    resultado = comando.ExecuteNonQuery();
-                    testarResultadoComando(resultado, "Erro ao criar a conta 0 (referênte ao caixa)");
+                        // Criar tabela de contas
+                        comando.CommandText = "CREATE TABLE IF NOT EXISTS contas (conta VARCHAR(15) PRIMARY KEY, descricao VARCHAR(100) NOT NULL, nivel CHAR(1) NOT NULL CHECK (nivel IN ('S', 'A')));";
+                        comando.ExecuteNonQuery();
 
-                    // Criar tabela de históricos
-                    comando.CommandText = "CREATE TABLE IF NOT EXISTS historicos (id INTEGER PRIMARY KEY AUTOINCREMENT, historico VARCHAR(100) NOT NULL UNIQUE);";
-                    resultado = comando.ExecuteNonQuery();
-                    testarResultadoComando(resultado, "Erro ao criar a tabela de históricos.");
+                        // INSERIR CONTA 0 (CAIXA)
+                        comando.CommandText = "INSERT INTO contas (conta, descricao, nivel) VALUES ('0', 'Valores no caixa', 'A');";
+                        resultado = comando.ExecuteNonQuery();
+                        testarResultadoComando(resultado, "Erro ao criar a conta 0 (referênte ao caixa)");
 
-                    // Criar tabela de lançamentos
-                    comando.CommandText = "CREATE TABLE IF NOT EXISTS lancamentos (id INTEGER PRIMARY KEY AUTOINCREMENT, conta VARCHAR(15) NOT NULL, valor NUMERIC(8,2) NOT NULL, data DATE DEFAULT (DATE('now')), id_historico INTEGER NOT NULL, saldo NUMERIC(8,2) NOT NULL, FOREIGN KEY (conta) REFERENCES contas(conta) ON UPDATE CASCADE ON DELETE RESTRICT, FOREIGN KEY (id_historico) REFERENCES historicos(id) ON UPDATE CASCADE ON DELETE RESTRICT);";
-                    resultado = comando.ExecuteNonQuery();
-                    testarResultadoComando(resultado, "Erro ao criar a tabela de lançamentos.");
+                        // Criar tabela de históricos
+                        comando.CommandText = "CREATE TABLE IF NOT EXISTS historicos (id INTEGER PRIMARY KEY AUTOINCREMENT, historico VARCHAR(100) NOT NULL UNIQUE);";
+                        resultado = comando.ExecuteNonQuery();
+                        testarResultadoComando(resultado, "Erro ao criar a tabela de históricos.");
 
-                    // Criar tabela para registro dos saldos do caixa
-                    comando.CommandText = "CREATE TABLE registros_caixa (data DATE PRIMARY KEY NOT NULL UNIQUE, saldo NUMERIC (8, 2) NOT NULL);";
-                    resultado = comando.ExecuteNonQuery();
-                    testarResultadoComando(resultado, "Erro ao criar a tabela para registros do caixa");
+                        // Criar tabela de lançamentos
+                        comando.CommandText = "CREATE TABLE IF NOT EXISTS lancamentos (id INTEGER PRIMARY KEY AUTOINCREMENT, conta VARCHAR(15) NOT NULL, valor NUMERIC(8,2) NOT NULL, data DATE DEFAULT (DATE('now')), id_historico INTEGER NOT NULL, saldo NUMERIC(8,2) NOT NULL, FOREIGN KEY (conta) REFERENCES contas(conta) ON UPDATE CASCADE ON DELETE RESTRICT, FOREIGN KEY (id_historico) REFERENCES historicos(id) ON UPDATE CASCADE ON DELETE RESTRICT);";
+                        resultado = comando.ExecuteNonQuery();
+                        testarResultadoComando(resultado, "Erro ao criar a tabela de lançamentos.");
 
-                    // Carregar tabela com o novo banco e desconectar
-                    carregarBDs();
-                    con.Desconectar();
+                        // Criar tabela para registro dos saldos do caixa
+                        comando.CommandText = "CREATE TABLE registros_caixa (data DATE PRIMARY KEY NOT NULL UNIQUE, saldo NUMERIC (8, 2) NOT NULL);";
+                        resultado = comando.ExecuteNonQuery();
+                        testarResultadoComando(resultado, "Erro ao criar a tabela para registros do caixa");
 
-                    cbbBD.Text = nomeBD.Replace(".sqlite", "");
+                        // Carregar tabela com o novo banco e desconectar
+                        carregarBDs();
 
-                    MessageBox.Show("O banco de dados foi criado.", "Operação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        cbbBD.Text = nomeBD.Replace(".sqlite", "");
 
-                    resetarForm();
-                    txtNome.Focus();
+                        MessageBox.Show("O banco de dados foi criado.", "Operação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                }
+                        resetarForm();
+                        txtNome.Focus();
+                    }
+                }    
             }
             catch (Exception error)
             {
-                MessageBox.Show(error.Message.ToString(), "Erro ao criar o banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Houve um erro ao criar o banco de dados, anote a mensagem de erro: \n\n{error.Message?.ToString()}", "Não foi possível criar o banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 // Se der algum erro mas o arquivo de banco já foi criado: excluir
                 if (File.Exists(caminhoBD))
                 {
                     try
                     {
-                        con.Desconectar();
                         File.Delete(caminhoBD);
                     }
                     catch (Exception erro)
                     {
-                        MessageBox.Show($"Não foi possível excluir o banco de dados, por favor, remova ele manualmente na pasta databases (dentro da instalação do programa) e anote o código de erro: \n\n{erro.Message.ToString()}", "Erro ao excluir o banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show($"Não foi possível excluir o banco de dados, por favor, remova ele manualmente na pasta databases (dentro da instalação do programa) e anote o código de erro: \n\n{erro.Message.ToString()}", "Erro ao excluir o banco de dados com defeito", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
 
@@ -578,7 +580,7 @@ namespace Contabilidade
 
                     // Query de pesquisa
                     string sql = "SELECT * FROM usuarios WHERE nome= @nome AND senha= @senha;";
-                    SqliteCommand comando = new SqliteCommand(sql, con.conn);
+                    var comando = new SQLiteCommand(sql, con.conn);
                     // Parâmetros
                     comando.Parameters.AddWithValue("@nome", txtNome.Text);
                     comando.Parameters.AddWithValue("@senha", txtSenha.Text);
@@ -747,7 +749,6 @@ namespace Contabilidade
             else
             {
                 throw new CustomException("O diretório especificado não existe.");
-                return false;
             }
         }
 

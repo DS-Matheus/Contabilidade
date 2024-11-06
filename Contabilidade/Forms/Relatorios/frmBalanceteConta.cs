@@ -4,7 +4,7 @@ using iTextSharp.text;
 using System.Data;
 using System.Diagnostics;
 using System.Text;
-using Microsoft.Data.Sqlite;
+using System.Data.SQLite;
 using Contabilidade.Classes;
 using static Contabilidade.Forms.Relatorios.frmBalanceteGeral;
 using System.Linq;
@@ -27,11 +27,11 @@ namespace Contabilidade.Forms.Relatorios
             atualizarDataGrid();
         }
 
-        public void atualizarDataGrid()
+        private void atualizarDataGrid()
         {
             // Query de pesquisa
             string sql = "SELECT * FROM contas WHERE conta != '0' ORDER BY conta;";
-            using (var command = new SqliteCommand(sql, con.conn))
+            using (var command = new SQLiteCommand(sql, con.conn))
             {
                 dtDados.Clear();
                 using (var reader = command.ExecuteReader())
@@ -184,7 +184,7 @@ namespace Contabilidade.Forms.Relatorios
                         throw new CustomException("Não foi possível obter o tipo da conta, por favor, tente novamente.");
                     }
 
-                    using (var comando = new SqliteCommand(sql, con.conn))
+                    using (var comando = new SQLiteCommand(sql, con.conn))
                     {
                         comando.Parameters.AddWithValue("@dataInicial", dataInicial);
                         comando.Parameters.AddWithValue("@dataFinal", dataFinal);

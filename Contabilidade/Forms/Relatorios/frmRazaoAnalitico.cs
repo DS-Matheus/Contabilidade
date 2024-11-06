@@ -4,7 +4,7 @@ using iTextSharp.text;
 using System.Data;
 using System.Diagnostics;
 using System.Text;
-using Microsoft.Data.Sqlite;
+using System.Data.SQLite;
 using Org.BouncyCastle.Asn1.X509;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Collections.Generic;
@@ -28,11 +28,11 @@ namespace Contabilidade.Forms.Relatorios
             atualizarDataGrid();
         }
 
-        public void atualizarDataGrid()
+        private void atualizarDataGrid()
         {
             // Query de pesquisa
             string sql = "SELECT * FROM contas WHERE conta != '0' ORDER BY conta;";
-            using (var command = new SqliteCommand(sql, con.conn))
+            using (var command = new SQLiteCommand(sql, con.conn))
             {
                 dtDados.Clear();
                 using (var reader = command.ExecuteReader())
@@ -178,7 +178,7 @@ namespace Contabilidade.Forms.Relatorios
 
                     // Consulta de lançamentos para a conta no período informado
                     var sql = "SELECT l.data, h.historico, l.valor, l.saldo FROM lancamentos l JOIN historicos h ON l.id_historico = h.id WHERE l.conta = @conta AND l.data BETWEEN @dataInicial AND @dataFinal ORDER BY l.data ASC, l.id ASC;";
-                    using (var comando = new SqliteCommand(sql, con.conn))
+                    using (var comando = new SQLiteCommand(sql, con.conn))
                     {
                         comando.Parameters.AddWithValue("@conta", conta);
                         comando.Parameters.AddWithValue("@dataInicial", dataInicial);

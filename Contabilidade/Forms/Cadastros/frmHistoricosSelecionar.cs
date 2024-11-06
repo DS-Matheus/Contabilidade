@@ -1,16 +1,7 @@
-﻿using Contabilidade.Forms.Lancamentos;
-using Contabilidade.Models;
-using Microsoft.Data.Sqlite;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using Contabilidade.Models;
+using System.Data.SQLite;
 using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Contabilidade.Forms.Cadastros
 {
@@ -25,12 +16,12 @@ namespace Contabilidade.Forms.Cadastros
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
         private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
         Conexao con;
-        SqliteTransaction transacao;
+        SQLiteTransaction transacao;
         static DataTable dtDados = new DataTable();
         DataView dv = dtDados.DefaultView;
         string idAntigo = "";
 
-        public frmHistoricosSelecionar(Conexao conexaoBanco, SqliteTransaction transacaoComando, string idAntigo)
+        public frmHistoricosSelecionar(Conexao conexaoBanco, SQLiteTransaction transacaoComando, string idAntigo)
         {
             InitializeComponent();
 
@@ -41,11 +32,11 @@ namespace Contabilidade.Forms.Cadastros
             atualizarDataGrid();
         }
 
-        public void atualizarDataGrid()
+        private void atualizarDataGrid()
         {
             // Query de pesquisa
             string sql = "SELECT * FROM historicos;";
-            using (var command = new SqliteCommand(sql, con.conn))
+            using (var command = new SQLiteCommand(sql, con.conn))
             {
                 command.Transaction = transacao;
 
@@ -99,7 +90,7 @@ namespace Contabilidade.Forms.Cadastros
             {
                 // Criar histórico
                 string sql = "INSERT INTO historicos (historico) VALUES(@historico);";
-                using (var comando = new SqliteCommand(sql, con.conn))
+                using (var comando = new SQLiteCommand(sql, con.conn))
                 {
                     comando.Transaction = transacao;
 

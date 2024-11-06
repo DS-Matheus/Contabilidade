@@ -1,7 +1,7 @@
 ﻿using Contabilidade.Models;
 using DGVPrinterHelper;
 using System.Data;
-using Microsoft.Data.Sqlite;
+using System.Data.SQLite;
 using Contabilidade.Classes;
 
 namespace Contabilidade.Forms.Cadastros
@@ -24,11 +24,11 @@ namespace Contabilidade.Forms.Cadastros
 
             atualizarDataGrid();
         }
-        public void atualizarDataGrid()
+        private void atualizarDataGrid()
         {
             // Query de pesquisa
             string sql = "SELECT * FROM contas ORDER BY conta;";
-            using (var command = new SqliteCommand(sql, con.conn))
+            using (var command = new SQLiteCommand(sql, con.conn))
             {
                 dtDados.Clear();
                 using (var reader = command.ExecuteReader())
@@ -150,7 +150,7 @@ namespace Contabilidade.Forms.Cadastros
                 {
                     // Criar conta
                     string sql = "INSERT INTO contas (conta, descricao, nivel) VALUES(@conta, @descricao, @nivel);";
-                    using (var comando = new SqliteCommand(sql, con.conn))
+                    using (var comando = new SQLiteCommand(sql, con.conn))
                     {
                         try
                         {
@@ -255,7 +255,7 @@ namespace Contabilidade.Forms.Cadastros
                 {
                     using (var transacao = con.conn.BeginTransaction())
                     {
-                        using (var comando = new SqliteCommand("", con.conn))
+                        using (var comando = new SQLiteCommand("", con.conn))
                         {
                             try
                             {
@@ -387,7 +387,7 @@ namespace Contabilidade.Forms.Cadastros
             }
         }
 
-        public void excluirTodosLancamentos(SqliteCommand comando, string conta)
+        public void excluirTodosLancamentos(SQLiteCommand comando, string conta)
         {
             // Obter a lista de datas que possuem lançamentos
             var listDatas = new List<string>();
@@ -445,9 +445,9 @@ namespace Contabilidade.Forms.Cadastros
             }
         }
 
-        public void excluirConta(Conexao con, string conta, string nivel, SqliteTransaction transacao)
+        public void excluirConta(Conexao con, string conta, string nivel, SQLiteTransaction transacao)
         {
-            using (var comando = new SqliteCommand("", con.conn))
+            using (var comando = new SQLiteCommand("", con.conn))
             {
                 comando.Transaction = transacao;
 
@@ -510,7 +510,7 @@ namespace Contabilidade.Forms.Cadastros
                         {
                             try
                             {
-                                using (var comando = new SqliteCommand("", con.conn))
+                                using (var comando = new SQLiteCommand("", con.conn))
                                 {
                                     comando.Transaction = transacao;
 

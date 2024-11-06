@@ -1,5 +1,5 @@
 ﻿using Contabilidade.Models;
-using Microsoft.Data.Sqlite;
+using System.Data.SQLite;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
@@ -171,7 +171,7 @@ namespace Contabilidade.Forms.Cadastros
                 if (contaAntiga != contaNova && nivelAntigo == nivelConta && nivelConta == "S")
                 {
                     var sql = "SELECT count(conta) FROM contas WHERE conta LIKE @conta || '.%';";
-                    using (var comando = new SqliteCommand(sql, con.conn))
+                    using (var comando = new SQLiteCommand(sql, con.conn))
                     {
                         comando.Parameters.AddWithValue("@conta", contaAntiga);
                         var registros = Convert.ToInt32(comando.ExecuteScalar());
@@ -193,7 +193,7 @@ namespace Contabilidade.Forms.Cadastros
                 {
                     alterouNivel = true;
 
-                    using (var comando = new SqliteCommand("", con.conn))
+                    using (var comando = new SQLiteCommand("", con.conn))
                     {
                         // Se alterou o nível de sintético para analitico -> verificar se tem alguma conta analitica no grupo antes, se tiver: avisar antes de excluir todas e os seus lançamentos
                         if (nivelConta == "A")

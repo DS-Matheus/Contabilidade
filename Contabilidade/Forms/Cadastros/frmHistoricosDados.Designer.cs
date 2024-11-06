@@ -163,9 +163,6 @@
         private Label lblTitulo;
         private Button btnFechar;
         private Panel panel1;
-        private TextBox txtSenha;
-        private Label label2;
-        private TextBox txtUsuario;
         private Label label1;
         private Button btnSalvar;
         private TextBox txtHistorico;

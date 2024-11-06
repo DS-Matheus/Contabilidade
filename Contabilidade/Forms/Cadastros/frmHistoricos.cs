@@ -1,7 +1,7 @@
 ﻿using Contabilidade.Models;
 using DGVPrinterHelper;
 using System.Data;
-using Microsoft.Data.Sqlite;
+using System.Data.SQLite;
 using Contabilidade.Classes;
 
 namespace Contabilidade.Forms.Cadastros
@@ -23,11 +23,11 @@ namespace Contabilidade.Forms.Cadastros
             atualizarDataGrid();
         }
 
-        public void atualizarDataGrid()
+        private void atualizarDataGrid()
         {
             // Query de pesquisa
             string sql = "SELECT * FROM historicos;";
-            using (var command = new SqliteCommand(sql, con.conn))
+            using (var command = new SQLiteCommand(sql, con.conn))
             {
                 dtDados.Clear();
                 using (var reader = command.ExecuteReader())
@@ -57,7 +57,7 @@ namespace Contabilidade.Forms.Cadastros
                 {
                     // Criar histórico
                     string sql = "INSERT INTO historicos (historico) VALUES(@historico);";
-                    using (var comando = new SqliteCommand(sql, con.conn))
+                    using (var comando = new SQLiteCommand(sql, con.conn))
                     {
                         try
                         {
@@ -68,7 +68,7 @@ namespace Contabilidade.Forms.Cadastros
                             // Verificar se houve a criação da linha (0 = negativo)
                             if (retornoBD > 0)
                             {
-                                using (var command = new SqliteCommand("SELECT last_insert_rowid();", con.conn))
+                                using (var command = new SQLiteCommand("SELECT last_insert_rowid();", con.conn))
                                 {
                                     var id = (Int64)command.ExecuteScalar();
 
@@ -127,7 +127,7 @@ namespace Contabilidade.Forms.Cadastros
                 if (frmDados.ShowDialog() == DialogResult.OK)
                 {
                     // Editar histórico
-                    using (var comando = new SqliteCommand("UPDATE historicos SET historico = @historico WHERE id = @id;", con.conn))
+                    using (var comando = new SQLiteCommand("UPDATE historicos SET historico = @historico WHERE id = @id;", con.conn))
                     {
                         try
                         {
@@ -216,7 +216,7 @@ namespace Contabilidade.Forms.Cadastros
                             {
                                 // Verifica se tem algum lançamento usando esse histórico
                                 var sql = "SELECT count(id) FROM lancamentos WHERE id_historico = @id_historico;";
-                                using (var comando = new SqliteCommand(sql, con.conn))
+                                using (var comando = new SQLiteCommand(sql, con.conn))
                                 {
                                     comando.Transaction = transacao;
 

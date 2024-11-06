@@ -1,10 +1,10 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using System.Data.SQLite;
 
 namespace Contabilidade.Models
 {
     public class Conexao(string caminho)
     {
-        public SqliteConnection conn = new SqliteConnection("Data Source=" + caminho);
+        public SQLiteConnection conn = new SQLiteConnection("Data Source=" + caminho);
 
         public void Conectar()
         {

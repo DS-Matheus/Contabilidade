@@ -1,7 +1,7 @@
 ﻿using Contabilidade.Models;
 using DGVPrinterHelper;
 using System.Data;
-using Microsoft.Data.Sqlite;
+using System.Data.SQLite;
 
 namespace Contabilidade.Forms.Cadastros
 {
@@ -24,11 +24,11 @@ namespace Contabilidade.Forms.Cadastros
             atualizarDataGrid();
         }
 
-        public void atualizarDataGrid()
+        private void atualizarDataGrid()
         {
             // Query de pesquisa
             string sql = "SELECT * FROM usuarios;";
-            using (var command = new SqliteCommand(sql, con.conn))
+            using (var command = new SQLiteCommand(sql, con.conn))
             {
                 dtDados.Clear();
                 using (var reader = command.ExecuteReader())
@@ -61,7 +61,7 @@ namespace Contabilidade.Forms.Cadastros
                 {
                     // Criar usuário
                     string sql = "INSERT INTO usuarios (nome, senha) VALUES(@nome, @senha);";
-                    using (var comando = new SqliteCommand(sql, con.conn))
+                    using (var comando = new SQLiteCommand(sql, con.conn))
                     {
                         comando.Parameters.AddWithValue("@nome", usuario);
                         comando.Parameters.AddWithValue("@senha", senha);
@@ -71,7 +71,7 @@ namespace Contabilidade.Forms.Cadastros
                         // Verificar se houve a criação da linha (0 = negativo)
                         if (retornoBD > 0)
                         {
-                            using (var command = new SqliteCommand("SELECT last_insert_rowid();", con.conn))
+                            using (var command = new SQLiteCommand("SELECT last_insert_rowid();", con.conn))
                             {
                                 var id = (Int64)command.ExecuteScalar();
 
@@ -102,7 +102,7 @@ namespace Contabilidade.Forms.Cadastros
 
         private void excluirUsuario(string id)
         {
-            using (var comando = new SqliteCommand("DELETE FROM usuarios WHERE id = @id", con.conn))
+            using (var comando = new SQLiteCommand("DELETE FROM usuarios WHERE id = @id", con.conn))
             {
                 comando.Parameters.AddWithValue("@id", id);
 
@@ -196,7 +196,7 @@ namespace Contabilidade.Forms.Cadastros
                 if (frmDados.ShowDialog() == DialogResult.OK)
                 {
                     // Editar usuário
-                    using (var comando = new SqliteCommand("UPDATE usuarios SET nome = @nome, senha = @senha WHERE id = @id", con.conn))
+                    using (var comando = new SQLiteCommand("UPDATE usuarios SET nome = @nome, senha = @senha WHERE id = @id", con.conn))
                     {
                         comando.Parameters.AddWithValue("@nome", usuario);
                         comando.Parameters.AddWithValue("@senha", senha);

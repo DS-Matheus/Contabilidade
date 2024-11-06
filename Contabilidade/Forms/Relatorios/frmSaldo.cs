@@ -4,7 +4,7 @@ using iTextSharp.text;
 using System.Data;
 using System.Text;
 using System.Diagnostics;
-using Microsoft.Data.Sqlite;
+using System.Data.SQLite;
 using Contabilidade.Forms.Cadastros;
 
 namespace Contabilidade.Forms.Relatorios
@@ -24,11 +24,11 @@ namespace Contabilidade.Forms.Relatorios
             atualizarDataGrid();
         }
 
-        public void atualizarDataGrid()
+        private void atualizarDataGrid()
         {
             // Query de pesquisa
             string sql = "SELECT * FROM contas WHERE conta != '0' ORDER BY conta;";
-            using (var command = new SqliteCommand(sql, con.conn))
+            using (var command = new SQLiteCommand(sql, con.conn))
             {
                 dtDados.Clear();
                 using (var reader = command.ExecuteReader())
@@ -143,7 +143,7 @@ namespace Contabilidade.Forms.Relatorios
 
                 // Obter descrição da conta
                 var comandoSql = "SELECT descricao FROM contas WHERE conta = @conta;";
-                using (var comando = new SqliteCommand(comandoSql, conexao.conn))
+                using (var comando = new SQLiteCommand(comandoSql, conexao.conn))
                 {
                     comando.Parameters.AddWithValue("@conta", conta);
                     var descricao = comando.ExecuteScalar()?.ToString();
@@ -160,7 +160,7 @@ namespace Contabilidade.Forms.Relatorios
 
             // Obter descrição da conta
             var sql = "SELECT descricao FROM contas WHERE conta = @conta;";
-            using (var comando = new SqliteCommand(sql, conexao.conn))
+            using (var comando = new SQLiteCommand(sql, conexao.conn))
             {
                 comando.Parameters.AddWithValue("@conta", conta);
                 var descricao = comando.ExecuteScalar()?.ToString();
@@ -278,7 +278,7 @@ namespace Contabilidade.Forms.Relatorios
                     {
                         sql = "SELECT c.conta, c.descricao, COALESCE((SELECT l.saldo FROM lancamentos l WHERE c.conta = l.conta AND l.data <= @data ORDER BY l.data DESC, l.id DESC LIMIT 1), 0) AS saldo FROM contas c WHERE c.conta = @conta;";
                     }
-                    var comando = new SqliteCommand(sql, con.conn);
+                    var comando = new SQLiteCommand(sql, con.conn);
 
                     var data = dtpData.Value;
                     comando.Parameters.AddWithValue("@data", data);

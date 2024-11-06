@@ -3,7 +3,7 @@ using iTextSharp.text.pdf;
 using iTextSharp.text;
 using System.Diagnostics;
 using System.Text;
-using Microsoft.Data.Sqlite;
+using System.Data.SQLite;
 using Contabilidade.Classes;
 using static Contabilidade.Forms.Relatorios.frmBalanceteGeral;
 using static System.Windows.Forms.LinkLabel;
@@ -71,7 +71,7 @@ namespace Contabilidade.Forms.Relatorios
 
                 // Obter descrição da conta
                 var comandoSql = "SELECT descricao FROM contas WHERE conta = @conta;";
-                using (var comando = new SqliteCommand(comandoSql, conexao.conn))
+                using (var comando = new SQLiteCommand(comandoSql, conexao.conn))
                 {
                     comando.Parameters.AddWithValue("@conta", conta);
                     var descricao = comando.ExecuteScalar()?.ToString();
@@ -88,7 +88,7 @@ namespace Contabilidade.Forms.Relatorios
 
             // Obter descrição da conta
             var sql = "SELECT descricao FROM contas WHERE conta = @conta;";
-            using (var comando = new SqliteCommand(sql, conexao.conn))
+            using (var comando = new SQLiteCommand(sql, conexao.conn))
             {
                 comando.Parameters.AddWithValue("@conta", conta);
                 var descricao = comando.ExecuteScalar()?.ToString();
@@ -125,7 +125,7 @@ namespace Contabilidade.Forms.Relatorios
                     sql = "WITH dados_contas AS (SELECT l.conta, c.descricao, SUM(CASE WHEN l.valor > 0 THEN l.valor ELSE 0 END) AS credito, SUM(CASE WHEN l.valor < 0 THEN l.valor ELSE 0 END) AS debito, COALESCE((SELECT saldo FROM lancamentos WHERE conta = l.conta ORDER BY data DESC, id DESC LIMIT 1), 0) AS saldo FROM lancamentos l JOIN contas c ON l.conta = c.conta WHERE l.data BETWEEN @dataInicial AND @dataFinal GROUP BY l.conta ORDER BY l.conta) SELECT * FROM dados_contas WHERE saldo != 0;";
                 }
 
-                using (var comando = new SqliteCommand(sql, con.conn))
+                using (var comando = new SQLiteCommand(sql, con.conn))
                 {
                     comando.Parameters.AddWithValue("@dataInicial", dataInicial);
                     comando.Parameters.AddWithValue("@dataFinal", dataFinal);
