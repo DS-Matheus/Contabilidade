@@ -137,7 +137,7 @@ namespace Contabilidade.Forms.Relatorios
             public decimal Saldo { get; set; }
         }
 
-        public static (string, string, string, string) ordenarDatasEObterStrings(DateTime data1, DateTime data2)
+        public static (string, string, string, string) ordenarDatasEObterStringsFormatadas(DateTime data1, DateTime data2)
         {
             // Se a data1 for menor ou igual a data2
             if (data1 <= data2)
@@ -174,7 +174,7 @@ namespace Contabilidade.Forms.Relatorios
                 else
                 {
                     // Obter datas
-                    var (dataInicial, dataInicialFormatada, dataFinal, dataFinalFormatada) = ordenarDatasEObterStrings(dtpInicial.Value, dtpFinal.Value);
+                    var (dataInicial, dataInicialFormatada, dataFinal, dataFinalFormatada) = ordenarDatasEObterStringsFormatadas(dtpInicial.Value, dtpFinal.Value);
 
                     // Consulta de lançamentos para a conta no período informado
                     var sql = "SELECT l.data, h.historico, l.valor, l.saldo FROM lancamentos l JOIN historicos h ON l.id_historico = h.id WHERE l.conta = @conta AND l.data BETWEEN @dataInicial AND @dataFinal ORDER BY l.data ASC, l.id ASC;";

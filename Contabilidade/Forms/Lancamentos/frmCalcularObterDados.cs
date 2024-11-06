@@ -55,7 +55,7 @@ namespace Contabilidade.Forms.Lancamentos
             try
             {
                 // Obter datas
-                (dataInicial, dataInicialFormatada, dataFinal, dataFinalFormatada) = Contabilidade.Forms.Relatorios.frmRazaoAnalitico.ordenarDatasEObterStrings(dtpDataInicial.Value, dtpDataFinal.Value);
+                (dataInicial, dataInicialFormatada, dataFinal, dataFinalFormatada) = Contabilidade.Forms.Relatorios.frmRazaoAnalitico.ordenarDatasEObterStringsFormatadas(dtpDataInicial.Value, dtpDataFinal.Value);
 
                 this.DialogResult = DialogResult.OK;
                 this.Close();

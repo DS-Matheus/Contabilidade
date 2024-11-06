@@ -109,7 +109,7 @@ namespace Contabilidade.Forms.Relatorios
                 var incluirSaldosZero = chkSaldosZero.Checked;
 
                 // Obter datas
-                var (dataInicial, dataInicialFormatada, dataFinal, dataFinalFormatada) = Contabilidade.Forms.Relatorios.frmRazaoAnalitico.ordenarDatasEObterStrings(dtpInicial.Value, dtpFinal.Value);
+                var (dataInicial, dataInicialFormatada, dataFinal, dataFinalFormatada) = Contabilidade.Forms.Relatorios.frmRazaoAnalitico.ordenarDatasEObterStringsFormatadas(dtpInicial.Value, dtpFinal.Value);
 
                 // Consulta de dados no período informado
                 var sql = "";

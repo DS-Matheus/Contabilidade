@@ -157,7 +157,7 @@ namespace Contabilidade.Forms.Relatorios
                     var incluirSaldosZero = chkSaldosZero.Checked;
 
                     // Obter datas
-                    var (dataInicial, dataInicialFormatada, dataFinal, dataFinalFormatada) = Contabilidade.Forms.Relatorios.frmRazaoAnalitico.ordenarDatasEObterStrings(dtpInicial.Value, dtpFinal.Value);
+                    var (dataInicial, dataInicialFormatada, dataFinal, dataFinalFormatada) = Contabilidade.Forms.Relatorios.frmRazaoAnalitico.ordenarDatasEObterStringsFormatadas(dtpInicial.Value, dtpFinal.Value);
 
                     // Consulta de dados no período informado
                     // Verificar se é uma conta sintética (irá mostrar o grupo inteiro) ou uma conta analítica (mostrar apenas ela)

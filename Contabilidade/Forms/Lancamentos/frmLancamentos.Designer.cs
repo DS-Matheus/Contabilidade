@@ -28,8 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             groupBox1 = new GroupBox();
+            nudValor2 = new NumericUpDown();
+            nudValor1 = new NumericUpDown();
             dtpData2 = new DateTimePicker();
             dtpData1 = new DateTimePicker();
             txtFiltrar2 = new TextBox();
@@ -51,11 +53,15 @@
             Histórico = new DataGridViewTextBoxColumn();
             btnCalcular = new Button();
             groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)nudValor2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudValor1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvLancamentos).BeginInit();
             SuspendLayout();
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(nudValor2);
+            groupBox1.Controls.Add(nudValor1);
             groupBox1.Controls.Add(dtpData2);
             groupBox1.Controls.Add(dtpData1);
             groupBox1.Controls.Add(txtFiltrar2);
@@ -63,13 +69,38 @@
             groupBox1.Controls.Add(cbbFiltrarDatas);
             groupBox1.Controls.Add(cbbFiltrar);
             groupBox1.Controls.Add(txtFiltrar);
-            groupBox1.Enabled = false;
             groupBox1.Location = new Point(524, 409);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(344, 79);
             groupBox1.TabIndex = 25;
             groupBox1.TabStop = false;
             groupBox1.Text = "Filtrar por";
+            // 
+            // nudValor2
+            // 
+            nudValor2.DecimalPlaces = 2;
+            nudValor2.Location = new Point(176, 49);
+            nudValor2.Maximum = new decimal(new int[] { 1410065407, 2, 0, 131072 });
+            nudValor2.Minimum = new decimal(new int[] { 999999999, 0, 0, -2147352576 });
+            nudValor2.Name = "nudValor2";
+            nudValor2.Size = new Size(162, 23);
+            nudValor2.TabIndex = 18;
+            nudValor2.ThousandsSeparator = true;
+            nudValor2.Visible = false;
+            nudValor2.ValueChanged += nudValor2_ValueChanged;
+            // 
+            // nudValor1
+            // 
+            nudValor1.DecimalPlaces = 2;
+            nudValor1.Location = new Point(6, 49);
+            nudValor1.Maximum = new decimal(new int[] { 1410065407, 2, 0, 131072 });
+            nudValor1.Minimum = new decimal(new int[] { 999999999, 0, 0, -2147352576 });
+            nudValor1.Name = "nudValor1";
+            nudValor1.Size = new Size(332, 23);
+            nudValor1.TabIndex = 17;
+            nudValor1.ThousandsSeparator = true;
+            nudValor1.Visible = false;
+            nudValor1.ValueChanged += nudValor1_ValueChanged;
             // 
             // dtpData2
             // 
@@ -104,7 +135,7 @@
             // 
             cbbFiltrarValores.DropDownStyle = ComboBoxStyle.DropDownList;
             cbbFiltrarValores.FormattingEnabled = true;
-            cbbFiltrarValores.Items.AddRange(new object[] { "Sem filtro", "Somente débitos", "Somente créditos", "Valores iguais a", "Valores maiores que", "Valores menores que", "Valores entre" });
+            cbbFiltrarValores.Items.AddRange(new object[] { "Sem filtro", "Somente débitos", "Somente créditos", "Valores iguais a", "Valores menores que", "Valores maiores que", "Valores entre" });
             cbbFiltrarValores.Location = new Point(176, 20);
             cbbFiltrarValores.Name = "cbbFiltrarValores";
             cbbFiltrarValores.Size = new Size(162, 23);
@@ -128,7 +159,7 @@
             // 
             cbbFiltrar.DropDownStyle = ComboBoxStyle.DropDownList;
             cbbFiltrar.FormattingEnabled = true;
-            cbbFiltrar.Items.AddRange(new object[] { "Conta", "Descrição", "Histórico", "Data", "Valor" });
+            cbbFiltrar.Items.AddRange(new object[] { "Sem filtro", "Conta", "Descrição", "Histórico", "Data", "Valor" });
             cbbFiltrar.Location = new Point(6, 20);
             cbbFiltrar.Name = "cbbFiltrar";
             cbbFiltrar.Size = new Size(332, 23);
@@ -203,8 +234,8 @@
             // 
             ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             ID.DataPropertyName = "id";
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            ID.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            ID.DefaultCellStyle = dataGridViewCellStyle1;
             ID.HeaderText = "ID";
             ID.Name = "ID";
             ID.ReadOnly = true;
@@ -280,6 +311,8 @@
             Text = "Movimentação";
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)nudValor2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudValor1).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgvLancamentos).EndInit();
             ResumeLayout(false);
         }
@@ -307,5 +340,7 @@
         private DateTimePicker dtpData2;
         private DateTimePicker dtpData1;
         private TextBox txtFiltrar2;
+        private NumericUpDown nudValor1;
+        private NumericUpDown nudValor2;
     }
 }
