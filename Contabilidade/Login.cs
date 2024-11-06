@@ -344,6 +344,8 @@ namespace Contabilidade
 
                 btnExcluirBD.Enabled = false;
                 btnRenomearBD.Enabled = false;
+                btnBackup.Enabled = false;
+                btnRestaurar.Enabled = false;
                 gpbInfoUsuario.Enabled = false;
                 btnCriarBD.Text = "Salvar";
                 cbbBD.Text = "";
@@ -537,6 +539,8 @@ namespace Contabilidade
                 // Entrar em modo de salvamento
                 btnCriarBD.Enabled = false;
                 btnExcluirBD.Enabled = false;
+                btnBackup.Enabled = false;
+                btnRestaurar.Enabled = false;
                 gpbInfoUsuario.Enabled = false;
                 btnRenomearBD.Text = "Salvar";
 
@@ -689,6 +693,8 @@ namespace Contabilidade
             btnCriarBD.Enabled = true;
             btnExcluirBD.Enabled = true;
             btnRenomearBD.Enabled = true;
+            btnBackup.Enabled = true;
+            btnRestaurar.Enabled = true;
             gpbInfoUsuario.Enabled = true;
 
             btnCriarBD.Text = "Criar";
