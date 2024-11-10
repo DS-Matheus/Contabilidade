@@ -361,7 +361,7 @@ namespace Contabilidade.Forms.Relatorios
                                         pdf.Add(new Paragraph($"                                       LISTAGEM DE SALDOS - {dataFormatada}                             PÁGINA: {(pdf.PageNumber + 1).ToString("D3")}", fonte));
                                         pdf.Add(new Paragraph($"{subtitulo}", fonte));
                                         pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
-                                        pdf.Add(new Paragraph("CONTA           DESCRIÇÃO                                                                                SALDO", fonte));
+                                        pdf.Add(new Paragraph("CONTA - DESCRIÇÃO                                                                                        SALDO", fonte));
                                         pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
                                         pdf.Add(new Paragraph("    ", fonte));
 
@@ -384,10 +384,10 @@ namespace Contabilidade.Forms.Relatorios
                                         var saldoCaixa = Convert.ToDecimal(comando.ExecuteScalar());
 
                                         // Verificar se a descrição do caixa precisa de uma segunda linha (no caso de ser muito grande)
-                                        if (descricaoCaixa?.Length >= 80)
+                                        if (descricaoCaixa?.Length >= 92)
                                         {
                                             // Dividir considerando o tamanho máximo que pode ter (sem contar o espaço para a outra coluna)
-                                            var linhasDescricao = QuebrarLinhaString(descricaoCaixa, 80);
+                                            var linhasDescricao = QuebrarLinhaString(descricaoCaixa, 92);
 
                                             // Adicionar primeira linha
                                             pdf.Add(new Paragraph($"0 - {linhasDescricao[0].PadRight(92)}{saldoCaixa.ToString("#,##0.00").PadLeft(14)}", fonte));

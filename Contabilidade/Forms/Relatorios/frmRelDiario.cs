@@ -4,6 +4,7 @@ using iTextSharp.text.pdf;
 using System.Diagnostics;
 using System.Text;
 using System.Data.SQLite;
+using static System.Windows.Forms.LinkLabel;
 
 namespace Contabilidade.Forms.Relatorios
 {
@@ -149,20 +150,13 @@ namespace Contabilidade.Forms.Relatorios
                                 }
                             }
 
-                            // Adicionar saldo anterior (crédito) e saldo atual (débito) do caixa
-                            // Verificação para alinhar a linha mais a direita nos casos do caixa ter uma descrição muito grande OU usar mais espaço p/ esquerda
-                            if (descricaoCaixa?.Length > 94)
-                            {
-                                pdf.Add(new Paragraph($"{0.ToString().PadRight(10)}{descricaoCaixa?.PadRight(100)}", fonte));
-                            }
-                            else
-                            {
-                                pdf.Add(new Paragraph($"{0.ToString().PadRight(16)}{descricaoCaixa?.PadRight(94)}", fonte));
-                            }
+                            // Adicionar linha para a conta do caixa
+                            pdf.Add(new Paragraph($"0 - {descricaoCaixa}", fonte));
 
                             totalCreditos += saldoAnterior;
                             totalDebitos -= saldoAtual;
 
+                            // Adicionar saldo anterior (crédito) e saldo atual (débito) do caixa
                             pdf.Add(new Paragraph($"{"(+) SALDO ANTERIOR".PadRight(82)}{saldoAnterior.ToString("#,##0.00").PadLeft(28)}", fonte));
                             pdf.Add(new Paragraph($"{"(-) SALDO ATUAL".PadRight(82)}{saldoAtual.ToString("#,##0.00").PadLeft(14)}", fonte));
 
@@ -180,12 +174,15 @@ namespace Contabilidade.Forms.Relatorios
 
                                 // Declarar para atribuir posteriormente, caso necessário
                                 var linhasNecessariasDescricao = 0;
+                                int espacosDescricao = 0;
 
                                 // Verificar última conta inserida
                                 if (contaAnterior != conta)
                                 {
+                                    espacosDescricao = 82 - conta.Length - 3;
+
                                     // Contabilizar linhas de identificação
-                                    linhasNecessariasDescricao = lancamento.Descricao.Length > 66 ? 2 : 1;
+                                    linhasNecessariasDescricao = lancamento.Descricao.Length > espacosDescricao ? 2 : 1;
                                     // Linhas necessárias para descricão + espaço superior
                                     linhasNecessarias += linhasNecessariasDescricao + 1;
                                 }
@@ -197,9 +194,6 @@ namespace Contabilidade.Forms.Relatorios
                                     linhasDisponiveis = 57;
                                     adicionarCabecalho(subtitulo);
                                 }
-
-                                // Iniciar criação de linha
-                                var linha = new StringBuilder();
 
                                 // Verificar novamente se é a mesma conta ou não (através do número de linhas para evitar comparar uma string inteira novamente)
                                 if (linhasNecessariasDescricao != 0)
@@ -213,25 +207,14 @@ namespace Contabilidade.Forms.Relatorios
                                     // Verificar quantas linhas serão necessárias para a identificação da conta
                                     if (linhasNecessariasDescricao == 2)
                                     {
-                                        // Tamanho da conta com todos dígitos e pontuações + 1 de espaço para a outra coluna
-                                        linha.Append(conta.PadRight(16));
-
                                         // Dividir a descrição considerando o tamanho máximo que pode ter
-                                        var linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(descricao, 66);
-                                        linha.Append(linhasDescricao[0]);
+                                        var linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(descricao, espacosDescricao);
 
                                         // Adicionar primeira linha
-                                        pdf.Add(new Paragraph(linha.ToString(), fonte));
+                                        pdf.Add(new Paragraph($"{conta} - {linhasDescricao[0]}", fonte));
 
-                                        // Limpar o StringBuilder e iniciar a criação da segunda linha
-                                        linha.Clear();
-
-                                        // Espaço vázio referente a conta
-                                        linha.Append("   ".PadRight(16));
-
-                                        // Adicionar segunda linha
-                                        linha.Append(linhasDescricao[1]);
-                                        pdf.Add(new Paragraph(linha.ToString(), fonte));
+                                        // Adicionar segunda linha (com espaço vázio referente a conta)
+                                        pdf.Add(new Paragraph($"{"   ".PadRight(conta.Length + 3)}{linhasDescricao[1]}", fonte));
 
                                         // Contabilizar linhas
                                         linhasDisponiveis -= 2;
@@ -239,22 +222,18 @@ namespace Contabilidade.Forms.Relatorios
                                     else
                                     {
                                         // Linha para identificação da conta
-                                        pdf.Add(new Paragraph($"{conta.PadRight(16)}{descricao}", fonte));
+                                        pdf.Add(new Paragraph($"{conta} - {descricao}", fonte));
 
                                         // Contabilizar linha
                                         linhasDisponiveis -= 1;
                                     }
                                 }
 
-                                // Limpar StringBuilder para a criação da linha de lançamento
-                                linha.Clear();
-
                                 // Testar se serão necessárias 1 ou 2 linhas por causa do comprimento do histórico
                                 if (linhasNecessariasHistorico == 2)
                                 {
                                     // Dividir considerando o tamanho máximo que pode ter
                                     var linhasHistorico = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(historico, 82);
-                                    linha.Append(linhasHistorico[0]);
 
                                     // Verificar se é um débito/crédito
                                     // Crédito
@@ -263,10 +242,8 @@ namespace Contabilidade.Forms.Relatorios
                                         // Contabilizar valor do lançamento
                                         totalCreditos += valor;
 
-                                        // String composta de caracteres vázios para ocupar o espaço do débito
-                                        linha.Append("   ".PadLeft(14));
-                                        // Espaçamento do crédito + 1 para a divisão entre as colunas
-                                        linha.Append(valor.ToString("#,##0.00").PadLeft(14));
+                                        // Adicionar primeira linha (com os espaços do débito vázios)
+                                        pdf.Add(new Paragraph($"{linhasHistorico[0]?.PadRight(82)}{"   "?.PadLeft(14)}{valor.ToString("#,##0.00").PadLeft(14)}", fonte));
                                     }
                                     // Débito
                                     else
@@ -274,30 +251,18 @@ namespace Contabilidade.Forms.Relatorios
                                         // Contabilizar valor do lançamento
                                         totalDebitos += valor;
 
-                                        // Espaçamento do débito + 1 para a divisão entre as colunas
-                                        linha.Append(valor.ToString("#,##0.00").PadLeft(14));
+                                        // Adicionar primeira linha
+                                        pdf.Add(new Paragraph($"{linhasHistorico[0]?.PadRight(82)}{valor.ToString("#,##0.00").PadLeft(14)}", fonte));
                                     }
 
-                                    // Adicionar primeira linha
-                                    pdf.Add(new Paragraph(linha.ToString(), fonte));
-
-                                    // Limpar o StringBuilder e iniciar a criação da segunda linha (com conta e valores vázios).
-                                    linha.Clear();
-
-                                    // Espaço vázio referente a conta
-                                    linha.Append("   ".PadRight(16));
-
                                     // Adicionar segunda linha
-                                    linha.Append(linhasHistorico[1]);
-                                    pdf.Add(new Paragraph(linha.ToString(), fonte));
+                                    pdf.Add(new Paragraph(linhasHistorico[1], fonte));
 
                                     // Contabilizar linhas
                                     linhasDisponiveis -= 2;
                                 }
                                 else
                                 {
-                                    linha.Append(historico.PadRight(82));
-
                                     // Verificar se é um débito/crédito
                                     // Crédito
                                     if (valor > 0)
@@ -305,10 +270,8 @@ namespace Contabilidade.Forms.Relatorios
                                         // Contabilizar valor do lançamento
                                         totalCreditos += valor;
 
-                                        // String composta de caracteres vázios para ocupar o espaço do débito
-                                        linha.Append(valor.ToString("   ".PadLeft(14)));
-                                        // Espaçamento do crédito + 1 para a divisão entre as colunas
-                                        linha.Append(valor.ToString("#,##0.00").PadLeft(14));
+                                        // Adicionar primeira linha (com os espaços do débito vázios)
+                                        pdf.Add(new Paragraph($"{historico?.PadRight(82)}{"   "?.PadLeft(14)}{valor.ToString("#,##0.00").PadLeft(14)}", fonte));
                                     }
                                     // Débito
                                     else
@@ -316,11 +279,9 @@ namespace Contabilidade.Forms.Relatorios
                                         // Contabilizar valor do lançamento
                                         totalDebitos += valor;
 
-                                        // Espaçamento do débito + 1 para a divisão entre as colunas
-                                        linha.Append(valor.ToString("#,##0.00").PadLeft(14));
+                                        // Adicionar primeira linha
+                                        pdf.Add(new Paragraph($"{historico?.PadRight(82)}{valor.ToString("#,##0.00").PadLeft(14)}", fonte));
                                     }
-
-                                    pdf.Add(new Paragraph(linha.ToString(), fonte));
 
                                     // Contabilizar linha
                                     linhasDisponiveis -= 1;

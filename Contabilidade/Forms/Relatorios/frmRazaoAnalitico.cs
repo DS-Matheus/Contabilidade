@@ -260,7 +260,8 @@ namespace Contabilidade.Forms.Relatorios
                                             subtitulo = Contabilidade.Forms.Relatorios.frmSaldo.CentralizarString(txtSubtitulo.Text, 110);
                                         }
 
-                                        var linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(descricao, 78);
+                                        var espacoDescricao = 110 - 7 - conta.Length - 3;
+                                        var linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(descricao, espacoDescricao);
 
                                         // Função local para adicionar o cabeçalho
                                         void adicionarCabecalho(string subtitulo)
@@ -268,8 +269,10 @@ namespace Contabilidade.Forms.Relatorios
                                             // Adicionando parágrafos ao documento
                                             pdf.Add(new Paragraph($"RAZÃO ANALÍTICO                          PERÍODO: {dataInicialFormatada} A {dataFinalFormatada}                          PÁGINA: {(pdf.PageNumber + 1).ToString("D3")}", fonte));
                                             pdf.Add(new Paragraph($"{subtitulo}", fonte));
-                                            pdf.Add(new Paragraph($"CONTA: {conta.PadRight(15)}          {linhasDescricao[0]}", fonte));
-                                            pdf.Add(new Paragraph($"SALDO ANTERIOR:{saldoAnterior.ToString("#,##0.00").PadLeft(14)}   {linhasDescricao[1]}", fonte));
+                                            pdf.Add(new Paragraph($"CONTA: {conta} - {linhasDescricao[0]}", fonte));
+                                            // Verificação condicional para evitar "index out of bounds"
+                                            string linhaDescricao1 = linhasDescricao.Count > 1 ? linhasDescricao[1] : "";
+                                            pdf.Add(new Paragraph($"SALDO ANTERIOR: {saldoAnterior.ToString("#,##0.00")}   {linhaDescricao1}", fonte));
                                             pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
                                             pdf.Add(new Paragraph("DATA       HISTÓRICO                                                       DÉBITOS      CRÉDITOS         SALDO", fonte));
                                             pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
@@ -381,7 +384,7 @@ namespace Contabilidade.Forms.Relatorios
                                             {
                                                 // Dividir considerando o tamanho máximo que pode ter
                                                 var linhasHistorico = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(historico, 57);
-                                                linha.Append(linhasHistorico[0]);
+                                                linha.Append(linhasHistorico[0].PadRight(57));
 
                                                 // Verificar se é um débito/crédito
                                                 // Crédito
@@ -417,11 +420,11 @@ namespace Contabilidade.Forms.Relatorios
                                                 // Limpar o StringBuilder e iniciar a criação da segunda linha (com conta e valores vázios).
                                                 linha.Clear();
 
-                                                // Espaço vázio referente a conta
-                                                linha.Append("   ".PadRight(16));
+                                                // Espaço vázio referente a data
+                                                linha.Append("   ".PadRight(11));
 
                                                 // Adicionar segunda linha
-                                                linha.Append(linhasHistorico[1]);
+                                                linha.Append(linhasHistorico[1].PadRight(57));
                                                 pdf.Add(new Paragraph(linha.ToString(), fonte));
 
                                                 // Contabilizar linhas

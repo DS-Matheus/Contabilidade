@@ -2,11 +2,7 @@
 using iTextSharp.text.pdf;
 using iTextSharp.text;
 using System.Diagnostics;
-using System.Text;
 using System.Data.SQLite;
-using Contabilidade.Classes;
-using static Contabilidade.Forms.Relatorios.frmBalanceteGeral;
-using static System.Windows.Forms.LinkLabel;
 
 namespace Contabilidade.Forms.Relatorios
 {
@@ -40,7 +36,7 @@ namespace Contabilidade.Forms.Relatorios
             }
         }
 
-        public class ContaAnalitica
+        private class ContaAnalitica
         {
             public string Conta { get; set; }
             public string Descricao { get; set; }
@@ -206,7 +202,7 @@ namespace Contabilidade.Forms.Relatorios
                                         pdf.Add(new Paragraph($"BALANCETE GERAL                                PERÍODO: {dataInicialFormatada} A {dataFinalFormatada}                                PÁGINA: {(pdf.PageNumber + 1).ToString("D3")}", fonte));
                                         pdf.Add(new Paragraph($"{subtitulo}", fonte));
                                         pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
-                                        pdf.Add(new Paragraph("CONTA           DESCRIÇÃO                                         SALDO ANTERIOR       DEBITOS      CREDITOS   SALDO ATUAL", fonte));
+                                        pdf.Add(new Paragraph("CONTA - DESCRIÇÃO                                                 SALDO ANTERIOR       DEBITOS      CREDITOS   SALDO ATUAL", fonte));
                                         pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
                                         pdf.Add(new Paragraph($"   ", fonte));
 

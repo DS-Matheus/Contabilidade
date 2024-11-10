@@ -3,11 +3,8 @@ using iTextSharp.text.pdf;
 using iTextSharp.text;
 using System.Data;
 using System.Diagnostics;
-using System.Text;
 using System.Data.SQLite;
 using Contabilidade.Classes;
-using static Contabilidade.Forms.Relatorios.frmBalanceteGeral;
-using System.Linq;
 using Contabilidade.Forms.Cadastros;
 
 namespace Contabilidade.Forms.Relatorios
@@ -190,14 +187,14 @@ namespace Contabilidade.Forms.Relatorios
                         comando.Parameters.AddWithValue("@dataFinal", dataFinal);
                         comando.Parameters.AddWithValue("@conta", txtConta.Text);
 
-                        List<frmBalanceteGeral.ContaAnalitica> listContasAnaliticas = new List<frmBalanceteGeral.ContaAnalitica>();
+                        List<ContaAnalitica> listContasAnaliticas = new List<ContaAnalitica>();
 
                         // Obter dados
                         using (var reader = comando.ExecuteReader())
                         {
                             while (reader.Read())
                             {
-                                frmBalanceteGeral.ContaAnalitica contaAnalitica = new frmBalanceteGeral.ContaAnalitica
+                                ContaAnalitica contaAnalitica = new ContaAnalitica
                                 {
                                     Conta = reader["conta"].ToString(),
                                     Descricao = reader["descricao"].ToString(),
@@ -266,7 +263,7 @@ namespace Contabilidade.Forms.Relatorios
                                             pdf.Add(new Paragraph($"BALANCETE DA CONTA: {txtConta.Text.PadRight(15)}            PERÍODO: {dataInicialFormatada} A {dataFinalFormatada}                                PÁGINA: {(pdf.PageNumber + 1).ToString("D3")}", fonte));
                                             pdf.Add(new Paragraph($"{subtitulo}", fonte));
                                             pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
-                                            pdf.Add(new Paragraph("CONTA           DESCRIÇÃO                                         SALDO ANTERIOR       DEBITOS      CREDITOS   SALDO ATUAL", fonte));
+                                            pdf.Add(new Paragraph("CONTA - DESCRIÇÃO                                                 SALDO ANTERIOR       DEBITOS      CREDITOS   SALDO ATUAL", fonte));
                                             pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
                                             pdf.Add(new Paragraph($"   ", fonte));
 
@@ -277,18 +274,18 @@ namespace Contabilidade.Forms.Relatorios
                                         // Adicionar cabeçalho da primeira página
                                         adicionarCabecalho(subtitulo);
 
-                                        var listContasSinteticas = new List<ContaSintetica>();
+                                        var listContasSinteticas = new List<frmBalanceteGeral.ContaSintetica>();
 
                                         // Para cada lançamento: obter as contas sintéticas
                                         foreach (var contaAnalitica in listContasAnaliticas)
                                         {
-                                            DecomporContaAnalitica(contaAnalitica.Conta, listContasSinteticas, con);
+                                            frmBalanceteGeral.DecomporContaAnalitica(contaAnalitica.Conta, listContasSinteticas, con);
                                         }
 
                                         // Armazenar todos os registros em uma lista de objetos e ordenar
                                         var todasContas = listContasSinteticas.Cast<object>().Concat(listContasAnaliticas)
-                                            .OrderBy(c => c is ContaSintetica ? ((ContaSintetica)c).Conta : ((ContaAnalitica)c).Conta)
-                                            .ThenBy(c => c is ContaSintetica ? 1 : 0)
+                                            .OrderBy(c => c is frmBalanceteGeral.ContaSintetica ? ((frmBalanceteGeral.ContaSintetica)c).Conta : ((ContaAnalitica)c).Conta)
+                                            .ThenBy(c => c is frmBalanceteGeral.ContaSintetica ? 1 : 0)
                                             .ToList();
 
                                         // Liberar a memória das listas anteriores
@@ -299,7 +296,7 @@ namespace Contabilidade.Forms.Relatorios
                                         GC.Collect();
 
                                         // Pilha para armazenar as contas sintéticas "abertas"
-                                        Stack<ContaSintetica> pilhaContas = new Stack<ContaSintetica>();
+                                        Stack<frmBalanceteGeral.ContaSintetica> pilhaContas = new Stack<frmBalanceteGeral.ContaSintetica>();
 
                                         void AdicionarParagrafosPdf(string conta, string descricao, decimal saldoAnterior, decimal debitos, decimal creditos, decimal saldo, int espacosInicio, int espacosDescricao, int linhasNecessarias)
                                         {
@@ -317,14 +314,14 @@ namespace Contabilidade.Forms.Relatorios
                                             }
                                         }
 
-                                        void ProcessarContaFechada(ContaSintetica contaFechada)
+                                        void ProcessarContaFechada(frmBalanceteGeral.ContaSintetica contaFechada)
                                         {
                                             // Obter dados e calcular espaços
-                                            var grauContaRemover = verificarGrauConta(contaFechada.Conta);
+                                            var grauContaRemover = frmBalanceteGeral.verificarGrauConta(contaFechada.Conta);
                                             int espacosInicioRemover = 2 * (grauContaRemover - 1);
                                             int espacosDescricaoRemover = 66 - espacosInicioRemover - contaFechada.Conta.Length - 3;
                                             var saldoAnteriorRemover = contaFechada.Saldo - (contaFechada.Creditos + contaFechada.Debitos);
-                                            var linhasNecessariasRemover = obterQuantidadeLinhasString(contaFechada.Descricao, espacosDescricaoRemover);
+                                            var linhasNecessariasRemover = frmBalanceteGeral.obterQuantidadeLinhasString(contaFechada.Descricao, espacosDescricaoRemover);
 
                                             // Verificar se a quantidade de linhas disponiveis é suficiente
                                             if ((linhasDisponiveis - linhasNecessariasRemover) < 0)
@@ -341,7 +338,7 @@ namespace Contabilidade.Forms.Relatorios
                                         foreach (var conta in todasContas)
                                         {
                                             // Verificar se é sintética ou analitica
-                                            if (conta is ContaSintetica contaSintetica)
+                                            if (conta is frmBalanceteGeral.ContaSintetica contaSintetica)
                                             {
                                                 // Fechar contas de grau igual ou superior a esta
                                                 while (pilhaContas.Count > 0 && pilhaContas.Peek().Grau >= contaSintetica.Grau)
@@ -350,10 +347,10 @@ namespace Contabilidade.Forms.Relatorios
                                                 }
 
                                                 // Obter dados e espaçamentos a descrição
-                                                var grauConta = verificarGrauConta(contaSintetica.Conta);
+                                                var grauConta = frmBalanceteGeral.verificarGrauConta(contaSintetica.Conta);
                                                 int espacosInicio = 2 * (grauConta - 1);
                                                 int espacosDescricao = 66 - espacosInicio - contaSintetica.Conta.Length - 3;
-                                                var linhasNecessarias = obterQuantidadeLinhasString(contaSintetica.Descricao, espacosDescricao);
+                                                var linhasNecessarias = frmBalanceteGeral.obterQuantidadeLinhasString(contaSintetica.Descricao, espacosDescricao);
 
                                                 // Verificar se a quantidade de linhas disponiveis é suficiente
                                                 if ((linhasDisponiveis - linhasNecessarias) < 0)
@@ -368,14 +365,14 @@ namespace Contabilidade.Forms.Relatorios
                                                 pilhaContas.Push(contaSintetica);
                                             }
                                             // Se for analitica
-                                            else if (conta is frmBalanceteGeral.ContaAnalitica contaAnalitica)
+                                            else if (conta is ContaAnalitica contaAnalitica)
                                             {
                                                 // Obter dados e calcular espaços
-                                                var grauConta = verificarGrauConta(contaAnalitica.Conta);
+                                                var grauConta = frmBalanceteGeral.verificarGrauConta(contaAnalitica.Conta);
                                                 int espacosInicio = 2 * (grauConta - 1);
                                                 int espacosDescricao = 66 - espacosInicio - contaAnalitica.Conta.Length - 3;
                                                 var saldoAnterior = contaAnalitica.Saldo - (contaAnalitica.Creditos + contaAnalitica.Debitos);
-                                                var linhasNecessarias = obterQuantidadeLinhasString(contaAnalitica.Descricao, espacosDescricao);
+                                                var linhasNecessarias = frmBalanceteGeral.obterQuantidadeLinhasString(contaAnalitica.Descricao, espacosDescricao);
 
                                                 // Verificar se a quantidade de linhas disponiveis é suficiente
                                                 if ((linhasDisponiveis - linhasNecessarias) < 0)
