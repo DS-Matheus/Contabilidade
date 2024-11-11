@@ -1,5 +1,4 @@
 ﻿using Contabilidade.Models;
-using DGVPrinterHelper;
 using System.Data;
 using System.Data.SQLite;
 using Contabilidade.Classes;

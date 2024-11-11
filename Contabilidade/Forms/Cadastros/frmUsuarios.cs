@@ -1,13 +1,9 @@
 ﻿using Contabilidade.Models;
-using DGVPrinterHelper;
 using iTextSharp.text.pdf;
 using iTextSharp.text;
 using System.Data;
 using System.Data.SQLite;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Diagnostics;
-using Contabilidade.Classes;
-using Contabilidade.Forms.Lancamentos;
 using Contabilidade.Forms.Relatorios;
 using System.Text;
 

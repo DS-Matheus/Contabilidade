@@ -2,7 +2,6 @@
 using System.Data;
 using System.Data.SQLite;
 using Contabilidade.Classes;
-using DGVPrinterHelper;
 using Contabilidade.Forms.Cadastros;
 
 namespace Contabilidade.Forms.Lancamentos

@@ -1,5 +1,4 @@
 ﻿using Contabilidade.Models;
-using DGVPrinterHelper;
 using System.Data;
 using System.Data.SQLite;
 using Contabilidade.Classes;
@@ -7,7 +6,6 @@ using Contabilidade.Forms.Relatorios;
 using iTextSharp.text.pdf;
 using iTextSharp.text;
 using System.Diagnostics;
-using System.Text;
 
 namespace Contabilidade.Forms.Cadastros
 {
