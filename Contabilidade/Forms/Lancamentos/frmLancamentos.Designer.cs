@@ -28,17 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             groupBox1 = new GroupBox();
-            nudValor2 = new NumericUpDown();
-            nudValor1 = new NumericUpDown();
             dtpData2 = new DateTimePicker();
-            dtpData1 = new DateTimePicker();
             cbbFiltrarValores = new ComboBox();
+            nudValor2 = new NumericUpDown();
             cbbFiltrarDatas = new ComboBox();
             cbbFiltrar = new ComboBox();
+            dtpData1 = new DateTimePicker();
+            nudValor1 = new NumericUpDown();
             txtFiltrar = new TextBox();
-            btnImprimir = new Button();
             btnEditar = new Button();
             btnExcluir = new Button();
             btnCriar = new Button();
@@ -74,32 +73,6 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "Filtrar por";
             // 
-            // nudValor2
-            // 
-            nudValor2.DecimalPlaces = 2;
-            nudValor2.Location = new Point(176, 49);
-            nudValor2.Maximum = new decimal(new int[] { 1410065407, 2, 0, 131072 });
-            nudValor2.Minimum = new decimal(new int[] { 999999999, 0, 0, -2147352576 });
-            nudValor2.Name = "nudValor2";
-            nudValor2.Size = new Size(162, 23);
-            nudValor2.TabIndex = 18;
-            nudValor2.ThousandsSeparator = true;
-            nudValor2.Visible = false;
-            nudValor2.ValueChanged += nudValor2_ValueChanged;
-            // 
-            // nudValor1
-            // 
-            nudValor1.DecimalPlaces = 2;
-            nudValor1.Location = new Point(6, 49);
-            nudValor1.Maximum = new decimal(new int[] { 1410065407, 2, 0, 131072 });
-            nudValor1.Minimum = new decimal(new int[] { 999999999, 0, 0, -2147352576 });
-            nudValor1.Name = "nudValor1";
-            nudValor1.Size = new Size(332, 23);
-            nudValor1.TabIndex = 17;
-            nudValor1.ThousandsSeparator = true;
-            nudValor1.Visible = false;
-            nudValor1.ValueChanged += nudValor1_ValueChanged;
-            // 
             // dtpData2
             // 
             dtpData2.Format = DateTimePickerFormat.Short;
@@ -109,16 +82,6 @@
             dtpData2.TabIndex = 16;
             dtpData2.Visible = false;
             dtpData2.ValueChanged += dtpData2_ValueChanged;
-            // 
-            // dtpData1
-            // 
-            dtpData1.Format = DateTimePickerFormat.Short;
-            dtpData1.Location = new Point(6, 49);
-            dtpData1.Name = "dtpData1";
-            dtpData1.Size = new Size(332, 23);
-            dtpData1.TabIndex = 15;
-            dtpData1.Visible = false;
-            dtpData1.ValueChanged += dtpData1_ValueChanged;
             // 
             // cbbFiltrarValores
             // 
@@ -131,6 +94,19 @@
             cbbFiltrarValores.TabIndex = 13;
             cbbFiltrarValores.Visible = false;
             cbbFiltrarValores.SelectedIndexChanged += cbbFiltrarValores_SelectedIndexChanged;
+            // 
+            // nudValor2
+            // 
+            nudValor2.DecimalPlaces = 2;
+            nudValor2.Location = new Point(176, 49);
+            nudValor2.Maximum = new decimal(new int[] { 1410065407, 2, 0, 131072 });
+            nudValor2.Minimum = new decimal(new int[] { 999999999, 0, 0, -2147352576 });
+            nudValor2.Name = "nudValor2";
+            nudValor2.Size = new Size(162, 23);
+            nudValor2.TabIndex = 18;
+            nudValor2.ThousandsSeparator = true;
+            nudValor2.Visible = false;
+            nudValor2.ValueChanged += nudValor2_ValueChanged;
             // 
             // cbbFiltrarDatas
             // 
@@ -155,6 +131,29 @@
             cbbFiltrar.TabIndex = 11;
             cbbFiltrar.SelectedIndexChanged += cbbFiltrar_SelectedIndexChanged;
             // 
+            // dtpData1
+            // 
+            dtpData1.Format = DateTimePickerFormat.Short;
+            dtpData1.Location = new Point(6, 49);
+            dtpData1.Name = "dtpData1";
+            dtpData1.Size = new Size(332, 23);
+            dtpData1.TabIndex = 15;
+            dtpData1.Visible = false;
+            dtpData1.ValueChanged += dtpData1_ValueChanged;
+            // 
+            // nudValor1
+            // 
+            nudValor1.DecimalPlaces = 2;
+            nudValor1.Location = new Point(6, 49);
+            nudValor1.Maximum = new decimal(new int[] { 1410065407, 2, 0, 131072 });
+            nudValor1.Minimum = new decimal(new int[] { 999999999, 0, 0, -2147352576 });
+            nudValor1.Name = "nudValor1";
+            nudValor1.Size = new Size(332, 23);
+            nudValor1.TabIndex = 17;
+            nudValor1.ThousandsSeparator = true;
+            nudValor1.Visible = false;
+            nudValor1.ValueChanged += nudValor1_ValueChanged;
+            // 
             // txtFiltrar
             // 
             txtFiltrar.Location = new Point(6, 49);
@@ -163,21 +162,11 @@
             txtFiltrar.TabIndex = 10;
             txtFiltrar.TextChanged += txtFiltrar_TextChanged;
             // 
-            // btnImprimir
-            // 
-            btnImprimir.Location = new Point(268, 453);
-            btnImprimir.Name = "btnImprimir";
-            btnImprimir.Size = new Size(250, 30);
-            btnImprimir.TabIndex = 24;
-            btnImprimir.Text = "Imprimir";
-            btnImprimir.UseVisualStyleBackColor = true;
-            btnImprimir.Click += btnImprimir_Click;
-            // 
             // btnEditar
             // 
             btnEditar.Location = new Point(12, 453);
             btnEditar.Name = "btnEditar";
-            btnEditar.Size = new Size(250, 30);
+            btnEditar.Size = new Size(250, 35);
             btnEditar.TabIndex = 23;
             btnEditar.Text = "Editar";
             btnEditar.UseVisualStyleBackColor = true;
@@ -185,9 +174,9 @@
             // 
             // btnExcluir
             // 
-            btnExcluir.Location = new Point(268, 419);
+            btnExcluir.Location = new Point(268, 416);
             btnExcluir.Name = "btnExcluir";
-            btnExcluir.Size = new Size(120, 30);
+            btnExcluir.Size = new Size(250, 35);
             btnExcluir.TabIndex = 22;
             btnExcluir.Text = "Excluir";
             btnExcluir.UseVisualStyleBackColor = true;
@@ -195,9 +184,9 @@
             // 
             // btnCriar
             // 
-            btnCriar.Location = new Point(12, 419);
+            btnCriar.Location = new Point(12, 416);
             btnCriar.Name = "btnCriar";
-            btnCriar.Size = new Size(250, 30);
+            btnCriar.Size = new Size(250, 35);
             btnCriar.TabIndex = 21;
             btnCriar.Text = "Criar";
             btnCriar.UseVisualStyleBackColor = true;
@@ -216,15 +205,15 @@
             dgvLancamentos.Name = "dgvLancamentos";
             dgvLancamentos.ReadOnly = true;
             dgvLancamentos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvLancamentos.Size = new Size(856, 391);
+            dgvLancamentos.Size = new Size(856, 390);
             dgvLancamentos.TabIndex = 20;
             // 
             // ID
             // 
             ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             ID.DataPropertyName = "id";
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            ID.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            ID.DefaultCellStyle = dataGridViewCellStyle2;
             ID.HeaderText = "ID";
             ID.Name = "ID";
             ID.ReadOnly = true;
@@ -275,9 +264,9 @@
             // 
             // btnCalcular
             // 
-            btnCalcular.Location = new Point(398, 419);
+            btnCalcular.Location = new Point(268, 453);
             btnCalcular.Name = "btnCalcular";
-            btnCalcular.Size = new Size(120, 30);
+            btnCalcular.Size = new Size(250, 35);
             btnCalcular.TabIndex = 26;
             btnCalcular.Text = "Calcular";
             btnCalcular.UseVisualStyleBackColor = true;
@@ -290,7 +279,6 @@
             ClientSize = new Size(880, 500);
             Controls.Add(btnCalcular);
             Controls.Add(groupBox1);
-            Controls.Add(btnImprimir);
             Controls.Add(btnEditar);
             Controls.Add(btnExcluir);
             Controls.Add(btnCriar);
@@ -310,7 +298,6 @@
 
         private GroupBox groupBox1;
         private TextBox txtFiltrar;
-        private Button btnImprimir;
         private Button btnEditar;
         private Button btnExcluir;
         private Button btnCriar;

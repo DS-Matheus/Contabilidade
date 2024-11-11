@@ -60,7 +60,7 @@
             dgvContas.Name = "dgvContas";
             dgvContas.ReadOnly = true;
             dgvContas.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvContas.Size = new Size(599, 476);
+            dgvContas.Size = new Size(856, 390);
             dgvContas.TabIndex = 0;
             // 
             // Conta
@@ -100,9 +100,9 @@
             groupBox1.Controls.Add(cbbNivel);
             groupBox1.Controls.Add(cbbFiltrar);
             groupBox1.Controls.Add(txtFiltrar);
-            groupBox1.Location = new Point(618, 262);
+            groupBox1.Location = new Point(524, 403);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(250, 85);
+            groupBox1.Size = new Size(344, 85);
             groupBox1.TabIndex = 18;
             groupBox1.TabStop = false;
             groupBox1.Text = "Filtrar por";
@@ -114,7 +114,7 @@
             cbbNivel.Items.AddRange(new object[] { "Ambos", "Analítico", "Sintético" });
             cbbNivel.Location = new Point(6, 51);
             cbbNivel.Name = "cbbNivel";
-            cbbNivel.Size = new Size(238, 23);
+            cbbNivel.Size = new Size(332, 23);
             cbbNivel.TabIndex = 19;
             cbbNivel.Visible = false;
             cbbNivel.SelectedIndexChanged += cbbNivel_SelectedIndexChanged;
@@ -126,7 +126,7 @@
             cbbFiltrar.Items.AddRange(new object[] { "Conta", "Descrição", "Nível" });
             cbbFiltrar.Location = new Point(6, 22);
             cbbFiltrar.Name = "cbbFiltrar";
-            cbbFiltrar.Size = new Size(238, 23);
+            cbbFiltrar.Size = new Size(332, 23);
             cbbFiltrar.TabIndex = 9;
             cbbFiltrar.SelectedIndexChanged += cbbFiltrar_SelectedIndexChanged;
             // 
@@ -134,15 +134,15 @@
             // 
             txtFiltrar.Location = new Point(6, 51);
             txtFiltrar.Name = "txtFiltrar";
-            txtFiltrar.Size = new Size(238, 23);
+            txtFiltrar.Size = new Size(332, 23);
             txtFiltrar.TabIndex = 10;
             txtFiltrar.TextChanged += txtFiltrar_TextChanged;
             // 
             // btnImprimir
             // 
-            btnImprimir.Location = new Point(618, 458);
+            btnImprimir.Location = new Point(268, 453);
             btnImprimir.Name = "btnImprimir";
-            btnImprimir.Size = new Size(250, 30);
+            btnImprimir.Size = new Size(250, 35);
             btnImprimir.TabIndex = 17;
             btnImprimir.Text = "Imprimir";
             btnImprimir.UseVisualStyleBackColor = true;
@@ -150,9 +150,9 @@
             // 
             // btnEditar
             // 
-            btnEditar.Location = new Point(618, 389);
+            btnEditar.Location = new Point(12, 453);
             btnEditar.Name = "btnEditar";
-            btnEditar.Size = new Size(250, 30);
+            btnEditar.Size = new Size(250, 35);
             btnEditar.TabIndex = 16;
             btnEditar.Text = "Editar";
             btnEditar.UseVisualStyleBackColor = true;
@@ -160,9 +160,9 @@
             // 
             // btnExcluir
             // 
-            btnExcluir.Location = new Point(618, 425);
+            btnExcluir.Location = new Point(268, 410);
             btnExcluir.Name = "btnExcluir";
-            btnExcluir.Size = new Size(250, 30);
+            btnExcluir.Size = new Size(250, 35);
             btnExcluir.TabIndex = 15;
             btnExcluir.Text = "Excluir";
             btnExcluir.UseVisualStyleBackColor = true;
@@ -170,9 +170,9 @@
             // 
             // btnCriar
             // 
-            btnCriar.Location = new Point(618, 353);
+            btnCriar.Location = new Point(12, 410);
             btnCriar.Name = "btnCriar";
-            btnCriar.Size = new Size(250, 30);
+            btnCriar.Size = new Size(250, 35);
             btnCriar.TabIndex = 14;
             btnCriar.Text = "Criar";
             btnCriar.UseVisualStyleBackColor = true;

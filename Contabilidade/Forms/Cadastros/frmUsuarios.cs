@@ -1,7 +1,15 @@
 ﻿using Contabilidade.Models;
 using DGVPrinterHelper;
+using iTextSharp.text.pdf;
+using iTextSharp.text;
 using System.Data;
 using System.Data.SQLite;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Diagnostics;
+using Contabilidade.Classes;
+using Contabilidade.Forms.Lancamentos;
+using Contabilidade.Forms.Relatorios;
+using System.Text;
 
 namespace Contabilidade.Forms.Cadastros
 {
@@ -273,25 +281,147 @@ namespace Contabilidade.Forms.Cadastros
 
         private void btnImprimir_Click(object sender, EventArgs e)
         {
-            // Solicita o título do arquivo ao usuário
-            string inputTitle = Microsoft.VisualBasic.Interaction.InputBox("Digite o título do arquivo:", "Título do Arquivo", "");
-
-            // Verifica se o usuário clicou em "Cancelar": se clicou não executa
-            if (!string.IsNullOrEmpty(inputTitle))
+            try
             {
-                // Verifica se o título está vazio ou contém apenas espaços
-                string title = string.IsNullOrWhiteSpace(inputTitle) ? "Usuários Cadastrados" : inputTitle;
+                // Exibir caixa de diálogo para o usuário definir o cabeçalho
+                string titulo, subtitulo = "";
 
-                var printer = new DGVPrinter();
-                printer.Title = title;
-                printer.SubTitle = string.Format("Data: {0}", System.DateTime.Now.ToString("dd/MM/yyyy"));
-                printer.SubTitleFormatFlags = StringFormatFlags.LineLimit | StringFormatFlags.NoClip;
-                printer.PageNumbers = true;
-                printer.PageNumberInHeader = false;
-                printer.PorportionalColumns = true;
-                printer.HeaderCellAlignment = StringAlignment.Near;
-                printer.FooterSpacing = 15;
-                printer.PrintDataGridView(dgvUsuarios);
+                using (var formDados = new frmDefinirCabecalho($"Usuários cadastrados em {DateTime.Today.ToString("dd/MM/yyyy")}"))
+                {
+                    var resultado = formDados.ShowDialog();
+
+                    // Se clicar em salvar
+                    if (resultado == DialogResult.OK)
+                    {
+                        (titulo, subtitulo) = (formDados.titulo, formDados.subtitulo);
+                    }
+                    // Se cancelar ou fechar de alguma forma
+                    else
+                    {
+                        return;
+                    }
+                }
+
+                // Exibir caixa de diálogo para o usuário escolher onde salvar o arquivo PDF
+                using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                {
+                    saveFileDialog.Filter = "PDF Files|*.pdf";
+                    saveFileDialog.Title = "Salvar relatório como";
+                    saveFileDialog.FileName = "relatorio.pdf";
+
+                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        // Caminho do arquivo PDF selecionado pelo usuário
+                        string pdfPath = saveFileDialog.FileName;
+
+                        // Criação do documento
+                        var pdf = new iTextSharp.text.Document(PageSize.A4, 25, 25, 25, 25); // Margens padrão (36 pontos)
+
+                        // Caminho do arquivo de fonte Consolas
+                        string fontPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Fontes", "consola.ttf");
+
+                        // Verifica se o arquivo de fonte existe
+                        if (!File.Exists(fontPath))
+                        {
+                            MessageBox.Show("Arquivo de fonte não encontrado, faça backup dos bancos de dados e reinstale o programa", "Erro ao buscar aquivo de fonte", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+
+                        // Usar `using` para garantir que o arquivo será liberado após ser usado
+                        using (FileStream fileStream = new FileStream(pdfPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                        {
+                            // Criação do escritor de PDF
+                            PdfWriter writer = PdfWriter.GetInstance(pdf, fileStream);
+
+                            // Abrindo o documento
+                            pdf.Open();
+
+                            // Configuração da fonte Consola
+                            BaseFont bf = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+                            var fonte = new iTextSharp.text.Font(bf, 9);
+
+                            var linhasDisponiveis = 57;
+
+                            // Função local para adicionar o cabeçalho
+                            void adicionarCabecalho(string titulo, string subtitulo)
+                            {
+                                // Adicionando parágrafos ao documento
+                                pdf.Add(new Paragraph($"{titulo?.PadRight(98)} PÁGINA: {(pdf.PageNumber + 1).ToString("D3")}", fonte));
+                                if (!string.IsNullOrWhiteSpace(subtitulo))
+                                {
+                                    pdf.Add(new Paragraph($"{subtitulo}", fonte));
+                                    linhasDisponiveis--;
+                                }
+                                pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
+                                pdf.Add(new Paragraph("USUÁRIO              SENHA                            |    USUÁRIO              SENHA                         ", fonte));
+                                pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
+                                pdf.Add(new Paragraph("    ", fonte));
+
+                                // Contar linhas usadas após adição do cabeçalho
+                                linhasDisponiveis -= 5;
+                            };
+
+                            // Operações com o subtítulo
+                            if (!string.IsNullOrWhiteSpace(subtitulo))
+                            {
+                                subtitulo = frmSaldo.CentralizarString(subtitulo, 110);
+                            }
+
+                            // Adicionar cabeçalho da primeira página
+                            adicionarCabecalho(titulo, subtitulo);
+
+                            // Iniciar string builder
+                            var stringLinha = new StringBuilder();
+                            var qtdLinhas = dgvUsuarios.Rows.Count;
+
+                            // Testar se haverá uma linha com apenas 1 registro (número ímpar) ou não (par)
+                            var numeroImpar = true;
+                            if (qtdLinhas % 2 == 0)
+                            {
+                                numeroImpar = false;
+                            }
+
+                            for (int i = 0; i < qtdLinhas; i+=2) {
+                                // Testar se possuí uma linha disponível para usar
+                                if (linhasDisponiveis - 1 < 0)
+                                {
+                                    pdf.NewPage();
+                                    linhasDisponiveis = 57;
+                                    adicionarCabecalho(titulo, subtitulo);
+                                }
+
+                                // Imprimir última linha de um dgv com número de registros ímpar
+                                if (numeroImpar && (i + 2 > qtdLinhas))
+                                {
+                                    var usuario = dgvUsuarios.Rows[i].Cells["Usuário"].Value?.ToString();
+                                    var senha = dgvUsuarios.Rows[i].Cells["Senha"].Value?.ToString();
+
+                                    pdf.Add(new Paragraph($"{usuario?.PadRight(20)} {senha?.PadRight(30)}", fonte));
+                                }
+                                else
+                                {
+                                    var usuario1 = dgvUsuarios.Rows[i].Cells["Usuário"].Value?.ToString();
+                                    var usuario2 = dgvUsuarios.Rows[i+1].Cells["Usuário"].Value?.ToString();
+                                    var senha1 = dgvUsuarios.Rows[i].Cells["Senha"].Value?.ToString();
+                                    var senha2 = dgvUsuarios.Rows[i+1].Cells["Senha"].Value?.ToString();
+
+                                    pdf.Add(new Paragraph($"{usuario1?.PadRight(20)} {senha1?.PadRight(30)}   |    {usuario2?.PadRight(20)} {senha2?.PadRight(30)}", fonte));
+                                }
+
+                                linhasDisponiveis--;
+                            }
+
+                            // Fechando o documento
+                            pdf.Close();
+                        }
+                        // Abrir o arquivo PDF gerado
+                        Process.Start(new ProcessStartInfo(pdfPath) { UseShellExecute = true });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao gerar o relatório", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

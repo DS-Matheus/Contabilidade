@@ -28,8 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             dgvUsuarios = new DataGridView();
+            ID = new DataGridViewTextBoxColumn();
+            Usuário = new DataGridViewTextBoxColumn();
+            Senha = new DataGridViewTextBoxColumn();
             btnCriar = new Button();
             btnExcluir = new Button();
             btnEditar = new Button();
@@ -37,9 +40,6 @@
             txtFiltrar = new TextBox();
             btnImprimir = new Button();
             groupBox1 = new GroupBox();
-            ID = new DataGridViewTextBoxColumn();
-            Usuário = new DataGridViewTextBoxColumn();
-            Senha = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgvUsuarios).BeginInit();
             groupBox1.SuspendLayout();
             SuspendLayout();
@@ -57,85 +57,15 @@
             dgvUsuarios.Name = "dgvUsuarios";
             dgvUsuarios.ReadOnly = true;
             dgvUsuarios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvUsuarios.Size = new Size(600, 476);
+            dgvUsuarios.Size = new Size(856, 390);
             dgvUsuarios.TabIndex = 0;
-            // 
-            // btnCriar
-            // 
-            btnCriar.Location = new Point(618, 353);
-            btnCriar.Name = "btnCriar";
-            btnCriar.Size = new Size(250, 30);
-            btnCriar.TabIndex = 1;
-            btnCriar.Text = "Criar";
-            btnCriar.UseVisualStyleBackColor = true;
-            btnCriar.Click += btnCriar_Click;
-            // 
-            // btnExcluir
-            // 
-            btnExcluir.Location = new Point(618, 425);
-            btnExcluir.Name = "btnExcluir";
-            btnExcluir.Size = new Size(250, 30);
-            btnExcluir.TabIndex = 2;
-            btnExcluir.Text = "Excluir";
-            btnExcluir.UseVisualStyleBackColor = true;
-            btnExcluir.Click += btnExcluir_Click;
-            // 
-            // btnEditar
-            // 
-            btnEditar.Location = new Point(618, 389);
-            btnEditar.Name = "btnEditar";
-            btnEditar.Size = new Size(250, 30);
-            btnEditar.TabIndex = 3;
-            btnEditar.Text = "Editar";
-            btnEditar.UseVisualStyleBackColor = true;
-            btnEditar.Click += btnEditar_Click;
-            // 
-            // cbbFiltrar
-            // 
-            cbbFiltrar.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbbFiltrar.FormattingEnabled = true;
-            cbbFiltrar.Items.AddRange(new object[] { "Usuário", "Senha" });
-            cbbFiltrar.Location = new Point(6, 22);
-            cbbFiltrar.Name = "cbbFiltrar";
-            cbbFiltrar.Size = new Size(238, 23);
-            cbbFiltrar.TabIndex = 9;
-            cbbFiltrar.SelectedIndexChanged += cbbFiltrar_SelectedIndexChanged;
-            // 
-            // txtFiltrar
-            // 
-            txtFiltrar.Location = new Point(6, 51);
-            txtFiltrar.Name = "txtFiltrar";
-            txtFiltrar.Size = new Size(238, 23);
-            txtFiltrar.TabIndex = 10;
-            txtFiltrar.TextChanged += txtFiltrar_TextChanged;
-            // 
-            // btnImprimir
-            // 
-            btnImprimir.Location = new Point(618, 458);
-            btnImprimir.Name = "btnImprimir";
-            btnImprimir.Size = new Size(250, 30);
-            btnImprimir.TabIndex = 12;
-            btnImprimir.Text = "Imprimir";
-            btnImprimir.UseVisualStyleBackColor = true;
-            btnImprimir.Click += btnImprimir_Click;
-            // 
-            // groupBox1
-            // 
-            groupBox1.Controls.Add(cbbFiltrar);
-            groupBox1.Controls.Add(txtFiltrar);
-            groupBox1.Location = new Point(618, 262);
-            groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(250, 85);
-            groupBox1.TabIndex = 13;
-            groupBox1.TabStop = false;
-            groupBox1.Text = "Filtrar por";
             // 
             // ID
             // 
             ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             ID.DataPropertyName = "id";
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            ID.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            ID.DefaultCellStyle = dataGridViewCellStyle2;
             ID.HeaderText = "ID";
             ID.Name = "ID";
             ID.ReadOnly = true;
@@ -157,6 +87,76 @@
             Senha.HeaderText = "Senha";
             Senha.Name = "Senha";
             Senha.ReadOnly = true;
+            // 
+            // btnCriar
+            // 
+            btnCriar.Location = new Point(12, 410);
+            btnCriar.Name = "btnCriar";
+            btnCriar.Size = new Size(250, 35);
+            btnCriar.TabIndex = 1;
+            btnCriar.Text = "Criar";
+            btnCriar.UseVisualStyleBackColor = true;
+            btnCriar.Click += btnCriar_Click;
+            // 
+            // btnExcluir
+            // 
+            btnExcluir.Location = new Point(268, 410);
+            btnExcluir.Name = "btnExcluir";
+            btnExcluir.Size = new Size(250, 35);
+            btnExcluir.TabIndex = 2;
+            btnExcluir.Text = "Excluir";
+            btnExcluir.UseVisualStyleBackColor = true;
+            btnExcluir.Click += btnExcluir_Click;
+            // 
+            // btnEditar
+            // 
+            btnEditar.Location = new Point(12, 453);
+            btnEditar.Name = "btnEditar";
+            btnEditar.Size = new Size(250, 35);
+            btnEditar.TabIndex = 3;
+            btnEditar.Text = "Editar";
+            btnEditar.UseVisualStyleBackColor = true;
+            btnEditar.Click += btnEditar_Click;
+            // 
+            // cbbFiltrar
+            // 
+            cbbFiltrar.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbbFiltrar.FormattingEnabled = true;
+            cbbFiltrar.Items.AddRange(new object[] { "Usuário", "Senha" });
+            cbbFiltrar.Location = new Point(6, 22);
+            cbbFiltrar.Name = "cbbFiltrar";
+            cbbFiltrar.Size = new Size(332, 23);
+            cbbFiltrar.TabIndex = 9;
+            cbbFiltrar.SelectedIndexChanged += cbbFiltrar_SelectedIndexChanged;
+            // 
+            // txtFiltrar
+            // 
+            txtFiltrar.Location = new Point(6, 51);
+            txtFiltrar.Name = "txtFiltrar";
+            txtFiltrar.Size = new Size(332, 23);
+            txtFiltrar.TabIndex = 10;
+            txtFiltrar.TextChanged += txtFiltrar_TextChanged;
+            // 
+            // btnImprimir
+            // 
+            btnImprimir.Location = new Point(268, 453);
+            btnImprimir.Name = "btnImprimir";
+            btnImprimir.Size = new Size(250, 35);
+            btnImprimir.TabIndex = 12;
+            btnImprimir.Text = "Imprimir";
+            btnImprimir.UseVisualStyleBackColor = true;
+            btnImprimir.Click += btnImprimir_Click;
+            // 
+            // groupBox1
+            // 
+            groupBox1.Controls.Add(cbbFiltrar);
+            groupBox1.Controls.Add(txtFiltrar);
+            groupBox1.Location = new Point(524, 403);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(344, 85);
+            groupBox1.TabIndex = 13;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Filtrar por";
             // 
             // frmUsuarios
             // 
