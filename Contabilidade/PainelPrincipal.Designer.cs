@@ -118,13 +118,12 @@
             // 
             // btnFechar
             // 
-            btnFechar.Anchor = AnchorStyles.None;
             btnFechar.Cursor = Cursors.Hand;
             btnFechar.FlatAppearance.BorderSize = 0;
             btnFechar.FlatStyle = FlatStyle.Flat;
             btnFechar.Font = new Font("Microsoft Sans Serif", 15F);
             btnFechar.ForeColor = SystemColors.Control;
-            btnFechar.Location = new Point(796, 19);
+            btnFechar.Location = new Point(820, 25);
             btnFechar.Name = "btnFechar";
             btnFechar.Size = new Size(30, 30);
             btnFechar.TabIndex = 2;
@@ -499,7 +498,7 @@
             btnMinimizar.FlatStyle = FlatStyle.Flat;
             btnMinimizar.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Bold);
             btnMinimizar.ForeColor = SystemColors.Control;
-            btnMinimizar.Location = new Point(748, 22);
+            btnMinimizar.Location = new Point(784, 25);
             btnMinimizar.Name = "btnMinimizar";
             btnMinimizar.Size = new Size(30, 30);
             btnMinimizar.TabIndex = 3;
@@ -527,11 +526,11 @@
             btnFecharFormFilho.FlatAppearance.BorderSize = 0;
             btnFecharFormFilho.FlatStyle = FlatStyle.Flat;
             btnFecharFormFilho.Font = new Font("Microsoft Sans Serif", 15F);
+            btnFecharFormFilho.Image = Properties.Resources.home;
             btnFecharFormFilho.Location = new Point(0, 0);
             btnFecharFormFilho.Name = "btnFecharFormFilho";
             btnFecharFormFilho.Size = new Size(75, 80);
             btnFecharFormFilho.TabIndex = 4;
-            btnFecharFormFilho.Text = "X";
             btnFecharFormFilho.UseVisualStyleBackColor = true;
             btnFecharFormFilho.Click += btnFecharFormFilho_Click;
             // 

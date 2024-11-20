@@ -36,9 +36,14 @@ namespace Contabilidade
 
         private void btnFechar_Click(object sender, EventArgs e)
         {
-            con.Desconectar();
-            this.Dispose();
-            Application.Exit();
+            DialogResult input = MessageBox.Show("Deseja realmente fechar o programa?", "Você está prestes a sair", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+            if (input == DialogResult.Yes)
+            {
+                con.Desconectar();
+                this.Dispose();
+                Application.Exit();
+            }
         }
 
         private void btnMinimizar_Click(object sender, EventArgs e)
