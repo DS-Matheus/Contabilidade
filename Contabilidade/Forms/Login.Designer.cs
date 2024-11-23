@@ -110,7 +110,6 @@
             btnRenomearBD.Text = "Renomear";
             btnRenomearBD.UseVisualStyleBackColor = true;
             btnRenomearBD.Click += btnRenomearBD_Click;
-            btnRenomearBD.KeyPress += btnRenomearBD_KeyPress;
             // 
             // btnExcluirBD
             // 
@@ -135,7 +134,6 @@
             btnCriarBD.Text = "Criar";
             btnCriarBD.UseVisualStyleBackColor = true;
             btnCriarBD.Click += btnCriarBD_Click;
-            btnCriarBD.KeyPress += btnCriarBD_KeyPress;
             // 
             // cbbBD
             // 
@@ -150,7 +148,6 @@
             cbbBD.Size = new Size(260, 23);
             cbbBD.Sorted = true;
             cbbBD.TabIndex = 0;
-            cbbBD.KeyPress += cbbBD_KeyPress;
             // 
             // gpbInfoUsuario
             // 

@@ -5,6 +5,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Data.SQLite;
 using Contabilidade.Classes;
+using Contabilidade.Forms.Cadastros;
+using Contabilidade.Forms;
 
 namespace Contabilidade
 {
@@ -28,6 +30,8 @@ namespace Contabilidade
         public frmLogin()
         {
             InitializeComponent();
+
+            cbbBD.Select();
         }
 
         private void carregarBDs()
@@ -49,6 +53,13 @@ namespace Contabilidade
             if (Directory.Exists(pastaDatabases))
             {
                 carregarBDs();
+
+                // Verifica se o ComboBox possui algum item
+                if (cbbBD.Items.Count > 0)
+                {
+                    // Seleciona o primeiro item
+                    cbbBD.SelectedIndex = 0;
+                }
             }
             else
             {
@@ -86,16 +97,11 @@ namespace Contabilidade
             }
         }
 
-        private bool validarNomeBD(string input)
+        public static bool verificarNomeBD(string input)
         {
-            // Remove acentos e caracteres especiais
-            string stringNormalizada = input.Normalize(NormalizationForm.FormD);
-            string padrao = @"[^a-zA-Z0-9-_]";
-            string stringLimpa = Regex.Replace(stringNormalizada, padrao, string.Empty);
+            string padrao = @"^[a-zA-Z0-9-_]+$";
 
-            // Verifica se a string é composta apenas por letras, números, "-" e "_"
-            // (se o tamanho permanecer o mesmo, não houve alterações, e é válida)
-            if (stringLimpa.Length == input.Length)
+            if (Regex.IsMatch(input, padrao))
             {
                 return true;
             }
@@ -254,7 +260,7 @@ namespace Contabilidade
             // Verifica se o nome de usuário contém apenas letras e números (segue o padrão)
             else if (!Regex.IsMatch(usuario, padrao))
             {
-                MessageBox.Show("O nome de usuário deve ser composto apenas de letras e números!", "Erro ao registrar usuário", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("O nome de usuário deve ser composto apenas de letras e números (sem espaços ou acentos)!", "Erro ao registrar usuário", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
             else
@@ -265,95 +271,21 @@ namespace Contabilidade
 
         private void btnCriarBD_Click(object sender, EventArgs e)
         {
-            caminhoBD = $"{pastaDatabases}\\{validarExtensaoBD(cbbBD.Text)}";
-
-            // Verifica se está em modo de registro de senha
-            if (btnCriarBD.Text == "Concluir")
+            // Criar uma instância do formulário de dados e aguarda o retorno OK
+            using (var frmDados = new frmCriarBD(pastaDatabases))
             {
-                // Verifica a senha e se for válida: cria o BD
-                if (verificarSenha(cbbBD.Text))
+                // O usuário apertou o botão de salvar
+                if (frmDados.ShowDialog() == DialogResult.OK)
                 {
-                    senhaUsuarioBD = cbbBD.Text;
+                    // Obter dados do formulário filho
+                    (nomeBD, usuarioBD, senhaUsuarioBD) = (frmDados.nomeBD, frmDados.usuario, frmDados.senha);
+                    
                     criarBD();
                 }
-                else
-                {
-                    cbbBD.Text = "";
-                    cbbBD.Focus();
-                }
-            }
-            // Verifica se está em modo de registro de usuário
-            else if (btnCriarBD.Text == "Salvar")
-            {
-                // Verifica se o usuário é válido
-                if (verificarUsuario(cbbBD.Text))
-                {
-                    usuarioBD = cbbBD.Text;
-                    MessageBox.Show("Qual será a senha desse usuário?", "Criar banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Question);
-
-                    btnCriarBD.Text = "Concluir";
-                    cbbBD.Text = "";
-                    cbbBD.Focus();
-                }
-                else
-                {
-                    cbbBD.Text = "";
-                    cbbBD.Focus();
-                }
-            }
-            // Senão: verifica se é nulo
-            else if (cbbBD.Text == "" || cbbBD.Text == null || string.IsNullOrWhiteSpace(cbbBD.Text))
-            {
-                MessageBox.Show("Não foi informado um nome para o banco!", "Erro ao criar o banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cbbBD.Text = "";
-                cbbBD.Focus();
-            }
-            // Verifica se começa com número
-            else if (char.IsDigit(cbbBD.Text[0]))
-            {
-                MessageBox.Show("O nome informado não pode começar com um número!", "Erro ao criar o banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cbbBD.Text = "";
-                cbbBD.Focus();
-            }
-            // Verifica se a string é maior que 30 caracteres
-            else if (cbbBD.Text.Length > 30)
-            {
-                MessageBox.Show("O nome do banco não deve conter mais que 30 caracteres!", "Erro ao criar o banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cbbBD.Text = "";
-                cbbBD.Focus();
-            }
-            // Verifica se utiliza apenas letras e números
-            else if (!validarNomeBD(cbbBD.Text))
-            {
-                MessageBox.Show("O nome ínformado deve conter apenas letras e números (sem espaços)!", "Erro ao criar o banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cbbBD.Text = "";
-                cbbBD.Focus();
-            }
-            // Verifica se o arquivo já existe
-            else if (File.Exists(caminhoBD))
-            {
-                MessageBox.Show("Já existe um banco de dados com o nome informado!", "Erro ao criar o banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cbbBD.Text = "";
-                cbbBD.Focus();
-            }
-            // Senão: entra em modo de registro de usuário
-            else
-            {
-                nomeBD = validarExtensaoBD(cbbBD.Text);
-                MessageBox.Show("Qual o nome do usuário a se registrar?", "Criar banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Question);
-
-                btnExcluirBD.Enabled = false;
-                btnRenomearBD.Enabled = false;
-                btnBackup.Enabled = false;
-                btnRestaurar.Enabled = false;
-                gpbInfoUsuario.Enabled = false;
-                btnCriarBD.Text = "Salvar";
-                cbbBD.Text = "";
-                cbbBD.Focus();
             }
         }
 
-        public string validarExtensaoBD(string nomeBanco)
+        public static string validarExtensaoBD(string nomeBanco)
         {
             if (nomeBanco.EndsWith(".sqlite"))
                 return nomeBanco;
@@ -433,15 +365,20 @@ namespace Contabilidade
         private void renomearBD(string nomeBDNovo)
         {
             caminhoBD = $"{pastaDatabases}\\{nomeBD}";
+            var caminhoNovoBD = $"{Path.GetDirectoryName(caminhoBD)}\\{nomeBDNovo}";
 
             try
             {
                 // Renomear
-                File.Move(caminhoBD, $"{Path.GetDirectoryName(caminhoBD)}\\{nomeBDNovo}");
+                File.Move(caminhoBD, caminhoNovoBD);
 
                 // Verificar se o arquivo foi movido
-                if (File.Exists($"{Path.GetDirectoryName(caminhoBD)}\\{nomeBDNovo}") && !File.Exists(caminhoBD))
+                if (File.Exists(caminhoNovoBD))
                 {
+                    // Escrever o nome do banco (menos os últimos 7 dígitos relativos a extensão .sqlite) no cbbBD
+                    cbbBD.Text = "";
+                    cbbBD.Text = nomeBDNovo[..^7];
+
                     MessageBox.Show("O banco de dados foi renomeado com sucesso!", "Operação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
@@ -465,87 +402,19 @@ namespace Contabilidade
 
         private void btnRenomearBD_Click(object sender, EventArgs e)
         {
-            // Verificar se o botão está no modo de salvamento (quando o usuário já indicou o banco a ser renomeado)
-            if (btnRenomearBD.Text == "Salvar")
+            // Verificar se o banco existe
+            if (verificarExistenciaBD("Erro ao localizar banco de dados"))
             {
-                string nomeBDNovo = validarExtensaoBD(cbbBD.Text);
-
-                // Verifica se é nulo
-                if (cbbBD.Text == "" || cbbBD.Text == null || string.IsNullOrWhiteSpace(cbbBD.Text))
+                // Criar uma instância do formulário de dados e aguarda o retorno OK
+                using (var frmDados = new frmRenomearBD(pastaDatabases, cbbBD.Text))
                 {
-                    MessageBox.Show("Não foi informado um nome para o banco!", "Erro ao renomear banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    cbbBD.Text = "";
-                    cbbBD.Focus();
-                }
-                // Verifica se o arquivo existe no comboBox
-                else if (nomesBDs.Contains(nomeBDNovo.ToLower()))
-                {
-                    // Verificar se o arquivo encontrado é o mesmo que deseja-se renomear (se sim: pode-se alterar a capitalização das letras desde que não seja igual ao já existente)
-                    if (nomeBDNovo.ToLower() == nomeBD.ToLower())
+                    // O usuário apertou o botão de salvar
+                    if (frmDados.ShowDialog() == DialogResult.OK)
                     {
-                        // Se o nome for exatamente igual: erro
-                        if (nomeBDNovo == nomeBD)
-                        {
-                            MessageBox.Show("O nome informado é exatamente igual ao anterior!", "Erro ao renomear banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            cbbBD.Text = "";
-                            cbbBD.Focus();
-                        }
-                        // Senão: renomear
-                        else
-                        {
-                            renomearBD(nomeBDNovo);
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Já existe um banco de dados com esse nome!", "Erro ao renomear banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        cbbBD.Text = "";
-                        cbbBD.Focus();
+                        // Obter dados do formulário filho e passar para a função de renomear
+                        renomearBD(frmDados.nomeBD);
                     }
                 }
-                // Verifica se o arquivo não existe no comboBox
-                else if (!nomesBDs.Contains(nomeBDNovo.ToLower()))
-                {
-                    // Verifica se começa com número
-                    if (char.IsDigit(cbbBD.Text[0]))
-                    {
-                        MessageBox.Show("O nome informado não pode começar com um número!", "Erro ao renomear banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        cbbBD.Text = "";
-                        cbbBD.Focus();
-                    }
-                    // Verifica se utiliza apenas letras e números
-                    else if (!validarNomeBD(cbbBD.Text))
-                    {
-                        MessageBox.Show("O nome ínformado deve conter apenas letras e números (sem espaços)!", "Erro ao renomear banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        cbbBD.Text = "";
-                        cbbBD.Focus();
-                    }
-                    // Passou nas verificações: renomear
-                    else
-                    {
-                        renomearBD(nomeBDNovo);
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Por gentileza, anote o nome informado do banco, salve um print da tela de Login e contate o desenvolvedor do programa.", "Erro não tratado!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            // Verificar se o banco existe e se existir: travar demais botões, exibir mensagem e aguardar o usuário inserir um novo nome válido.
-            else if (verificarExistenciaBD("Erro ao localizar banco de dados"))
-            {
-                MessageBox.Show("Banco de dados selecionado. Insira um novo nome e confirme ou tecle ESC para cancelar", "Renomear arquivo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                // Entrar em modo de salvamento
-                btnCriarBD.Enabled = false;
-                btnExcluirBD.Enabled = false;
-                btnBackup.Enabled = false;
-                btnRestaurar.Enabled = false;
-                gpbInfoUsuario.Enabled = false;
-                btnRenomearBD.Text = "Salvar";
-
-                cbbBD.Text = "";
-                cbbBD.Focus();
             }
             else
             {
@@ -634,73 +503,8 @@ namespace Contabilidade
             }
         }
 
-        private void handleKeyPressCriarBD(KeyPressEventArgs e)
-        {
-            if (e.KeyChar == (char)Keys.Escape)
-            {
-                resetarForm(true);
-                cbbBD.Focus();
-            }
-            else if (e.KeyChar == (char)Keys.Enter)
-            {
-                btnCriarBD.PerformClick();
-            }
-        }
-
-        private void handleKeyPressRenomearBD(KeyPressEventArgs e)
-        {
-            if (e.KeyChar == (char)Keys.Escape)
-            {
-                resetarForm(true);
-                cbbBD.Focus();
-            }
-            else if (e.KeyChar == (char)Keys.Enter)
-            {
-                btnRenomearBD.PerformClick();
-            }
-        }
-
-        private void cbbBD_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (btnRenomearBD.Text == "Salvar")
-            {
-                handleKeyPressRenomearBD(e);
-            }
-            if (btnCriarBD.Text == "Salvar" || btnCriarBD.Text == "Concluir")
-            {
-                handleKeyPressCriarBD(e);
-            }
-        }
-
-        private void btnRenomearBD_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (btnRenomearBD.Text == "Salvar")
-            {
-                handleKeyPressRenomearBD(e);
-            }
-        }
-
-        private void btnCriarBD_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (btnCriarBD.Text == "Salvar" || btnCriarBD.Text == "Concluir")
-            {
-                handleKeyPressCriarBD(e);
-            }
-        }
-
         private void resetarForm(bool completo = false)
         {
-            btnCriarBD.Enabled = true;
-            btnExcluirBD.Enabled = true;
-            btnRenomearBD.Enabled = true;
-            btnBackup.Enabled = true;
-            btnRestaurar.Enabled = true;
-            gpbInfoUsuario.Enabled = true;
-
-            btnCriarBD.Text = "Criar";
-            btnExcluirBD.Text = "Excluir";
-            btnRenomearBD.Text = "Renomear";
-
             usuarioBD = "";
             senhaUsuarioBD = "";
             nomeBD = "";
