@@ -122,7 +122,7 @@ namespace Contabilidade.Forms.Lancamentos
 
                             dgvContas.Refresh();
 
-                            MessageBox.Show("Conta criada com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            MessageBox.Show("Conta criada com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {

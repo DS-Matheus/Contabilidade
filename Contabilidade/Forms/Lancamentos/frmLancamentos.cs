@@ -548,7 +548,7 @@ namespace Contabilidade.Forms.Lancamentos
                                         id_historico = "";
                                         data = DateTime.MinValue;
 
-                                        MessageBox.Show("Lançamento editado com sucesso!", "Edição bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                        MessageBox.Show("Lançamento editado com sucesso!", "Edição bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                     }
                                     catch (CustomException ex)
                                     {

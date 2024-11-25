@@ -86,7 +86,7 @@ namespace Contabilidade.Forms.Cadastros
                                     // Remover dados das variáveis
                                     historico = "";
 
-                                    MessageBox.Show("Histórico criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                    MessageBox.Show("Histórico criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 }
                             }
                             else
@@ -150,7 +150,7 @@ namespace Contabilidade.Forms.Cadastros
                                 // Remover dados das variáveis
                                 historico = "";
 
-                                MessageBox.Show("Histórico editado com sucesso!", "Edição bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                MessageBox.Show("Histórico editado com sucesso!", "Edição bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             else
                             {

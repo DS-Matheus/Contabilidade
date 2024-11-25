@@ -114,7 +114,7 @@ namespace Contabilidade.Forms.Cadastros
 
                         txtHistorico.Text = txtHistorico.Text.Trim();
 
-                        MessageBox.Show("Histórico criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        MessageBox.Show("Histórico criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                         // Salvar registro commitando sua alteração
                         transacao.Commit();

@@ -180,7 +180,7 @@ namespace Contabilidade.Forms.Cadastros
                                 descricao = "";
                                 nivel = "";
 
-                                MessageBox.Show("Conta criada com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                MessageBox.Show("Conta criada com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             else
                             {
@@ -482,7 +482,7 @@ namespace Contabilidade.Forms.Cadastros
                                     nivel = "";
                                     alterouNivel = false;
 
-                                    MessageBox.Show("Conta editada com sucesso!", "Edição bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                    MessageBox.Show("Conta editada com sucesso!", "Edição bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 }
                                 else
                                 {

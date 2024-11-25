@@ -92,7 +92,7 @@ namespace Contabilidade.Forms.Cadastros
                                 usuario = "";
                                 senha = "";
 
-                                MessageBox.Show("Usuário criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                MessageBox.Show("Usuário criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                         }
                         else
@@ -123,7 +123,7 @@ namespace Contabilidade.Forms.Cadastros
                         // Encontrou o usuário, podemos excluí-lo
                         rows[0].Delete();
                         dtDados.AcceptChanges();
-                        MessageBox.Show("Usuário excluído com sucesso!", "Exclusão bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        MessageBox.Show("Usuário excluído com sucesso!", "Exclusão bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
                     {
@@ -227,7 +227,7 @@ namespace Contabilidade.Forms.Cadastros
                             usuario = "";
                             senha = "";
 
-                            MessageBox.Show("Usuário editado com sucesso!", "Edição bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            MessageBox.Show("Usuário editado com sucesso!", "Edição bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
