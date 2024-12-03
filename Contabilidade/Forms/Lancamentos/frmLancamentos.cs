@@ -278,7 +278,7 @@ namespace Contabilidade.Forms.Lancamentos
                     // Para cada campo encontrado
                     while (reader.Read())
                     {
-                        string data = reader["data"]?.ToString();
+                        string data = Convert.ToDateTime(reader["data"]).ToString("yyyy-MM-dd");
 
                         // Atualizar os campos no banco de dados
                         comando2.Parameters.Clear();
