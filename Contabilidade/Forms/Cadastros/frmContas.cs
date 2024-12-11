@@ -274,7 +274,7 @@ namespace Contabilidade.Forms.Cadastros
                                     linhasDisponiveis--;
                                 }
                                 pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
-                                pdf.Add(new Paragraph("NÚMERO (TIPO) - DESCRIÇÃO                                                                                     ", fonte));
+                                pdf.Add(new Paragraph("(TIPO) NÚMERO - DESCRIÇÃO                                                                                     ", fonte));
                                 pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
                                 pdf.Add(new Paragraph("    ", fonte));
 
