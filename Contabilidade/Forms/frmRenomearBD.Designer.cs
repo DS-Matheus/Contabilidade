@@ -72,11 +72,11 @@
             // lblTitulo
             // 
             lblTitulo.AutoSize = true;
-            lblTitulo.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblTitulo.Font = new Font("Lucida Sans", 10F);
             lblTitulo.ForeColor = Color.White;
             lblTitulo.Location = new Point(12, 7);
             lblTitulo.Name = "lblTitulo";
-            lblTitulo.Size = new Size(160, 16);
+            lblTitulo.Size = new Size(186, 16);
             lblTitulo.TabIndex = 1;
             lblTitulo.Text = "Renomear banco de dados";
             lblTitulo.MouseDown += lblTitulo_MouseDown;
@@ -110,24 +110,27 @@
             // 
             // txtBancoDados
             // 
+            txtBancoDados.Font = new Font("Lucida Sans", 10.5F);
             txtBancoDados.Location = new Point(32, 35);
             txtBancoDados.MaxLength = 30;
             txtBancoDados.Name = "txtBancoDados";
-            txtBancoDados.Size = new Size(335, 23);
+            txtBancoDados.Size = new Size(335, 24);
             txtBancoDados.TabIndex = 1;
             // 
             // label3
             // 
             label3.AutoSize = true;
+            label3.Font = new Font("Lucida Sans", 10.5F);
             label3.Location = new Point(32, 17);
             label3.Margin = new Padding(3, 10, 3, 0);
             label3.Name = "label3";
-            label3.Size = new Size(91, 15);
+            label3.Size = new Size(115, 16);
             label3.TabIndex = 5;
             label3.Text = "Banco de dados";
             // 
             // btnRenomear
             // 
+            btnRenomear.Font = new Font("Lucida Sans", 10.5F);
             btnRenomear.Location = new Point(32, 71);
             btnRenomear.Margin = new Padding(3, 10, 3, 3);
             btnRenomear.Name = "btnRenomear";

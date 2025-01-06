@@ -76,11 +76,11 @@
             // lblTitulo
             // 
             lblTitulo.AutoSize = true;
-            lblTitulo.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblTitulo.Font = new Font("Lucida Sans", 10F);
             lblTitulo.ForeColor = Color.White;
             lblTitulo.Location = new Point(12, 7);
             lblTitulo.Name = "lblTitulo";
-            lblTitulo.Size = new Size(129, 16);
+            lblTitulo.Size = new Size(151, 16);
             lblTitulo.TabIndex = 1;
             lblTitulo.Text = "Criar banco de dados";
             lblTitulo.MouseDown += lblTitulo_MouseDown;
@@ -118,60 +118,67 @@
             // 
             // txtBancoDados
             // 
+            txtBancoDados.Font = new Font("Lucida Sans", 10.5F);
             txtBancoDados.Location = new Point(31, 36);
             txtBancoDados.MaxLength = 30;
             txtBancoDados.Name = "txtBancoDados";
-            txtBancoDados.Size = new Size(335, 23);
+            txtBancoDados.Size = new Size(335, 24);
             txtBancoDados.TabIndex = 1;
             // 
             // label3
             // 
             label3.AutoSize = true;
+            label3.Font = new Font("Lucida Sans", 10.5F);
             label3.Location = new Point(31, 18);
             label3.Margin = new Padding(3, 10, 3, 0);
             label3.Name = "label3";
-            label3.Size = new Size(91, 15);
+            label3.Size = new Size(115, 16);
             label3.TabIndex = 5;
             label3.Text = "Banco de dados";
             // 
             // txtSenha
             // 
+            txtSenha.Font = new Font("Lucida Sans", 10.5F);
             txtSenha.Location = new Point(31, 134);
             txtSenha.MaxLength = 30;
             txtSenha.Name = "txtSenha";
-            txtSenha.Size = new Size(335, 23);
+            txtSenha.Size = new Size(335, 24);
             txtSenha.TabIndex = 3;
             // 
             // label2
             // 
             label2.AutoSize = true;
+            label2.Font = new Font("Lucida Sans", 10.5F);
             label2.Location = new Point(31, 116);
             label2.Margin = new Padding(3, 5, 3, 0);
             label2.Name = "label2";
-            label2.Size = new Size(39, 15);
+            label2.Size = new Size(47, 16);
             label2.TabIndex = 3;
             label2.Text = "Senha";
             // 
             // txtUsuario
             // 
+            txtUsuario.Font = new Font("Lucida Sans", 10.5F);
             txtUsuario.Location = new Point(31, 85);
             txtUsuario.MaxLength = 20;
             txtUsuario.Name = "txtUsuario";
-            txtUsuario.Size = new Size(335, 23);
+            txtUsuario.Size = new Size(335, 24);
             txtUsuario.TabIndex = 2;
             // 
             // label1
             // 
             label1.AutoSize = true;
+            label1.Font = new Font("Lucida Sans", 10.5F);
             label1.Location = new Point(31, 67);
             label1.Margin = new Padding(3, 5, 3, 0);
             label1.Name = "label1";
-            label1.Size = new Size(47, 15);
+            label1.Size = new Size(56, 16);
             label1.TabIndex = 1;
             label1.Text = "Usuário";
             // 
             // btnCriar
             // 
+            btnCriar.Font = new Font("Lucida Sans", 10.5F);
             btnCriar.Location = new Point(32, 170);
             btnCriar.Margin = new Padding(3, 10, 3, 3);
             btnCriar.Name = "btnCriar";

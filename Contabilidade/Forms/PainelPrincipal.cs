@@ -20,6 +20,9 @@ namespace Contabilidade
         {
             InitializeComponent();
 
+            // Maximizar janela
+            this.WindowState = FormWindowState.Maximized;
+
             // Salvar informações da conexão
             con = conexaoBanco;
             usuarioAtual = usuario;
@@ -89,7 +92,7 @@ namespace Contabilidade
                     if (botaoAtual != null)
                     {
                         // Botão anterior: Voltar fonte ao padrão
-                        botaoAtual.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+                        botaoAtual.Font = new Font("Lucida Sans", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
                         botaoAtual.ForeColor = Color.Gainsboro;
                     }
 
@@ -119,7 +122,7 @@ namespace Contabilidade
                     // Botão selecionado
                     botaoAtual.BackColor = TemaCores.CorBotaoSelecionado;
                     botaoAtual.ForeColor = Color.White;
-                    botaoAtual.Font = new Font("Lucida Sans", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
+                    botaoAtual.Font = new Font("Lucida Sans", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
 
                     if (exibirBotao)
                     {
@@ -160,7 +163,7 @@ namespace Contabilidade
             ];
 
             // Botão anterior: Voltar fonte ao padrão
-            botaoAtual.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            botaoAtual.Font = new Font("Lucida Sans", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
             botaoAtual.ForeColor = Color.Gainsboro;
 
             // Desselecionar botaoAtual
@@ -351,6 +354,7 @@ namespace Contabilidade
         private void timerRelogio_Tick(object sender, EventArgs e)
         {
             lblRelogio.Text = System.DateTime.Now.ToString("HH:mm:ss");
+            lblData.Text = System.DateTime.Now.ToString("dd/MM/yyyy");
         }
 
         private void btnSistema_Click(object sender, EventArgs e)
@@ -589,7 +593,7 @@ namespace Contabilidade
                     {
                         string arquivoSelecionado = openFileDialog.FileName;
                         string nomeArquivo = Path.GetFileNameWithoutExtension(arquivoSelecionado);
-                        string caminhoDestino = $"{pastaBDs }\\{nomeArquivo}.sqlite";
+                        string caminhoDestino = $"{pastaBDs}\\{nomeArquivo}.sqlite";
 
                         // Verificar se o arquivo não está nas dependências do programa
                         if (arquivoEstaNoDiretorio(Application.StartupPath, arquivoSelecionado))
@@ -678,7 +682,7 @@ namespace Contabilidade
                         {
                             var perguntarResult = MessageBox.Show("Deseja então escolher quais serão sobrescritos e quais não? \n\nEscolher \"não\" fará com que nenhum arquivo existente seja sobrescrito.", "Confirmação", MessageBoxButtons.YesNoCancel);
                             perguntarAntes = (perguntarResult == DialogResult.Yes);
-                            
+
                             // Cancelar caso o usuário aperte Cancel ou feche de alguma forma
                             if (perguntarResult != DialogResult.Yes && perguntarResult != DialogResult.No)
                             {
@@ -785,6 +789,28 @@ namespace Contabilidade
                     this.Owner.Show(); // Exibe o Formulário de Login
                     this.Dispose(); // Fecha o formulário atual
                 }
+            }
+        }
+
+        private void btnMaximizar_Click(object sender, EventArgs e)
+        {
+            alterarVisibilidade();
+        }
+
+        private void btnMinimizar2_Click(object sender, EventArgs e)
+        {
+            alterarVisibilidade();
+        }
+
+        private void alterarVisibilidade()
+        {
+            if (this.WindowState == FormWindowState.Maximized)
+            {
+                this.WindowState = FormWindowState.Normal;
+            }
+            else
+            {
+                this.WindowState = FormWindowState.Maximized;
             }
         }
     }
