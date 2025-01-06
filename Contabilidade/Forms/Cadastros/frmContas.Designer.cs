@@ -29,8 +29,10 @@
         private void InitializeComponent()
         {
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             dgvContas = new DataGridView();
             Conta = new DataGridViewTextBoxColumn();
             Nível = new DataGridViewTextBoxColumn();
@@ -52,54 +54,73 @@
             dgvContas.AllowUserToAddRows = false;
             dgvContas.AllowUserToDeleteRows = false;
             dgvContas.AllowUserToOrderColumns = true;
+            dgvContas.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvContas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.Font = new Font("Lucida Sans", 10.5F);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dgvContas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgvContas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvContas.Columns.AddRange(new DataGridViewColumn[] { Conta, Nível, Descrição });
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = SystemColors.Window;
+            dataGridViewCellStyle5.Font = new Font("Lucida Sans", 10.5F);
+            dataGridViewCellStyle5.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
+            dgvContas.DefaultCellStyle = dataGridViewCellStyle5;
             dgvContas.Location = new Point(12, 12);
             dgvContas.MultiSelect = false;
             dgvContas.Name = "dgvContas";
             dgvContas.ReadOnly = true;
             dgvContas.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvContas.Size = new Size(856, 390);
+            dgvContas.Size = new Size(856, 385);
             dgvContas.TabIndex = 0;
             // 
             // Conta
             // 
             Conta.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             Conta.DataPropertyName = "conta";
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Conta.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            Conta.DefaultCellStyle = dataGridViewCellStyle2;
             Conta.HeaderText = "Conta";
             Conta.Name = "Conta";
             Conta.ReadOnly = true;
-            Conta.Width = 64;
+            Conta.Width = 72;
             // 
             // Nível
             // 
             Nível.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             Nível.DataPropertyName = "nivel";
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Nível.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            Nível.DefaultCellStyle = dataGridViewCellStyle3;
             Nível.HeaderText = "Nível";
             Nível.Name = "Nível";
             Nível.ReadOnly = true;
-            Nível.Width = 59;
+            Nível.Width = 65;
             // 
             // Descrição
             // 
             Descrição.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             Descrição.DataPropertyName = "descricao";
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            Descrição.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            Descrição.DefaultCellStyle = dataGridViewCellStyle4;
             Descrição.HeaderText = "Descrição";
             Descrição.Name = "Descrição";
             Descrição.ReadOnly = true;
             // 
             // groupBox1
             // 
+            groupBox1.Anchor = AnchorStyles.Bottom;
             groupBox1.Controls.Add(cbbNivel);
             groupBox1.Controls.Add(cbbFiltrar);
             groupBox1.Controls.Add(txtFiltrar);
+            groupBox1.Font = new Font("Lucida Sans", 11.25F);
             groupBox1.Location = new Point(524, 403);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(344, 85);
@@ -110,11 +131,12 @@
             // cbbNivel
             // 
             cbbNivel.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbbNivel.Font = new Font("Lucida Sans", 10.5F);
             cbbNivel.FormattingEnabled = true;
             cbbNivel.Items.AddRange(new object[] { "Ambos", "Analítico", "Sintético" });
             cbbNivel.Location = new Point(6, 51);
             cbbNivel.Name = "cbbNivel";
-            cbbNivel.Size = new Size(332, 23);
+            cbbNivel.Size = new Size(332, 24);
             cbbNivel.TabIndex = 19;
             cbbNivel.Visible = false;
             cbbNivel.SelectedIndexChanged += cbbNivel_SelectedIndexChanged;
@@ -122,11 +144,12 @@
             // cbbFiltrar
             // 
             cbbFiltrar.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbbFiltrar.Font = new Font("Lucida Sans", 10.5F);
             cbbFiltrar.FormattingEnabled = true;
             cbbFiltrar.Items.AddRange(new object[] { "Conta", "Descrição", "Nível" });
             cbbFiltrar.Location = new Point(6, 22);
             cbbFiltrar.Name = "cbbFiltrar";
-            cbbFiltrar.Size = new Size(332, 23);
+            cbbFiltrar.Size = new Size(332, 24);
             cbbFiltrar.TabIndex = 9;
             cbbFiltrar.SelectedIndexChanged += cbbFiltrar_SelectedIndexChanged;
             // 
@@ -134,12 +157,14 @@
             // 
             txtFiltrar.Location = new Point(6, 51);
             txtFiltrar.Name = "txtFiltrar";
-            txtFiltrar.Size = new Size(332, 23);
+            txtFiltrar.Size = new Size(332, 25);
             txtFiltrar.TabIndex = 10;
             txtFiltrar.TextChanged += txtFiltrar_TextChanged;
             // 
             // btnImprimir
             // 
+            btnImprimir.Anchor = AnchorStyles.Bottom;
+            btnImprimir.Font = new Font("Lucida Sans", 10.5F);
             btnImprimir.Location = new Point(268, 453);
             btnImprimir.Name = "btnImprimir";
             btnImprimir.Size = new Size(250, 35);
@@ -150,6 +175,8 @@
             // 
             // btnEditar
             // 
+            btnEditar.Anchor = AnchorStyles.Bottom;
+            btnEditar.Font = new Font("Lucida Sans", 10.5F);
             btnEditar.Location = new Point(12, 453);
             btnEditar.Name = "btnEditar";
             btnEditar.Size = new Size(250, 35);
@@ -160,6 +187,8 @@
             // 
             // btnExcluir
             // 
+            btnExcluir.Anchor = AnchorStyles.Bottom;
+            btnExcluir.Font = new Font("Lucida Sans", 10.5F);
             btnExcluir.Location = new Point(268, 410);
             btnExcluir.Name = "btnExcluir";
             btnExcluir.Size = new Size(250, 35);
@@ -170,6 +199,8 @@
             // 
             // btnCriar
             // 
+            btnCriar.Anchor = AnchorStyles.Bottom;
+            btnCriar.Font = new Font("Lucida Sans", 10.5F);
             btnCriar.Location = new Point(12, 410);
             btnCriar.Name = "btnCriar";
             btnCriar.Size = new Size(250, 35);

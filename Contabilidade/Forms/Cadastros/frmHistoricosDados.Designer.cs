@@ -72,11 +72,11 @@
             // lblTitulo
             // 
             lblTitulo.AutoSize = true;
-            lblTitulo.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblTitulo.Font = new Font("Lucida Sans", 10F);
             lblTitulo.ForeColor = Color.White;
             lblTitulo.Location = new Point(12, 7);
             lblTitulo.Name = "lblTitulo";
-            lblTitulo.Size = new Size(201, 16);
+            lblTitulo.Size = new Size(232, 16);
             lblTitulo.TabIndex = 1;
             lblTitulo.Text = "Formulário de dados de históricos";
             lblTitulo.MouseDown += lblTitulo_MouseDown;
@@ -110,6 +110,7 @@
             // 
             // txtHistorico
             // 
+            txtHistorico.Font = new Font("Lucida Sans", 10.5F);
             txtHistorico.Location = new Point(32, 39);
             txtHistorico.MaxLength = 100;
             txtHistorico.Multiline = true;
@@ -121,14 +122,16 @@
             // label1
             // 
             label1.AutoSize = true;
+            label1.Font = new Font("Lucida Sans", 10.5F);
             label1.Location = new Point(32, 21);
             label1.Name = "label1";
-            label1.Size = new Size(55, 15);
+            label1.Size = new Size(66, 16);
             label1.TabIndex = 1;
             label1.Text = "Histórico";
             // 
             // btnSalvar
             // 
+            btnSalvar.Font = new Font("Lucida Sans", 10.5F);
             btnSalvar.Location = new Point(32, 91);
             btnSalvar.Margin = new Padding(3, 10, 3, 3);
             btnSalvar.Name = "btnSalvar";

@@ -76,11 +76,11 @@
             // lblTitulo
             // 
             lblTitulo.AutoSize = true;
-            lblTitulo.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblTitulo.Font = new Font("Lucida Sans", 10F);
             lblTitulo.ForeColor = Color.White;
             lblTitulo.Location = new Point(12, 7);
             lblTitulo.Name = "lblTitulo";
-            lblTitulo.Size = new Size(184, 16);
+            lblTitulo.Size = new Size(213, 16);
             lblTitulo.TabIndex = 1;
             lblTitulo.Text = "Formulário de dados de contas";
             lblTitulo.MouseDown += lblTitulo_MouseDown;
@@ -119,24 +119,27 @@
             // cbbNivel
             // 
             cbbNivel.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbbNivel.Font = new Font("Lucida Sans", 10.5F);
             cbbNivel.FormattingEnabled = true;
             cbbNivel.Items.AddRange(new object[] { "Analítico", "Sintético" });
             cbbNivel.Location = new Point(234, 43);
             cbbNivel.Name = "cbbNivel";
-            cbbNivel.Size = new Size(171, 23);
+            cbbNivel.Size = new Size(171, 24);
             cbbNivel.TabIndex = 6;
             // 
             // label3
             // 
             label3.AutoSize = true;
+            label3.Font = new Font("Lucida Sans", 10.5F);
             label3.Location = new Point(234, 25);
             label3.Name = "label3";
-            label3.Size = new Size(34, 15);
+            label3.Size = new Size(40, 16);
             label3.TabIndex = 5;
             label3.Text = "Nível";
             // 
             // txtDescricao
             // 
+            txtDescricao.Font = new Font("Lucida Sans", 10.5F);
             txtDescricao.Location = new Point(25, 93);
             txtDescricao.MaxLength = 100;
             txtDescricao.Multiline = true;
@@ -148,20 +151,22 @@
             // label2
             // 
             label2.AutoSize = true;
+            label2.Font = new Font("Lucida Sans", 10.5F);
             label2.Location = new Point(25, 75);
             label2.Name = "label2";
-            label2.Size = new Size(58, 15);
+            label2.Size = new Size(73, 16);
             label2.TabIndex = 3;
             label2.Text = "Descrição";
             // 
             // txtConta
             // 
             txtConta.BackColor = Color.White;
+            txtConta.Font = new Font("Lucida Sans", 10.5F);
             txtConta.Location = new Point(25, 43);
             txtConta.Margin = new Padding(25, 3, 3, 3);
             txtConta.MaxLength = 15;
             txtConta.Name = "txtConta";
-            txtConta.Size = new Size(171, 23);
+            txtConta.Size = new Size(171, 24);
             txtConta.TabIndex = 1;
             txtConta.TextChanged += txtConta_TextChanged;
             txtConta.KeyPress += txtConta_KeyPress;
@@ -169,14 +174,16 @@
             // label1
             // 
             label1.AutoSize = true;
+            label1.Font = new Font("Lucida Sans", 10.5F);
             label1.Location = new Point(25, 25);
             label1.Name = "label1";
-            label1.Size = new Size(39, 15);
+            label1.Size = new Size(47, 16);
             label1.TabIndex = 1;
             label1.Text = "Conta";
             // 
             // btnSalvar
             // 
+            btnSalvar.Font = new Font("Lucida Sans", 10.5F);
             btnSalvar.Location = new Point(25, 152);
             btnSalvar.Margin = new Padding(3, 10, 3, 3);
             btnSalvar.Name = "btnSalvar";

@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             dgvUsuarios = new DataGridView();
             ID = new DataGridViewTextBoxColumn();
@@ -49,15 +51,32 @@
             dgvUsuarios.AllowUserToAddRows = false;
             dgvUsuarios.AllowUserToDeleteRows = false;
             dgvUsuarios.AllowUserToOrderColumns = true;
+            dgvUsuarios.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvUsuarios.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.Font = new Font("Lucida Sans", 10.5F);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dgvUsuarios.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgvUsuarios.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvUsuarios.Columns.AddRange(new DataGridViewColumn[] { ID, Usuário, Senha });
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = SystemColors.Window;
+            dataGridViewCellStyle3.Font = new Font("Lucida Sans", 10.5F);
+            dataGridViewCellStyle3.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
+            dgvUsuarios.DefaultCellStyle = dataGridViewCellStyle3;
             dgvUsuarios.Location = new Point(12, 12);
             dgvUsuarios.MultiSelect = false;
             dgvUsuarios.Name = "dgvUsuarios";
             dgvUsuarios.ReadOnly = true;
             dgvUsuarios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvUsuarios.Size = new Size(856, 390);
+            dgvUsuarios.Size = new Size(856, 385);
             dgvUsuarios.TabIndex = 0;
             // 
             // ID
@@ -70,7 +89,6 @@
             ID.Name = "ID";
             ID.ReadOnly = true;
             ID.Visible = false;
-            ID.Width = 43;
             // 
             // Usuário
             // 
@@ -90,6 +108,8 @@
             // 
             // btnCriar
             // 
+            btnCriar.Anchor = AnchorStyles.Bottom;
+            btnCriar.Font = new Font("Lucida Sans", 10.5F);
             btnCriar.Location = new Point(12, 410);
             btnCriar.Name = "btnCriar";
             btnCriar.Size = new Size(250, 35);
@@ -100,6 +120,8 @@
             // 
             // btnExcluir
             // 
+            btnExcluir.Anchor = AnchorStyles.Bottom;
+            btnExcluir.Font = new Font("Lucida Sans", 10.5F);
             btnExcluir.Location = new Point(268, 410);
             btnExcluir.Name = "btnExcluir";
             btnExcluir.Size = new Size(250, 35);
@@ -110,6 +132,8 @@
             // 
             // btnEditar
             // 
+            btnEditar.Anchor = AnchorStyles.Bottom;
+            btnEditar.Font = new Font("Lucida Sans", 10.5F);
             btnEditar.Location = new Point(12, 453);
             btnEditar.Name = "btnEditar";
             btnEditar.Size = new Size(250, 35);
@@ -121,24 +145,28 @@
             // cbbFiltrar
             // 
             cbbFiltrar.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbbFiltrar.Font = new Font("Lucida Sans", 10.5F);
             cbbFiltrar.FormattingEnabled = true;
             cbbFiltrar.Items.AddRange(new object[] { "Usuário", "Senha" });
             cbbFiltrar.Location = new Point(6, 22);
             cbbFiltrar.Name = "cbbFiltrar";
-            cbbFiltrar.Size = new Size(332, 23);
+            cbbFiltrar.Size = new Size(332, 24);
             cbbFiltrar.TabIndex = 9;
             cbbFiltrar.SelectedIndexChanged += cbbFiltrar_SelectedIndexChanged;
             // 
             // txtFiltrar
             // 
+            txtFiltrar.Font = new Font("Lucida Sans", 10.5F);
             txtFiltrar.Location = new Point(6, 51);
             txtFiltrar.Name = "txtFiltrar";
-            txtFiltrar.Size = new Size(332, 23);
+            txtFiltrar.Size = new Size(332, 24);
             txtFiltrar.TabIndex = 10;
             txtFiltrar.TextChanged += txtFiltrar_TextChanged;
             // 
             // btnImprimir
             // 
+            btnImprimir.Anchor = AnchorStyles.Bottom;
+            btnImprimir.Font = new Font("Lucida Sans", 10.5F);
             btnImprimir.Location = new Point(268, 453);
             btnImprimir.Name = "btnImprimir";
             btnImprimir.Size = new Size(250, 35);
@@ -149,8 +177,10 @@
             // 
             // groupBox1
             // 
+            groupBox1.Anchor = AnchorStyles.Bottom;
             groupBox1.Controls.Add(cbbFiltrar);
             groupBox1.Controls.Add(txtFiltrar);
+            groupBox1.Font = new Font("Lucida Sans", 11.5F);
             groupBox1.Location = new Point(524, 403);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(344, 85);
