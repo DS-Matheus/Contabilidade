@@ -660,6 +660,7 @@
             Name = "frmPainelPrincipal";
             StartPosition = FormStartPosition.CenterParent;
             Text = "PainelPrincipal";
+            WindowState = FormWindowState.Maximized;
             pnlLogo.ResumeLayout(false);
             pnlLogo.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)picLogo).EndInit();

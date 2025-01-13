@@ -20,9 +20,6 @@ namespace Contabilidade
         {
             InitializeComponent();
 
-            // Maximizar janela
-            this.WindowState = FormWindowState.Maximized;
-
             // Salvar informações da conexão
             con = conexaoBanco;
             usuarioAtual = usuario;
