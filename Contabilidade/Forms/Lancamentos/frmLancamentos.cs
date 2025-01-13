@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.SQLite;
 using Contabilidade.Classes;
 using Contabilidade.Forms.Cadastros;
+using System.Windows.Forms;
 
 namespace Contabilidade.Forms.Lancamentos
 {
@@ -23,8 +24,9 @@ namespace Contabilidade.Forms.Lancamentos
             con = conexaoBanco;
 
             configurarColunaValor();
-
             atualizarDataGrid();
+
+            dgvLancamentos.Columns["ID"].Visible = false;
         }
 
         private void configurarColunaValor()

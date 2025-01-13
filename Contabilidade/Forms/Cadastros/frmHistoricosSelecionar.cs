@@ -30,6 +30,8 @@ namespace Contabilidade.Forms.Cadastros
             this.idAntigo = idAntigo;
 
             atualizarDataGrid();
+
+            dgvHistoricos.Columns["ID"].Visible = false;
         }
 
         private void atualizarDataGrid()

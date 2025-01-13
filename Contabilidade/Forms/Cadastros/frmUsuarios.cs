@@ -26,6 +26,8 @@ namespace Contabilidade.Forms.Cadastros
             usuarioAtual = usuarioBD;
 
             atualizarDataGrid();
+
+            dgvUsuarios.Columns["ID"].Visible = false;
         }
 
         private void atualizarDataGrid()

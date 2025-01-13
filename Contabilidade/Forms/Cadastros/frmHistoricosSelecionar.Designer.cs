@@ -211,7 +211,7 @@
             // 
             // ID
             // 
-            ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             ID.DataPropertyName = "id";
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
             ID.DefaultCellStyle = dataGridViewCellStyle2;
@@ -261,10 +261,10 @@
         private GroupBox groupBox1;
         private TextBox txtFiltrar;
         private DataGridView dgvHistoricos;
-        private DataGridViewTextBoxColumn ID;
-        private DataGridViewTextBoxColumn Histórico;
         private Button btnCriar;
         private TextBox txtHistorico;
         private GroupBox groupBox2;
+        private DataGridViewTextBoxColumn ID;
+        private DataGridViewTextBoxColumn Histórico;
     }
 }

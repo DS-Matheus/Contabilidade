@@ -23,6 +23,8 @@ namespace Contabilidade.Forms.Lancamentos
             this.con = conexaoBanco;
 
             atualizarDataGrid();
+
+            dgvHistoricos.Columns["ID"].Visible = false;
         }
 
         private void atualizarDataGrid()

@@ -32,9 +32,6 @@
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             dgvUsuarios = new DataGridView();
-            ID = new DataGridViewTextBoxColumn();
-            Usuário = new DataGridViewTextBoxColumn();
-            Senha = new DataGridViewTextBoxColumn();
             btnCriar = new Button();
             btnExcluir = new Button();
             btnEditar = new Button();
@@ -42,6 +39,9 @@
             txtFiltrar = new TextBox();
             btnImprimir = new Button();
             groupBox1 = new GroupBox();
+            ID = new DataGridViewTextBoxColumn();
+            Usuário = new DataGridViewTextBoxColumn();
+            Senha = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgvUsuarios).BeginInit();
             groupBox1.SuspendLayout();
             SuspendLayout();
@@ -55,7 +55,7 @@
             dgvUsuarios.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = SystemColors.Control;
-            dataGridViewCellStyle1.Font = new Font("Lucida Sans", 10.5F);
+            dataGridViewCellStyle1.Font = new Font("Lucida Sans", 10.5F, FontStyle.Bold);
             dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
             dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
@@ -78,33 +78,6 @@
             dgvUsuarios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvUsuarios.Size = new Size(856, 385);
             dgvUsuarios.TabIndex = 0;
-            // 
-            // ID
-            // 
-            ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            ID.DataPropertyName = "id";
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            ID.DefaultCellStyle = dataGridViewCellStyle2;
-            ID.HeaderText = "ID";
-            ID.Name = "ID";
-            ID.ReadOnly = true;
-            ID.Visible = false;
-            // 
-            // Usuário
-            // 
-            Usuário.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            Usuário.DataPropertyName = "nome";
-            Usuário.HeaderText = "Usuário";
-            Usuário.Name = "Usuário";
-            Usuário.ReadOnly = true;
-            // 
-            // Senha
-            // 
-            Senha.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            Senha.DataPropertyName = "senha";
-            Senha.HeaderText = "Senha";
-            Senha.Name = "Senha";
-            Senha.ReadOnly = true;
             // 
             // btnCriar
             // 
@@ -180,13 +153,40 @@
             groupBox1.Anchor = AnchorStyles.Bottom;
             groupBox1.Controls.Add(cbbFiltrar);
             groupBox1.Controls.Add(txtFiltrar);
-            groupBox1.Font = new Font("Lucida Sans", 11.5F);
+            groupBox1.Font = new Font("Lucida Sans", 10.5F, FontStyle.Bold);
             groupBox1.Location = new Point(524, 403);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(344, 85);
             groupBox1.TabIndex = 13;
             groupBox1.TabStop = false;
             groupBox1.Text = "Filtrar por";
+            // 
+            // ID
+            // 
+            ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            ID.DataPropertyName = "id";
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            ID.DefaultCellStyle = dataGridViewCellStyle2;
+            ID.HeaderText = "ID";
+            ID.Name = "ID";
+            ID.ReadOnly = true;
+            ID.Visible = false;
+            // 
+            // Usuário
+            // 
+            Usuário.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Usuário.DataPropertyName = "nome";
+            Usuário.HeaderText = "Usuário";
+            Usuário.Name = "Usuário";
+            Usuário.ReadOnly = true;
+            // 
+            // Senha
+            // 
+            Senha.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Senha.DataPropertyName = "senha";
+            Senha.HeaderText = "Senha";
+            Senha.Name = "Senha";
+            Senha.ReadOnly = true;
             // 
             // frmUsuarios
             // 

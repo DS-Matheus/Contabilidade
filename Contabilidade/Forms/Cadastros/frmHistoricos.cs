@@ -24,6 +24,8 @@ namespace Contabilidade.Forms.Cadastros
             con = conexaoBanco;
 
             atualizarDataGrid();
+
+            dgvHistoricos.Columns["ID"].Visible = false;
         }
 
         private void atualizarDataGrid()

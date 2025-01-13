@@ -150,7 +150,7 @@
             // 
             // ID
             // 
-            ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             ID.DataPropertyName = "id";
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
             ID.DefaultCellStyle = dataGridViewCellStyle2;
@@ -161,6 +161,7 @@
             // 
             // Histórico
             // 
+            Histórico.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             Histórico.DataPropertyName = "historico";
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
             Histórico.DefaultCellStyle = dataGridViewCellStyle3;

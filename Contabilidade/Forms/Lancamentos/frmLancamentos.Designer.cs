@@ -44,6 +44,7 @@
             btnExcluir = new Button();
             btnCriar = new Button();
             dgvLancamentos = new DataGridView();
+            btnCalcular = new Button();
             ID = new DataGridViewTextBoxColumn();
             Data = new DataGridViewTextBoxColumn();
             Conta = new DataGridViewTextBoxColumn();
@@ -51,7 +52,6 @@
             Valor = new DataGridViewTextBoxColumn();
             ID_Historico = new DataGridViewTextBoxColumn();
             Histórico = new DataGridViewTextBoxColumn();
-            btnCalcular = new Button();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudValor2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudValor1).BeginInit();
@@ -243,60 +243,6 @@
             dgvLancamentos.Size = new Size(856, 390);
             dgvLancamentos.TabIndex = 20;
             // 
-            // ID
-            // 
-            ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            ID.DataPropertyName = "id";
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            ID.DefaultCellStyle = dataGridViewCellStyle2;
-            ID.HeaderText = "ID";
-            ID.Name = "ID";
-            ID.ReadOnly = true;
-            ID.Visible = false;
-            // 
-            // Data
-            // 
-            Data.DataPropertyName = "data";
-            Data.HeaderText = "Data";
-            Data.Name = "Data";
-            Data.ReadOnly = true;
-            // 
-            // Conta
-            // 
-            Conta.DataPropertyName = "conta";
-            Conta.HeaderText = "Conta";
-            Conta.Name = "Conta";
-            Conta.ReadOnly = true;
-            // 
-            // Descrição
-            // 
-            Descrição.DataPropertyName = "descricao";
-            Descrição.HeaderText = "Descrição";
-            Descrição.Name = "Descrição";
-            Descrição.ReadOnly = true;
-            // 
-            // Valor
-            // 
-            Valor.DataPropertyName = "valor";
-            Valor.HeaderText = "Valor";
-            Valor.Name = "Valor";
-            Valor.ReadOnly = true;
-            // 
-            // ID_Historico
-            // 
-            ID_Historico.DataPropertyName = "id_historico";
-            ID_Historico.HeaderText = "ID_Historico";
-            ID_Historico.Name = "ID_Historico";
-            ID_Historico.ReadOnly = true;
-            ID_Historico.Visible = false;
-            // 
-            // Histórico
-            // 
-            Histórico.DataPropertyName = "historico";
-            Histórico.HeaderText = "Histórico";
-            Histórico.Name = "Histórico";
-            Histórico.ReadOnly = true;
-            // 
             // btnCalcular
             // 
             btnCalcular.Anchor = AnchorStyles.Bottom;
@@ -308,6 +254,68 @@
             btnCalcular.Text = "Calcular";
             btnCalcular.UseVisualStyleBackColor = true;
             btnCalcular.Click += btnCalcular_Click;
+            // 
+            // ID
+            // 
+            ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            ID.DataPropertyName = "id";
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            ID.DefaultCellStyle = dataGridViewCellStyle2;
+            ID.HeaderText = "ID";
+            ID.Name = "ID";
+            ID.ReadOnly = true;
+            ID.Visible = false;
+            // 
+            // Data
+            // 
+            Data.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            Data.DataPropertyName = "data";
+            Data.HeaderText = "Data";
+            Data.Name = "Data";
+            Data.ReadOnly = true;
+            Data.Width = 66;
+            // 
+            // Conta
+            // 
+            Conta.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            Conta.DataPropertyName = "conta";
+            Conta.HeaderText = "Conta";
+            Conta.Name = "Conta";
+            Conta.ReadOnly = true;
+            Conta.Width = 76;
+            // 
+            // Descrição
+            // 
+            Descrição.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Descrição.DataPropertyName = "descricao";
+            Descrição.HeaderText = "Descrição";
+            Descrição.Name = "Descrição";
+            Descrição.ReadOnly = true;
+            // 
+            // Valor
+            // 
+            Valor.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            Valor.DataPropertyName = "valor";
+            Valor.HeaderText = "Valor";
+            Valor.Name = "Valor";
+            Valor.ReadOnly = true;
+            Valor.Width = 69;
+            // 
+            // ID_Historico
+            // 
+            ID_Historico.DataPropertyName = "id_historico";
+            ID_Historico.HeaderText = "ID_Historico";
+            ID_Historico.Name = "ID_Historico";
+            ID_Historico.ReadOnly = true;
+            ID_Historico.Visible = false;
+            // 
+            // Histórico
+            // 
+            Histórico.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Histórico.DataPropertyName = "historico";
+            Histórico.HeaderText = "Histórico";
+            Histórico.Name = "Histórico";
+            Histórico.ReadOnly = true;
             // 
             // frmLancamentos
             // 
@@ -341,6 +349,12 @@
         private DataGridView dgvLancamentos;
         private ComboBox cbbFiltrar;
         private Button btnCalcular;
+        private ComboBox cbbFiltrarValores;
+        private ComboBox cbbFiltrarDatas;
+        private DateTimePicker dtpData2;
+        private DateTimePicker dtpData1;
+        private NumericUpDown nudValor1;
+        private NumericUpDown nudValor2;
         private DataGridViewTextBoxColumn ID;
         private DataGridViewTextBoxColumn Data;
         private DataGridViewTextBoxColumn Conta;
@@ -348,11 +362,5 @@
         private DataGridViewTextBoxColumn Valor;
         private DataGridViewTextBoxColumn ID_Historico;
         private DataGridViewTextBoxColumn Histórico;
-        private ComboBox cbbFiltrarValores;
-        private ComboBox cbbFiltrarDatas;
-        private DateTimePicker dtpData2;
-        private DateTimePicker dtpData1;
-        private NumericUpDown nudValor1;
-        private NumericUpDown nudValor2;
     }
 }

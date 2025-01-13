@@ -260,7 +260,7 @@
             label5.Name = "label5";
             label5.Size = new Size(83, 16);
             label5.TabIndex = 4;
-            label5.Text = "Versão: 1.0";
+            label5.Text = "Versão: 1.1";
             // 
             // label3
             // 
