@@ -1,6 +1,6 @@
 ﻿namespace Contabilidade.Forms.Mensagens
 {
-    partial class frmMensagemTripla
+    partial class frmCustomMessage
     {
         /// <summary>
         /// Required designer variable.
@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCustomMessage));
             pnlBarraTitulo = new Panel();
             btnMinimizar = new Button();
             lblTitulo = new Label();
@@ -37,10 +38,18 @@
             button2 = new Button();
             button1 = new Button();
             panel1 = new Panel();
-            txtMensagem = new TextBox();
+            imgAviso = new PictureBox();
+            imgInfo = new PictureBox();
+            imgSucesso = new PictureBox();
+            imgErro = new PictureBox();
+            lblMensagem = new Label();
             pnlBarraTitulo.SuspendLayout();
             panel2.SuspendLayout();
             panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)imgAviso).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)imgInfo).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)imgSucesso).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)imgErro).BeginInit();
             SuspendLayout();
             // 
             // pnlBarraTitulo
@@ -102,7 +111,7 @@
             // 
             // panel2
             // 
-            panel2.BorderStyle = BorderStyle.FixedSingle;
+            panel2.BackColor = SystemColors.ButtonFace;
             panel2.Controls.Add(button3);
             panel2.Controls.Add(button2);
             panel2.Controls.Add(button1);
@@ -115,59 +124,109 @@
             // button3
             // 
             button3.Anchor = AnchorStyles.None;
-            button3.Location = new Point(319, 4);
+            button3.Location = new Point(320, 5);
             button3.Name = "button3";
             button3.Size = new Size(75, 30);
             button3.TabIndex = 2;
             button3.Text = "Cancelar";
             button3.UseVisualStyleBackColor = true;
+            button3.Visible = false;
             button3.Click += button3_Click;
             // 
             // button2
             // 
             button2.Anchor = AnchorStyles.None;
-            button2.Location = new Point(238, 4);
+            button2.Location = new Point(239, 5);
             button2.Name = "button2";
             button2.Size = new Size(75, 30);
             button2.TabIndex = 1;
             button2.Text = "Não";
             button2.UseVisualStyleBackColor = true;
+            button2.Visible = false;
             button2.Click += button2_Click;
             // 
             // button1
             // 
             button1.Anchor = AnchorStyles.None;
-            button1.Location = new Point(157, 4);
+            button1.Location = new Point(158, 5);
             button1.Name = "button1";
             button1.Size = new Size(75, 30);
             button1.TabIndex = 0;
             button1.Text = "Sim";
             button1.UseVisualStyleBackColor = true;
+            button1.Visible = false;
             button1.Click += button1_Click;
             // 
             // panel1
             // 
-            panel1.Controls.Add(txtMensagem);
+            panel1.BackColor = SystemColors.ControlLightLight;
+            panel1.Controls.Add(lblMensagem);
+            panel1.Controls.Add(imgAviso);
+            panel1.Controls.Add(imgInfo);
+            panel1.Controls.Add(imgSucesso);
+            panel1.Controls.Add(imgErro);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 30);
             panel1.Name = "panel1";
             panel1.Size = new Size(553, 152);
             panel1.TabIndex = 8;
             // 
-            // txtMensagem
+            // imgAviso
             // 
-            txtMensagem.BackColor = SystemColors.Control;
-            txtMensagem.BorderStyle = BorderStyle.None;
-            txtMensagem.Enabled = false;
-            txtMensagem.Location = new Point(12, 6);
-            txtMensagem.Multiline = true;
-            txtMensagem.Name = "txtMensagem";
-            txtMensagem.ReadOnly = true;
-            txtMensagem.Size = new Size(529, 100);
-            txtMensagem.TabIndex = 0;
-            txtMensagem.Text = "Mensagem do textbox";
+            imgAviso.Image = (Image)resources.GetObject("imgAviso.Image");
+            imgAviso.Location = new Point(12, 31);
+            imgAviso.Name = "imgAviso";
+            imgAviso.Size = new Size(50, 50);
+            imgAviso.SizeMode = PictureBoxSizeMode.Zoom;
+            imgAviso.TabIndex = 6;
+            imgAviso.TabStop = false;
+            imgAviso.Visible = false;
             // 
-            // frmMensagemTripla
+            // imgInfo
+            // 
+            imgInfo.Image = (Image)resources.GetObject("imgInfo.Image");
+            imgInfo.Location = new Point(12, 31);
+            imgInfo.Name = "imgInfo";
+            imgInfo.Size = new Size(50, 50);
+            imgInfo.SizeMode = PictureBoxSizeMode.Zoom;
+            imgInfo.TabIndex = 5;
+            imgInfo.TabStop = false;
+            imgInfo.Visible = false;
+            // 
+            // imgSucesso
+            // 
+            imgSucesso.Image = (Image)resources.GetObject("imgSucesso.Image");
+            imgSucesso.Location = new Point(12, 31);
+            imgSucesso.Name = "imgSucesso";
+            imgSucesso.Size = new Size(50, 50);
+            imgSucesso.SizeMode = PictureBoxSizeMode.Zoom;
+            imgSucesso.TabIndex = 4;
+            imgSucesso.TabStop = false;
+            imgSucesso.Visible = false;
+            // 
+            // imgErro
+            // 
+            imgErro.Image = (Image)resources.GetObject("imgErro.Image");
+            imgErro.Location = new Point(12, 31);
+            imgErro.Name = "imgErro";
+            imgErro.Size = new Size(50, 50);
+            imgErro.SizeMode = PictureBoxSizeMode.Zoom;
+            imgErro.TabIndex = 3;
+            imgErro.TabStop = false;
+            imgErro.Visible = false;
+            // 
+            // lblMensagem
+            // 
+            lblMensagem.AutoSize = true;
+            lblMensagem.Location = new Point(77, 13);
+            lblMensagem.MaximumSize = new Size(462, 87);
+            lblMensagem.Name = "lblMensagem";
+            lblMensagem.Size = new Size(158, 16);
+            lblMensagem.TabIndex = 7;
+            lblMensagem.Text = "Mensagem de exemplo";
+            lblMensagem.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // frmCustomMessage
             // 
             AutoScaleDimensions = new SizeF(8F, 16F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -177,7 +236,7 @@
             Controls.Add(pnlBarraTitulo);
             Font = new Font("Lucida Sans", 10.5F);
             FormBorderStyle = FormBorderStyle.None;
-            Name = "frmMensagemTripla";
+            Name = "frmCustomMessage";
             StartPosition = FormStartPosition.CenterParent;
             Text = "frmMensagemTripla";
             pnlBarraTitulo.ResumeLayout(false);
@@ -185,6 +244,10 @@
             panel2.ResumeLayout(false);
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)imgAviso).EndInit();
+            ((System.ComponentModel.ISupportInitialize)imgInfo).EndInit();
+            ((System.ComponentModel.ISupportInitialize)imgSucesso).EndInit();
+            ((System.ComponentModel.ISupportInitialize)imgErro).EndInit();
             ResumeLayout(false);
         }
 
@@ -195,10 +258,14 @@
         private Label lblTitulo;
         private Button btnFechar;
         private Panel panel2;
-        private Button button3;
         private Button button2;
         private Button button1;
         private Panel panel1;
-        private TextBox txtMensagem;
+        private Button button3;
+        private PictureBox imgErro;
+        private PictureBox imgSucesso;
+        private PictureBox imgAviso;
+        private PictureBox imgInfo;
+        private Label lblMensagem;
     }
 }
