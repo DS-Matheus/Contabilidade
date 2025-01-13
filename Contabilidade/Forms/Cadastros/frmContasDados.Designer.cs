@@ -122,7 +122,7 @@
             cbbNivel.Font = new Font("Lucida Sans", 10.5F);
             cbbNivel.FormattingEnabled = true;
             cbbNivel.Items.AddRange(new object[] { "Analítico", "Sintético" });
-            cbbNivel.Location = new Point(234, 43);
+            cbbNivel.Location = new Point(234, 37);
             cbbNivel.Name = "cbbNivel";
             cbbNivel.Size = new Size(171, 24);
             cbbNivel.TabIndex = 6;
@@ -131,7 +131,7 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Lucida Sans", 10.5F);
-            label3.Location = new Point(234, 25);
+            label3.Location = new Point(234, 19);
             label3.Name = "label3";
             label3.Size = new Size(40, 16);
             label3.TabIndex = 5;
@@ -140,7 +140,7 @@
             // txtDescricao
             // 
             txtDescricao.Font = new Font("Lucida Sans", 10.5F);
-            txtDescricao.Location = new Point(25, 93);
+            txtDescricao.Location = new Point(25, 87);
             txtDescricao.MaxLength = 100;
             txtDescricao.Multiline = true;
             txtDescricao.Name = "txtDescricao";
@@ -152,7 +152,7 @@
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Lucida Sans", 10.5F);
-            label2.Location = new Point(25, 75);
+            label2.Location = new Point(25, 69);
             label2.Name = "label2";
             label2.Size = new Size(73, 16);
             label2.TabIndex = 3;
@@ -162,7 +162,7 @@
             // 
             txtConta.BackColor = Color.White;
             txtConta.Font = new Font("Lucida Sans", 10.5F);
-            txtConta.Location = new Point(25, 43);
+            txtConta.Location = new Point(25, 37);
             txtConta.Margin = new Padding(25, 3, 3, 3);
             txtConta.MaxLength = 15;
             txtConta.Name = "txtConta";
@@ -175,7 +175,7 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Lucida Sans", 10.5F);
-            label1.Location = new Point(25, 25);
+            label1.Location = new Point(25, 19);
             label1.Name = "label1";
             label1.Size = new Size(47, 16);
             label1.TabIndex = 1;
@@ -184,7 +184,7 @@
             // btnSalvar
             // 
             btnSalvar.Font = new Font("Lucida Sans", 10.5F);
-            btnSalvar.Location = new Point(25, 152);
+            btnSalvar.Location = new Point(25, 146);
             btnSalvar.Margin = new Padding(3, 10, 3, 3);
             btnSalvar.Name = "btnSalvar";
             btnSalvar.Size = new Size(380, 32);

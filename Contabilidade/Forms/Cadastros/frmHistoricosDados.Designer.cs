@@ -111,7 +111,7 @@
             // txtHistorico
             // 
             txtHistorico.Font = new Font("Lucida Sans", 10.5F);
-            txtHistorico.Location = new Point(32, 39);
+            txtHistorico.Location = new Point(31, 34);
             txtHistorico.MaxLength = 100;
             txtHistorico.Multiline = true;
             txtHistorico.Name = "txtHistorico";
@@ -123,7 +123,7 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Lucida Sans", 10.5F);
-            label1.Location = new Point(32, 21);
+            label1.Location = new Point(31, 16);
             label1.Name = "label1";
             label1.Size = new Size(66, 16);
             label1.TabIndex = 1;
@@ -132,7 +132,7 @@
             // btnSalvar
             // 
             btnSalvar.Font = new Font("Lucida Sans", 10.5F);
-            btnSalvar.Location = new Point(32, 91);
+            btnSalvar.Location = new Point(31, 86);
             btnSalvar.Margin = new Padding(3, 10, 3, 3);
             btnSalvar.Name = "btnSalvar";
             btnSalvar.Size = new Size(336, 32);

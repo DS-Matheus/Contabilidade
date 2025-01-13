@@ -115,7 +115,7 @@
             // txtSubtitulo
             // 
             txtSubtitulo.Font = new Font("Lucida Sans", 10F);
-            txtSubtitulo.Location = new Point(32, 113);
+            txtSubtitulo.Location = new Point(31, 109);
             txtSubtitulo.MaxLength = 100;
             txtSubtitulo.Multiline = true;
             txtSubtitulo.Name = "txtSubtitulo";
@@ -126,7 +126,7 @@
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Lucida Sans", 10F);
-            label2.Location = new Point(32, 95);
+            label2.Location = new Point(31, 91);
             label2.Name = "label2";
             label2.Size = new Size(65, 16);
             label2.TabIndex = 5;
@@ -135,7 +135,7 @@
             // txtTitulo
             // 
             txtTitulo.Font = new Font("Lucida Sans", 10F);
-            txtTitulo.Location = new Point(32, 39);
+            txtTitulo.Location = new Point(31, 35);
             txtTitulo.MaxLength = 100;
             txtTitulo.Multiline = true;
             txtTitulo.Name = "txtTitulo";
@@ -146,7 +146,7 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Lucida Sans", 10F);
-            label1.Location = new Point(32, 21);
+            label1.Location = new Point(31, 17);
             label1.Name = "label1";
             label1.Size = new Size(44, 16);
             label1.TabIndex = 1;
@@ -155,7 +155,7 @@
             // btnSalvar
             // 
             btnSalvar.Font = new Font("Lucida Sans", 10F);
-            btnSalvar.Location = new Point(32, 166);
+            btnSalvar.Location = new Point(31, 162);
             btnSalvar.Margin = new Padding(3, 10, 3, 3);
             btnSalvar.Name = "btnSalvar";
             btnSalvar.Size = new Size(336, 32);

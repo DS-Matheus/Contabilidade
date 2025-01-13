@@ -58,7 +58,7 @@
             dgvContas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = SystemColors.Control;
-            dataGridViewCellStyle1.Font = new Font("Lucida Sans", 10.5F);
+            dataGridViewCellStyle1.Font = new Font("Lucida Sans", 10.5F, FontStyle.Bold);
             dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
             dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
@@ -91,7 +91,7 @@
             Conta.HeaderText = "Conta";
             Conta.Name = "Conta";
             Conta.ReadOnly = true;
-            Conta.Width = 72;
+            Conta.Width = 76;
             // 
             // Nível
             // 
@@ -102,7 +102,7 @@
             Nível.HeaderText = "Nível";
             Nível.Name = "Nível";
             Nível.ReadOnly = true;
-            Nível.Width = 65;
+            Nível.Width = 68;
             // 
             // Descrição
             // 
@@ -120,7 +120,7 @@
             groupBox1.Controls.Add(cbbNivel);
             groupBox1.Controls.Add(cbbFiltrar);
             groupBox1.Controls.Add(txtFiltrar);
-            groupBox1.Font = new Font("Lucida Sans", 11.25F);
+            groupBox1.Font = new Font("Lucida Sans", 10.5F, FontStyle.Bold);
             groupBox1.Location = new Point(524, 403);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(344, 85);
@@ -157,7 +157,7 @@
             // 
             txtFiltrar.Location = new Point(6, 51);
             txtFiltrar.Name = "txtFiltrar";
-            txtFiltrar.Size = new Size(332, 25);
+            txtFiltrar.Size = new Size(332, 24);
             txtFiltrar.TabIndex = 10;
             txtFiltrar.TextChanged += txtFiltrar_TextChanged;
             // 

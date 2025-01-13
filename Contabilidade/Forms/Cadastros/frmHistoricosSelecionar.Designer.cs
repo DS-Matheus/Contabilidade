@@ -125,8 +125,8 @@
             // 
             groupBox2.Controls.Add(txtHistorico);
             groupBox2.Controls.Add(btnCriar);
-            groupBox2.Font = new Font("Lucida Sans", 11.5F);
-            groupBox2.Location = new Point(31, 303);
+            groupBox2.Font = new Font("Lucida Sans", 10.5F, FontStyle.Bold);
+            groupBox2.Location = new Point(31, 304);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(659, 74);
             groupBox2.TabIndex = 21;
@@ -158,8 +158,8 @@
             // groupBox1
             // 
             groupBox1.Controls.Add(txtFiltrar);
-            groupBox1.Font = new Font("Lucida Sans", 11.5F);
-            groupBox1.Location = new Point(31, 242);
+            groupBox1.Font = new Font("Lucida Sans", 10.5F, FontStyle.Bold);
+            groupBox1.Location = new Point(31, 243);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(659, 55);
             groupBox1.TabIndex = 20;
@@ -184,7 +184,7 @@
             dgvHistoricos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = SystemColors.Control;
-            dataGridViewCellStyle1.Font = new Font("Lucida Sans", 10.5F);
+            dataGridViewCellStyle1.Font = new Font("Lucida Sans", 10.5F, FontStyle.Bold);
             dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
             dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
@@ -200,7 +200,7 @@
             dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
             dataGridViewCellStyle4.WrapMode = DataGridViewTriState.False;
             dgvHistoricos.DefaultCellStyle = dataGridViewCellStyle4;
-            dgvHistoricos.Location = new Point(31, 22);
+            dgvHistoricos.Location = new Point(31, 23);
             dgvHistoricos.MultiSelect = false;
             dgvHistoricos.Name = "dgvHistoricos";
             dgvHistoricos.ReadOnly = true;

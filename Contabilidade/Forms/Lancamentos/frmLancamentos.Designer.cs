@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             groupBox1 = new GroupBox();
             dtpData2 = new DateTimePicker();
@@ -58,6 +60,7 @@
             // 
             // groupBox1
             // 
+            groupBox1.Anchor = AnchorStyles.Bottom;
             groupBox1.Controls.Add(dtpData2);
             groupBox1.Controls.Add(cbbFiltrarValores);
             groupBox1.Controls.Add(nudValor2);
@@ -66,6 +69,7 @@
             groupBox1.Controls.Add(dtpData1);
             groupBox1.Controls.Add(nudValor1);
             groupBox1.Controls.Add(txtFiltrar);
+            groupBox1.Font = new Font("Lucida Sans", 10.5F, FontStyle.Bold);
             groupBox1.Location = new Point(524, 409);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(344, 79);
@@ -75,10 +79,11 @@
             // 
             // dtpData2
             // 
+            dtpData2.Font = new Font("Lucida Sans", 10.5F);
             dtpData2.Format = DateTimePickerFormat.Short;
             dtpData2.Location = new Point(176, 49);
             dtpData2.Name = "dtpData2";
-            dtpData2.Size = new Size(162, 23);
+            dtpData2.Size = new Size(162, 24);
             dtpData2.TabIndex = 16;
             dtpData2.Visible = false;
             dtpData2.ValueChanged += dtpData2_ValueChanged;
@@ -86,11 +91,12 @@
             // cbbFiltrarValores
             // 
             cbbFiltrarValores.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbbFiltrarValores.Font = new Font("Lucida Sans", 10.5F);
             cbbFiltrarValores.FormattingEnabled = true;
             cbbFiltrarValores.Items.AddRange(new object[] { "Sem filtro", "Somente débitos", "Somente créditos", "Valores iguais a", "Valores menores que", "Valores maiores que", "Valores entre" });
             cbbFiltrarValores.Location = new Point(176, 20);
             cbbFiltrarValores.Name = "cbbFiltrarValores";
-            cbbFiltrarValores.Size = new Size(162, 23);
+            cbbFiltrarValores.Size = new Size(162, 24);
             cbbFiltrarValores.TabIndex = 13;
             cbbFiltrarValores.Visible = false;
             cbbFiltrarValores.SelectedIndexChanged += cbbFiltrarValores_SelectedIndexChanged;
@@ -98,11 +104,12 @@
             // nudValor2
             // 
             nudValor2.DecimalPlaces = 2;
+            nudValor2.Font = new Font("Lucida Sans", 10.5F);
             nudValor2.Location = new Point(176, 49);
             nudValor2.Maximum = new decimal(new int[] { 1410065407, 2, 0, 131072 });
             nudValor2.Minimum = new decimal(new int[] { 999999999, 0, 0, -2147352576 });
             nudValor2.Name = "nudValor2";
-            nudValor2.Size = new Size(162, 23);
+            nudValor2.Size = new Size(162, 24);
             nudValor2.TabIndex = 18;
             nudValor2.ThousandsSeparator = true;
             nudValor2.Visible = false;
@@ -111,11 +118,12 @@
             // cbbFiltrarDatas
             // 
             cbbFiltrarDatas.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbbFiltrarDatas.Font = new Font("Lucida Sans", 10.5F);
             cbbFiltrarDatas.FormattingEnabled = true;
             cbbFiltrarDatas.Items.AddRange(new object[] { "Sem filtro", "Data igual a", "Datas anteriores a", "Datas posteriores a", "Data entre" });
             cbbFiltrarDatas.Location = new Point(176, 20);
             cbbFiltrarDatas.Name = "cbbFiltrarDatas";
-            cbbFiltrarDatas.Size = new Size(162, 23);
+            cbbFiltrarDatas.Size = new Size(162, 24);
             cbbFiltrarDatas.TabIndex = 12;
             cbbFiltrarDatas.Visible = false;
             cbbFiltrarDatas.SelectedIndexChanged += cbbFiltrarDatas_SelectedIndexChanged;
@@ -123,20 +131,22 @@
             // cbbFiltrar
             // 
             cbbFiltrar.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbbFiltrar.Font = new Font("Lucida Sans", 10.5F);
             cbbFiltrar.FormattingEnabled = true;
             cbbFiltrar.Items.AddRange(new object[] { "Sem filtro", "Conta", "Descrição", "Histórico", "Data", "Valor" });
             cbbFiltrar.Location = new Point(6, 20);
             cbbFiltrar.Name = "cbbFiltrar";
-            cbbFiltrar.Size = new Size(332, 23);
+            cbbFiltrar.Size = new Size(332, 24);
             cbbFiltrar.TabIndex = 11;
             cbbFiltrar.SelectedIndexChanged += cbbFiltrar_SelectedIndexChanged;
             // 
             // dtpData1
             // 
+            dtpData1.Font = new Font("Lucida Sans", 10.5F);
             dtpData1.Format = DateTimePickerFormat.Short;
             dtpData1.Location = new Point(6, 49);
             dtpData1.Name = "dtpData1";
-            dtpData1.Size = new Size(332, 23);
+            dtpData1.Size = new Size(332, 24);
             dtpData1.TabIndex = 15;
             dtpData1.Visible = false;
             dtpData1.ValueChanged += dtpData1_ValueChanged;
@@ -144,11 +154,12 @@
             // nudValor1
             // 
             nudValor1.DecimalPlaces = 2;
+            nudValor1.Font = new Font("Lucida Sans", 10.5F);
             nudValor1.Location = new Point(6, 49);
             nudValor1.Maximum = new decimal(new int[] { 1410065407, 2, 0, 131072 });
             nudValor1.Minimum = new decimal(new int[] { 999999999, 0, 0, -2147352576 });
             nudValor1.Name = "nudValor1";
-            nudValor1.Size = new Size(332, 23);
+            nudValor1.Size = new Size(332, 24);
             nudValor1.TabIndex = 17;
             nudValor1.ThousandsSeparator = true;
             nudValor1.Visible = false;
@@ -156,14 +167,17 @@
             // 
             // txtFiltrar
             // 
+            txtFiltrar.Font = new Font("Lucida Sans", 10.5F);
             txtFiltrar.Location = new Point(6, 49);
             txtFiltrar.Name = "txtFiltrar";
-            txtFiltrar.Size = new Size(332, 23);
+            txtFiltrar.Size = new Size(332, 24);
             txtFiltrar.TabIndex = 10;
             txtFiltrar.TextChanged += txtFiltrar_TextChanged;
             // 
             // btnEditar
             // 
+            btnEditar.Anchor = AnchorStyles.Bottom;
+            btnEditar.Font = new Font("Lucida Sans", 10.5F);
             btnEditar.Location = new Point(12, 453);
             btnEditar.Name = "btnEditar";
             btnEditar.Size = new Size(250, 35);
@@ -174,6 +188,8 @@
             // 
             // btnExcluir
             // 
+            btnExcluir.Anchor = AnchorStyles.Bottom;
+            btnExcluir.Font = new Font("Lucida Sans", 10.5F);
             btnExcluir.Location = new Point(268, 416);
             btnExcluir.Name = "btnExcluir";
             btnExcluir.Size = new Size(250, 35);
@@ -184,6 +200,8 @@
             // 
             // btnCriar
             // 
+            btnCriar.Anchor = AnchorStyles.Bottom;
+            btnCriar.Font = new Font("Lucida Sans", 10.5F);
             btnCriar.Location = new Point(12, 416);
             btnCriar.Name = "btnCriar";
             btnCriar.Size = new Size(250, 35);
@@ -197,9 +215,26 @@
             dgvLancamentos.AllowUserToAddRows = false;
             dgvLancamentos.AllowUserToDeleteRows = false;
             dgvLancamentos.AllowUserToOrderColumns = true;
+            dgvLancamentos.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvLancamentos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.Font = new Font("Lucida Sans", 10.5F, FontStyle.Bold);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dgvLancamentos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgvLancamentos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvLancamentos.Columns.AddRange(new DataGridViewColumn[] { ID, Data, Conta, Descrição, Valor, ID_Historico, Histórico });
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = SystemColors.Window;
+            dataGridViewCellStyle3.Font = new Font("Lucida Sans", 10.5F);
+            dataGridViewCellStyle3.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
+            dgvLancamentos.DefaultCellStyle = dataGridViewCellStyle3;
             dgvLancamentos.Location = new Point(12, 12);
             dgvLancamentos.MultiSelect = false;
             dgvLancamentos.Name = "dgvLancamentos";
@@ -264,6 +299,8 @@
             // 
             // btnCalcular
             // 
+            btnCalcular.Anchor = AnchorStyles.Bottom;
+            btnCalcular.Font = new Font("Lucida Sans", 10.5F);
             btnCalcular.Location = new Point(268, 453);
             btnCalcular.Name = "btnCalcular";
             btnCalcular.Size = new Size(250, 35);

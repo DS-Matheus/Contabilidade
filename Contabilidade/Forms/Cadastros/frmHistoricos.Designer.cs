@@ -49,10 +49,10 @@
             // 
             groupBox1.Anchor = AnchorStyles.Bottom;
             groupBox1.Controls.Add(txtFiltrar);
-            groupBox1.Font = new Font("Lucida Sans", 11.5F);
+            groupBox1.Font = new Font("Lucida Sans", 10.5F, FontStyle.Bold);
             groupBox1.Location = new Point(524, 421);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(344, 66);
+            groupBox1.Size = new Size(344, 71);
             groupBox1.TabIndex = 19;
             groupBox1.TabStop = false;
             groupBox1.Text = "Filtrar por histórico";
@@ -60,7 +60,7 @@
             // txtFiltrar
             // 
             txtFiltrar.Font = new Font("Lucida Sans", 10.5F);
-            txtFiltrar.Location = new Point(6, 25);
+            txtFiltrar.Location = new Point(6, 29);
             txtFiltrar.MaxLength = 100;
             txtFiltrar.Name = "txtFiltrar";
             txtFiltrar.Size = new Size(332, 24);
@@ -124,7 +124,7 @@
             dgvHistoricos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = SystemColors.Control;
-            dataGridViewCellStyle1.Font = new Font("Lucida Sans", 10.5F);
+            dataGridViewCellStyle1.Font = new Font("Lucida Sans", 10.5F, FontStyle.Bold);
             dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
             dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
