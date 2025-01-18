@@ -26,6 +26,8 @@ namespace Contabilidade.Forms.Lancamentos
             this.con = conexaoBanco;
 
             atualizarDataGrid();
+
+            cbbFiltrar.SelectedIndex = 1;
         }
 
         private void atualizarDataGrid()
