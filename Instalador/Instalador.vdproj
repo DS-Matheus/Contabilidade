@@ -124,6 +124,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
     }
@@ -158,7 +166,7 @@
         {
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_17DB1503E9424249BA921AF78EC5E987"
             {
-            "SourcePath" = "8:C:\\Users\\denix\\Desktop\\Fontes\\LSANS.TTF"
+            "SourcePath" = "8:..\\..\\..\\..\\Desktop\\Fontes\\LSANS.TTF"
             "TargetName" = "8:LSANS.TTF"
             "Tag" = "8:"
             "Folder" = "8:_7805DB99EF974F9EA1CD487C666867F0"
@@ -178,7 +186,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_295365C4D0F74EC58CC46DCB6666668B"
             {
-            "SourcePath" = "8:C:\\Users\\denix\\Desktop\\Fontes\\micross.ttf"
+            "SourcePath" = "8:..\\..\\..\\..\\Desktop\\Fontes\\micross.ttf"
             "TargetName" = "8:micross.ttf"
             "Tag" = "8:"
             "Folder" = "8:_7805DB99EF974F9EA1CD487C666867F0"
@@ -198,7 +206,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2C8FF193734F41CB92240423E4E4E90F"
             {
-            "SourcePath" = "8:C:\\Users\\denix\\Desktop\\Fontes\\LSANSDI.TTF"
+            "SourcePath" = "8:..\\..\\..\\..\\Desktop\\Fontes\\LSANSDI.TTF"
             "TargetName" = "8:LSANSDI.TTF"
             "Tag" = "8:"
             "Folder" = "8:_7805DB99EF974F9EA1CD487C666867F0"
@@ -218,7 +226,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4C0F641749AD4645BA1B3E9083F1C73F"
             {
-            "SourcePath" = "8:C:\\Users\\denix\\Downloads\\Icone.ico"
+            "SourcePath" = "8:..\\..\\..\\..\\Downloads\\Icone.ico"
             "TargetName" = "8:Icone.ico"
             "Tag" = "8:"
             "Folder" = "8:_0AAA87B5B614414384BC38060568A8DC"
@@ -238,7 +246,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_86D148146076426D9FD5FF4E39511728"
             {
-            "SourcePath" = "8:C:\\Users\\denix\\Desktop\\Fontes\\LSANSD.TTF"
+            "SourcePath" = "8:..\\..\\..\\..\\Desktop\\Fontes\\LSANSD.TTF"
             "TargetName" = "8:LSANSD.TTF"
             "Tag" = "8:"
             "Folder" = "8:_7805DB99EF974F9EA1CD487C666867F0"
@@ -258,7 +266,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8CC7B856F4574830A7EA3AA52E070FF9"
             {
-            "SourcePath" = "8:C:\\Users\\denix\\Desktop\\Fontes\\LSANSI.TTF"
+            "SourcePath" = "8:..\\..\\..\\..\\Desktop\\Fontes\\LSANSI.TTF"
             "TargetName" = "8:LSANSI.TTF"
             "Tag" = "8:"
             "Folder" = "8:_7805DB99EF974F9EA1CD487C666867F0"
@@ -278,7 +286,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AB85D4A2E3D04B87BBBE8B27594189C0"
             {
-            "SourcePath" = "8:C:\\Users\\denix\\Desktop\\Fontes\\consola.ttf"
+            "SourcePath" = "8:..\\..\\..\\..\\Desktop\\Fontes\\consola.ttf"
             "TargetName" = "8:consola.ttf"
             "Tag" = "8:"
             "Folder" = "8:_7805DB99EF974F9EA1CD487C666867F0"
@@ -298,7 +306,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BA78A4597CCA4D558F152C04E30AC1E0"
             {
-            "SourcePath" = "8:C:\\Users\\denix\\Desktop\\Fontes\\FORTE.TTF"
+            "SourcePath" = "8:..\\..\\..\\..\\Desktop\\Fontes\\FORTE.TTF"
             "TargetName" = "8:FORTE.TTF"
             "Tag" = "8:"
             "Folder" = "8:_7805DB99EF974F9EA1CD487C666867F0"
@@ -383,15 +391,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Sistema de Contabilidade"
-        "ProductCode" = "8:{C94A81D3-AEEF-41D9-87B5-74578C19B65B}"
-        "PackageCode" = "8:{B6A6D1EC-4FBE-4EF7-849C-4C64A2B8E282}"
+        "ProductCode" = "8:{8C97BCBF-1861-446D-9210-29F26CB3E15A}"
+        "PackageCode" = "8:{D801B068-B9EA-473E-8BD0-324F296FEF2A}"
         "UpgradeCode" = "8:{EE8E7E04-C6DC-426F-B971-3E82E63C4759}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.1"
+        "ProductVersion" = "8:1.2"
         "Manufacturer" = "8:DS-Matheus"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
