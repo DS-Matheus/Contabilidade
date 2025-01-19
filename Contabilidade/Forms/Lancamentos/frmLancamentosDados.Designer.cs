@@ -85,11 +85,11 @@
             // lblTitulo
             // 
             lblTitulo.AutoSize = true;
-            lblTitulo.Font = new Font("Lucida Sans", 10F);
+            lblTitulo.Font = new Font("Microsoft Sans Serif", 10F);
             lblTitulo.ForeColor = Color.White;
             lblTitulo.Location = new Point(12, 7);
             lblTitulo.Name = "lblTitulo";
-            lblTitulo.Size = new Size(251, 16);
+            lblTitulo.Size = new Size(242, 17);
             lblTitulo.TabIndex = 1;
             lblTitulo.Text = "Formulário de dados de lançamentos";
             lblTitulo.MouseDown += lblTitulo_MouseDown;
@@ -129,14 +129,14 @@
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 30);
             panel1.Name = "panel1";
-            panel1.Size = new Size(503, 270);
+            panel1.Size = new Size(503, 326);
             panel1.TabIndex = 8;
             // 
             // btnAlterarSinal
             // 
-            btnAlterarSinal.Font = new Font("Lucida Sans", 10.5F);
+            btnAlterarSinal.Font = new Font("Microsoft Sans Serif", 10.5F);
             btnAlterarSinal.Image = (Image)resources.GetObject("btnAlterarSinal.Image");
-            btnAlterarSinal.Location = new Point(384, 38);
+            btnAlterarSinal.Location = new Point(384, 39);
             btnAlterarSinal.Name = "btnAlterarSinal";
             btnAlterarSinal.Size = new Size(25, 25);
             btnAlterarSinal.TabIndex = 17;
@@ -147,8 +147,8 @@
             // 
             txtDescricao.BackColor = Color.White;
             txtDescricao.Enabled = false;
-            txtDescricao.Font = new Font("Lucida Sans", 10.5F);
-            txtDescricao.Location = new Point(25, 87);
+            txtDescricao.Font = new Font("Microsoft Sans Serif", 10.5F);
+            txtDescricao.Location = new Point(25, 88);
             txtDescricao.MaxLength = 100;
             txtDescricao.Multiline = true;
             txtDescricao.Name = "txtDescricao";
@@ -158,11 +158,11 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Font = new Font("Lucida Sans", 10.5F);
-            label5.Location = new Point(25, 69);
+            label5.Font = new Font("Microsoft Sans Serif", 10.5F);
+            label5.Location = new Point(25, 70);
             label5.Margin = new Padding(5);
             label5.Name = "label5";
-            label5.Size = new Size(73, 16);
+            label5.Size = new Size(71, 17);
             label5.TabIndex = 16;
             label5.Text = "Descrição";
             // 
@@ -170,20 +170,20 @@
             // 
             txtHistorico.BackColor = Color.White;
             txtHistorico.Enabled = false;
-            txtHistorico.Font = new Font("Lucida Sans", 10.5F);
-            txtHistorico.Location = new Point(25, 159);
+            txtHistorico.Font = new Font("Microsoft Sans Serif", 10.5F);
+            txtHistorico.Location = new Point(25, 160);
             txtHistorico.Margin = new Padding(5);
-            txtHistorico.MaxLength = 100;
+            txtHistorico.MaxLength = 300;
             txtHistorico.Multiline = true;
             txtHistorico.Name = "txtHistorico";
-            txtHistorico.Size = new Size(410, 40);
+            txtHistorico.Size = new Size(410, 94);
             txtHistorico.TabIndex = 14;
             // 
             // btnSelecionarHistorico
             // 
-            btnSelecionarHistorico.Font = new Font("Lucida Sans", 10.5F);
+            btnSelecionarHistorico.Font = new Font("Microsoft Sans Serif", 10.5F);
             btnSelecionarHistorico.Image = Properties.Resources.Search;
-            btnSelecionarHistorico.Location = new Point(443, 159);
+            btnSelecionarHistorico.Location = new Point(443, 160);
             btnSelecionarHistorico.Name = "btnSelecionarHistorico";
             btnSelecionarHistorico.Size = new Size(35, 40);
             btnSelecionarHistorico.TabIndex = 13;
@@ -192,9 +192,9 @@
             // 
             // btnSelecionarConta
             // 
-            btnSelecionarConta.Font = new Font("Lucida Sans", 10.5F);
+            btnSelecionarConta.Font = new Font("Microsoft Sans Serif", 10.5F);
             btnSelecionarConta.Image = Properties.Resources.Search;
-            btnSelecionarConta.Location = new Point(196, 38);
+            btnSelecionarConta.Location = new Point(196, 39);
             btnSelecionarConta.Name = "btnSelecionarConta";
             btnSelecionarConta.Size = new Size(25, 25);
             btnSelecionarConta.TabIndex = 12;
@@ -203,53 +203,53 @@
             // 
             // dtpData
             // 
-            dtpData.Font = new Font("Lucida Sans", 10.5F);
-            dtpData.Location = new Point(25, 227);
+            dtpData.Font = new Font("Microsoft Sans Serif", 10.5F);
+            dtpData.Location = new Point(25, 282);
             dtpData.Name = "dtpData";
-            dtpData.Size = new Size(342, 24);
+            dtpData.Size = new Size(342, 23);
             dtpData.TabIndex = 9;
             // 
             // nudValor
             // 
             nudValor.DecimalPlaces = 2;
-            nudValor.Font = new Font("Lucida Sans", 10.5F);
-            nudValor.Location = new Point(227, 38);
+            nudValor.Font = new Font("Microsoft Sans Serif", 10.5F);
+            nudValor.Location = new Point(227, 39);
             nudValor.Maximum = new decimal(new int[] { 1410065407, 2, 0, 131072 });
             nudValor.Minimum = new decimal(new int[] { 999999999, 0, 0, -2147352576 });
             nudValor.Name = "nudValor";
-            nudValor.Size = new Size(151, 24);
+            nudValor.Size = new Size(151, 23);
             nudValor.TabIndex = 8;
             nudValor.ThousandsSeparator = true;
             // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Font = new Font("Lucida Sans", 10.5F);
-            label4.Location = new Point(25, 209);
+            label4.Font = new Font("Microsoft Sans Serif", 10.5F);
+            label4.Location = new Point(25, 264);
             label4.Margin = new Padding(5);
             label4.Name = "label4";
-            label4.Size = new Size(38, 16);
+            label4.Size = new Size(38, 17);
             label4.TabIndex = 6;
             label4.Text = "Data";
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Font = new Font("Lucida Sans", 10.5F);
-            label3.Location = new Point(227, 19);
+            label3.Font = new Font("Microsoft Sans Serif", 10.5F);
+            label3.Location = new Point(227, 20);
             label3.Name = "label3";
-            label3.Size = new Size(41, 16);
+            label3.Size = new Size(41, 17);
             label3.TabIndex = 5;
             label3.Text = "Valor";
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Lucida Sans", 10.5F);
-            label2.Location = new Point(25, 141);
+            label2.Font = new Font("Microsoft Sans Serif", 10.5F);
+            label2.Location = new Point(25, 142);
             label2.Margin = new Padding(5);
             label2.Name = "label2";
-            label2.Size = new Size(66, 16);
+            label2.Size = new Size(63, 17);
             label2.TabIndex = 3;
             label2.Text = "Histórico";
             // 
@@ -257,28 +257,28 @@
             // 
             txtConta.BackColor = Color.White;
             txtConta.Enabled = false;
-            txtConta.Font = new Font("Lucida Sans", 10.5F);
-            txtConta.Location = new Point(25, 38);
+            txtConta.Font = new Font("Microsoft Sans Serif", 10.5F);
+            txtConta.Location = new Point(25, 39);
             txtConta.Margin = new Padding(25, 3, 3, 3);
             txtConta.MaxLength = 14;
             txtConta.Name = "txtConta";
-            txtConta.Size = new Size(165, 24);
+            txtConta.Size = new Size(165, 23);
             txtConta.TabIndex = 1;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Lucida Sans", 10.5F);
-            label1.Location = new Point(25, 20);
+            label1.Font = new Font("Microsoft Sans Serif", 10.5F);
+            label1.Location = new Point(25, 21);
             label1.Name = "label1";
-            label1.Size = new Size(47, 16);
+            label1.Size = new Size(45, 17);
             label1.TabIndex = 1;
             label1.Text = "Conta";
             // 
             // btnSalvar
             // 
-            btnSalvar.Font = new Font("Lucida Sans", 10.5F);
-            btnSalvar.Location = new Point(373, 219);
+            btnSalvar.Font = new Font("Microsoft Sans Serif", 10.5F);
+            btnSalvar.Location = new Point(373, 274);
             btnSalvar.Margin = new Padding(3, 10, 3, 3);
             btnSalvar.Name = "btnSalvar";
             btnSalvar.Size = new Size(105, 32);
@@ -291,7 +291,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(503, 300);
+            ClientSize = new Size(503, 356);
             Controls.Add(panel1);
             Controls.Add(pnlBarraTitulo);
             FormBorderStyle = FormBorderStyle.None;

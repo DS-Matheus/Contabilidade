@@ -647,11 +647,14 @@ namespace Contabilidade.Forms.Lancamentos
                     txtFiltrar.MaxLength = 15;
                     break;
                 // Descrição
-                // Histórico
                 case 2:
-                case 3:
                     txtFiltrar.Visible = true;
                     txtFiltrar.MaxLength = 100;
+                    break;
+                // Histórico
+                case 3:
+                    txtFiltrar.Visible = true;
+                    txtFiltrar.MaxLength = 300;
                     break;
                 // Data
                 case 4:

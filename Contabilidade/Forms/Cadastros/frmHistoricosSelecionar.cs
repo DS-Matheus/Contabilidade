@@ -158,5 +158,37 @@ namespace Contabilidade.Forms.Cadastros
             dv.RowFilter = $"historico LIKE '%{txtFiltrar.Text}%'";
             dgvHistoricos.DataSource = dv;
         }
+
+        private void dgvHistoricos_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                DataGridViewRow row = dgvHistoricos.Rows[e.RowIndex];
+
+                txtHistorico.Text = row.Cells["Histórico"].Value.ToString();
+            }
+        }
+
+        private void txtFiltrar_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Verifica se a tecla pressionada é Enter
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                // Impede a quebra de linha
+                e.Handled = true;
+            }
+        }
+
+        private void txtHistorico_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Verifica se a tecla pressionada é Enter
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                // Impede a quebra de linha
+                e.Handled = true;
+
+                btnCriar.PerformClick();
+            }
+        }
     }
 }

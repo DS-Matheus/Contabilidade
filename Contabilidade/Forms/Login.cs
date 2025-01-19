@@ -157,7 +157,7 @@ namespace Contabilidade
                         testarResultadoComando(resultado, "Erro ao criar a conta 0 (referênte ao caixa)");
 
                         // Criar tabela de históricos
-                        comando.CommandText = "CREATE TABLE IF NOT EXISTS historicos (id INTEGER PRIMARY KEY AUTOINCREMENT, historico VARCHAR(100) NOT NULL UNIQUE);";
+                        comando.CommandText = "CREATE TABLE IF NOT EXISTS historicos (id INTEGER PRIMARY KEY AUTOINCREMENT, historico VARCHAR(300) NOT NULL UNIQUE);";
                         resultado = comando.ExecuteNonQuery();
                         testarResultadoComando(resultado, "Erro ao criar a tabela de históricos.");
 

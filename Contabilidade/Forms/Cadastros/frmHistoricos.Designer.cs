@@ -49,7 +49,7 @@
             // 
             groupBox1.Anchor = AnchorStyles.Bottom;
             groupBox1.Controls.Add(txtFiltrar);
-            groupBox1.Font = new Font("Lucida Sans", 10.5F, FontStyle.Bold);
+            groupBox1.Font = new Font("Microsoft Sans Serif", 10.5F, FontStyle.Bold);
             groupBox1.Location = new Point(524, 421);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(344, 71);
@@ -59,18 +59,20 @@
             // 
             // txtFiltrar
             // 
-            txtFiltrar.Font = new Font("Lucida Sans", 10.5F);
-            txtFiltrar.Location = new Point(6, 29);
-            txtFiltrar.MaxLength = 100;
+            txtFiltrar.Font = new Font("Microsoft Sans Serif", 10.5F);
+            txtFiltrar.Location = new Point(6, 20);
+            txtFiltrar.MaxLength = 300;
+            txtFiltrar.Multiline = true;
             txtFiltrar.Name = "txtFiltrar";
-            txtFiltrar.Size = new Size(332, 24);
+            txtFiltrar.Size = new Size(332, 43);
             txtFiltrar.TabIndex = 10;
             txtFiltrar.TextChanged += txtFiltrar_TextChanged;
+            txtFiltrar.KeyPress += txtFiltrar_KeyPress;
             // 
             // btnImprimir
             // 
             btnImprimir.Anchor = AnchorStyles.Bottom;
-            btnImprimir.Font = new Font("Lucida Sans", 10.5F);
+            btnImprimir.Font = new Font("Microsoft Sans Serif", 10.5F);
             btnImprimir.Location = new Point(268, 457);
             btnImprimir.Name = "btnImprimir";
             btnImprimir.Size = new Size(250, 35);
@@ -82,7 +84,7 @@
             // btnEditar
             // 
             btnEditar.Anchor = AnchorStyles.Bottom;
-            btnEditar.Font = new Font("Lucida Sans", 10.5F);
+            btnEditar.Font = new Font("Microsoft Sans Serif", 10.5F);
             btnEditar.Location = new Point(12, 457);
             btnEditar.Name = "btnEditar";
             btnEditar.Size = new Size(250, 35);
@@ -94,7 +96,7 @@
             // btnExcluir
             // 
             btnExcluir.Anchor = AnchorStyles.Bottom;
-            btnExcluir.Font = new Font("Lucida Sans", 10.5F);
+            btnExcluir.Font = new Font("Microsoft Sans Serif", 10.5F);
             btnExcluir.Location = new Point(268, 421);
             btnExcluir.Name = "btnExcluir";
             btnExcluir.Size = new Size(250, 35);
@@ -106,7 +108,7 @@
             // btnCriar
             // 
             btnCriar.Anchor = AnchorStyles.Bottom;
-            btnCriar.Font = new Font("Lucida Sans", 10.5F);
+            btnCriar.Font = new Font("Microsoft Sans Serif", 10.5F);
             btnCriar.Location = new Point(12, 421);
             btnCriar.Name = "btnCriar";
             btnCriar.Size = new Size(250, 35);
@@ -124,7 +126,7 @@
             dgvHistoricos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = SystemColors.Control;
-            dataGridViewCellStyle1.Font = new Font("Lucida Sans", 10.5F, FontStyle.Bold);
+            dataGridViewCellStyle1.Font = new Font("Microsoft Sans Serif", 10.5F, FontStyle.Bold);
             dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
             dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
@@ -134,7 +136,7 @@
             dgvHistoricos.Columns.AddRange(new DataGridViewColumn[] { ID, Histórico });
             dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle4.BackColor = SystemColors.Window;
-            dataGridViewCellStyle4.Font = new Font("Lucida Sans", 10.5F);
+            dataGridViewCellStyle4.Font = new Font("Microsoft Sans Serif", 10.5F);
             dataGridViewCellStyle4.ForeColor = SystemColors.ControlText;
             dataGridViewCellStyle4.SelectionBackColor = SystemColors.Highlight;
             dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;

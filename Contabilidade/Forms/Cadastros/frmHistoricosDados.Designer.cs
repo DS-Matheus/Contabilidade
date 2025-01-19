@@ -49,7 +49,7 @@
             pnlBarraTitulo.Dock = DockStyle.Top;
             pnlBarraTitulo.Location = new Point(0, 0);
             pnlBarraTitulo.Name = "pnlBarraTitulo";
-            pnlBarraTitulo.Size = new Size(398, 30);
+            pnlBarraTitulo.Size = new Size(594, 30);
             pnlBarraTitulo.TabIndex = 6;
             pnlBarraTitulo.MouseDown += pnlBarraTitulo_MouseDown;
             // 
@@ -61,7 +61,7 @@
             btnMinimizar.FlatStyle = FlatStyle.Flat;
             btnMinimizar.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnMinimizar.ForeColor = Color.White;
-            btnMinimizar.Location = new Point(338, 0);
+            btnMinimizar.Location = new Point(534, 0);
             btnMinimizar.Name = "btnMinimizar";
             btnMinimizar.Size = new Size(30, 30);
             btnMinimizar.TabIndex = 4;
@@ -72,11 +72,11 @@
             // lblTitulo
             // 
             lblTitulo.AutoSize = true;
-            lblTitulo.Font = new Font("Lucida Sans", 10F);
+            lblTitulo.Font = new Font("Microsoft Sans Serif", 10F);
             lblTitulo.ForeColor = Color.White;
             lblTitulo.Location = new Point(12, 7);
             lblTitulo.Name = "lblTitulo";
-            lblTitulo.Size = new Size(232, 16);
+            lblTitulo.Size = new Size(222, 17);
             lblTitulo.TabIndex = 1;
             lblTitulo.Text = "Formulário de dados de históricos";
             lblTitulo.MouseDown += lblTitulo_MouseDown;
@@ -89,7 +89,7 @@
             btnFechar.FlatStyle = FlatStyle.Flat;
             btnFechar.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnFechar.ForeColor = Color.White;
-            btnFechar.Location = new Point(368, 0);
+            btnFechar.Location = new Point(564, 0);
             btnFechar.Name = "btnFechar";
             btnFechar.Size = new Size(30, 30);
             btnFechar.TabIndex = 5;
@@ -105,37 +105,37 @@
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 30);
             panel1.Name = "panel1";
-            panel1.Size = new Size(398, 135);
+            panel1.Size = new Size(594, 175);
             panel1.TabIndex = 7;
             // 
             // txtHistorico
             // 
-            txtHistorico.Font = new Font("Lucida Sans", 10.5F);
+            txtHistorico.Font = new Font("Microsoft Sans Serif", 10.5F);
             txtHistorico.Location = new Point(31, 34);
-            txtHistorico.MaxLength = 100;
+            txtHistorico.MaxLength = 300;
             txtHistorico.Multiline = true;
             txtHistorico.Name = "txtHistorico";
-            txtHistorico.Size = new Size(336, 40);
+            txtHistorico.Size = new Size(533, 82);
             txtHistorico.TabIndex = 4;
             txtHistorico.KeyPress += txtHistorico_KeyPress;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Lucida Sans", 10.5F);
+            label1.Font = new Font("Microsoft Sans Serif", 10.5F);
             label1.Location = new Point(31, 16);
             label1.Name = "label1";
-            label1.Size = new Size(66, 16);
+            label1.Size = new Size(63, 17);
             label1.TabIndex = 1;
             label1.Text = "Histórico";
             // 
             // btnSalvar
             // 
-            btnSalvar.Font = new Font("Lucida Sans", 10.5F);
-            btnSalvar.Location = new Point(31, 86);
+            btnSalvar.Font = new Font("Microsoft Sans Serif", 10.5F);
+            btnSalvar.Location = new Point(169, 129);
             btnSalvar.Margin = new Padding(3, 10, 3, 3);
             btnSalvar.Name = "btnSalvar";
-            btnSalvar.Size = new Size(336, 32);
+            btnSalvar.Size = new Size(256, 32);
             btnSalvar.TabIndex = 3;
             btnSalvar.Text = "Salvar";
             btnSalvar.UseVisualStyleBackColor = true;
@@ -145,7 +145,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(398, 165);
+            ClientSize = new Size(594, 205);
             Controls.Add(panel1);
             Controls.Add(pnlBarraTitulo);
             FormBorderStyle = FormBorderStyle.None;

@@ -297,7 +297,7 @@ namespace Contabilidade.Forms.Cadastros
         {
             public string ID { get; set; }
             public decimal Valor { get; set; }
-            public string Data {  get; set; }
+            public string Data { get; set; }
         }
 
         private void btnExcluir_Click(object sender, EventArgs e)
@@ -338,7 +338,7 @@ namespace Contabilidade.Forms.Cadastros
                                         {
                                             // Variável para armazenar o id recebido do formulário filho
                                             string idNovo = "";
-                                            
+
                                             // Abrir formulário para seleção do id_histórico que irá substituir os demais (confirmar que o id não é o mesmo antes de retornar)
                                             using (var formFilho = new frmHistoricosSelecionar(con, transacao, idExcluir))
                                             {
@@ -442,20 +442,20 @@ namespace Contabilidade.Forms.Cadastros
                             catch (CustomException ex)
                             {
                                 transacao.Rollback();
-                                
+
                                 // Atualizar DataGrid, apenas para os casos em que um novo histórico foi criado e deu algum erro após
                                 if (novoHistorico)
                                 {
                                     novoHistorico = false;
                                     atualizarDataGrid();
                                 }
-                                
+
                                 MessageBox.Show($"{ex.Message?.ToString()}", "Erro ao excluir o histórico", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
                             catch (Exception ex)
                             {
                                 transacao.Rollback();
-                                
+
                                 // Atualizar DataGrid, apenas para os casos em que um novo histórico foi criado e deu algum erro após
                                 if (novoHistorico)
                                 {
@@ -479,6 +479,16 @@ namespace Contabilidade.Forms.Cadastros
                 }
 
                 MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao excluir o histórico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void txtFiltrar_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Verifica se a tecla pressionada é Enter
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                // Impede a quebra de linha
+                e.Handled = true;
             }
         }
     }
