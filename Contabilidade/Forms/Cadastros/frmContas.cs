@@ -143,6 +143,36 @@ namespace Contabilidade.Forms.Cadastros
             return verificarExistenciaConta(contaSintetica);
         }
 
+        public static string obterNivelConta(string conta) {
+            var linha = dtDados.AsEnumerable().FirstOrDefault(row => conta == row.Field<string>("conta"));
+            return linha != null ? linha.Field<string>("nivel") : null;
+        }
+
+        public static bool verificarContaPai(string conta)
+        {
+            // Remove o último grupo de caracteres após o último ponto (assim se obtêm a conta sintética associada)
+            int ultimoPonto = conta.LastIndexOf('.');
+            string contaAnalitica = conta;
+            if (ultimoPonto != -1)
+            {
+                contaAnalitica = conta.Substring(0, ultimoPonto);
+            }
+
+            var contaExiste = verificarExistenciaConta(contaAnalitica);
+            if (contaExiste)
+            {
+                var nivel = obterNivelConta(contaAnalitica);
+
+                // Verificar se a conta é analítica
+                if (nivel == "A")
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private void btnCriar_Click(object sender, EventArgs e)
         {
             // Criar uma instância do formulário de dados e aguardar um retorno

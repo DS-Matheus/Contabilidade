@@ -141,6 +141,12 @@ namespace Contabilidade.Forms.Cadastros
                 cbbNivel.Focus();
                 return;
             }
+            // Se a conta for pai for do tipo analítica
+            else if (frmContas.verificarContaPai(txtConta.Text)) {
+                MessageBox.Show("Não é possível criar uma nova conta dentro de uma conta analítica!", "'Operação inválida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cbbNivel.Focus();
+                return;
+            }
             // Se a conta for do tipo sintética maior que 1 e não existe uma conta sintética de nível menor
             else if (!Regex.IsMatch(txtConta.Text, @"^[A-Z0-9]{2}$") && cbbNivel.SelectedIndex == 1 && !frmContas.verificarContaSintetica(txtConta.Text))
             {
