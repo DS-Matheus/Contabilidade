@@ -263,20 +263,53 @@ namespace Contabilidade.Forms.Cadastros
 
                             for (int i = 0; i < qtdLinhas; i++)
                             {
-                                // Testar se possuí uma linha disponível para usar
-                                if (linhasDisponiveis - 1 < 0)
-                                {
-                                    pdf.NewPage();
-                                    linhasDisponiveis = 57;
-                                    adicionarCabecalho(titulo, subtitulo);
-                                }
-
+                                // Obter dados
                                 var id = dgvHistoricos.Rows[i].Cells["ID"].Value?.ToString();
                                 var historico = dgvHistoricos.Rows[i].Cells["Histórico"].Value?.ToString();
 
-                                pdf.Add(new Paragraph($"{id} - {historico}", fonte));
+                                // Verificar quantas linhas serão usadas
+                                var linhasHistorico = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(historico, 100);
 
-                                linhasDisponiveis--;
+                                // Verificar tamanho do histórico
+                                var linhasNecessarias = historico.Length >= 100 ? linhasHistorico.Count : 1;
+
+                                if (linhasNecessarias >= 2)
+                                {
+                                    // Testar se possuí uma linha disponível para usar
+                                    if (linhasDisponiveis - linhasNecessarias < 0)
+                                    {
+                                        pdf.NewPage();
+                                        linhasDisponiveis = 57;
+                                        adicionarCabecalho(titulo, subtitulo);
+                                    }
+
+                                    // Adicionar primeira linha
+                                    pdf.Add(new Paragraph($"{id} - {linhasHistorico[0]}", fonte));
+
+                                    linhasHistorico.RemoveAt(0);
+                                    linhasDisponiveis--;
+
+                                    // Adicionar demais linhas
+                                    foreach (var linhaHistorico in linhasHistorico)
+                                    {
+                                        pdf.Add(new Paragraph($"{" ".PadRight(id.ToString().Length + 3)}{linhaHistorico}", fonte));
+                                        linhasDisponiveis--;
+                                    }
+                                }
+                                else
+                                {
+                                    // Testar se possuí uma linha disponível para usar
+                                    if (linhasDisponiveis - 1 < 0)
+                                    {
+                                        pdf.NewPage();
+                                        linhasDisponiveis = 57;
+                                        adicionarCabecalho(titulo, subtitulo);
+                                    }
+
+                                    // Caso seja apenas 1 linha
+                                    pdf.Add(new Paragraph($"{id} - {historico}", fonte));
+                                    linhasDisponiveis--;
+                                }
                             }
 
                             // Fechando o documento

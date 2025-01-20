@@ -192,7 +192,7 @@ namespace Contabilidade.Forms.Relatorios
         }
 
         // Função para dividir a descrição
-        public static List<string> QuebrarLinhaString(string texto, int limiteCaracteres)
+        public static List<string> QuebrarLinhaString(string texto, int limiteCaracteresColuna)
         {
             string[] palavras = texto.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             List<string> linhas = new List<string>();
@@ -202,9 +202,9 @@ namespace Contabilidade.Forms.Relatorios
             foreach (string palavra in palavras)
             {
                 var comprimentoEsperado = comprimentoAtual + palavra.Length;
-                if (comprimentoEsperado <= limiteCaracteres)
+                if (comprimentoEsperado <= limiteCaracteresColuna)
                 {
-                    if ((comprimentoEsperado + 1) <= limiteCaracteres)
+                    if ((comprimentoEsperado + 1) <= limiteCaracteresColuna)
                     {
                         linhaAtual.Append(palavra + " ");
                         comprimentoAtual += palavra.Length + 1;
@@ -212,7 +212,7 @@ namespace Contabilidade.Forms.Relatorios
                     else
                     {
                         linhaAtual.Append(palavra);
-                        comprimentoAtual = limiteCaracteres;
+                        comprimentoAtual = limiteCaracteresColuna;
                     }
                 }
                 else
@@ -228,7 +228,6 @@ namespace Contabilidade.Forms.Relatorios
 
             return linhas;
         }
-
 
         public static string CentralizarString(string texto, int limite)
         {
@@ -431,6 +430,23 @@ namespace Contabilidade.Forms.Relatorios
                                     // Pilha para armazenar as contas sintéticas "abertas"
                                     Stack<ContaSintetica> pilhaContas = new Stack<ContaSintetica>();
 
+                                    // Função para adicionar linha de contas sintéticas
+                                    void AdicionarParagrafoSintetico(string conta, string descricao, int espacosInicio, int espacosDescricao, int linhasNecessarias)
+                                    {
+                                        // Obter linhas da descrição
+                                        var linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(descricao, espacosDescricao);
+
+                                        pdf.Add(new Paragraph($"{"".PadRight(espacosInicio)}{conta.PadRight(conta.Length)} - {linhasDescricao[0].PadRight(espacosDescricao)}", fonte));
+                                        linhasDisponiveis -= 1;
+
+                                        // Adicionar as outras linhas (se houver mais que uma)
+                                        for (int i = 1; i < linhasNecessarias; i++)
+                                        {
+                                            pdf.Add(new Paragraph($"{"    ".PadRight(espacosInicio + conta.Length)}   {linhasDescricao[i].PadRight(espacosDescricao)}", fonte));
+                                            linhasDisponiveis -= 1;
+                                        }
+                                    }
+
                                     void AdicionarParagrafosPdf(string conta, string descricao, decimal saldo, int espacosInicio, int espacosDescricao, int linhasNecessarias)
                                     {
                                         // Obter linhas da descrição
@@ -492,7 +508,7 @@ namespace Contabilidade.Forms.Relatorios
                                                 adicionarCabecalho(subtitulo);
                                             }
 
-                                            AdicionarParagrafosPdf(contaSintetica.Conta, contaSintetica.Descricao, 0, espacosInicio, espacosDescricao, linhasNecessarias);
+                                            AdicionarParagrafoSintetico(contaSintetica.Conta, contaSintetica.Descricao, espacosInicio, espacosDescricao, linhasNecessarias);
                                             // Adicionar a conta sintetica aberta a pilha de contas
                                             pilhaContas.Push(contaSintetica);
                                         }
