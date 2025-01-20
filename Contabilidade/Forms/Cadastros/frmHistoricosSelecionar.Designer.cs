@@ -28,10 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle12 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle10 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle11 = new DataGridViewCellStyle();
             pnlBarraTitulo = new Panel();
             btnMinimizar = new Button();
             lblTitulo = new Label();
@@ -85,11 +85,11 @@
             // lblTitulo
             // 
             lblTitulo.AutoSize = true;
-            lblTitulo.Font = new Font("Microsoft Sans Serif", 10F);
+            lblTitulo.Font = new Font("Lucida Sans", 10F);
             lblTitulo.ForeColor = Color.White;
             lblTitulo.Location = new Point(12, 7);
             lblTitulo.Name = "lblTitulo";
-            lblTitulo.Size = new Size(222, 17);
+            lblTitulo.Size = new Size(232, 16);
             lblTitulo.TabIndex = 1;
             lblTitulo.Text = "Formulário de dados de históricos";
             lblTitulo.MouseDown += lblTitulo_MouseDown;
@@ -125,7 +125,7 @@
             // 
             groupBox2.Controls.Add(txtHistorico);
             groupBox2.Controls.Add(btnCriar);
-            groupBox2.Font = new Font("Microsoft Sans Serif", 10.5F, FontStyle.Bold);
+            groupBox2.Font = new Font("Lucida Sans", 10.5F, FontStyle.Bold);
             groupBox2.Location = new Point(31, 457);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(659, 115);
@@ -159,7 +159,7 @@
             // groupBox1
             // 
             groupBox1.Controls.Add(txtFiltrar);
-            groupBox1.Font = new Font("Microsoft Sans Serif", 10.5F, FontStyle.Bold);
+            groupBox1.Font = new Font("Lucida Sans", 10.5F, FontStyle.Bold);
             groupBox1.Location = new Point(31, 365);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(659, 86);
@@ -185,24 +185,24 @@
             dgvHistoricos.AllowUserToDeleteRows = false;
             dgvHistoricos.AllowUserToOrderColumns = true;
             dgvHistoricos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = SystemColors.Control;
-            dataGridViewCellStyle1.Font = new Font("Microsoft Sans Serif", 10.5F, FontStyle.Bold);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dgvHistoricos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = SystemColors.Control;
+            dataGridViewCellStyle9.Font = new Font("Lucida Sans", 10.5F, FontStyle.Bold);
+            dataGridViewCellStyle9.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle9.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle9.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle9.WrapMode = DataGridViewTriState.True;
+            dgvHistoricos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle9;
             dgvHistoricos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvHistoricos.Columns.AddRange(new DataGridViewColumn[] { ID, Histórico });
-            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = SystemColors.Window;
-            dataGridViewCellStyle4.Font = new Font("Microsoft Sans Serif", 10.5F);
-            dataGridViewCellStyle4.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.False;
-            dgvHistoricos.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle12.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle12.BackColor = SystemColors.Window;
+            dataGridViewCellStyle12.Font = new Font("Lucida Sans", 10.5F);
+            dataGridViewCellStyle12.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle12.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle12.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle12.WrapMode = DataGridViewTriState.False;
+            dgvHistoricos.DefaultCellStyle = dataGridViewCellStyle12;
             dgvHistoricos.Location = new Point(31, 18);
             dgvHistoricos.MultiSelect = false;
             dgvHistoricos.Name = "dgvHistoricos";
@@ -217,8 +217,8 @@
             // 
             ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             ID.DataPropertyName = "id";
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            ID.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle10.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            ID.DefaultCellStyle = dataGridViewCellStyle10;
             ID.HeaderText = "ID";
             ID.Name = "ID";
             ID.ReadOnly = true;
@@ -227,8 +227,8 @@
             // Histórico
             // 
             Histórico.DataPropertyName = "historico";
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            Histórico.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle11.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            Histórico.DefaultCellStyle = dataGridViewCellStyle11;
             Histórico.HeaderText = "Histórico";
             Histórico.Name = "Histórico";
             Histórico.ReadOnly = true;

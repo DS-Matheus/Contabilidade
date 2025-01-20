@@ -5,7 +5,7 @@ VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contabilidade", "Contabilidade\Contabilidade.csproj", "{BCB783B9-8109-4236-8BF7-66A00226F672}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Instalador", "Instalador\Instalador.vdproj", "{E93CD61F-C82A-4994-9344-95791AE38D8F}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Instalador", "Instalador\Instalador.vdproj", "{FEFF1AB8-3DF9-4AE7-A639-4FA0C1ED7302}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,8 +17,8 @@ Global
 		{BCB783B9-8109-4236-8BF7-66A00226F672}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCB783B9-8109-4236-8BF7-66A00226F672}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCB783B9-8109-4236-8BF7-66A00226F672}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E93CD61F-C82A-4994-9344-95791AE38D8F}.Debug|Any CPU.ActiveCfg = Debug
-		{E93CD61F-C82A-4994-9344-95791AE38D8F}.Release|Any CPU.ActiveCfg = Release
+		{FEFF1AB8-3DF9-4AE7-A639-4FA0C1ED7302}.Debug|Any CPU.ActiveCfg = Debug
+		{FEFF1AB8-3DF9-4AE7-A639-4FA0C1ED7302}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

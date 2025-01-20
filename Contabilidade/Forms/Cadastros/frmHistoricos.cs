@@ -491,5 +491,69 @@ namespace Contabilidade.Forms.Cadastros
                 e.Handled = true;
             }
         }
+
+        private void btnCopiarCriar_Click(object sender, EventArgs e)
+        {
+            // Verifique se há uma linha selecionada
+            if (dgvHistoricos.SelectedRows.Count > 0)
+            {
+                // Obtém o histórico selecionado
+                string historico = dgvHistoricos.SelectedRows[0].Cells["Histórico"].Value.ToString();
+
+                // Criar uma instância do formulário de dados e aguardar um retorno
+                using (var frmDados = new frmHistoricosDados("Criar histórico", historico))
+                {
+                    // O usuário apertou o botão de salvar
+                    if (frmDados.ShowDialog() == DialogResult.OK)
+                    {
+                        // Criar histórico
+                        string sql = "INSERT INTO historicos (historico) VALUES(@historico);";
+                        using (var comando = new SQLiteCommand(sql, con.conn))
+                        {
+                            try
+                            {
+                                comando.Parameters.AddWithValue("@historico", historico);
+
+                                int retornoBD = comando.ExecuteNonQuery();
+
+                                // Verificar se houve a criação da linha (0 = negativo)
+                                if (retornoBD > 0)
+                                {
+                                    using (var command = new SQLiteCommand("SELECT last_insert_rowid();", con.conn))
+                                    {
+                                        var id = (Int64)command.ExecuteScalar();
+
+                                        // Adicionar dados na tabela
+                                        DataRow row = dtDados.NewRow();
+                                        row["id"] = id;
+                                        row["historico"] = historico;
+                                        dtDados.Rows.Add(row);
+
+                                        dgvHistoricos.Refresh();
+
+                                        // Remover dados das variáveis
+                                        historico = "";
+
+                                        MessageBox.Show("Histórico criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    }
+                                }
+                                else
+                                {
+                                    throw new Exception("Não foi possível criar o novo histórico.");
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message.ToString(), "Histórico não criado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Nenhum histórico foi selecionado na tabela de dados", "Erro ao copiar histórico", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
     }
 }

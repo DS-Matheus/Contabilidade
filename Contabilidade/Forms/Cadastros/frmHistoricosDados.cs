@@ -9,6 +9,7 @@ namespace Contabilidade.Forms.Cadastros
         private extern static void ReleaseCapture();
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
         private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
+        private bool copiarCriar = false;
 
         public frmHistoricosDados(string titulo, string historico)
         {
@@ -17,7 +18,10 @@ namespace Contabilidade.Forms.Cadastros
             this.Text = titulo;
             this.lblTitulo.Text = titulo;
 
-            txtHistorico.Text = historico;
+            if (!string.IsNullOrWhiteSpace(historico)) {
+                txtHistorico.Text = historico;
+                copiarCriar = true;
+            }
 
             txtHistorico.Select();
         }
@@ -52,7 +56,13 @@ namespace Contabilidade.Forms.Cadastros
             if (frmHistoricos.verificarExistenciaHistorico(historicoNovo))
             {
                 MessageBox.Show("O histórico informado já existe!", "Erro ao informar histórico", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtHistorico.Text = "";
+                
+                // Apenas excluir o texto se não estiver usando a opção copiar e criar
+                if (!copiarCriar)
+                {
+                    txtHistorico.Text = "";
+                }
+                
                 txtHistorico.Focus();
             }
             else

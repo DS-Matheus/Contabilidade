@@ -46,11 +46,16 @@ namespace Contabilidade.Forms.Lancamentos
             }
         }
 
+        private bool verificarExistenciaHistorico(string historico)
+        {
+            return dtDados.AsEnumerable().Any(row => historico == row.Field<string>("historico"));
+        }
+
         private void btnCriar_Click(object sender, EventArgs e)
         {
             var historicoNovo = txtHistorico.Text.TrimEnd();
             // Se o histórico já existir
-            if (frmHistoricos.verificarExistenciaHistorico(historicoNovo))
+            if (verificarExistenciaHistorico(historicoNovo))
             {
                 MessageBox.Show("O histórico informado já existe!", "Erro ao informar histórico", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtHistorico.Text = "";
