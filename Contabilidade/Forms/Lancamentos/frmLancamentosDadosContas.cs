@@ -28,6 +28,8 @@ namespace Contabilidade.Forms.Lancamentos
             atualizarDataGrid();
 
             cbbFiltrar.SelectedIndex = 1;
+
+            txtFiltrar.Focus();
         }
 
         private void atualizarDataGrid()

@@ -25,6 +25,8 @@ namespace Contabilidade.Forms.Lancamentos
             atualizarDataGrid();
 
             dgvHistoricos.Columns["ID"].Visible = false;
+
+            txtFiltrar.Focus();
         }
 
         private void atualizarDataGrid()
@@ -86,7 +88,7 @@ namespace Contabilidade.Forms.Lancamentos
 
                             dgvHistoricos.Refresh();
 
-                            txtHistorico.Text = txtHistorico.Text.Trim();
+                            txtHistorico.Text = "";
 
                             MessageBox.Show("Histórico criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
