@@ -329,7 +329,6 @@ namespace Contabilidade.Forms.Cadastros
         private class Lancamento
         {
             public string ID { get; set; }
-            public decimal Valor { get; set; }
             public string Data { get; set; }
         }
 
@@ -423,7 +422,6 @@ namespace Contabilidade.Forms.Cadastros
                                                             Lancamento lancamento = new Lancamento
                                                             {
                                                                 ID = reader["id"].ToString(),
-                                                                Valor = Convert.ToDecimal(reader["valor"]),
                                                                 Data = reader["data"].ToString()
                                                             };
                                                             listLancamentos.Add(lancamento);
@@ -433,7 +431,7 @@ namespace Contabilidade.Forms.Cadastros
                                                     // Excluir cada lançamento na lista
                                                     foreach (var lancamento in listLancamentos)
                                                     {
-                                                        Contabilidade.Forms.Lancamentos.frmLancamentos.excluirLancamento(con, lancamento.ID, lancamento.Data, lancamento.Valor, transacao);
+                                                        Contabilidade.Forms.Lancamentos.frmLancamentos.excluirLancamento(con, lancamento.ID, lancamento.Data, transacao);
                                                     }
                                                 }
                                                 else
@@ -554,7 +552,7 @@ namespace Contabilidade.Forms.Cadastros
                                 {
                                     using (var command = new SQLiteCommand("SELECT last_insert_rowid();", con.conn))
                                     {
-                                        var id = (Int64)command.ExecuteScalar();
+                                        var id = (Int32)command.ExecuteScalar();
 
                                         // Adicionar dados na tabela
                                         DataRow row = dtDados.NewRow();

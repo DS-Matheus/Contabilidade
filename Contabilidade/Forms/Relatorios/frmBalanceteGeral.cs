@@ -137,9 +137,9 @@ namespace Contabilidade.Forms.Relatorios
                             {
                                 Conta = reader["conta"].ToString(),
                                 Descricao = reader["descricao"].ToString(),
-                                Debitos = Convert.ToDecimal(reader["debito"]),
-                                Creditos = Convert.ToDecimal(reader["credito"]),
-                                Saldo = Convert.ToDecimal(reader["saldo"])
+                                Debitos = (Convert.ToInt32(reader["debito"]) / 100m),
+                                Creditos = (Convert.ToInt32(reader["credito"]) / 100m),
+                                Saldo = (Convert.ToInt32(reader["saldo"]) / 100m)
                             };
                             listContasAnaliticas.Add(contaAnalitica);
                         }

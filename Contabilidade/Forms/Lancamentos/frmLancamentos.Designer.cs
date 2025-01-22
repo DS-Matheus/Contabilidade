@@ -47,9 +47,9 @@
             btnCalcular = new Button();
             ID = new DataGridViewTextBoxColumn();
             Data = new DataGridViewTextBoxColumn();
+            Valor = new DataGridViewTextBoxColumn();
             Conta = new DataGridViewTextBoxColumn();
             Descrição = new DataGridViewTextBoxColumn();
-            Valor = new DataGridViewTextBoxColumn();
             ID_Historico = new DataGridViewTextBoxColumn();
             Histórico = new DataGridViewTextBoxColumn();
             groupBox1.SuspendLayout();
@@ -226,7 +226,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dgvLancamentos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgvLancamentos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvLancamentos.Columns.AddRange(new DataGridViewColumn[] { ID, Data, Conta, Descrição, Valor, ID_Historico, Histórico });
+            dgvLancamentos.Columns.AddRange(new DataGridViewColumn[] { ID, Data, Valor, Conta, Descrição, ID_Historico, Histórico });
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = SystemColors.Window;
             dataGridViewCellStyle3.Font = new Font("Lucida Sans", 10.5F);
@@ -275,6 +275,15 @@
             Data.ReadOnly = true;
             Data.Width = 66;
             // 
+            // Valor
+            // 
+            Valor.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            Valor.DataPropertyName = "valor";
+            Valor.HeaderText = "Valor";
+            Valor.Name = "Valor";
+            Valor.ReadOnly = true;
+            Valor.Width = 69;
+            // 
             // Conta
             // 
             Conta.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
@@ -291,15 +300,6 @@
             Descrição.HeaderText = "Descrição";
             Descrição.Name = "Descrição";
             Descrição.ReadOnly = true;
-            // 
-            // Valor
-            // 
-            Valor.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            Valor.DataPropertyName = "valor";
-            Valor.HeaderText = "Valor";
-            Valor.Name = "Valor";
-            Valor.ReadOnly = true;
-            Valor.Width = 69;
             // 
             // ID_Historico
             // 
@@ -357,9 +357,9 @@
         private NumericUpDown nudValor2;
         private DataGridViewTextBoxColumn ID;
         private DataGridViewTextBoxColumn Data;
+        private DataGridViewTextBoxColumn Valor;
         private DataGridViewTextBoxColumn Conta;
         private DataGridViewTextBoxColumn Descrição;
-        private DataGridViewTextBoxColumn Valor;
         private DataGridViewTextBoxColumn ID_Historico;
         private DataGridViewTextBoxColumn Histórico;
     }

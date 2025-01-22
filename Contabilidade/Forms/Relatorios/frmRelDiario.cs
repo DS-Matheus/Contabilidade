@@ -47,7 +47,7 @@ namespace Contabilidade.Forms.Relatorios
                         Conta = reader["conta"].ToString(),
                         Descricao = reader["descricao"].ToString(),
                         Historico = reader["historico"].ToString(),
-                        Valor = Convert.ToDecimal(reader["valor"])
+                        Valor = (Convert.ToInt32(reader["valor"]) / 100m)
                     };
                     listLancamentos.Add(lancamento);
                 }

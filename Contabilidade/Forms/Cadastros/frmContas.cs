@@ -533,9 +533,9 @@ namespace Contabilidade.Forms.Cadastros
         private class TotalLancamentos
         {
             public string data { get; set; }
-            public decimal total { get; set; }
+            public int total { get; set; }
 
-            public TotalLancamentos(string data, decimal total)
+            public TotalLancamentos(string data, int total)
             {
                 this.data = data;
                 this.total = total;
@@ -564,7 +564,7 @@ namespace Contabilidade.Forms.Cadastros
                 var listLancamentos = new List<TotalLancamentos>();
 
                 // Obter o valor total dos lançamentos em cada data -> obter saldo mais recente em uma data e somar esse valor a um total, a cada operação reduzir do saldo encontrado o total (esse será o real valor dos lançamentos no período)
-                var saldoAnterior = 0m;
+                var saldoAnterior = 0;
                 foreach (var data in listDatas)
                 {
                     comando.Parameters.Clear();
@@ -572,7 +572,7 @@ namespace Contabilidade.Forms.Cadastros
                     comando.Parameters.AddWithValue("@data", data);
 
                     comando.CommandText = "SELECT COALESCE((SELECT saldo FROM lancamentos WHERE conta = @conta and data = @data ORDER BY data DESC, id DESC LIMIT 1), 0);";
-                    var saldoEncontrado = Convert.ToDecimal(comando.ExecuteScalar());
+                    var saldoEncontrado = Convert.ToInt32(comando.ExecuteScalar());
 
                     // Valor líquido do periodo (o que será reduzido do caixa) = saldoEncontrado - saldoAnterior
                     saldoEncontrado -= saldoAnterior;

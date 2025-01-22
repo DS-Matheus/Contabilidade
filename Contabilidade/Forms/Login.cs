@@ -162,12 +162,12 @@ namespace Contabilidade
                         testarResultadoComando(resultado, "Erro ao criar a tabela de históricos.");
 
                         // Criar tabela de lançamentos
-                        comando.CommandText = "CREATE TABLE IF NOT EXISTS lancamentos (id INTEGER PRIMARY KEY AUTOINCREMENT, conta VARCHAR(15) NOT NULL, valor NUMERIC(8,2) NOT NULL, data DATE DEFAULT (DATE('now')), id_historico INTEGER NOT NULL, saldo NUMERIC(8,2) NOT NULL, FOREIGN KEY (conta) REFERENCES contas(conta) ON UPDATE CASCADE ON DELETE RESTRICT, FOREIGN KEY (id_historico) REFERENCES historicos(id) ON UPDATE CASCADE ON DELETE RESTRICT);";
+                        comando.CommandText = "CREATE TABLE IF NOT EXISTS lancamentos (id INTEGER PRIMARY KEY AUTOINCREMENT, conta VARCHAR(15) NOT NULL, valor INTEGER(10) NOT NULL, data DATE DEFAULT (DATE('now')), id_historico INTEGER NOT NULL, saldo INTEGER(10) NOT NULL, FOREIGN KEY (conta) REFERENCES contas(conta) ON UPDATE CASCADE ON DELETE RESTRICT, FOREIGN KEY (id_historico) REFERENCES historicos(id) ON UPDATE CASCADE ON DELETE RESTRICT);";
                         resultado = comando.ExecuteNonQuery();
                         testarResultadoComando(resultado, "Erro ao criar a tabela de lançamentos.");
 
                         // Criar tabela para registro dos saldos do caixa
-                        comando.CommandText = "CREATE TABLE registros_caixa (data DATE PRIMARY KEY NOT NULL UNIQUE, saldo NUMERIC (8, 2) NOT NULL);";
+                        comando.CommandText = "CREATE TABLE registros_caixa (data DATE PRIMARY KEY NOT NULL UNIQUE, saldo INTEGER(10) NOT NULL);";
                         resultado = comando.ExecuteNonQuery();
                         testarResultadoComando(resultado, "Erro ao criar a tabela para registros do caixa");
 

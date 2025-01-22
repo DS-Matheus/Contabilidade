@@ -103,8 +103,9 @@ namespace Contabilidade.Forms.Lancamentos
                 // Envia os dados para o formulário pai
                 frmLancamentos.conta = txtConta.Text;
                 frmLancamentos.id_historico = id_historico;
-                // Arredondar valores para prevenir erros
-                frmLancamentos.valor = Math.Round(nudValor.Value, 2);
+                // Converter decimal para integer (primeiro passo = mover casas 2 casas decimais para esquerda e excluir as demais)
+                decimal valor = Math.Floor(nudValor.Value * 100) / 100;
+                frmLancamentos.valor = (int)(valor * 100);
                 frmLancamentos.data = dtpData.Value;
 
                 this.DialogResult = DialogResult.OK;

@@ -196,8 +196,8 @@ namespace Contabilidade.Forms.Relatorios
                                 {
                                     Data = Convert.ToDateTime(reader["data"]),
                                     Historico = reader["historico"].ToString(),
-                                    Valor = Convert.ToDecimal(reader["valor"]),
-                                    Saldo = Convert.ToDecimal(reader["saldo"])
+                                    Valor = (Convert.ToInt32(reader["valor"]) / 100m),
+                                    Saldo = (Convert.ToInt32(reader["saldo"]) / 100m)
                                 };
                                 listLancamentos.Add(lancamento);
                             }

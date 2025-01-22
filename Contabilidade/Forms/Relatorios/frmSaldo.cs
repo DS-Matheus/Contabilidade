@@ -295,7 +295,7 @@ namespace Contabilidade.Forms.Relatorios
                             {
                                 Conta = reader["conta"].ToString(),
                                 Descricao = reader["descricao"].ToString(),
-                                Saldo = Convert.ToDecimal(reader["saldo"])
+                                Saldo = (Convert.ToInt32(reader["saldo"]) / 100m)
                             };
                             listContasAnaliticas.Add(contaAnalitica);
                         }
