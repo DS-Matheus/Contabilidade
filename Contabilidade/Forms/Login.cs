@@ -31,7 +31,7 @@ namespace Contabilidade
         {
             InitializeComponent();
 
-            cbbBD.Select();
+            txtNome.Select();
         }
 
         private void carregarBDs()

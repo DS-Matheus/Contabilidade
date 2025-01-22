@@ -260,7 +260,7 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Lucida Sans", 10.5F);
-            label1.Location = new Point(48, 25);
+            label1.Location = new Point(68, 25);
             label1.Name = "label1";
             label1.Size = new Size(70, 16);
             label1.TabIndex = 14;

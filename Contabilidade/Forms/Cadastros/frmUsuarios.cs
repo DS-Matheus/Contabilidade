@@ -28,6 +28,8 @@ namespace Contabilidade.Forms.Cadastros
             atualizarDataGrid();
 
             dgvUsuarios.Columns["ID"].Visible = false;
+
+            txtFiltrar.Select();
         }
 
         private void atualizarDataGrid()

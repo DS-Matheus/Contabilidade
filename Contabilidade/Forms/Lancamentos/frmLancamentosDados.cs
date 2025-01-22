@@ -32,6 +32,8 @@ namespace Contabilidade.Forms.Lancamentos
             frmLancamentosDados.id_historico = id_historico;
             frmLancamentosDados.historico = historico;
             dtpData.Value = data;
+
+            nudValor.Select();
         }
 
         private void btnFechar_Click(object sender, EventArgs e)

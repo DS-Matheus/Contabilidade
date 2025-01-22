@@ -26,6 +26,8 @@ namespace Contabilidade.Forms.Cadastros
             con = conexaoBanco;
 
             atualizarDataGrid();
+
+            txtFiltrar.Select();
         }
         private void atualizarDataGrid()
         {
@@ -44,7 +46,7 @@ namespace Contabilidade.Forms.Cadastros
                 dv.RowFilter = $"conta LIKE '{txtFiltrar.Text}%'";
                 dgvContas.DataSource = dv;
 
-                cbbFiltrar.SelectedIndex = 0;
+                cbbFiltrar.SelectedIndex = 1;
                 cbbNivel.SelectedIndex = 0;
                 txtFiltrar.MaxLength = 15;
             }

@@ -42,10 +42,14 @@ namespace Contabilidade.Forms.Cadastros
             {
                 txtConta.Enabled = false;
                 cbbNivel.Enabled = false;
+                txtDescricao.Select();
+            }
+            else
+            {
+                txtConta.Select();
             }
 
             txtDescricao.Text = descricao;
-            txtConta.Select();
             this.nivelAntigo = nivel;
             if (nivel == "S")
             {

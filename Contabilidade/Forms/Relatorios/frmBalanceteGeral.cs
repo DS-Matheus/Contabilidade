@@ -14,6 +14,8 @@ namespace Contabilidade.Forms.Relatorios
             InitializeComponent();
 
             con = conexaoBanco;
+
+            dtpInicial.Select();
         }
 
         public class ContaSintetica

@@ -74,7 +74,7 @@
             // dtpFinal
             // 
             dtpFinal.Font = new Font("Lucida Sans", 10.5F);
-            dtpFinal.Location = new Point(115, 61);
+            dtpFinal.Location = new Point(115, 112);
             dtpFinal.Name = "dtpFinal";
             dtpFinal.Size = new Size(419, 24);
             dtpFinal.TabIndex = 24;
@@ -82,7 +82,7 @@
             // dtpInicial
             // 
             dtpInicial.Font = new Font("Lucida Sans", 10.5F);
-            dtpInicial.Location = new Point(115, 112);
+            dtpInicial.Location = new Point(115, 62);
             dtpInicial.Name = "dtpInicial";
             dtpInicial.Size = new Size(419, 24);
             dtpInicial.TabIndex = 23;

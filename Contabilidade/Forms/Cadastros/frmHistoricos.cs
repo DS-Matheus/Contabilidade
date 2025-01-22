@@ -26,6 +26,8 @@ namespace Contabilidade.Forms.Cadastros
             atualizarDataGrid();
 
             dgvHistoricos.Columns["ID"].Visible = false;
+
+            txtFiltrar.Select();
         }
 
         private void atualizarDataGrid()

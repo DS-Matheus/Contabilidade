@@ -26,7 +26,7 @@ namespace Contabilidade.Forms.Lancamentos
 
             dgvHistoricos.Columns["ID"].Visible = false;
 
-            txtFiltrar.Focus();
+            txtFiltrar.Select();
         }
 
         private void atualizarDataGrid()

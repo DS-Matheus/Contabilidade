@@ -16,6 +16,8 @@ namespace Contabilidade.Forms.Relatorios
             InitializeComponent();
 
             con = conexaoBanco;
+
+            dtpData.Select();
         }
 
         private class Lancamento

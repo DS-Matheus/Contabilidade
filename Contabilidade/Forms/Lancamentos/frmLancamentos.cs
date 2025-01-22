@@ -27,6 +27,8 @@ namespace Contabilidade.Forms.Lancamentos
             atualizarDataGrid();
 
             dgvLancamentos.Columns["ID"].Visible = false;
+
+            txtFiltrar.Select();
         }
 
         private void configurarColunaValor()
