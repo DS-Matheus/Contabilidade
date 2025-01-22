@@ -143,12 +143,12 @@ namespace Contabilidade.Forms.Relatorios
                             {
                                 if (reader2.Read())
                                 {
-                                    saldoAtual = reader2.GetDecimal(0);
+                                    saldoAtual = (reader2.GetInt32(0) / 100m);
                                 }
 
                                 if (reader2.Read())
                                 {
-                                    saldoAnterior = reader2.GetDecimal(0);
+                                    saldoAnterior = (reader2.GetInt32(0) / 100m);
                                 }
                             }
 

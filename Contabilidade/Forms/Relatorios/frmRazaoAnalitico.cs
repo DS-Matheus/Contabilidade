@@ -214,7 +214,7 @@ namespace Contabilidade.Forms.Relatorios
 
                             // Obter saldo anterior (ou deixar como 0 se não possuir nenhum registro antes do período)
                             comando.CommandText = "SELECT COALESCE((SELECT saldo FROM lancamentos WHERE conta = @conta AND data < @dataInicial ORDER BY data DESC, id DESC LIMIT 1), 0) AS saldo_anterior; ";
-                            var saldoAnterior = Convert.ToDecimal(comando.ExecuteScalar());
+                            decimal saldoAnterior = (Convert.ToInt32(comando.ExecuteScalar()) / 100m);
 
                             // Exibir caixa de diálogo para o usuário escolher onde salvar o arquivo PDF
                             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
