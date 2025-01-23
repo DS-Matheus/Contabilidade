@@ -135,6 +135,11 @@ namespace Contabilidade.Forms.Lancamentos
                                         // Efetivar alterações
                                         transacao.Commit();
 
+                                        // Redefinir valores
+                                        txtConta.Text = "";
+                                        cbbNivel.SelectedIndex = 0;
+                                        txtDescricao.Text = "";
+
                                         MessageBox.Show("Conta criada com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                     }
                                     else

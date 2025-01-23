@@ -128,7 +128,7 @@ namespace Contabilidade.Forms.Cadastros
 
                                     dgvHistoricos.Refresh();
 
-                                    txtHistorico.Text = txtHistorico.Text.Trim();
+                                    txtHistorico.Text = "";
 
                                     MessageBox.Show("Histórico criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
