@@ -177,58 +177,74 @@ namespace Contabilidade.Forms.Cadastros
 
         private void btnCriar_Click(object sender, EventArgs e)
         {
-            // Criar uma instância do formulário de dados e aguardar um retorno
-            using (var frmDados = new frmContasDados("Criar conta", "", "", "A"))
+            try
             {
-                // O usuário apertou o botão de salvar
-                if (frmDados.ShowDialog() == DialogResult.OK)
+                // Criar uma instância do formulário de dados e aguardar um retorno
+                using (var frmDados = new frmContasDados("Criar conta", "", "", "A"))
                 {
-                    // Criar conta
-                    string sql = "INSERT INTO contas (conta, descricao, nivel) VALUES(@conta, @descricao, @nivel);";
-                    using (var comando = new SQLiteCommand(sql, con.conn))
+                    // O usuário apertou o botão de salvar
+                    if (frmDados.ShowDialog() == DialogResult.OK)
                     {
-                        try
+                        using (var transacao = con.conn.BeginTransaction())
                         {
-                            comando.Parameters.AddWithValue("@conta", conta);
-                            comando.Parameters.AddWithValue("@descricao", descricao);
-                            comando.Parameters.AddWithValue("@nivel", nivel);
-
-                            int retornoBD = comando.ExecuteNonQuery();
-
-                            // Verificar se houve a criação da linha (0 = negativo)
-                            if (retornoBD > 0)
+                            try
                             {
-                                // Adicionar dados na tabela
-                                DataRow row = dtDados.NewRow();
-                                row["conta"] = conta;
-                                row["descricao"] = descricao;
-                                row["nivel"] = nivel;
-                                dtDados.Rows.Add(row);
+                                // Criar conta
+                                string sql = "INSERT INTO contas (conta, descricao, nivel) VALUES(@conta, @descricao, @nivel);";
+                                using (var comando = new SQLiteCommand(sql, con.conn))
+                                {
+                                    comando.Transaction = transacao;
+                                    comando.Parameters.AddWithValue("@conta", conta);
+                                    comando.Parameters.AddWithValue("@descricao", descricao);
+                                    comando.Parameters.AddWithValue("@nivel", nivel);
 
-                                dgvContas.Refresh();
+                                    int retornoBD = comando.ExecuteNonQuery();
 
-                                // Remover dados das variáveis
-                                conta = "";
-                                descricao = "";
-                                nivel = "";
+                                    // Verificar se houve a criação da linha (0 = negativo)
+                                    if (retornoBD > 0)
+                                    {
+                                        // Adicionar dados na tabela
+                                        DataRow row = dtDados.NewRow();
+                                        row["conta"] = conta;
+                                        row["descricao"] = descricao;
+                                        row["nivel"] = nivel;
+                                        dtDados.Rows.Add(row);
 
-                                MessageBox.Show("Conta criada com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        dgvContas.Refresh();
+
+                                        // Remover dados das variáveis
+                                        conta = "";
+                                        descricao = "";
+                                        nivel = "";
+
+                                        // Efetivar alterações
+                                        transacao.Commit();
+
+                                        MessageBox.Show("Conta criada com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    }
+                                    else
+                                    {
+                                        throw new CustomException("Não foi possível criar a nova conta.");
+                                    }
+                                }
                             }
-                            else
+                            catch (CustomException ex)
                             {
-                                throw new CustomException("Não foi possível criar a nova conta.");
+                                transacao.Rollback();
+                                MessageBox.Show($"{ex.Message?.ToString()}", "Erro ao criar a conta", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
-                        }
-                        catch (CustomException ex)
-                        {
-                            MessageBox.Show($"{ex.Message?.ToString()}", "Erro ao criar a conta", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao criar a conta", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            catch (Exception ex)
+                            {
+                                transacao.Rollback();
+                                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao criar a conta", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao criar a conta", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -400,125 +416,128 @@ namespace Contabilidade.Forms.Cadastros
 
         private void btnEditar_Click(object sender, EventArgs e)
         {
-            // Obter conta selecionada
-            int numLinha = frmUsuarios.obterNumLinhaSelecionada(dgvContas);
-            var (contaAntiga, descricaoAntiga, nivelAntigo) = obterDadosDGV(numLinha);
-
-            // Criar uma instância do formulário de dados e aguardar um retorno
-            using (var frmDados = new frmContasDados("Editar Conta", contaAntiga, descricaoAntiga, nivelAntigo, 1, con))
+            try
             {
-                // O usuário apertou o botão de salvar
-                if (frmDados.ShowDialog() == DialogResult.OK)
+                // Obter conta selecionada
+                int numLinha = frmUsuarios.obterNumLinhaSelecionada(dgvContas);
+                var (contaAntiga, descricaoAntiga, nivelAntigo) = obterDadosDGV(numLinha);
+
+                // Criar uma instância do formulário de dados e aguardar um retorno
+                using (var frmDados = new frmContasDados("Editar Conta", contaAntiga, descricaoAntiga, nivelAntigo, 1, con))
                 {
-                    using (var transacao = con.conn.BeginTransaction())
+                    // O usuário apertou o botão de salvar
+                    if (frmDados.ShowDialog() == DialogResult.OK)
                     {
-                        using (var comando = new SQLiteCommand("", con.conn))
+                        using (var transacao = con.conn.BeginTransaction())
                         {
                             try
                             {
-                                comando.Transaction = transacao;
-
-                                // Se alterou o nível: excluir todos os registros associados
-                                if (alterouNivel)
+                                using (var comando = new SQLiteCommand("", con.conn))
                                 {
-                                    // Se era analítico e alterou para sintético:
-                                    if (nivel == "S")
+                                    comando.Transaction = transacao;
+
+                                    // Se alterou o nível: excluir todos os registros associados
+                                    if (alterouNivel)
                                     {
-                                        // Excluir todos os lançamentos dessa conta apenas
-                                        excluirTodosLancamentos(comando, contaAntiga);
+                                        // Se era analítico e alterou para sintético:
+                                        if (nivel == "S")
+                                        {
+                                            // Excluir todos os lançamentos dessa conta apenas
+                                            excluirTodosLancamentos(comando, contaAntiga);
+                                        }
+                                        // Se era sintético e alterou para analítico: excluir todas as contas no grupo de chave e os seus lançamentos
+                                        else
+                                        {
+                                            // Obter relação de contas a serem excluidas
+                                            comando.CommandText = "SELECT conta, nivel FROM contas WHERE conta LIKE @conta || '.%';";
+                                            comando.Parameters.Clear();
+                                            comando.Parameters.AddWithValue("@conta", contaAntiga);
+
+                                            var listContas = new List<Contas>();
+
+                                            // Ler e atribuir na lista as contas a serem excluídas
+                                            using (var reader = comando.ExecuteReader())
+                                            {
+                                                while (reader.Read())
+                                                {
+                                                    var novaConta = new Contas(reader["conta"].ToString(), reader["nivel"].ToString());
+                                                    listContas.Add(novaConta);
+                                                }
+                                            }
+
+                                            // Excluir cada conta presente na lista
+                                            foreach (var conta in listContas)
+                                            {
+                                                excluirConta(con, conta.Conta, conta.Nivel, transacao);
+                                            }
+                                        }
                                     }
-                                    // Se era sintético e alterou para analítico: excluir todas as contas no grupo de chave e os seus lançamentos
-                                    else
+                                    // Se não alterou o nível, testar se o número da conta mudou e se ela é sintética -> Se for: atualizar número de conta de todo o grupo
+                                    else if (contaAntiga != conta && nivel == "S")
                                     {
-                                        // Obter relação de contas a serem excluidas
-                                        comando.CommandText = "SELECT conta, nivel FROM contas WHERE conta LIKE @conta || '.%';";
+                                        // obter relação de contas
+                                        comando.CommandText = "SELECT conta FROM contas WHERE conta LIKE @conta || '.%';";
                                         comando.Parameters.Clear();
                                         comando.Parameters.AddWithValue("@conta", contaAntiga);
 
-                                        var listContas = new List<Contas>();
+                                        var listContas = new List<string>();
 
-                                        // Ler e atribuir na lista as contas a serem excluídas
+                                        // Ler e atribuir na lista as contas a serem alteradas
                                         using (var reader = comando.ExecuteReader())
                                         {
                                             while (reader.Read())
                                             {
-                                                var novaConta = new Contas(reader["conta"].ToString(), reader["nivel"].ToString());
+                                                var novaConta = reader["conta"].ToString();
                                                 listContas.Add(novaConta);
                                             }
                                         }
 
-                                        // Excluir cada conta presente na lista
-                                        foreach (var conta in listContas)
+                                        // Comando para atualizar as contas
+                                        comando.CommandText = "UPDATE contas SET conta = @contaNova WHERE conta = @contaAntiga;";
+
+                                        // Alterar cada conta presente na lista
+                                        foreach (var contaFilha in listContas)
                                         {
-                                            excluirConta(con, conta.Conta, conta.Nivel, transacao);
+                                            // Número de conta novo (var conta = novo número da conta sintética)
+                                            var numeroNovo = obterNovaConta(conta, contaFilha);
+
+                                            comando.Parameters.Clear();
+                                            comando.Parameters.AddWithValue("@contaNova", numeroNovo);
+                                            comando.Parameters.AddWithValue("@contaAntiga", contaFilha);
+                                            comando.ExecuteNonQuery();
                                         }
                                     }
-                                }
-                                // Se não alterou o nível, testar se o número da conta mudou e se ela é sintética -> Se for: atualizar número de conta de todo o grupo
-                                else if (contaAntiga != conta && nivel == "S")
-                                {
-                                    // obter relação de contas
-                                    comando.CommandText = "SELECT conta FROM contas WHERE conta LIKE @conta || '.%';";
+
+                                    // Atualizar conta (se o número dela alterou, os lançamentos também serão atualizados por causa do ON UPDATE da chave estrangeira)
+                                    comando.CommandText = "UPDATE contas SET conta = @contaNova, descricao = @descricao, nivel = @nivel WHERE conta = @contaAntiga;";
                                     comando.Parameters.Clear();
-                                    comando.Parameters.AddWithValue("@conta", contaAntiga);
+                                    comando.Parameters.AddWithValue("@contaNova", conta);
+                                    comando.Parameters.AddWithValue("@descricao", descricao);
+                                    comando.Parameters.AddWithValue("@nivel", nivel);
+                                    comando.Parameters.AddWithValue("@contaAntiga", contaAntiga);
 
-                                    var listContas = new List<string>();
+                                    int retornoBD = comando.ExecuteNonQuery();
 
-                                    // Ler e atribuir na lista as contas a serem alteradas
-                                    using (var reader = comando.ExecuteReader())
+                                    // Verificar se houve a edição de alguma linha (0 = negativo)
+                                    if (retornoBD > 0)
                                     {
-                                        while (reader.Read())
-                                        {
-                                            var novaConta = reader["conta"].ToString();
-                                            listContas.Add(novaConta);
-                                        }
+                                        transacao.Commit();
+
+                                        // Atualizar DataTable
+                                        atualizarDataGrid();
+
+                                        // Remover dados das variáveis
+                                        conta = "";
+                                        descricao = "";
+                                        nivel = "";
+                                        alterouNivel = false;
+
+                                        MessageBox.Show("Conta editada com sucesso!", "Edição bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                     }
-
-                                    // Comando para atualizar as contas
-                                    comando.CommandText = "UPDATE contas SET conta = @contaNova WHERE conta = @contaAntiga;";
-
-                                    // Alterar cada conta presente na lista
-                                    foreach (var contaFilha in listContas)
+                                    else
                                     {
-                                        // Número de conta novo (var conta = novo número da conta sintética)
-                                        var numeroNovo = obterNovaConta(conta, contaFilha);
-
-                                        comando.Parameters.Clear();
-                                        comando.Parameters.AddWithValue("@contaNova", numeroNovo);
-                                        comando.Parameters.AddWithValue("@contaAntiga", contaFilha);
-                                        comando.ExecuteNonQuery();
+                                        throw new Exception("Não foi possível encontrar a conta ou ocorreu um erro na edição.");
                                     }
-                                }
-
-                                // Atualizar conta (se o número dela alterou, os lançamentos também serão atualizados por causa do ON UPDATE da chave estrangeira)
-                                comando.CommandText = "UPDATE contas SET conta = @contaNova, descricao = @descricao, nivel = @nivel WHERE conta = @contaAntiga;";
-                                comando.Parameters.Clear();
-                                comando.Parameters.AddWithValue("@contaNova", conta);
-                                comando.Parameters.AddWithValue("@descricao", descricao);
-                                comando.Parameters.AddWithValue("@nivel", nivel);
-                                comando.Parameters.AddWithValue("@contaAntiga", contaAntiga);
-
-                                int retornoBD = comando.ExecuteNonQuery();
-
-                                // Verificar se houve a edição de alguma linha (0 = negativo)
-                                if (retornoBD > 0)
-                                {
-                                    transacao.Commit();
-
-                                    // Atualizar DataTable
-                                    atualizarDataGrid();
-
-                                    // Remover dados das variáveis
-                                    conta = "";
-                                    descricao = "";
-                                    nivel = "";
-                                    alterouNivel = false;
-
-                                    MessageBox.Show("Conta editada com sucesso!", "Edição bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                }
-                                else
-                                {
-                                    throw new Exception("Não foi possível encontrar a conta ou ocorreu um erro na edição.");
                                 }
                             }
                             catch (Exception ex)
@@ -529,6 +548,10 @@ namespace Contabilidade.Forms.Cadastros
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao editar a conta", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

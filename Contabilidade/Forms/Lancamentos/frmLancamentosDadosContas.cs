@@ -4,6 +4,7 @@ using System.Data;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Data.SQLite;
+using Contabilidade.Classes;
 
 namespace Contabilidade.Forms.Lancamentos
 {
@@ -56,82 +57,104 @@ namespace Contabilidade.Forms.Lancamentos
 
         private void btnCriar_Click(object sender, EventArgs e)
         {
-            // Se a descrição não for válida
-            if (string.IsNullOrWhiteSpace(txtDescricao.Text))
+            try
             {
-                MessageBox.Show("A descrição não pode ser vázia!", "Descrição inválida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtDescricao.Text = "";
-                txtDescricao.Focus();
-            }
-            else
-            {
-                // Se a conta não for válida
-                if (!verificarConta(txtConta.Text))
+                // Se a descrição não for válida
+                if (string.IsNullOrWhiteSpace(txtDescricao.Text))
                 {
-                    txtConta.Text = "";
-                    txtConta.Focus();
-                }
-                // Se a conta já existir
-                else if (frmContas.verificarExistenciaConta(txtConta.Text))
-                {
-                    MessageBox.Show("A conta informada já existe!", "Erro ao informar conta", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    txtConta.Text = "";
-                    txtConta.Focus();
-                }
-                // Se a conta for do tipo analítica mas tentou ser criada na "raiz" (apenas 1 número)
-                else if (Regex.IsMatch(txtConta.Text, @"^[A-Z0-9]{2}$") && cbbNivel.SelectedIndex == 0)
-                {
-                    MessageBox.Show("Não é possível ter uma conta analítica antes da sintética!", "'Numero/Tipo de conta inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    cbbNivel.Focus();
-                }
-                // Se a conta for do tipo analítica e tentou se criar antes da sintética
-                else if (!Regex.IsMatch(txtConta.Text, @"^[A-Z0-9]{2}$") && cbbNivel.SelectedIndex == 0 && !frmContas.verificarContaSintetica(txtConta.Text))
-                {
-                    MessageBox.Show("Não é possível ter uma conta analítica antes da sintética!", "'Numero/Tipo de conta inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    cbbNivel.Focus();
-                }
-                // Se a conta for do tipo sintética maior que 1 e não existe uma conta sintética de nível menor
-                else if (!Regex.IsMatch(txtConta.Text, @"^[A-Z0-9]{2}$") && cbbNivel.SelectedIndex == 1 && !frmContas.verificarContaSintetica(txtConta.Text))
-                {
-                    MessageBox.Show("Hierarquia de contas inválida!\n\nÉ preciso criar uma conta sintética de nível menor antes.", "'Numero de conta inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    cbbNivel.Focus();
+                    MessageBox.Show("A descrição não pode ser vázia!", "Descrição inválida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtDescricao.Text = "";
+                    txtDescricao.Focus();
                 }
                 else
                 {
-                    var conta = txtConta.Text;
-                    var descricao = txtDescricao.Text;
-                    var tipoConta = getTipoConta(cbbNivel.SelectedIndex);
-
-                    // Criar conta
-                    string sql = "INSERT INTO contas (conta, descricao, nivel) VALUES(@conta, @descricao, @nivel);";
-                    using (var comando = new SQLiteCommand(sql, con.conn))
+                    // Se a conta não for válida
+                    if (!verificarConta(txtConta.Text))
                     {
-                        comando.Parameters.AddWithValue("@conta", txtConta.Text);
-                        comando.Parameters.AddWithValue("@descricao", txtDescricao.Text);
-                        comando.Parameters.AddWithValue("@nivel", tipoConta);
-
-                        int retornoBD = comando.ExecuteNonQuery();
-
-                        // Verificar se houve a criação da linha (0 = negativo)
-                        if (retornoBD > 0)
+                        txtConta.Text = "";
+                        txtConta.Focus();
+                    }
+                    // Se a conta já existir
+                    else if (frmContas.verificarExistenciaConta(txtConta.Text))
+                    {
+                        MessageBox.Show("A conta informada já existe!", "Erro ao informar conta", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        txtConta.Text = "";
+                        txtConta.Focus();
+                    }
+                    // Se a conta for do tipo analítica mas tentou ser criada na "raiz" (apenas 1 número)
+                    else if (Regex.IsMatch(txtConta.Text, @"^[A-Z0-9]{2}$") && cbbNivel.SelectedIndex == 0)
+                    {
+                        MessageBox.Show("Não é possível ter uma conta analítica antes da sintética!", "'Numero/Tipo de conta inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        cbbNivel.Focus();
+                    }
+                    // Se a conta for do tipo analítica e tentou se criar antes da sintética
+                    else if (!Regex.IsMatch(txtConta.Text, @"^[A-Z0-9]{2}$") && cbbNivel.SelectedIndex == 0 && !frmContas.verificarContaSintetica(txtConta.Text))
+                    {
+                        MessageBox.Show("Não é possível ter uma conta analítica antes da sintética!", "'Numero/Tipo de conta inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        cbbNivel.Focus();
+                    }
+                    // Se a conta for do tipo sintética maior que 1 e não existe uma conta sintética de nível menor
+                    else if (!Regex.IsMatch(txtConta.Text, @"^[A-Z0-9]{2}$") && cbbNivel.SelectedIndex == 1 && !frmContas.verificarContaSintetica(txtConta.Text))
+                    {
+                        MessageBox.Show("Hierarquia de contas inválida!\n\nÉ preciso criar uma conta sintética de nível menor antes.", "'Numero de conta inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        cbbNivel.Focus();
+                    }
+                    else
+                    {
+                        using (var transacao = con.conn.BeginTransaction())
                         {
-                            // Adicionar dados na tabela
-                            DataRow row = dtDados.NewRow();
-                            row["conta"] = conta;
-                            row["descricao"] = descricao;
-                            row["nivel"] = tipoConta;
-                            dtDados.Rows.Add(row);
+                            try
+                            {
+                                var conta = txtConta.Text;
+                                var descricao = txtDescricao.Text;
+                                var tipoConta = getTipoConta(cbbNivel.SelectedIndex);
 
-                            dgvContas.Refresh();
+                                // Criar conta
+                                string sql = "INSERT INTO contas (conta, descricao, nivel) VALUES(@conta, @descricao, @nivel);";
+                                using (var comando = new SQLiteCommand(sql, con.conn))
+                                {
+                                    comando.Transaction = transacao;
+                                    comando.Parameters.AddWithValue("@conta", txtConta.Text);
+                                    comando.Parameters.AddWithValue("@descricao", txtDescricao.Text);
+                                    comando.Parameters.AddWithValue("@nivel", tipoConta);
 
-                            MessageBox.Show("Conta criada com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                        else
-                        {
-                            MessageBox.Show("Não foi possível criar a nova conta.", "Conta não criada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    int retornoBD = comando.ExecuteNonQuery();
+
+                                    // Verificar se houve a criação da linha (0 = negativo)
+                                    if (retornoBD > 0)
+                                    {
+                                        // Adicionar dados na tabela
+                                        DataRow row = dtDados.NewRow();
+                                        row["conta"] = conta;
+                                        row["descricao"] = descricao;
+                                        row["nivel"] = tipoConta;
+                                        dtDados.Rows.Add(row);
+
+                                        dgvContas.Refresh();
+
+                                        // Efetivar alterações
+                                        transacao.Commit();
+
+                                        MessageBox.Show("Conta criada com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    }
+                                    else
+                                    {
+                                        throw new Exception("Não foi possível criar a nova conta.");
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                transacao.Rollback();
+                                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao criar a conta", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao criar a conta", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
