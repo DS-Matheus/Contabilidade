@@ -54,7 +54,24 @@ namespace Contabilidade.Forms.Lancamentos
                 txtFiltrar.MaxLength = 15;
             }
         }
+        public static bool verificarExistenciaConta(string conta)
+        {
+            return dtDados.AsEnumerable().Any(row => string.Equals(conta, row.Field<string>("conta"), StringComparison.OrdinalIgnoreCase));
+        }
 
+        private bool verificarContaSintetica(string conta)
+        {
+            // Remove o último grupo de caracteres após o último ponto (assim se obtêm a conta sintética associada)
+            int ultimoPonto = conta.LastIndexOf('.');
+            string contaSintetica = conta;
+            if (ultimoPonto != -1)
+            {
+                contaSintetica = conta.Substring(0, ultimoPonto);
+            }
+
+            // Verificar se a conta existe e retornar
+            return verificarExistenciaConta(contaSintetica);
+        }
         private void btnCriar_Click(object sender, EventArgs e)
         {
             try
@@ -75,7 +92,7 @@ namespace Contabilidade.Forms.Lancamentos
                         txtConta.Focus();
                     }
                     // Se a conta já existir
-                    else if (frmContas.verificarExistenciaConta(txtConta.Text))
+                    else if (verificarExistenciaConta(txtConta.Text))
                     {
                         MessageBox.Show("A conta informada já existe!", "Erro ao informar conta", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         txtConta.Text = "";
@@ -88,13 +105,13 @@ namespace Contabilidade.Forms.Lancamentos
                         cbbNivel.Focus();
                     }
                     // Se a conta for do tipo analítica e tentou se criar antes da sintética
-                    else if (!Regex.IsMatch(txtConta.Text, @"^[A-Z0-9]{2}$") && cbbNivel.SelectedIndex == 0 && !frmContas.verificarContaSintetica(txtConta.Text))
+                    else if (!Regex.IsMatch(txtConta.Text, @"^[A-Z0-9]{2}$") && cbbNivel.SelectedIndex == 0 && !verificarContaSintetica(txtConta.Text))
                     {
                         MessageBox.Show("Não é possível ter uma conta analítica antes da sintética!", "'Numero/Tipo de conta inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         cbbNivel.Focus();
                     }
                     // Se a conta for do tipo sintética maior que 1 e não existe uma conta sintética de nível menor
-                    else if (!Regex.IsMatch(txtConta.Text, @"^[A-Z0-9]{2}$") && cbbNivel.SelectedIndex == 1 && !frmContas.verificarContaSintetica(txtConta.Text))
+                    else if (!Regex.IsMatch(txtConta.Text, @"^[A-Z0-9]{2}$") && cbbNivel.SelectedIndex == 1 && !verificarContaSintetica(txtConta.Text))
                     {
                         MessageBox.Show("Hierarquia de contas inválida!\n\nÉ preciso criar uma conta sintética de nível menor antes.", "'Numero de conta inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         cbbNivel.Focus();
@@ -253,11 +270,6 @@ namespace Contabilidade.Forms.Lancamentos
                 dv.RowFilter = $"descricao LIKE '%{txtFiltrar.Text}%'";
                 dgvContas.DataSource = dv;
             }
-        }
-
-        public static bool verificarExistenciaConta(string conta)
-        {
-            return dtDados.AsEnumerable().Any(row => string.Equals(conta, row.Field<string>("conta"), StringComparison.OrdinalIgnoreCase));
         }
 
         private void txtConta_TextChanged(object sender, EventArgs e)
