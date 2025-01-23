@@ -54,18 +54,6 @@ namespace Contabilidade.Forms.Lancamentos
             string sql = "SELECT l.id, l.conta, c.descricao, (l.valor / 100.0) as valor, l.data, l.id_historico, h.historico FROM lancamentos l JOIN contas c ON l.conta = c.conta JOIN historicos h ON l.id_historico = h.id ORDER BY l.data DESC, l.conta";
             using (var command = new SQLiteCommand(sql, con.conn))
             {
-                dtDados.Clear();
-                using (var reader = command.ExecuteReader())
-                {
-                    dtDados.Load(reader);
-                }
-
-                dgvLancamentos.DataSource = dtDados;
-
-                txtFiltrar.Text = "";
-                dv.RowFilter = $"conta LIKE '{txtFiltrar.Text}%'";
-                dgvLancamentos.DataSource = dv;
-
                 // Alterar filtros somente se for diferente - para não acionar os handlers de forma desnecessária
                 if (cbbFiltrar.SelectedIndex != 0)
                 {
@@ -79,6 +67,18 @@ namespace Contabilidade.Forms.Lancamentos
                 {
                     cbbFiltrarValores.SelectedIndex = 0;
                 }
+
+                dgvLancamentos.DataSource = dtDados;
+
+                dtDados.Clear();
+                using (var reader = command.ExecuteReader())
+                {
+                    dtDados.Load(reader);
+                }
+
+                txtFiltrar.Text = "";
+                dv.RowFilter = $"conta LIKE '{txtFiltrar.Text}%'";
+                dgvLancamentos.DataSource = dv;
             }
         }
 
