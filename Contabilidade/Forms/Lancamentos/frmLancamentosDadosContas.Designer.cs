@@ -184,7 +184,7 @@
             txtConta.Font = new Font("Lucida Sans", 10.5F);
             txtConta.Location = new Point(12, 36);
             txtConta.Margin = new Padding(25, 3, 3, 3);
-            txtConta.MaxLength = 14;
+            txtConta.MaxLength = 15;
             txtConta.Name = "txtConta";
             txtConta.Size = new Size(171, 24);
             txtConta.TabIndex = 1;
