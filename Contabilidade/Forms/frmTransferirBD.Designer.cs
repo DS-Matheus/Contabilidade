@@ -1,6 +1,6 @@
 ﻿namespace Contabilidade.Forms
 {
-    partial class frmRenomearBD
+    partial class frmTransferirBD
     {
         /// <summary>
         /// Required designer variable.
@@ -35,7 +35,7 @@
             panel1 = new Panel();
             txtBancoDados = new TextBox();
             label3 = new Label();
-            btnRenomear = new Button();
+            btnTransferir = new Button();
             pnlBarraTitulo.SuspendLayout();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -50,7 +50,7 @@
             pnlBarraTitulo.Location = new Point(0, 0);
             pnlBarraTitulo.Name = "pnlBarraTitulo";
             pnlBarraTitulo.Size = new Size(398, 30);
-            pnlBarraTitulo.TabIndex = 7;
+            pnlBarraTitulo.TabIndex = 8;
             pnlBarraTitulo.MouseDown += pnlBarraTitulo_MouseDown;
             // 
             // btnMinimizar
@@ -101,12 +101,12 @@
             // 
             panel1.Controls.Add(txtBancoDados);
             panel1.Controls.Add(label3);
-            panel1.Controls.Add(btnRenomear);
+            panel1.Controls.Add(btnTransferir);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 30);
             panel1.Name = "panel1";
             panel1.Size = new Size(398, 120);
-            panel1.TabIndex = 8;
+            panel1.TabIndex = 9;
             // 
             // txtBancoDados
             // 
@@ -129,19 +129,19 @@
             label3.TabIndex = 5;
             label3.Text = "Banco de dados";
             // 
-            // btnRenomear
+            // btnTransferir
             // 
-            btnRenomear.Font = new Font("Lucida Sans", 10.5F);
-            btnRenomear.Location = new Point(32, 71);
-            btnRenomear.Margin = new Padding(3, 10, 3, 3);
-            btnRenomear.Name = "btnRenomear";
-            btnRenomear.Size = new Size(335, 32);
-            btnRenomear.TabIndex = 2;
-            btnRenomear.Text = "Renomear";
-            btnRenomear.UseVisualStyleBackColor = true;
-            btnRenomear.Click += btnRenomear_Click;
+            btnTransferir.Font = new Font("Lucida Sans", 10.5F);
+            btnTransferir.Location = new Point(32, 71);
+            btnTransferir.Margin = new Padding(3, 10, 3, 3);
+            btnTransferir.Name = "btnTransferir";
+            btnTransferir.Size = new Size(335, 32);
+            btnTransferir.TabIndex = 2;
+            btnTransferir.Text = "Transferir";
+            btnTransferir.UseVisualStyleBackColor = true;
+            btnTransferir.Click += btnTransferir_Click;
             // 
-            // frmRenomearBD
+            // frmTransferirBD
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -149,9 +149,9 @@
             Controls.Add(panel1);
             Controls.Add(pnlBarraTitulo);
             FormBorderStyle = FormBorderStyle.None;
-            Name = "frmRenomearBD";
+            Name = "frmTransferirBD";
             StartPosition = FormStartPosition.CenterParent;
-            Text = "frmRenomearBD";
+            Text = "frmTransferirBD";
             pnlBarraTitulo.ResumeLayout(false);
             pnlBarraTitulo.PerformLayout();
             panel1.ResumeLayout(false);
@@ -168,6 +168,6 @@
         private Panel panel1;
         private TextBox txtBancoDados;
         private Label label3;
-        private Button btnRenomear;
+        private Button btnTransferir;
     }
 }

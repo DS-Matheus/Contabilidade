@@ -124,6 +124,7 @@
             txtBancoDados.Name = "txtBancoDados";
             txtBancoDados.Size = new Size(335, 24);
             txtBancoDados.TabIndex = 1;
+            txtBancoDados.KeyPress += txtBancoDados_KeyPress;
             // 
             // label3
             // 
@@ -144,6 +145,7 @@
             txtSenha.Name = "txtSenha";
             txtSenha.Size = new Size(335, 24);
             txtSenha.TabIndex = 3;
+            txtSenha.KeyPress += txtSenha_KeyPress;
             // 
             // label2
             // 
@@ -164,6 +166,7 @@
             txtUsuario.Name = "txtUsuario";
             txtUsuario.Size = new Size(335, 24);
             txtUsuario.TabIndex = 2;
+            txtUsuario.KeyPress += txtUsuario_KeyPress;
             // 
             // label1
             // 

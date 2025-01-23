@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             groupBox1 = new GroupBox();
+            btnTransferir = new Button();
             btnRestaurar = new Button();
             btnBackup = new Button();
             btnRenomearBD = new Button();
@@ -61,6 +62,7 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(btnTransferir);
             groupBox1.Controls.Add(btnRestaurar);
             groupBox1.Controls.Add(btnBackup);
             groupBox1.Controls.Add(btnRenomearBD);
@@ -75,13 +77,25 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "Banco de Dados";
             // 
+            // btnTransferir
+            // 
+            btnTransferir.Cursor = Cursors.Hand;
+            btnTransferir.Font = new Font("Lucida Sans", 10.5F);
+            btnTransferir.Location = new Point(195, 103);
+            btnTransferir.Name = "btnTransferir";
+            btnTransferir.Size = new Size(84, 31);
+            btnTransferir.TabIndex = 6;
+            btnTransferir.Text = "Transferir";
+            btnTransferir.UseVisualStyleBackColor = true;
+            btnTransferir.Click += btnTransferir_Click;
+            // 
             // btnRestaurar
             // 
             btnRestaurar.Cursor = Cursors.Hand;
             btnRestaurar.Font = new Font("Lucida Sans", 10.5F);
-            btnRestaurar.Location = new Point(153, 103);
+            btnRestaurar.Location = new Point(109, 103);
             btnRestaurar.Name = "btnRestaurar";
-            btnRestaurar.Size = new Size(88, 31);
+            btnRestaurar.Size = new Size(83, 31);
             btnRestaurar.TabIndex = 5;
             btnRestaurar.Text = "Restaurar";
             btnRestaurar.UseVisualStyleBackColor = true;
@@ -91,9 +105,9 @@
             // 
             btnBackup.Cursor = Cursors.Hand;
             btnBackup.Font = new Font("Lucida Sans", 10.5F);
-            btnBackup.Location = new Point(59, 103);
+            btnBackup.Location = new Point(20, 103);
             btnBackup.Name = "btnBackup";
-            btnBackup.Size = new Size(88, 31);
+            btnBackup.Size = new Size(84, 31);
             btnBackup.TabIndex = 4;
             btnBackup.Text = "Backup";
             btnBackup.UseVisualStyleBackColor = true;
@@ -103,9 +117,9 @@
             // 
             btnRenomearBD.Cursor = Cursors.Hand;
             btnRenomearBD.Font = new Font("Lucida Sans", 10.5F);
-            btnRenomearBD.Location = new Point(187, 66);
+            btnRenomearBD.Location = new Point(195, 66);
             btnRenomearBD.Name = "btnRenomearBD";
-            btnRenomearBD.Size = new Size(89, 31);
+            btnRenomearBD.Size = new Size(84, 31);
             btnRenomearBD.TabIndex = 3;
             btnRenomearBD.Text = "Renomear";
             btnRenomearBD.UseVisualStyleBackColor = true;
@@ -115,9 +129,9 @@
             // 
             btnExcluirBD.Cursor = Cursors.Hand;
             btnExcluirBD.Font = new Font("Lucida Sans", 10.5F);
-            btnExcluirBD.Location = new Point(102, 66);
+            btnExcluirBD.Location = new Point(109, 66);
             btnExcluirBD.Name = "btnExcluirBD";
-            btnExcluirBD.Size = new Size(75, 31);
+            btnExcluirBD.Size = new Size(83, 31);
             btnExcluirBD.TabIndex = 2;
             btnExcluirBD.Text = "Excluir";
             btnExcluirBD.UseVisualStyleBackColor = true;
@@ -127,9 +141,9 @@
             // 
             btnCriarBD.Cursor = Cursors.Hand;
             btnCriarBD.Font = new Font("Lucida Sans", 10.5F);
-            btnCriarBD.Location = new Point(17, 66);
+            btnCriarBD.Location = new Point(20, 66);
             btnCriarBD.Name = "btnCriarBD";
-            btnCriarBD.Size = new Size(75, 31);
+            btnCriarBD.Size = new Size(84, 31);
             btnCriarBD.TabIndex = 1;
             btnCriarBD.Text = "Criar";
             btnCriarBD.UseVisualStyleBackColor = true;
@@ -138,16 +152,15 @@
             // cbbBD
             // 
             cbbBD.Cursor = Cursors.IBeam;
-            cbbBD.DisplayMember = "dsadas";
             cbbBD.Font = new Font("Lucida Sans", 10.5F);
             cbbBD.FormattingEnabled = true;
-            cbbBD.Location = new Point(17, 31);
+            cbbBD.Location = new Point(20, 31);
             cbbBD.Margin = new Padding(20);
             cbbBD.MaxLength = 30;
             cbbBD.Name = "cbbBD";
             cbbBD.Size = new Size(260, 24);
-            cbbBD.Sorted = true;
             cbbBD.TabIndex = 0;
+            cbbBD.KeyPress += cbbBD_KeyPress;
             // 
             // gpbInfoUsuario
             // 
@@ -260,7 +273,7 @@
             label5.Name = "label5";
             label5.Size = new Size(83, 16);
             label5.TabIndex = 4;
-            label5.Text = "Versão: 1.3";
+            label5.Text = "Versão: 1.4";
             // 
             // label3
             // 
@@ -393,5 +406,6 @@
         private Button btnBackup;
         private Label label5;
         private PictureBox pictureBox1;
+        private Button btnTransferir;
     }
 }
