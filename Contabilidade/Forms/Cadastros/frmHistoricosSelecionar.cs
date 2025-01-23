@@ -82,7 +82,8 @@ namespace Contabilidade.Forms.Cadastros
 
         private bool verificarExistenciaHistorico(string historico)
         {
-            return dtDados.AsEnumerable().Any(row => historico == row.Field<string>("historico"));
+            return dtDados.AsEnumerable().Any(row => string.Equals(historico, row.Field<string>("historico"), StringComparison.OrdinalIgnoreCase));
+
         }
 
         private void btnCriar_Click(object sender, EventArgs e)
@@ -117,7 +118,7 @@ namespace Contabilidade.Forms.Cadastros
                                 if (retornoBD > 0)
                                 {
                                     comando.CommandText = "SELECT last_insert_rowid();";
-                                    var id = (Int32)comando.ExecuteScalar();
+                                    var id = (Int64)comando.ExecuteScalar();
 
                                     // Adicionar dados na tabela
                                     DataRow row = dtDados.NewRow();

@@ -252,7 +252,7 @@ namespace Contabilidade.Forms.Lancamentos
 
         public static bool verificarExistenciaConta(string conta)
         {
-            return dtDados.AsEnumerable().Any(row => conta == row.Field<string>("conta"));
+            return dtDados.AsEnumerable().Any(row => string.Equals(conta, row.Field<string>("conta"), StringComparison.OrdinalIgnoreCase));
         }
 
         private void txtConta_TextChanged(object sender, EventArgs e)

@@ -51,7 +51,8 @@ namespace Contabilidade.Forms.Cadastros
 
         public static bool verificarExistenciaHistorico(string historico)
         {
-            return dtDados.AsEnumerable().Any(row => historico == row.Field<string>("historico"));
+            return dtDados.AsEnumerable().Any(row => string.Equals(historico, row.Field<string>("historico"), StringComparison.OrdinalIgnoreCase));
+
         }
 
         private void btnCriar_Click(object sender, EventArgs e)
@@ -589,7 +590,7 @@ namespace Contabilidade.Forms.Cadastros
                                         {
                                             using (var command = new SQLiteCommand("SELECT last_insert_rowid();", con.conn))
                                             {
-                                                var id = (Int32)command.ExecuteScalar();
+                                                var id = (Int64)command.ExecuteScalar();
 
                                                 // Adicionar dados na tabela
                                                 DataRow row = dtDados.NewRow();

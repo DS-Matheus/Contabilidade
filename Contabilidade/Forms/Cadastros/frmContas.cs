@@ -123,12 +123,14 @@ namespace Contabilidade.Forms.Cadastros
 
         public static bool verificarExistenciaConta(string conta)
         {
-            return dtDados.AsEnumerable().Any(row => conta == row.Field<string>("conta"));
+            return dtDados.AsEnumerable().Any(row => string.Equals(conta, row.Field<string>("conta"), StringComparison.OrdinalIgnoreCase));
+
         }
 
         public static bool verificarExistenciaConta(string conta, string contaAntiga)
         {
-            return dtDados.AsEnumerable().Any(row => conta == row.Field<string>("conta") && row.Field<string>("conta") != contaAntiga);
+            return dtDados.AsEnumerable().Any(row => string.Equals(conta, row.Field<string>("conta"), StringComparison.OrdinalIgnoreCase) && !string.Equals(row.Field<string>("conta"), contaAntiga, StringComparison.OrdinalIgnoreCase));
+
         }
 
         public static bool verificarContaSintetica(string conta)

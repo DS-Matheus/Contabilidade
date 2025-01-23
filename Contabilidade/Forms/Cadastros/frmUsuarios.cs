@@ -56,7 +56,8 @@ namespace Contabilidade.Forms.Cadastros
 
         public static bool verificarExistenciaUsuario(string usuario)
         {
-            return dtDados.AsEnumerable().Any(row => usuario == row.Field<string>("nome"));
+            return dtDados.AsEnumerable().Any(row => string.Equals(usuario, row.Field<string>("nome"), StringComparison.OrdinalIgnoreCase));
+
         }
 
         private void btnCriar_Click(object sender, EventArgs e)
