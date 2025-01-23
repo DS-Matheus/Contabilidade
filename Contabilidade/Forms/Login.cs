@@ -31,12 +31,14 @@ namespace Contabilidade
         {
             InitializeComponent();
 
-            cbbBD.Select();
+            txtNome.Select();
         }
 
         private void carregarBDs()
         {
             string[] caminhosBDs = Directory.GetFiles(pastaDatabases, "*.sqlite");
+            // Ordenar os itens de forma alfabética inversa
+            Array.Sort(caminhosBDs, (x, y) => string.Compare(y, x));
             cbbBD.Items.Clear();
             nomesBDs.Clear();
 
@@ -157,17 +159,17 @@ namespace Contabilidade
                         testarResultadoComando(resultado, "Erro ao criar a conta 0 (referênte ao caixa)");
 
                         // Criar tabela de históricos
-                        comando.CommandText = "CREATE TABLE IF NOT EXISTS historicos (id INTEGER PRIMARY KEY AUTOINCREMENT, historico VARCHAR(100) NOT NULL UNIQUE);";
+                        comando.CommandText = "CREATE TABLE IF NOT EXISTS historicos (id INTEGER PRIMARY KEY AUTOINCREMENT, historico VARCHAR(300) NOT NULL UNIQUE);";
                         resultado = comando.ExecuteNonQuery();
                         testarResultadoComando(resultado, "Erro ao criar a tabela de históricos.");
 
                         // Criar tabela de lançamentos
-                        comando.CommandText = "CREATE TABLE IF NOT EXISTS lancamentos (id INTEGER PRIMARY KEY AUTOINCREMENT, conta VARCHAR(15) NOT NULL, valor NUMERIC(8,2) NOT NULL, data DATE DEFAULT (DATE('now')), id_historico INTEGER NOT NULL, saldo NUMERIC(8,2) NOT NULL, FOREIGN KEY (conta) REFERENCES contas(conta) ON UPDATE CASCADE ON DELETE RESTRICT, FOREIGN KEY (id_historico) REFERENCES historicos(id) ON UPDATE CASCADE ON DELETE RESTRICT);";
+                        comando.CommandText = "CREATE TABLE IF NOT EXISTS lancamentos (id INTEGER PRIMARY KEY AUTOINCREMENT, conta VARCHAR(15) NOT NULL, valor INTEGER NOT NULL, data DATE DEFAULT (DATE('now')), id_historico INTEGER NOT NULL, saldo INTEGER NOT NULL, FOREIGN KEY (conta) REFERENCES contas(conta) ON UPDATE CASCADE ON DELETE RESTRICT, FOREIGN KEY (id_historico) REFERENCES historicos(id) ON UPDATE CASCADE ON DELETE RESTRICT);";
                         resultado = comando.ExecuteNonQuery();
                         testarResultadoComando(resultado, "Erro ao criar a tabela de lançamentos.");
 
                         // Criar tabela para registro dos saldos do caixa
-                        comando.CommandText = "CREATE TABLE registros_caixa (data DATE PRIMARY KEY NOT NULL UNIQUE, saldo NUMERIC (8, 2) NOT NULL);";
+                        comando.CommandText = "CREATE TABLE registros_caixa (data DATE PRIMARY KEY NOT NULL UNIQUE, saldo INTEGER NOT NULL);";
                         resultado = comando.ExecuteNonQuery();
                         testarResultadoComando(resultado, "Erro ao criar a tabela para registros do caixa");
 
@@ -179,9 +181,29 @@ namespace Contabilidade
                         MessageBox.Show("O banco de dados foi criado.", "Operação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                         resetarForm();
-                        txtNome.Focus();
+                        txtNome.Select();
                     }
-                }    
+                }
+            }
+            catch (CustomException error)
+            {
+                MessageBox.Show($"{error.Message?.ToString()}", "Não foi possível criar o banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                // Se der algum erro mas o arquivo de banco já foi criado: excluir
+                if (File.Exists(caminhoBD))
+                {
+                    try
+                    {
+                        File.Delete(caminhoBD);
+                    }
+                    catch (Exception erro)
+                    {
+                        MessageBox.Show($"Não foi possível excluir o banco de dados, por favor, remova ele manualmente na pasta databases (dentro da instalação do programa) e anote o código de erro: \n\n{erro.Message.ToString()}", "Erro ao excluir o banco de dados com defeito", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+
+                resetarForm(true);
+                cbbBD.Select();
             }
             catch (Exception error)
             {
@@ -201,7 +223,7 @@ namespace Contabilidade
                 }
 
                 resetarForm(true);
-                cbbBD.Focus();
+                cbbBD.Select();
             }
         }
 
@@ -279,7 +301,7 @@ namespace Contabilidade
                 {
                     // Obter dados do formulário filho
                     (nomeBD, usuarioBD, senhaUsuarioBD) = (frmDados.nomeBD, frmDados.usuario, frmDados.senha);
-                    
+
                     criarBD();
                 }
             }
@@ -303,7 +325,7 @@ namespace Contabilidade
             {
                 MessageBox.Show("Não foi informado um nome para o banco!", tituloMensagem, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cbbBD.Text = "";
-                cbbBD.Focus();
+                cbbBD.Select();
 
                 return false;
             }
@@ -312,7 +334,7 @@ namespace Contabilidade
             {
                 MessageBox.Show("Não foi possivel localizar o banco de dados ou ele não existe!", tituloMensagem, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cbbBD.Text = "";
-                cbbBD.Focus();
+                cbbBD.Select();
 
                 return false;
             }
@@ -324,7 +346,7 @@ namespace Contabilidade
             else if (cbbBD.SelectedItem == null)
             {
                 MessageBox.Show("Nenhum banco de dados selecionado!", tituloMensagem, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cbbBD.Focus();
+                cbbBD.Select();
 
                 return false;
             }
@@ -356,7 +378,7 @@ namespace Contabilidade
                         carregarBDs();
 
                         cbbBD.Text = "";
-                        cbbBD.Focus();
+                        cbbBD.Select();
                     }
                 }
             }
@@ -383,7 +405,7 @@ namespace Contabilidade
                 }
                 else
                 {
-                    throw new Exception("Não foi possível renomear o arquivo, tente novamente com outro nome ou em outra pasta.");
+                    throw new Exception("Não foi possível renomear o arquivo, tente novamente com outro nome.");
                 }
 
                 // Resetar o formulário e carregar os bancos de dados
@@ -433,14 +455,14 @@ namespace Contabilidade
             else if (txtNome.Text == "")
             {
                 MessageBox.Show("Usuário não informado!", "Formulário Incompleto", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                txtNome.Focus();
+                txtNome.Select();
 
             }
             // Verifica se o usuário foi informado
             else if (txtSenha.Text == "")
             {
                 MessageBox.Show("Senha não informada!", "Formulário Incompleto", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                txtSenha.Focus();
+                txtSenha.Select();
             }
             else
             {
@@ -473,7 +495,7 @@ namespace Contabilidade
                     {
                         MessageBox.Show("Usuário ou senha inválido(s)!", "Registro não encontrado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                         txtSenha.Clear();
-                        txtSenha.Focus();
+                        txtSenha.Select();
                     }
                     else
                     {
@@ -492,7 +514,7 @@ namespace Contabilidade
                         resetarForm(true);
                         txtNome.Text = "";
                         txtSenha.Text = "";
-                        cbbBD.Focus();
+                        cbbBD.Select();
                         this.Visible = true;
                     }
                 }
@@ -522,28 +544,40 @@ namespace Contabilidade
             SendMessage(this.Handle, 0x112, 0xf012, 0);
         }
 
-        private void handleKeyPressEntrar(KeyPressEventArgs e)
+        private void txtNome_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == (char)Keys.Escape)
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                txtSenha.Select();
+            }
+            else if (e.KeyChar == (char)Keys.Escape)
             {
                 txtNome.Text = "";
                 txtSenha.Text = "";
-                txtNome.Focus();
+                txtNome.Select();
             }
-            else if (e.KeyChar == (char)Keys.Enter)
+            else
             {
-                btnEntrar.PerformClick();
+                ImpedirPressionarBarraEspaco(e);
             }
-        }
-
-        private void txtNome_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            handleKeyPressEntrar(e);
         }
 
         private void txtSenha_KeyPress(object sender, KeyPressEventArgs e)
         {
-            handleKeyPressEntrar(e);
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                btnEntrar.PerformClick();
+            }
+            else if (e.KeyChar == (char)Keys.Escape)
+            {
+                txtNome.Text = "";
+                txtSenha.Text = "";
+                txtNome.Select();
+            }
+            else
+            {
+                ImpedirPressionarBarraEspaco(e);
+            }
         }
 
         public static bool verificarExistenciaBancosSqlite(string caminhoDiretorio)
@@ -576,7 +610,7 @@ namespace Contabilidade
                 {
                     MessageBox.Show("Não foi informado um nome para o banco!", "Erro ao fazer backup", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     cbbBD.Text = "";
-                    cbbBD.Focus();
+                    cbbBD.Select();
                 }
                 // Se o arquivo do banco existir, fazer backup 
                 else if (File.Exists($"{pastaDatabases}\\{validarExtensaoBD(nomeBanco)}"))
@@ -587,7 +621,7 @@ namespace Contabilidade
                 {
                     MessageBox.Show("Não foi encontrado o arquivo do banco de dados selecionado", "Erro ao fazer backup", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     cbbBD.Text = "";
-                    cbbBD.Focus();
+                    cbbBD.Select();
                 }
 
             }
@@ -795,6 +829,192 @@ namespace Contabilidade
                 // Se o usuário cancelar a seleção da pasta, não faz nada
             }
             // Se respostaInicial for Cancel, não faz nada
+        }
+
+        private void btnTransferir_Click(object sender, EventArgs e)
+        {
+            // Verificar se o banco existe
+            if (verificarExistenciaBD("Erro ao localizar banco de dados"))
+            {
+                // Criar uma instância do formulário de dados e aguarda o retorno OK
+                using (var frmDados = new frmTransferirBD(pastaDatabases, cbbBD.Text))
+                {
+                    // O usuário apertou o botão de transferir
+                    if (frmDados.ShowDialog() == DialogResult.OK)
+                    {
+                        // Obter dados do formulário filho e passar para a função de transferir
+                        transferirBD(frmDados.nomeBD);
+                    }
+                }
+            }
+            else
+            {
+                nomeBD = "";
+            }
+        }
+
+        private void testarExistenciaTabelaBD(bool resultado, bool resultadoSucesso, string mensagem)
+        {
+            if (resultado != resultadoSucesso)
+            {
+                throw new CustomException(mensagem);
+            }
+        }
+
+        private bool verificarExistenciaTabelaBD(SQLiteCommand comando, string tabelaBD)
+        {
+            comando.CommandText = $"SELECT name FROM sqlite_master WHERE type='table' AND name='{tabelaBD}';";
+            comando.Parameters.AddWithValue("@tabela", tabelaBD);
+            var resultado = comando.ExecuteScalar();
+
+            comando.Parameters.Clear();
+
+            if (resultado == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        private void transferirBD(string nomeBDNovo)
+        {
+            caminhoBD = $"{pastaDatabases}\\{nomeBD}";
+            var caminhoNovoBD = $"{Path.GetDirectoryName(caminhoBD)}\\{nomeBDNovo}";
+
+            try
+            {
+                // Copiar o banco com o novo nome
+                File.Copy(caminhoBD, caminhoNovoBD);
+
+                // Verificar se o arquivo foi movido
+                if (File.Exists(caminhoNovoBD))
+                {
+                    try
+                    {
+                        // Abrir conexão com o novo banco
+                        using (var conexaoBanco = new SQLiteConnection("Data Source=" + caminhoNovoBD))
+                        {
+                            conexaoBanco.Open();
+
+                            using (var comando = new SQLiteCommand("", conexaoBanco))
+                            {
+                                // Excluir a tabela antiga de lançamentos
+                                comando.CommandText = "DROP TABLE IF EXISTS lancamentos;";
+                                comando.ExecuteNonQuery();
+                                // Comandos para verificar se a tabela ainda existe
+                                var resultado = verificarExistenciaTabelaBD(comando, "lancamentos");
+                                testarExistenciaTabelaBD(resultado, false, "Erro ao excluir a tabela antiga de lançamentos.");
+
+                                // Excluir a tabela antiga de registros do caixa
+                                comando.CommandText = "DROP TABLE IF EXISTS registros_caixa;";
+                                comando.ExecuteNonQuery();
+                                // Comandos para verificar se a tabela ainda existe
+                                resultado = verificarExistenciaTabelaBD(comando, "registros_caixa");
+                                testarExistenciaTabelaBD(resultado, false, "Erro ao excluir a tabela antiga de registros do caixa.");
+
+                                // Criar novamente as tabelas excluídas
+                                // Criar tabela de lançamentos
+                                comando.CommandText = "CREATE TABLE IF NOT EXISTS lancamentos (id INTEGER PRIMARY KEY AUTOINCREMENT, conta VARCHAR(15) NOT NULL, valor INTEGER NOT NULL, data DATE DEFAULT (DATE('now')), id_historico INTEGER NOT NULL, saldo INTEGER NOT NULL, FOREIGN KEY (conta) REFERENCES contas(conta) ON UPDATE CASCADE ON DELETE RESTRICT, FOREIGN KEY (id_historico) REFERENCES historicos(id) ON UPDATE CASCADE ON DELETE RESTRICT);";
+                                comando.ExecuteNonQuery();
+                                resultado = verificarExistenciaTabelaBD(comando, "lancamentos");
+                                testarExistenciaTabelaBD(resultado, true, "Erro ao recriar a tabela de lançamentos.");
+
+                                // Criar tabela para registro dos saldos do caixa
+                                comando.CommandText = "CREATE TABLE registros_caixa (data DATE PRIMARY KEY NOT NULL UNIQUE, saldo INTEGER NOT NULL);";
+                                comando.ExecuteNonQuery();
+                                resultado = verificarExistenciaTabelaBD(comando, "registros_caixa");
+                                testarExistenciaTabelaBD(resultado, true, "Erro ao recriar a tabela para registros do caixa");
+
+                                // Carregar tabela com o novo banco e desconectar
+                                carregarBDs();
+
+                                cbbBD.Text = nomeBDNovo.Replace(".sqlite", "");
+
+                                MessageBox.Show("O banco de dados foi transferido com sucesso!.", "Operação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                                resetarForm();
+                                txtNome.Select();
+                            }
+                        }
+                    }
+                    catch (CustomException error)
+                    {
+                        MessageBox.Show($"{error.Message?.ToString()}", "Não foi possível transferir o banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                        // Se der algum erro mas o arquivo de banco já foi criado: excluir
+                        if (File.Exists(caminhoNovoBD))
+                        {
+                            try
+                            {
+                                File.Delete(caminhoNovoBD);
+                            }
+                            catch (Exception erro)
+                            {
+                                MessageBox.Show($"Não foi possível excluir o banco de dados com erro, por favor, remova ele manualmente na pasta databases (dentro da instalação do programa) e anote o código de erro: \n\n{erro.Message.ToString()}", "Erro ao excluir o banco de dados com defeito", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+
+                        resetarForm(true);
+                        cbbBD.Select();
+                    }
+                    catch (Exception error)
+                    {
+                        MessageBox.Show($"Houve um erro ao transferir o banco de dados, anote a mensagem de erro: \n\n{error.Message?.ToString()}", "Não foi possível transferir o banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                        // Se der algum erro mas o arquivo de banco já foi criado: excluir
+                        if (File.Exists(caminhoNovoBD))
+                        {
+                            try
+                            {
+                                File.Delete(caminhoNovoBD);
+                            }
+                            catch (Exception erro)
+                            {
+                                MessageBox.Show($"Não foi possível excluir o banco de dados com erro, por favor, remova ele manualmente na pasta databases (dentro da instalação do programa) e anote o código de erro: \n\n{erro.Message.ToString()}", "Erro ao excluir o banco de dados com defeito", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+
+                        resetarForm(true);
+                        cbbBD.Select();
+                    }
+                }
+                else
+                {
+                    throw new Exception("Não foi possível transferir o arquivo, tente novamente com outro nome.");
+                }
+            }
+            catch (IOException ex)
+            {
+                // Resetar o formulário e carregar os bancos de dados
+                resetarForm();
+                carregarBDs();
+
+                MessageBox.Show($"Erro de IO, anote a mensagem de erro: \n\n{ex.Message}", "Erro ao transferir o arquivo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                // Resetar o formulário e carregar os bancos de dados
+                resetarForm();
+                carregarBDs();
+
+                MessageBox.Show($"{ex.Message}", "Erro ao transferir o arquivo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void cbbBD_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            ImpedirPressionarBarraEspaco(e);
+        }
+
+        public static void ImpedirPressionarBarraEspaco(KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Space)
+            {
+                e.Handled = true;
+            }
         }
     }
 }

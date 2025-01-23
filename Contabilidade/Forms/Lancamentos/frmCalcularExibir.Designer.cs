@@ -64,7 +64,7 @@
             pnlBarraTitulo.Dock = DockStyle.Top;
             pnlBarraTitulo.Location = new Point(0, 0);
             pnlBarraTitulo.Name = "pnlBarraTitulo";
-            pnlBarraTitulo.Size = new Size(241, 30);
+            pnlBarraTitulo.Size = new Size(304, 30);
             pnlBarraTitulo.TabIndex = 9;
             pnlBarraTitulo.MouseDown += pnlBarraTitulo_MouseDown;
             // 
@@ -76,7 +76,7 @@
             btnMinimizar.FlatStyle = FlatStyle.Flat;
             btnMinimizar.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnMinimizar.ForeColor = Color.White;
-            btnMinimizar.Location = new Point(181, 0);
+            btnMinimizar.Location = new Point(244, 0);
             btnMinimizar.Name = "btnMinimizar";
             btnMinimizar.Size = new Size(30, 30);
             btnMinimizar.TabIndex = 4;
@@ -87,11 +87,11 @@
             // lblTitulo
             // 
             lblTitulo.AutoSize = true;
-            lblTitulo.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblTitulo.Font = new Font("Lucida Sans", 10F);
             lblTitulo.ForeColor = Color.White;
             lblTitulo.Location = new Point(12, 7);
             lblTitulo.Name = "lblTitulo";
-            lblTitulo.Size = new Size(164, 16);
+            lblTitulo.Size = new Size(189, 16);
             lblTitulo.TabIndex = 1;
             lblTitulo.Text = "Verificação de lançamentos";
             lblTitulo.MouseDown += lblTitulo_MouseDown;
@@ -104,7 +104,7 @@
             btnFechar.FlatStyle = FlatStyle.Flat;
             btnFechar.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnFechar.ForeColor = Color.White;
-            btnFechar.Location = new Point(211, 0);
+            btnFechar.Location = new Point(274, 0);
             btnFechar.Name = "btnFechar";
             btnFechar.Size = new Size(30, 30);
             btnFechar.TabIndex = 5;
@@ -115,9 +115,10 @@
             // groupBox1
             // 
             groupBox1.Controls.Add(txtPeriodo);
-            groupBox1.Location = new Point(17, 36);
+            groupBox1.Font = new Font("Lucida Sans", 10.5F, FontStyle.Bold);
+            groupBox1.Location = new Point(15, 36);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(207, 54);
+            groupBox1.Size = new Size(275, 54);
             groupBox1.TabIndex = 10;
             groupBox1.TabStop = false;
             groupBox1.Text = "Período";
@@ -128,7 +129,7 @@
             txtPeriodo.Location = new Point(6, 22);
             txtPeriodo.Name = "txtPeriodo";
             txtPeriodo.ReadOnly = true;
-            txtPeriodo.Size = new Size(192, 23);
+            txtPeriodo.Size = new Size(263, 24);
             txtPeriodo.TabIndex = 0;
             txtPeriodo.TextAlign = HorizontalAlignment.Center;
             // 
@@ -138,9 +139,10 @@
             groupBox2.Controls.Add(txtCreditos);
             groupBox2.Controls.Add(label4);
             groupBox2.Controls.Add(label5);
-            groupBox2.Location = new Point(17, 96);
+            groupBox2.Font = new Font("Lucida Sans", 10.5F, FontStyle.Bold);
+            groupBox2.Location = new Point(15, 96);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(207, 80);
+            groupBox2.Size = new Size(275, 84);
             groupBox2.TabIndex = 11;
             groupBox2.TabStop = false;
             groupBox2.Text = "Valores de lançamentos";
@@ -148,38 +150,42 @@
             // txtDebitos
             // 
             txtDebitos.BackColor = Color.White;
-            txtDebitos.Location = new Point(111, 50);
+            txtDebitos.Font = new Font("Lucida Sans", 10.5F);
+            txtDebitos.Location = new Point(144, 50);
             txtDebitos.Name = "txtDebitos";
             txtDebitos.ReadOnly = true;
-            txtDebitos.Size = new Size(90, 23);
+            txtDebitos.Size = new Size(125, 24);
             txtDebitos.TabIndex = 25;
             txtDebitos.TextAlign = HorizontalAlignment.Right;
             // 
             // txtCreditos
             // 
             txtCreditos.BackColor = Color.White;
-            txtCreditos.Location = new Point(111, 24);
+            txtCreditos.Font = new Font("Lucida Sans", 10.5F);
+            txtCreditos.Location = new Point(144, 24);
             txtCreditos.Name = "txtCreditos";
             txtCreditos.ReadOnly = true;
-            txtCreditos.Size = new Size(90, 23);
+            txtCreditos.Size = new Size(125, 24);
             txtCreditos.TabIndex = 24;
             txtCreditos.TextAlign = HorizontalAlignment.Right;
             // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(58, 53);
+            label4.Font = new Font("Lucida Sans", 10.5F);
+            label4.Location = new Point(80, 53);
             label4.Name = "label4";
-            label4.Size = new Size(47, 15);
+            label4.Size = new Size(58, 16);
             label4.TabIndex = 22;
             label4.Text = "Débitos";
             // 
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(54, 27);
+            label5.Font = new Font("Lucida Sans", 10.5F);
+            label5.Location = new Point(75, 27);
             label5.Name = "label5";
-            label5.Size = new Size(51, 15);
+            label5.Size = new Size(63, 16);
             label5.TabIndex = 20;
             label5.Text = "Créditos";
             // 
@@ -189,9 +195,10 @@
             groupBox3.Controls.Add(txtSaldoAnterior);
             groupBox3.Controls.Add(label3);
             groupBox3.Controls.Add(label2);
-            groupBox3.Location = new Point(17, 182);
+            groupBox3.Font = new Font("Lucida Sans", 10.5F, FontStyle.Bold);
+            groupBox3.Location = new Point(15, 186);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new Size(207, 72);
+            groupBox3.Size = new Size(275, 81);
             groupBox3.TabIndex = 12;
             groupBox3.TabStop = false;
             groupBox3.Text = "Valores em caixa";
@@ -199,46 +206,51 @@
             // txtSaldoFinal
             // 
             txtSaldoFinal.BackColor = Color.White;
-            txtSaldoFinal.Location = new Point(111, 40);
+            txtSaldoFinal.Font = new Font("Lucida Sans", 10.5F);
+            txtSaldoFinal.Location = new Point(144, 46);
             txtSaldoFinal.Name = "txtSaldoFinal";
             txtSaldoFinal.ReadOnly = true;
-            txtSaldoFinal.Size = new Size(90, 23);
+            txtSaldoFinal.Size = new Size(125, 24);
             txtSaldoFinal.TabIndex = 27;
             txtSaldoFinal.TextAlign = HorizontalAlignment.Right;
             // 
             // txtSaldoAnterior
             // 
             txtSaldoAnterior.BackColor = Color.White;
-            txtSaldoAnterior.Location = new Point(111, 14);
+            txtSaldoAnterior.Font = new Font("Lucida Sans", 10.5F);
+            txtSaldoAnterior.Location = new Point(144, 20);
             txtSaldoAnterior.Name = "txtSaldoAnterior";
             txtSaldoAnterior.ReadOnly = true;
-            txtSaldoAnterior.Size = new Size(90, 23);
+            txtSaldoAnterior.Size = new Size(125, 24);
             txtSaldoAnterior.TabIndex = 26;
             txtSaldoAnterior.TextAlign = HorizontalAlignment.Right;
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(27, 43);
+            label3.Font = new Font("Lucida Sans", 10.5F);
+            label3.Location = new Point(45, 49);
             label3.Name = "label3";
-            label3.Size = new Size(78, 15);
+            label3.Size = new Size(93, 16);
             label3.TabIndex = 18;
             label3.Text = "Saldo final (-)";
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(6, 17);
+            label2.Font = new Font("Lucida Sans", 10.5F);
+            label2.Location = new Point(16, 23);
             label2.Name = "label2";
-            label2.Size = new Size(99, 15);
+            label2.Size = new Size(122, 16);
             label2.TabIndex = 16;
             label2.Text = "Saldo anterior (+)";
             // 
             // btnFechar2
             // 
-            btnFechar2.Location = new Point(17, 321);
+            btnFechar2.Font = new Font("Lucida Sans", 10.5F);
+            btnFechar2.Location = new Point(15, 334);
             btnFechar2.Name = "btnFechar2";
-            btnFechar2.Size = new Size(207, 28);
+            btnFechar2.Size = new Size(275, 28);
             btnFechar2.TabIndex = 13;
             btnFechar2.Text = "Fechar";
             btnFechar2.UseVisualStyleBackColor = true;
@@ -247,19 +259,21 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(48, 25);
+            label1.Font = new Font("Lucida Sans", 10.5F);
+            label1.Location = new Point(68, 25);
             label1.Name = "label1";
-            label1.Size = new Size(57, 15);
+            label1.Size = new Size(70, 16);
             label1.TabIndex = 14;
             label1.Text = "Diferença";
             // 
             // txtDiferenca
             // 
             txtDiferenca.BackColor = Color.White;
-            txtDiferenca.Location = new Point(111, 22);
+            txtDiferenca.Font = new Font("Lucida Sans", 10.5F);
+            txtDiferenca.Location = new Point(144, 22);
             txtDiferenca.Name = "txtDiferenca";
             txtDiferenca.ReadOnly = true;
-            txtDiferenca.Size = new Size(90, 23);
+            txtDiferenca.Size = new Size(125, 24);
             txtDiferenca.TabIndex = 26;
             txtDiferenca.TextAlign = HorizontalAlignment.Right;
             // 
@@ -267,9 +281,10 @@
             // 
             groupBox4.Controls.Add(txtDiferenca);
             groupBox4.Controls.Add(label1);
-            groupBox4.Location = new Point(17, 260);
+            groupBox4.Font = new Font("Lucida Sans", 10.5F, FontStyle.Bold);
+            groupBox4.Location = new Point(15, 273);
             groupBox4.Name = "groupBox4";
-            groupBox4.Size = new Size(207, 55);
+            groupBox4.Size = new Size(275, 55);
             groupBox4.TabIndex = 27;
             groupBox4.TabStop = false;
             groupBox4.Text = "Resultado";
@@ -278,7 +293,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(241, 361);
+            ClientSize = new Size(304, 371);
             Controls.Add(groupBox4);
             Controls.Add(btnFechar2);
             Controls.Add(groupBox3);

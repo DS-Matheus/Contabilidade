@@ -26,6 +26,7 @@ namespace Contabilidade.Forms.Cadastros
             InitializeComponent();
 
             txtTitulo.Text = titulo;
+            txtTitulo.Select();
         }
 
         private void btnFechar_Click(object sender, EventArgs e)

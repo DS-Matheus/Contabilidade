@@ -1,6 +1,6 @@
-﻿namespace Contabilidade.Forms.Cadastros
+﻿namespace Contabilidade.Forms
 {
-    partial class frmHistoricosDados
+    partial class frmTransferirBD
     {
         /// <summary>
         /// Required designer variable.
@@ -33,9 +33,9 @@
             lblTitulo = new Label();
             btnFechar = new Button();
             panel1 = new Panel();
-            txtHistorico = new TextBox();
-            label1 = new Label();
-            btnSalvar = new Button();
+            txtBancoDados = new TextBox();
+            label3 = new Label();
+            btnTransferir = new Button();
             pnlBarraTitulo.SuspendLayout();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -49,8 +49,8 @@
             pnlBarraTitulo.Dock = DockStyle.Top;
             pnlBarraTitulo.Location = new Point(0, 0);
             pnlBarraTitulo.Name = "pnlBarraTitulo";
-            pnlBarraTitulo.Size = new Size(594, 30);
-            pnlBarraTitulo.TabIndex = 6;
+            pnlBarraTitulo.Size = new Size(398, 30);
+            pnlBarraTitulo.TabIndex = 8;
             pnlBarraTitulo.MouseDown += pnlBarraTitulo_MouseDown;
             // 
             // btnMinimizar
@@ -61,10 +61,10 @@
             btnMinimizar.FlatStyle = FlatStyle.Flat;
             btnMinimizar.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnMinimizar.ForeColor = Color.White;
-            btnMinimizar.Location = new Point(534, 0);
+            btnMinimizar.Location = new Point(338, 0);
             btnMinimizar.Name = "btnMinimizar";
             btnMinimizar.Size = new Size(30, 30);
-            btnMinimizar.TabIndex = 4;
+            btnMinimizar.TabIndex = 3;
             btnMinimizar.Text = "--";
             btnMinimizar.UseVisualStyleBackColor = true;
             btnMinimizar.Click += btnMinimizar_Click;
@@ -76,9 +76,9 @@
             lblTitulo.ForeColor = Color.White;
             lblTitulo.Location = new Point(12, 7);
             lblTitulo.Name = "lblTitulo";
-            lblTitulo.Size = new Size(232, 16);
+            lblTitulo.Size = new Size(186, 16);
             lblTitulo.TabIndex = 1;
-            lblTitulo.Text = "Formulário de dados de históricos";
+            lblTitulo.Text = "Renomear banco de dados";
             lblTitulo.MouseDown += lblTitulo_MouseDown;
             // 
             // btnFechar
@@ -89,69 +89,69 @@
             btnFechar.FlatStyle = FlatStyle.Flat;
             btnFechar.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnFechar.ForeColor = Color.White;
-            btnFechar.Location = new Point(564, 0);
+            btnFechar.Location = new Point(368, 0);
             btnFechar.Name = "btnFechar";
             btnFechar.Size = new Size(30, 30);
-            btnFechar.TabIndex = 5;
+            btnFechar.TabIndex = 4;
             btnFechar.Text = "X";
             btnFechar.UseVisualStyleBackColor = true;
             btnFechar.Click += btnFechar_Click;
             // 
             // panel1
             // 
-            panel1.Controls.Add(txtHistorico);
-            panel1.Controls.Add(label1);
-            panel1.Controls.Add(btnSalvar);
+            panel1.Controls.Add(txtBancoDados);
+            panel1.Controls.Add(label3);
+            panel1.Controls.Add(btnTransferir);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 30);
             panel1.Name = "panel1";
-            panel1.Size = new Size(594, 175);
-            panel1.TabIndex = 7;
+            panel1.Size = new Size(398, 120);
+            panel1.TabIndex = 9;
             // 
-            // txtHistorico
+            // txtBancoDados
             // 
-            txtHistorico.Font = new Font("Lucida Sans", 10.5F);
-            txtHistorico.Location = new Point(31, 34);
-            txtHistorico.MaxLength = 300;
-            txtHistorico.Multiline = true;
-            txtHistorico.Name = "txtHistorico";
-            txtHistorico.Size = new Size(533, 82);
-            txtHistorico.TabIndex = 4;
-            txtHistorico.KeyPress += txtHistorico_KeyPress;
+            txtBancoDados.Font = new Font("Lucida Sans", 10.5F);
+            txtBancoDados.Location = new Point(32, 35);
+            txtBancoDados.MaxLength = 30;
+            txtBancoDados.Name = "txtBancoDados";
+            txtBancoDados.Size = new Size(335, 24);
+            txtBancoDados.TabIndex = 1;
+            txtBancoDados.KeyPress += txtBancoDados_KeyPress;
             // 
-            // label1
+            // label3
             // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Lucida Sans", 10.5F);
-            label1.Location = new Point(31, 16);
-            label1.Name = "label1";
-            label1.Size = new Size(66, 16);
-            label1.TabIndex = 1;
-            label1.Text = "Histórico";
+            label3.AutoSize = true;
+            label3.Font = new Font("Lucida Sans", 10.5F);
+            label3.Location = new Point(32, 17);
+            label3.Margin = new Padding(3, 10, 3, 0);
+            label3.Name = "label3";
+            label3.Size = new Size(115, 16);
+            label3.TabIndex = 5;
+            label3.Text = "Banco de dados";
             // 
-            // btnSalvar
+            // btnTransferir
             // 
-            btnSalvar.Font = new Font("Lucida Sans", 10.5F);
-            btnSalvar.Location = new Point(169, 129);
-            btnSalvar.Margin = new Padding(3, 10, 3, 3);
-            btnSalvar.Name = "btnSalvar";
-            btnSalvar.Size = new Size(256, 32);
-            btnSalvar.TabIndex = 3;
-            btnSalvar.Text = "Salvar";
-            btnSalvar.UseVisualStyleBackColor = true;
-            btnSalvar.Click += btnSalvar_Click;
+            btnTransferir.Font = new Font("Lucida Sans", 10.5F);
+            btnTransferir.Location = new Point(32, 71);
+            btnTransferir.Margin = new Padding(3, 10, 3, 3);
+            btnTransferir.Name = "btnTransferir";
+            btnTransferir.Size = new Size(335, 32);
+            btnTransferir.TabIndex = 2;
+            btnTransferir.Text = "Transferir";
+            btnTransferir.UseVisualStyleBackColor = true;
+            btnTransferir.Click += btnTransferir_Click;
             // 
-            // frmHistoricosDados
+            // frmTransferirBD
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(594, 205);
+            ClientSize = new Size(398, 150);
             Controls.Add(panel1);
             Controls.Add(pnlBarraTitulo);
             FormBorderStyle = FormBorderStyle.None;
-            Name = "frmHistoricosDados";
+            Name = "frmTransferirBD";
             StartPosition = FormStartPosition.CenterParent;
-            Text = "frmHistoricosDados";
+            Text = "frmTransferirBD";
             pnlBarraTitulo.ResumeLayout(false);
             pnlBarraTitulo.PerformLayout();
             panel1.ResumeLayout(false);
@@ -166,8 +166,8 @@
         private Label lblTitulo;
         private Button btnFechar;
         private Panel panel1;
-        private Label label1;
-        private Button btnSalvar;
-        private TextBox txtHistorico;
+        private TextBox txtBancoDados;
+        private Label label3;
+        private Button btnTransferir;
     }
 }

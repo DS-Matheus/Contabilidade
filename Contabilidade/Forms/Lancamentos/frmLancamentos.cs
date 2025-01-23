@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.SQLite;
 using Contabilidade.Classes;
 using Contabilidade.Forms.Cadastros;
+using System.Windows.Forms;
 
 namespace Contabilidade.Forms.Lancamentos
 {
@@ -12,7 +13,7 @@ namespace Contabilidade.Forms.Lancamentos
         static DataTable dtDados = new DataTable();
         DataView dv = dtDados.DefaultView;
         public static string conta { get; set; } = "";
-        public static decimal valor { get; set; } = 0;
+        public static int valor { get; set; } = 0;
         public static string id_historico { get; set; } = "";
         public static DateTime data { get; set; } = DateTime.MinValue;
 
@@ -23,8 +24,11 @@ namespace Contabilidade.Forms.Lancamentos
             con = conexaoBanco;
 
             configurarColunaValor();
-
             atualizarDataGrid();
+
+            dgvLancamentos.Columns["ID"].Visible = false;
+
+            txtFiltrar.Select();
         }
 
         private void configurarColunaValor()
@@ -36,28 +40,20 @@ namespace Contabilidade.Forms.Lancamentos
             }
             dtDados.Columns.Add("valor", typeof(decimal));
 
-            // Exibir 2 casas decimais
+            // Definir a posição da coluna "valor" como a quarta coluna (índice 3)
+            dtDados.Columns["valor"].SetOrdinal(0);
+
+            // Exibir 2 casas decimais no DataGridView
             dgvLancamentos.Columns["valor"].DefaultCellStyle.Format = "N2";
         }
+
 
         private void atualizarDataGrid()
         {
             // Query de pesquisa
-            string sql = "SELECT l.id, l.conta, c.descricao, l.valor, l.data, l.id_historico, h.historico FROM lancamentos l JOIN contas c ON l.conta = c.conta JOIN historicos h ON l.id_historico = h.id ORDER BY l.data DESC, l.conta";
+            string sql = "SELECT l.id, l.conta, c.descricao, (l.valor / 100.0) as valor, l.data, l.id_historico, h.historico FROM lancamentos l JOIN contas c ON l.conta = c.conta JOIN historicos h ON l.id_historico = h.id ORDER BY l.data DESC, l.conta";
             using (var command = new SQLiteCommand(sql, con.conn))
             {
-                dtDados.Clear();
-                using (var reader = command.ExecuteReader())
-                {
-                    dtDados.Load(reader);
-                }
-
-                dgvLancamentos.DataSource = dtDados;
-
-                txtFiltrar.Text = "";
-                dv.RowFilter = $"conta LIKE '{txtFiltrar.Text}%'";
-                dgvLancamentos.DataSource = dv;
-
                 // Alterar filtros somente se for diferente - para não acionar os handlers de forma desnecessária
                 if (cbbFiltrar.SelectedIndex != 0)
                 {
@@ -71,10 +67,22 @@ namespace Contabilidade.Forms.Lancamentos
                 {
                     cbbFiltrarValores.SelectedIndex = 0;
                 }
+
+                dgvLancamentos.DataSource = dtDados;
+
+                dtDados.Clear();
+                using (var reader = command.ExecuteReader())
+                {
+                    dtDados.Load(reader);
+                }
+
+                txtFiltrar.Text = "";
+                dv.RowFilter = $"conta LIKE '{txtFiltrar.Text}%'";
+                dgvLancamentos.DataSource = dv;
             }
         }
 
-        public static void reverterLancamentos(Conexao con, SQLiteCommand comando, decimal valorOriginal, SQLiteTransaction transacao)
+        public static void reverterLancamentos(Conexao con, SQLiteCommand comando, int valorOriginal, SQLiteTransaction transacao)
         {
             using (var reader = comando.ExecuteReader())
             {
@@ -112,11 +120,29 @@ namespace Contabilidade.Forms.Lancamentos
             }
         }
 
-        public static void excluirLancamento(Conexao con, string ID, string dataConvertida, decimal valorLancamento, SQLiteTransaction transacao)
+        public static void excluirLancamento(Conexao con, string ID, string dataConvertida, SQLiteTransaction transacao)
         {
             using (var comando = new SQLiteCommand("", con.conn))
             {
                 comando.Transaction = transacao;
+
+                // Obter valor do lançamento
+                comando.CommandText = "SELECT valor FROM lancamentos WHERE id = @id;";
+                comando.Parameters.AddWithValue("@id", ID);
+                
+                var valorLancamento = 0;
+
+                var result = comando.ExecuteScalar();
+                if (result != null)
+                {
+                    valorLancamento = Convert.ToInt32(result);
+                }
+                else
+                {
+                    throw new CustomException("Não foi possível obter o valor do lançamento, tente novamente ou contate o desenvolvedor do sistema.");
+                }
+
+                comando.Parameters.Clear();
 
                 // Reverter valores do lançamento na sua data -> atualizar saldos nos lançamentos seguintes
                 comando.CommandText = "SELECT id FROM lancamentos WHERE data = @data AND id > @id;";
@@ -147,7 +173,7 @@ namespace Contabilidade.Forms.Lancamentos
         public void criarLancamento(SQLiteCommand comando, SQLiteTransaction transacao)
         {
             // Variável para armazenar o saldo da conta antes do lançamento
-            decimal saldo = 0;
+            int saldo = 0;
 
             // Verificar se a data obtida não é a padrão (se sim: houve um erro na hora de obter os dados)
             if (DateTime.MinValue == data)
@@ -168,7 +194,7 @@ namespace Contabilidade.Forms.Lancamentos
             var result = comando.ExecuteScalar();
             if (result != null)
             {
-                saldo = Convert.ToDecimal(result);
+                saldo = Convert.ToInt32(result);
             }
             else
             {
@@ -249,10 +275,10 @@ namespace Contabilidade.Forms.Lancamentos
             {
                 // Obter valor de saldo anterior
                 comando.CommandText = "SELECT COALESCE((SELECT saldo FROM registros_caixa WHERE data <= @data ORDER BY data DESC LIMIT 1), 0);";
-                var saldoAnterior = Convert.ToDecimal(comando.ExecuteScalar());
+                var saldoAnterior = Convert.ToInt32(comando.ExecuteScalar());
 
                 comando.CommandText = "INSERT INTO registros_caixa (data, saldo) VALUES (@data, @saldo);";
-                comando.Parameters.AddWithValue("@saldo", (saldoAnterior + valor));
+                comando.Parameters.AddWithValue("@saldo", saldoAnterior + valor);
             }
 
             var resultado = comando.ExecuteNonQuery();
@@ -278,7 +304,7 @@ namespace Contabilidade.Forms.Lancamentos
                     // Para cada campo encontrado
                     while (reader.Read())
                     {
-                        string data = reader["data"]?.ToString();
+                        string data = Convert.ToDateTime(reader["data"]).ToString("yyyy-MM-dd");
 
                         // Atualizar os campos no banco de dados
                         comando2.Parameters.Clear();
@@ -396,8 +422,8 @@ namespace Contabilidade.Forms.Lancamentos
                     comando.Parameters.AddWithValue("@dataFinal", dataFinal);
 
                     // Criação de variáveis
-                    var creditos = 0m;
-                    var debitos = 0m;
+                    var creditos = 0;
+                    var debitos = 0;
 
                     using (var reader = comando.ExecuteReader())
                     {
@@ -405,11 +431,11 @@ namespace Contabilidade.Forms.Lancamentos
                         {
                             // Obter valor de crédito
                             var valorBD = reader.GetOrdinal("creditos");
-                            creditos = reader.IsDBNull(valorBD) ? 0 : reader.GetDecimal(valorBD);
+                            creditos = reader.IsDBNull(valorBD) ? 0 : reader.GetInt32(valorBD);
 
                             // Obter valor de débito
                             valorBD = reader.GetOrdinal("debitos");
-                            debitos = reader.IsDBNull(valorBD) ? 0 : reader.GetDecimal(valorBD);
+                            debitos = reader.IsDBNull(valorBD) ? 0 : reader.GetInt32(valorBD);
                         }
                         else
                         {
@@ -421,14 +447,14 @@ namespace Contabilidade.Forms.Lancamentos
                     comando.CommandText = "SELECT data, saldo FROM registros_caixa WHERE data <= @dataFinal ORDER BY data DESC LIMIT 1;";
 
                     DateTime dataSaldoAtual = DateTime.MinValue;
-                    decimal saldoFinal = 0m;
+                    var saldoFinal = 0;
 
                     using (var reader2 = comando.ExecuteReader())
                     {
                         if (reader2.Read())
                         {
                             dataSaldoAtual = Convert.ToDateTime(reader2["data"]);
-                            saldoFinal = reader2.GetDecimal(1);
+                            saldoFinal = reader2.GetInt32(1);
                         }
                     }
 
@@ -462,14 +488,21 @@ namespace Contabilidade.Forms.Lancamentos
                         throw new CustomException("Houve um erro na hora de obter o saldo inicial do caixa, por favor, tente novamente ou contate o desenvolvedor");
                     }
 
-                    var saldoAnterior = Convert.ToDecimal(comando.ExecuteScalar());
+                    var saldoAnterior = Convert.ToInt32(comando.ExecuteScalar());
 
                     // Calcular balanço final do periodo
                     var balanco = creditos + debitos + saldoAnterior - saldoFinal;
 
+                    // Converter para decimal
+                    decimal balancoDecimal = balanco / 100m;
+                    decimal creditosDecimal = creditos / 100m;
+                    decimal debitosDecimal = debitos / 100m;
+                    decimal saldoAnteriorDecimal = saldoAnterior/ 100m;
+                    decimal saldoFinalDecimal = saldoFinal / 100m;
+
                     // Exibir resultados ao usuário
                     var periodo = $"{dataInicialFormatada} a {dataFinalFormatada}";
-                    var formExibir = new frmCalcularExibir(periodo, creditos, debitos, saldoAnterior, saldoFinal, balanco);
+                    var formExibir = new frmCalcularExibir(periodo, creditosDecimal, debitosDecimal, saldoAnteriorDecimal, saldoFinalDecimal, balancoDecimal);
                     formExibir.ShowDialog();
                 }
             }
@@ -500,7 +533,7 @@ namespace Contabilidade.Forms.Lancamentos
                     var dataAntigo = Convert.ToDateTime(selectedRow.Cells["Data"].Value);
                     var contaAntiga = selectedRow.Cells["Conta"].Value.ToString();
                     var descricaoAntiga = selectedRow.Cells["Descrição"].Value.ToString();
-                    var valorAntigo = Convert.ToDecimal(selectedRow.Cells["Valor"].Value);
+                    var valorAntigo = Convert.ToInt32(selectedRow.Cells["Valor"].Value);
                     var id_historicoAntigo = selectedRow.Cells["ID_Historico"].Value.ToString();
                     var historicoAntigo = selectedRow.Cells["Histórico"].Value.ToString();
 
@@ -522,7 +555,7 @@ namespace Contabilidade.Forms.Lancamentos
                                     try
                                     {
                                         // Excluir registro anterior e atualizar valoress
-                                        excluirLancamento(con, idAntigo, dataAntigo.ToString("yyyy-MM-dd"), valorAntigo, transacao);
+                                        excluirLancamento(con, idAntigo, dataAntigo.ToString("yyyy-MM-dd"), transacao);
 
                                         // Verificar se a data obtida não é a padrão (se sim: houve um erro na hora de obter os dados)
                                         if (DateTime.MinValue == data)
@@ -590,7 +623,6 @@ namespace Contabilidade.Forms.Lancamentos
                         // Obtem os valores do lançamento a ser excluido
                         var idExcluir = selectedRow.Cells["ID"].Value.ToString();
                         var dataExcluir = Convert.ToDateTime(selectedRow.Cells["Data"].Value);
-                        var valorAntigo = Convert.ToDecimal(selectedRow.Cells["Valor"].Value);
 
                         using (var transacao = con.conn.BeginTransaction())
                         {
@@ -600,7 +632,7 @@ namespace Contabilidade.Forms.Lancamentos
                                 {
                                     comando.Transaction = transacao;
 
-                                    excluirLancamento(con, idExcluir, dataExcluir.ToString("yyyy-MM-dd"), valorAntigo, transacao);
+                                    excluirLancamento(con, idExcluir, dataExcluir.ToString("yyyy-MM-dd"), transacao);
 
                                     // Efetivar alterações
                                     transacao.Commit();
@@ -645,11 +677,14 @@ namespace Contabilidade.Forms.Lancamentos
                     txtFiltrar.MaxLength = 15;
                     break;
                 // Descrição
-                // Histórico
                 case 2:
-                case 3:
                     txtFiltrar.Visible = true;
                     txtFiltrar.MaxLength = 100;
+                    break;
+                // Histórico
+                case 3:
+                    txtFiltrar.Visible = true;
+                    txtFiltrar.MaxLength = 300;
                     break;
                 // Data
                 case 4:

@@ -26,6 +26,10 @@ namespace Contabilidade.Forms.Cadastros
             usuarioAtual = usuarioBD;
 
             atualizarDataGrid();
+
+            dgvUsuarios.Columns["ID"].Visible = false;
+
+            txtFiltrar.Select();
         }
 
         private void atualizarDataGrid()
@@ -52,125 +56,158 @@ namespace Contabilidade.Forms.Cadastros
 
         public static bool verificarExistenciaUsuario(string usuario)
         {
-            return dtDados.AsEnumerable().Any(row => usuario == row.Field<string>("nome"));
+            return dtDados.AsEnumerable().Any(row => string.Equals(usuario, row.Field<string>("nome"), StringComparison.OrdinalIgnoreCase));
+
         }
 
         private void btnCriar_Click(object sender, EventArgs e)
         {
-            // Criar uma instância do formulário de dados e aguardar um retorno
-            using (var frmDados = new frmUsuariosDados("Criar usuário", "", ""))
+            try
             {
-                // O usuário apertou o botão de salvar
-                if (frmDados.ShowDialog() == DialogResult.OK)
+                // Criar uma instância do formulário de dados e aguardar um retorno
+                using (var frmDados = new frmUsuariosDados("Criar usuário", "", ""))
                 {
-                    // Criar usuário
-                    string sql = "INSERT INTO usuarios (nome, senha) VALUES(@nome, @senha);";
-                    using (var comando = new SQLiteCommand(sql, con.conn))
+                    // O usuário apertou o botão de salvar
+                    if (frmDados.ShowDialog() == DialogResult.OK)
                     {
-                        comando.Parameters.AddWithValue("@nome", usuario);
-                        comando.Parameters.AddWithValue("@senha", senha);
-
-                        int retornoBD = comando.ExecuteNonQuery();
-
-                        // Verificar se houve a criação da linha (0 = negativo)
-                        if (retornoBD > 0)
+                        using (var transacao = con.conn.BeginTransaction())
                         {
-                            using (var command = new SQLiteCommand("SELECT last_insert_rowid();", con.conn))
+                            try
                             {
-                                var id = (Int64)command.ExecuteScalar();
+                                // Criar usuário
+                                string sql = "INSERT INTO usuarios (nome, senha) VALUES(@nome, @senha);";
+                                using (var comando = new SQLiteCommand(sql, con.conn))
+                                {
+                                    comando.Transaction = transacao;
+                                    comando.Parameters.AddWithValue("@nome", usuario);
+                                    comando.Parameters.AddWithValue("@senha", senha);
 
-                                // Adicionar dados na tabela
-                                DataRow row = dtDados.NewRow();
-                                row["id"] = id;
-                                row["nome"] = usuario;
-                                row["senha"] = senha;
-                                dtDados.Rows.Add(row);
+                                    int retornoBD = comando.ExecuteNonQuery();
 
-                                dgvUsuarios.Refresh();
+                                    // Verificar se houve a criação da linha (0 = negativo)
+                                    if (retornoBD > 0)
+                                    {
+                                        using (var command = new SQLiteCommand("SELECT last_insert_rowid();", con.conn))
+                                        {
+                                            var id = (Int64)command.ExecuteScalar();
 
-                                // Remover dados das variáveis
-                                usuario = "";
-                                senha = "";
+                                            // Adicionar dados na tabela
+                                            DataRow row = dtDados.NewRow();
+                                            row["id"] = id;
+                                            row["nome"] = usuario;
+                                            row["senha"] = senha;
+                                            dtDados.Rows.Add(row);
 
-                                MessageBox.Show("Usuário criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                            dgvUsuarios.Refresh();
+
+                                            // Remover dados das variáveis
+                                            usuario = "";
+                                            senha = "";
+
+                                            // Efetivar alterações
+                                            transacao.Commit();
+
+                                            MessageBox.Show("Usuário criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        throw new Exception("Não foi possível criar o novo usuário.");
+                                    }
+                                }
                             }
-                        }
-                        else
-                        {
-                            MessageBox.Show("Não foi possível criar o novo usuário.", "Usuário não criado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            catch (Exception ex)
+                            {
+                                transacao.Rollback();
+                                MessageBox.Show(ex.Message.ToString(), "Usuário não criado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao criar o usuário", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void excluirUsuario(string id)
         {
-            using (var comando = new SQLiteCommand("DELETE FROM usuarios WHERE id = @id", con.conn))
+            using (var transacao = con.conn.BeginTransaction())
             {
-                comando.Parameters.AddWithValue("@id", id);
-
-                int retornoBD = comando.ExecuteNonQuery();
-
-                // Verificar se houve a exclusão de alguma linha (0 = negativo)
-                if (retornoBD > 0)
+                try
                 {
-                    // Encontrar registro no DataTable
-                    DataRow[] rows = dtDados.Select($"ID = {id}");
-                    // Excluir do DataTable
-                    if (rows.Length > 0)
+                    using (var comando = new SQLiteCommand("DELETE FROM usuarios WHERE id = @id", con.conn))
                     {
-                        // Encontrou o usuário, podemos excluí-lo
-                        rows[0].Delete();
-                        dtDados.AcceptChanges();
-                        MessageBox.Show("Usuário excluído com sucesso!", "Exclusão bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    else
-                    {
-                        MessageBox.Show("DataGridView não atualizado, comunique o desenvolvedor!", "Exclusão com erros", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                        comando.Transaction = transacao;
+                        comando.Parameters.AddWithValue("@id", id);
 
-                    dgvUsuarios.Refresh();
+                        int retornoBD = comando.ExecuteNonQuery();
+
+                        // Verificar se houve a exclusão de alguma linha (0 = negativo)
+                        if (retornoBD > 0)
+                        {
+                            // Efetivar alterações
+                            transacao.Commit();
+
+                            // Remover dados da tabela - Recarregar completamente
+                            atualizarDataGrid();
+
+                            MessageBox.Show("Usuário excluído com sucesso!", "Exclusão bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            throw new Exception("Não foi possível encontrar o usuário ou ocorreu um erro na exclusão.");
+                        }
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Não foi possível encontrar o usuário ou ocorreu um erro na exclusão.", "Exclusão não realizada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    transacao.Rollback();
+                    MessageBox.Show(ex.Message.ToString(), "Histórico não excluído", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         }
 
         private void btnExcluir_Click(object sender, EventArgs e)
         {
-            int numLinha = obterNumLinhaSelecionada(dgvUsuarios);
-            string id = dgvUsuarios.Rows[numLinha].Cells["ID"].Value.ToString();
-            string usuario = dgvUsuarios.Rows[numLinha].Cells["Usuário"].Value?.ToString();
-
-            DialogResult input = MessageBox.Show($"Deseja realmente excluir o usuário {usuario}?", "Confirmação de exclusão", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
-
-            if (input == DialogResult.Yes)
+            try
             {
-                if (!verificarUsuarioAtual(usuario))
+                int numLinha = obterNumLinhaSelecionada(dgvUsuarios);
+                string id = dgvUsuarios.Rows[numLinha].Cells["ID"].Value.ToString();
+                string usuario = dgvUsuarios.Rows[numLinha].Cells["Usuário"].Value?.ToString();
+
+                DialogResult input = MessageBox.Show($"Deseja realmente excluir o usuário {usuario}?", "Confirmação de exclusão", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+                if (input == DialogResult.Yes)
                 {
-                    excluirUsuario(id);
-                }
-                else
-                {
-                    if (dtDados.Rows.Count <= 1)
+                    if (!verificarUsuarioAtual(usuario))
                     {
-                        MessageBox.Show("Não é permitido excluir o único usuário do banco de dados!", "Exclusão abortada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        excluirUsuario(id);
                     }
                     else
                     {
-                        input = MessageBox.Show($"Você está prestes a excluir o usuário atual! Se confirmar você retornará para a tela de login, deseja continuar?", "Confirmação de exclusão", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
-
-                        if (input == DialogResult.Yes)
+                        if (dtDados.Rows.Count <= 1)
                         {
-                            excluirUsuario(id);
-                            this.Owner.Dispose();
-                            this.Dispose();
+                            MessageBox.Show("Não é permitido excluir o único usuário do banco de dados!", "Exclusão abortada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                        else
+                        {
+                            input = MessageBox.Show($"Você está prestes a excluir o usuário atual! Se confirmar você retornará para a tela de login, deseja continuar?", "Confirmação de exclusão", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+                            if (input == DialogResult.Yes)
+                            {
+                                excluirUsuario(id);
+                                this.Owner.Dispose();
+                                this.Dispose();
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao excluir o usuário", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -188,53 +225,75 @@ namespace Contabilidade.Forms.Cadastros
 
         private void btnEditar_Click(object sender, EventArgs e)
         {
-            // Obter usuário selecionado
-            int numLinha = obterNumLinhaSelecionada(dgvUsuarios);
-            var id = dgvUsuarios.Rows[numLinha].Cells["ID"].Value;
-            var (usuarioAntigo, senhaAntiga) = obterDadosDGV(numLinha);
-
-            // Criar uma instância do formulário de dados e aguardar um retorno
-            using (var frmDados = new frmUsuariosDados("Editar usuário", usuarioAntigo, senhaAntiga))
+            try
             {
-                // O usuário apertou o botão de salvar
-                if (frmDados.ShowDialog() == DialogResult.OK)
+                // Obter usuário selecionado
+                int numLinha = obterNumLinhaSelecionada(dgvUsuarios);
+                var id = dgvUsuarios.Rows[numLinha].Cells["ID"].Value;
+                var (usuarioAntigo, senhaAntiga) = obterDadosDGV(numLinha);
+
+                // Criar uma instância do formulário de dados e aguardar um retorno
+                using (var frmDados = new frmUsuariosDados("Editar usuário", usuarioAntigo, senhaAntiga))
                 {
-                    // Editar usuário
-                    using (var comando = new SQLiteCommand("UPDATE usuarios SET nome = @nome, senha = @senha WHERE id = @id", con.conn))
+                    // O usuário apertou o botão de salvar
+                    if (frmDados.ShowDialog() == DialogResult.OK)
                     {
-                        comando.Parameters.AddWithValue("@nome", usuario);
-                        comando.Parameters.AddWithValue("@senha", senha);
-                        comando.Parameters.AddWithValue("@id", id);
-
-                        int retornoBD = comando.ExecuteNonQuery();
-
-                        // Verificar se houve a edição de alguma linha (0 = negativo)
-                        if (retornoBD > 0)
+                        using (var transacao = con.conn.BeginTransaction())
                         {
-                            // Caso o usuário atual foi editado, atualizar no painel principal
-                            if (verificarUsuarioAtual(usuarioAntigo))
+                            try
                             {
-                                frmPainelPrincipal.usuarioAtual = usuario;
+                                // Editar usuário
+                                using (var comando = new SQLiteCommand("UPDATE usuarios SET nome = @nome, senha = @senha WHERE id = @id", con.conn))
+                                {
+                                    comando.Transaction = transacao;
+                                    comando.Parameters.AddWithValue("@nome", usuario);
+                                    comando.Parameters.AddWithValue("@senha", senha);
+                                    comando.Parameters.AddWithValue("@id", id);
+
+                                    int retornoBD = comando.ExecuteNonQuery();
+
+                                    // Verificar se houve a edição de alguma linha (0 = negativo)
+                                    if (retornoBD > 0)
+                                    {
+                                        // Caso o usuário atual foi editado, atualizar no painel principal
+                                        if (verificarUsuarioAtual(usuarioAntigo))
+                                        {
+                                            frmPainelPrincipal.usuarioAtual = usuario;
+                                        }
+
+                                        // Atualizar DataTable
+                                        dgvUsuarios.Rows[numLinha].Cells["Usuário"].Value = usuario;
+                                        dgvUsuarios.Rows[numLinha].Cells["Senha"].Value = senha;
+
+                                        dgvUsuarios.Refresh();
+
+                                        // Remover dados das variáveis
+                                        usuario = "";
+                                        senha = "";
+
+                                        // Efetivar alterações
+                                        transacao.Commit();
+
+                                        MessageBox.Show("Usuário editado com sucesso!", "Edição bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    }
+                                    else
+                                    {
+                                        throw new Exception("Não foi possível encontrar o usuário ou ocorreu um erro na edição.");
+                                    }
+                                }
                             }
-
-                            // Atualizar DataTable
-                            dgvUsuarios.Rows[numLinha].Cells["Usuário"].Value = usuario;
-                            dgvUsuarios.Rows[numLinha].Cells["Senha"].Value = senha;
-
-                            dgvUsuarios.Refresh();
-
-                            // Remover dados das variáveis
-                            usuario = "";
-                            senha = "";
-
-                            MessageBox.Show("Usuário editado com sucesso!", "Edição bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                        else
-                        {
-                            MessageBox.Show("Não foi possível encontrar o usuário ou ocorreu um erro na edição.", "Exclusão não realizada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            catch (Exception ex)
+                            {
+                                transacao.Rollback();
+                                MessageBox.Show(ex.Message.ToString(), "Usuário não editado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao editar o usuário", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

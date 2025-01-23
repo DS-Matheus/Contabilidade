@@ -21,7 +21,7 @@ namespace Contabilidade
         private extern static void ReleaseCapture();
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
         private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
-        public string nomeBD {  get; private set; }
+        public string nomeBD { get; private set; }
         public string usuario { get; private set; }
         public string senha { get; private set; }
         private string pastaDatabases;
@@ -138,6 +138,42 @@ namespace Contabilidade
 
                 this.DialogResult = DialogResult.OK;
                 this.Close();
+            }
+        }
+
+        private void txtBancoDados_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                txtUsuario.Select();
+            }
+            else
+            {
+                frmLogin.ImpedirPressionarBarraEspaco(e);
+            }
+        }
+
+        private void txtUsuario_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                txtSenha.Select();
+            }
+            else
+            {
+                frmLogin.ImpedirPressionarBarraEspaco(e);
+            }
+        }
+
+        private void txtSenha_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                btnCriar.PerformClick();
+            }
+            else
+            {
+                frmLogin.ImpedirPressionarBarraEspaco(e);
             }
         }
     }

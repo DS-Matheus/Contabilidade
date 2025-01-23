@@ -42,10 +42,14 @@ namespace Contabilidade.Forms.Cadastros
             {
                 txtConta.Enabled = false;
                 cbbNivel.Enabled = false;
+                txtDescricao.Select();
+            }
+            else
+            {
+                txtConta.Select();
             }
 
             txtDescricao.Text = descricao;
-            txtConta.Select();
             this.nivelAntigo = nivel;
             if (nivel == "S")
             {
@@ -138,6 +142,12 @@ namespace Contabilidade.Forms.Cadastros
             else if (!Regex.IsMatch(txtConta.Text, @"^[A-Z0-9]{2}$") && cbbNivel.SelectedIndex == 0 && !frmContas.verificarContaSintetica(txtConta.Text))
             {
                 MessageBox.Show("Não é possível ter uma conta analítica antes da sintética!", "'Numero/Tipo de conta inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cbbNivel.Focus();
+                return;
+            }
+            // Se a conta for pai for do tipo analítica
+            else if (frmContas.verificarContaPai(txtConta.Text)) {
+                MessageBox.Show("Não é possível criar uma nova conta dentro de uma conta analítica!", "'Operação inválida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cbbNivel.Focus();
                 return;
             }

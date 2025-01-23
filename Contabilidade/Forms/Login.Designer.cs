@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             groupBox1 = new GroupBox();
+            btnTransferir = new Button();
             btnRestaurar = new Button();
             btnBackup = new Button();
             btnRenomearBD = new Button();
@@ -61,13 +62,14 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(btnTransferir);
             groupBox1.Controls.Add(btnRestaurar);
             groupBox1.Controls.Add(btnBackup);
             groupBox1.Controls.Add(btnRenomearBD);
             groupBox1.Controls.Add(btnExcluirBD);
             groupBox1.Controls.Add(btnCriarBD);
             groupBox1.Controls.Add(cbbBD);
-            groupBox1.Font = new Font("Lucida Sans", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            groupBox1.Font = new Font("Lucida Sans", 12F, FontStyle.Bold);
             groupBox1.Location = new Point(17, 12);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(300, 145);
@@ -75,13 +77,25 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "Banco de Dados";
             // 
+            // btnTransferir
+            // 
+            btnTransferir.Cursor = Cursors.Hand;
+            btnTransferir.Font = new Font("Lucida Sans", 10.5F);
+            btnTransferir.Location = new Point(195, 103);
+            btnTransferir.Name = "btnTransferir";
+            btnTransferir.Size = new Size(84, 31);
+            btnTransferir.TabIndex = 6;
+            btnTransferir.Text = "Transferir";
+            btnTransferir.UseVisualStyleBackColor = true;
+            btnTransferir.Click += btnTransferir_Click;
+            // 
             // btnRestaurar
             // 
             btnRestaurar.Cursor = Cursors.Hand;
-            btnRestaurar.Font = new Font("Lucida Sans", 9.75F);
-            btnRestaurar.Location = new Point(153, 103);
+            btnRestaurar.Font = new Font("Lucida Sans", 10.5F);
+            btnRestaurar.Location = new Point(109, 103);
             btnRestaurar.Name = "btnRestaurar";
-            btnRestaurar.Size = new Size(88, 31);
+            btnRestaurar.Size = new Size(83, 31);
             btnRestaurar.TabIndex = 5;
             btnRestaurar.Text = "Restaurar";
             btnRestaurar.UseVisualStyleBackColor = true;
@@ -90,10 +104,10 @@
             // btnBackup
             // 
             btnBackup.Cursor = Cursors.Hand;
-            btnBackup.Font = new Font("Lucida Sans", 9.75F);
-            btnBackup.Location = new Point(59, 103);
+            btnBackup.Font = new Font("Lucida Sans", 10.5F);
+            btnBackup.Location = new Point(20, 103);
             btnBackup.Name = "btnBackup";
-            btnBackup.Size = new Size(88, 31);
+            btnBackup.Size = new Size(84, 31);
             btnBackup.TabIndex = 4;
             btnBackup.Text = "Backup";
             btnBackup.UseVisualStyleBackColor = true;
@@ -102,10 +116,10 @@
             // btnRenomearBD
             // 
             btnRenomearBD.Cursor = Cursors.Hand;
-            btnRenomearBD.Font = new Font("Lucida Sans", 9.75F);
-            btnRenomearBD.Location = new Point(187, 66);
+            btnRenomearBD.Font = new Font("Lucida Sans", 10.5F);
+            btnRenomearBD.Location = new Point(195, 66);
             btnRenomearBD.Name = "btnRenomearBD";
-            btnRenomearBD.Size = new Size(89, 31);
+            btnRenomearBD.Size = new Size(84, 31);
             btnRenomearBD.TabIndex = 3;
             btnRenomearBD.Text = "Renomear";
             btnRenomearBD.UseVisualStyleBackColor = true;
@@ -114,10 +128,10 @@
             // btnExcluirBD
             // 
             btnExcluirBD.Cursor = Cursors.Hand;
-            btnExcluirBD.Font = new Font("Lucida Sans", 9.75F);
-            btnExcluirBD.Location = new Point(102, 66);
+            btnExcluirBD.Font = new Font("Lucida Sans", 10.5F);
+            btnExcluirBD.Location = new Point(109, 66);
             btnExcluirBD.Name = "btnExcluirBD";
-            btnExcluirBD.Size = new Size(75, 31);
+            btnExcluirBD.Size = new Size(83, 31);
             btnExcluirBD.TabIndex = 2;
             btnExcluirBD.Text = "Excluir";
             btnExcluirBD.UseVisualStyleBackColor = true;
@@ -126,10 +140,10 @@
             // btnCriarBD
             // 
             btnCriarBD.Cursor = Cursors.Hand;
-            btnCriarBD.Font = new Font("Lucida Sans", 9.75F);
-            btnCriarBD.Location = new Point(17, 66);
+            btnCriarBD.Font = new Font("Lucida Sans", 10.5F);
+            btnCriarBD.Location = new Point(20, 66);
             btnCriarBD.Name = "btnCriarBD";
-            btnCriarBD.Size = new Size(75, 31);
+            btnCriarBD.Size = new Size(84, 31);
             btnCriarBD.TabIndex = 1;
             btnCriarBD.Text = "Criar";
             btnCriarBD.UseVisualStyleBackColor = true;
@@ -138,16 +152,15 @@
             // cbbBD
             // 
             cbbBD.Cursor = Cursors.IBeam;
-            cbbBD.DisplayMember = "dsadas";
-            cbbBD.Font = new Font("Lucida Sans", 9.75F);
+            cbbBD.Font = new Font("Lucida Sans", 10.5F);
             cbbBD.FormattingEnabled = true;
-            cbbBD.Location = new Point(17, 31);
+            cbbBD.Location = new Point(20, 31);
             cbbBD.Margin = new Padding(20);
             cbbBD.MaxLength = 30;
             cbbBD.Name = "cbbBD";
-            cbbBD.Size = new Size(260, 23);
-            cbbBD.Sorted = true;
+            cbbBD.Size = new Size(260, 24);
             cbbBD.TabIndex = 0;
+            cbbBD.KeyPress += cbbBD_KeyPress;
             // 
             // gpbInfoUsuario
             // 
@@ -168,10 +181,10 @@
             // chbVisibilidadeSenha
             // 
             chbVisibilidadeSenha.AutoSize = true;
-            chbVisibilidadeSenha.Font = new Font("Lucida Sans", 9.75F);
+            chbVisibilidadeSenha.Font = new Font("Lucida Sans", 10.5F);
             chbVisibilidadeSenha.Location = new Point(17, 127);
             chbVisibilidadeSenha.Name = "chbVisibilidadeSenha";
-            chbVisibilidadeSenha.Size = new Size(102, 19);
+            chbVisibilidadeSenha.Size = new Size(104, 20);
             chbVisibilidadeSenha.TabIndex = 2;
             chbVisibilidadeSenha.Text = "Exibir senha";
             chbVisibilidadeSenha.UseVisualStyleBackColor = true;
@@ -180,8 +193,8 @@
             // btnEntrar
             // 
             btnEntrar.Cursor = Cursors.Hand;
-            btnEntrar.Font = new Font("Lucida Sans", 9.75F);
-            btnEntrar.Location = new Point(201, 120);
+            btnEntrar.Font = new Font("Lucida Sans", 10.5F);
+            btnEntrar.Location = new Point(202, 120);
             btnEntrar.Name = "btnEntrar";
             btnEntrar.Size = new Size(75, 30);
             btnEntrar.TabIndex = 3;
@@ -191,10 +204,10 @@
             // 
             // txtSenha
             // 
-            txtSenha.Font = new Font("Lucida Sans", 9.75F);
+            txtSenha.Font = new Font("Lucida Sans", 10.5F);
             txtSenha.Location = new Point(17, 91);
             txtSenha.Name = "txtSenha";
-            txtSenha.Size = new Size(260, 23);
+            txtSenha.Size = new Size(260, 24);
             txtSenha.TabIndex = 1;
             txtSenha.UseSystemPasswordChar = true;
             txtSenha.KeyPress += txtSenha_KeyPress;
@@ -202,29 +215,29 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Lucida Sans", 9.75F);
+            label2.Font = new Font("Lucida Sans", 10.5F);
             label2.Location = new Point(17, 73);
             label2.Name = "label2";
-            label2.Size = new Size(46, 15);
+            label2.Size = new Size(47, 16);
             label2.TabIndex = 2;
             label2.Text = "Senha";
             // 
             // txtNome
             // 
-            txtNome.Font = new Font("Lucida Sans", 9.75F);
-            txtNome.Location = new Point(17, 47);
+            txtNome.Font = new Font("Lucida Sans", 10.5F);
+            txtNome.Location = new Point(17, 43);
             txtNome.Name = "txtNome";
-            txtNome.Size = new Size(260, 23);
+            txtNome.Size = new Size(260, 24);
             txtNome.TabIndex = 0;
             txtNome.KeyPress += txtNome_KeyPress;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Lucida Sans", 9.75F);
-            label1.Location = new Point(17, 29);
+            label1.Font = new Font("Lucida Sans", 10.5F);
+            label1.Location = new Point(17, 25);
             label1.Name = "label1";
-            label1.Size = new Size(44, 15);
+            label1.Size = new Size(45, 16);
             label1.TabIndex = 0;
             label1.Text = "Nome";
             // 
@@ -254,18 +267,18 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Font = new Font("Lucida Sans", 9.75F);
+            label5.Font = new Font("Lucida Sans", 10F);
             label5.ForeColor = Color.White;
-            label5.Location = new Point(90, 313);
+            label5.Location = new Point(89, 313);
             label5.Name = "label5";
-            label5.Size = new Size(80, 15);
+            label5.Size = new Size(83, 16);
             label5.TabIndex = 4;
-            label5.Text = "Versão: 1.0";
+            label5.Text = "Versão: 1.4";
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Font = new Font("Forte", 36F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label3.Font = new Font("Forte", 36F);
             label3.ForeColor = Color.White;
             label3.Location = new Point(66, 228);
             label3.Name = "label3";
@@ -305,11 +318,11 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label4.Font = new Font("Microsoft Sans Serif", 10F);
             label4.ForeColor = Color.White;
             label4.Location = new Point(12, 7);
             label4.Name = "label4";
-            label4.Size = new Size(156, 16);
+            label4.Size = new Size(172, 17);
             label4.TabIndex = 1;
             label4.Text = "Sistema de Contabilidade ";
             label4.MouseDown += label4_MouseDown;
@@ -393,5 +406,6 @@
         private Button btnBackup;
         private Label label5;
         private PictureBox pictureBox1;
+        private Button btnTransferir;
     }
 }

@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace Contabilidade.Forms
 {
-    public partial class frmRenomearBD : Form
+    public partial class frmTransferirBD : Form
     {
         // Funções usadas para permitir que a janela se movimente através da barra superior customizada
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
@@ -23,7 +23,7 @@ namespace Contabilidade.Forms
         public string nomeBD { get; private set; }
         private string pastaDatabases;
 
-        public frmRenomearBD(string pastaDatabases, string nomeAntigo)
+        public frmTransferirBD(string pastaDatabases, string nomeAntigo)
         {
             InitializeComponent();
 
@@ -57,58 +57,51 @@ namespace Contabilidade.Forms
             SendMessage(this.Handle, 0x112, 0xf012, 0);
         }
 
-        private void btnRenomear_Click(object sender, EventArgs e)
+        private void btnTransferir_Click(object sender, EventArgs e)
         {
             var nomeNovoSimples = txtBancoDados.Text;
             var nomeNovoCompleto = frmLogin.validarExtensaoBD(nomeNovoSimples);
             var caminhoBD = $"{pastaDatabases}\\{nomeNovoCompleto}";
 
-            // Adiantando alguns testes
-            var arquivoExiste = File.Exists(caminhoBD);
-            var nomeExatamenteIgual = nomeNovoSimples == nomeAntigo;
-
             // Verifica se é nulo
             if (nomeNovoSimples == "" || nomeNovoSimples == null || string.IsNullOrWhiteSpace(nomeNovoSimples))
             {
-                MessageBox.Show("Não foi informado um nome para o banco!", "Erro ao renomear banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Não foi informado um nome para o banco!", "Erro ao transferir banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtBancoDados.Text = "";
                 txtBancoDados.Focus();
             }
-            // Verificar se o nome informado é exatamente igual ao que deseja-se renomear
-            else if (nomeExatamenteIgual)
+            // Verificar se o nome informado é igual ao que deseja-se renomear
+            else if (nomeNovoSimples.ToLower() == nomeAntigo.ToLower())
             {
-                MessageBox.Show("O nome informado é exatamente igual ao anterior!", "Erro ao renomear banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("O nome informado é igual ao anterior!", "Erro ao transferir banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtBancoDados.Text = "";
                 txtBancoDados.Focus();
             }
-            // Verifica se o arquivo já existe (considerar que não caso o nome novo e o antigo sejam iguais mas tenham letras em maiusculo/minusculo diferentes)
-            // Se o arquivo não existe: falso (vai pro próximo if)
-            // Se o arquivo existe e o nome é igual: true (erro)
-            // Se o arquivo existe e o nome é diferente: false (vai pro próximo if)
-            else if (arquivoExiste && nomeExatamenteIgual)
+            // Verifica se o arquivo já existe
+            else if (File.Exists(caminhoBD))
             {
-                MessageBox.Show("Já existe um banco de dados com esse nome!", "Erro ao renomear banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Já existe um banco de dados com esse nome!", "Erro ao transferir banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtBancoDados.Text = "";
                 txtBancoDados.Focus();
             }
             // Verifica se começa com número, hífen ou underline
             else if (frmCriarBD.verificarInicio(nomeNovoSimples[0]))
             {
-                MessageBox.Show("O nome informado para o banco de dados não pode começar com um número, hífen ou sublinhado (também conhecido como underline)!", "Erro ao criar o banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("O nome informado para o banco de dados não pode começar com um número, hífen ou sublinhado (também conhecido como underline)!", "Erro ao transferir o banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtBancoDados.Text = "";
                 txtBancoDados.Focus();
             }
             // Verifica se a string é maior que 30 caracteres
             else if (nomeNovoSimples.Length > 30)
             {
-                MessageBox.Show("O nome do banco não deve conter mais que 30 caracteres!", "Erro ao renomear banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("O nome do banco não deve conter mais que 30 caracteres!", "Erro ao transferir o banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtBancoDados.Text = "";
                 txtBancoDados.Focus();
             }
             // Verifica se utiliza apenas letras e números
             else if (!frmLogin.verificarNomeBD(nomeNovoSimples))
             {
-                MessageBox.Show("O nome ínformado deve conter apenas letras e números (sem espaços)!", "Erro ao renomear banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("O nome ínformado deve conter apenas letras e números (sem espaços)!", "Erro ao transferir o banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtBancoDados.Text = "";
                 txtBancoDados.Focus();
             }
@@ -126,7 +119,7 @@ namespace Contabilidade.Forms
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
-                btnRenomear.PerformClick();
+                btnTransferir.PerformClick();
             }
             else
             {

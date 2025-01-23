@@ -28,23 +28,26 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle12 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle10 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle11 = new DataGridViewCellStyle();
             pnlBarraTitulo = new Panel();
             btnMinimizar = new Button();
             lblTitulo = new Label();
             btnFechar = new Button();
             panel1 = new Panel();
+            groupBox2 = new GroupBox();
+            txtHistorico = new TextBox();
+            btnCriar = new Button();
             groupBox1 = new GroupBox();
             txtFiltrar = new TextBox();
             dgvHistoricos = new DataGridView();
             ID = new DataGridViewTextBoxColumn();
             Histórico = new DataGridViewTextBoxColumn();
-            btnCriar = new Button();
-            txtHistorico = new TextBox();
-            label1 = new Label();
             pnlBarraTitulo.SuspendLayout();
             panel1.SuspendLayout();
+            groupBox2.SuspendLayout();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvHistoricos).BeginInit();
             SuspendLayout();
@@ -56,9 +59,10 @@
             pnlBarraTitulo.Controls.Add(lblTitulo);
             pnlBarraTitulo.Controls.Add(btnFechar);
             pnlBarraTitulo.Dock = DockStyle.Top;
+            pnlBarraTitulo.Font = new Font("Microsoft Sans Serif", 10F);
             pnlBarraTitulo.Location = new Point(0, 0);
             pnlBarraTitulo.Name = "pnlBarraTitulo";
-            pnlBarraTitulo.Size = new Size(500, 30);
+            pnlBarraTitulo.Size = new Size(720, 30);
             pnlBarraTitulo.TabIndex = 8;
             pnlBarraTitulo.MouseDown += pnlBarraTitulo_MouseDown;
             // 
@@ -70,7 +74,7 @@
             btnMinimizar.FlatStyle = FlatStyle.Flat;
             btnMinimizar.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnMinimizar.ForeColor = Color.White;
-            btnMinimizar.Location = new Point(440, 0);
+            btnMinimizar.Location = new Point(660, 0);
             btnMinimizar.Name = "btnMinimizar";
             btnMinimizar.Size = new Size(30, 30);
             btnMinimizar.TabIndex = 4;
@@ -81,11 +85,11 @@
             // lblTitulo
             // 
             lblTitulo.AutoSize = true;
-            lblTitulo.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblTitulo.Font = new Font("Lucida Sans", 10F);
             lblTitulo.ForeColor = Color.White;
             lblTitulo.Location = new Point(12, 7);
             lblTitulo.Name = "lblTitulo";
-            lblTitulo.Size = new Size(201, 16);
+            lblTitulo.Size = new Size(232, 16);
             lblTitulo.TabIndex = 1;
             lblTitulo.Text = "Formulário de dados de históricos";
             lblTitulo.MouseDown += lblTitulo_MouseDown;
@@ -98,7 +102,7 @@
             btnFechar.FlatStyle = FlatStyle.Flat;
             btnFechar.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnFechar.ForeColor = Color.White;
-            btnFechar.Location = new Point(470, 0);
+            btnFechar.Location = new Point(690, 0);
             btnFechar.Name = "btnFechar";
             btnFechar.Size = new Size(30, 30);
             btnFechar.TabIndex = 5;
@@ -108,35 +112,72 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(groupBox2);
             panel1.Controls.Add(groupBox1);
             panel1.Controls.Add(dgvHistoricos);
-            panel1.Controls.Add(btnCriar);
-            panel1.Controls.Add(txtHistorico);
-            panel1.Controls.Add(label1);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 30);
             panel1.Name = "panel1";
-            panel1.Size = new Size(500, 400);
+            panel1.Size = new Size(720, 584);
             panel1.TabIndex = 9;
+            // 
+            // groupBox2
+            // 
+            groupBox2.Controls.Add(txtHistorico);
+            groupBox2.Controls.Add(btnCriar);
+            groupBox2.Font = new Font("Lucida Sans", 10.5F, FontStyle.Bold);
+            groupBox2.Location = new Point(31, 457);
+            groupBox2.Name = "groupBox2";
+            groupBox2.Size = new Size(659, 115);
+            groupBox2.TabIndex = 21;
+            groupBox2.TabStop = false;
+            groupBox2.Text = "Criar histórico";
+            // 
+            // txtHistorico
+            // 
+            txtHistorico.Font = new Font("Microsoft Sans Serif", 10.5F);
+            txtHistorico.Location = new Point(6, 23);
+            txtHistorico.MaxLength = 300;
+            txtHistorico.Multiline = true;
+            txtHistorico.Name = "txtHistorico";
+            txtHistorico.Size = new Size(551, 78);
+            txtHistorico.TabIndex = 4;
+            txtHistorico.KeyPress += txtHistorico_KeyPress;
+            // 
+            // btnCriar
+            // 
+            btnCriar.Font = new Font("Microsoft Sans Serif", 10.5F);
+            btnCriar.Location = new Point(563, 43);
+            btnCriar.Margin = new Padding(3, 10, 3, 3);
+            btnCriar.Name = "btnCriar";
+            btnCriar.Size = new Size(90, 39);
+            btnCriar.TabIndex = 6;
+            btnCriar.Text = "Criar";
+            btnCriar.UseVisualStyleBackColor = true;
+            btnCriar.Click += btnCriar_Click;
             // 
             // groupBox1
             // 
             groupBox1.Controls.Add(txtFiltrar);
-            groupBox1.Location = new Point(31, 206);
+            groupBox1.Font = new Font("Lucida Sans", 10.5F, FontStyle.Bold);
+            groupBox1.Location = new Point(31, 365);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(438, 66);
+            groupBox1.Size = new Size(659, 86);
             groupBox1.TabIndex = 20;
             groupBox1.TabStop = false;
             groupBox1.Text = "Filtrar por histórico";
             // 
             // txtFiltrar
             // 
-            txtFiltrar.Location = new Point(6, 27);
-            txtFiltrar.MaxLength = 100;
+            txtFiltrar.Font = new Font("Microsoft Sans Serif", 10.5F);
+            txtFiltrar.Location = new Point(6, 20);
+            txtFiltrar.MaxLength = 300;
+            txtFiltrar.Multiline = true;
             txtFiltrar.Name = "txtFiltrar";
-            txtFiltrar.Size = new Size(426, 23);
+            txtFiltrar.Size = new Size(647, 56);
             txtFiltrar.TabIndex = 10;
             txtFiltrar.TextChanged += txtFiltrar_TextChanged;
+            txtFiltrar.KeyPress += txtFiltrar_KeyPress;
             // 
             // dgvHistoricos
             // 
@@ -144,23 +185,40 @@
             dgvHistoricos.AllowUserToDeleteRows = false;
             dgvHistoricos.AllowUserToOrderColumns = true;
             dgvHistoricos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = SystemColors.Control;
+            dataGridViewCellStyle9.Font = new Font("Lucida Sans", 10.5F, FontStyle.Bold);
+            dataGridViewCellStyle9.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle9.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle9.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle9.WrapMode = DataGridViewTriState.True;
+            dgvHistoricos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle9;
             dgvHistoricos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvHistoricos.Columns.AddRange(new DataGridViewColumn[] { ID, Histórico });
-            dgvHistoricos.Location = new Point(31, 22);
+            dataGridViewCellStyle12.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle12.BackColor = SystemColors.Window;
+            dataGridViewCellStyle12.Font = new Font("Lucida Sans", 10.5F);
+            dataGridViewCellStyle12.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle12.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle12.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle12.WrapMode = DataGridViewTriState.False;
+            dgvHistoricos.DefaultCellStyle = dataGridViewCellStyle12;
+            dgvHistoricos.Location = new Point(31, 18);
             dgvHistoricos.MultiSelect = false;
             dgvHistoricos.Name = "dgvHistoricos";
             dgvHistoricos.ReadOnly = true;
             dgvHistoricos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvHistoricos.Size = new Size(438, 178);
+            dgvHistoricos.Size = new Size(659, 341);
             dgvHistoricos.TabIndex = 15;
             dgvHistoricos.CellDoubleClick += dgvHistoricos_CellDoubleClick;
+            dgvHistoricos.CellMouseClick += dgvHistoricos_CellMouseClick;
             // 
             // ID
             // 
-            ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             ID.DataPropertyName = "id";
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            ID.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle10.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            ID.DefaultCellStyle = dataGridViewCellStyle10;
             ID.HeaderText = "ID";
             ID.Name = "ID";
             ID.ReadOnly = true;
@@ -169,46 +227,17 @@
             // Histórico
             // 
             Histórico.DataPropertyName = "historico";
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            Histórico.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle11.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            Histórico.DefaultCellStyle = dataGridViewCellStyle11;
             Histórico.HeaderText = "Histórico";
             Histórico.Name = "Histórico";
             Histórico.ReadOnly = true;
-            // 
-            // btnCriar
-            // 
-            btnCriar.Location = new Point(31, 347);
-            btnCriar.Margin = new Padding(3, 10, 3, 3);
-            btnCriar.Name = "btnCriar";
-            btnCriar.Size = new Size(438, 32);
-            btnCriar.TabIndex = 6;
-            btnCriar.Text = "Criar";
-            btnCriar.UseVisualStyleBackColor = true;
-            btnCriar.Click += btnCriar_Click;
-            // 
-            // txtHistorico
-            // 
-            txtHistorico.Location = new Point(31, 298);
-            txtHistorico.MaxLength = 100;
-            txtHistorico.Multiline = true;
-            txtHistorico.Name = "txtHistorico";
-            txtHistorico.Size = new Size(438, 40);
-            txtHistorico.TabIndex = 4;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(31, 280);
-            label1.Name = "label1";
-            label1.Size = new Size(55, 15);
-            label1.TabIndex = 1;
-            label1.Text = "Histórico";
             // 
             // frmHistoricosSelecionar
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(500, 430);
+            ClientSize = new Size(720, 614);
             Controls.Add(panel1);
             Controls.Add(pnlBarraTitulo);
             FormBorderStyle = FormBorderStyle.None;
@@ -218,7 +247,8 @@
             pnlBarraTitulo.ResumeLayout(false);
             pnlBarraTitulo.PerformLayout();
             panel1.ResumeLayout(false);
-            panel1.PerformLayout();
+            groupBox2.ResumeLayout(false);
+            groupBox2.PerformLayout();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvHistoricos).EndInit();
@@ -235,10 +265,10 @@
         private GroupBox groupBox1;
         private TextBox txtFiltrar;
         private DataGridView dgvHistoricos;
-        private DataGridViewTextBoxColumn ID;
-        private DataGridViewTextBoxColumn Histórico;
         private Button btnCriar;
         private TextBox txtHistorico;
-        private Label label1;
+        private GroupBox groupBox2;
+        private DataGridViewTextBoxColumn ID;
+        private DataGridViewTextBoxColumn Histórico;
     }
 }

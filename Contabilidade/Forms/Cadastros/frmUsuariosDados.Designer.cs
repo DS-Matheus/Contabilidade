@@ -61,11 +61,11 @@
             // lblTitulo
             // 
             lblTitulo.AutoSize = true;
-            lblTitulo.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblTitulo.Font = new Font("Lucida Sans", 10F);
             lblTitulo.ForeColor = Color.White;
             lblTitulo.Location = new Point(12, 7);
             lblTitulo.Name = "lblTitulo";
-            lblTitulo.Size = new Size(195, 16);
+            lblTitulo.Size = new Size(223, 16);
             lblTitulo.TabIndex = 1;
             lblTitulo.Text = "Formulário de dados de usuários";
             lblTitulo.MouseDown += lblTitulo_MouseDown;
@@ -114,40 +114,45 @@
             // 
             // txtSenha
             // 
+            txtSenha.Font = new Font("Lucida Sans", 10.5F);
             txtSenha.Location = new Point(32, 86);
             txtSenha.MaxLength = 30;
             txtSenha.Name = "txtSenha";
-            txtSenha.Size = new Size(335, 23);
+            txtSenha.Size = new Size(335, 24);
             txtSenha.TabIndex = 2;
             // 
             // label2
             // 
             label2.AutoSize = true;
+            label2.Font = new Font("Lucida Sans", 10.5F);
             label2.Location = new Point(32, 68);
             label2.Name = "label2";
-            label2.Size = new Size(39, 15);
+            label2.Size = new Size(47, 16);
             label2.TabIndex = 3;
             label2.Text = "Senha";
             // 
             // txtUsuario
             // 
+            txtUsuario.Font = new Font("Lucida Sans", 10.5F);
             txtUsuario.Location = new Point(32, 36);
             txtUsuario.MaxLength = 20;
             txtUsuario.Name = "txtUsuario";
-            txtUsuario.Size = new Size(335, 23);
+            txtUsuario.Size = new Size(335, 24);
             txtUsuario.TabIndex = 1;
             // 
             // label1
             // 
             label1.AutoSize = true;
+            label1.Font = new Font("Lucida Sans", 10.5F);
             label1.Location = new Point(32, 18);
             label1.Name = "label1";
-            label1.Size = new Size(47, 15);
+            label1.Size = new Size(56, 16);
             label1.TabIndex = 1;
             label1.Text = "Usuário";
             // 
             // btnSalvar
             // 
+            btnSalvar.Font = new Font("Lucida Sans", 10.5F);
             btnSalvar.Location = new Point(32, 122);
             btnSalvar.Margin = new Padding(3, 10, 3, 3);
             btnSalvar.Name = "btnSalvar";

@@ -25,6 +25,8 @@ namespace Contabilidade.Forms.Lancamentos
         public frmCalcularObterDados()
         {
             InitializeComponent();
+
+            dtpDataInicial.Select();
         }
 
         private void btnFechar_Click(object sender, EventArgs e)

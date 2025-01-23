@@ -14,6 +14,8 @@ namespace Contabilidade.Forms.Relatorios
             InitializeComponent();
 
             con = conexaoBanco;
+
+            dtpInicial.Select();
         }
 
         public class ContaSintetica
@@ -137,9 +139,9 @@ namespace Contabilidade.Forms.Relatorios
                             {
                                 Conta = reader["conta"].ToString(),
                                 Descricao = reader["descricao"].ToString(),
-                                Debitos = Convert.ToDecimal(reader["debito"]),
-                                Creditos = Convert.ToDecimal(reader["credito"]),
-                                Saldo = Convert.ToDecimal(reader["saldo"])
+                                Debitos = (Convert.ToInt32(reader["debito"]) / 100m),
+                                Creditos = (Convert.ToInt32(reader["credito"]) / 100m),
+                                Saldo = (Convert.ToInt32(reader["saldo"]) / 100m)
                             };
                             listContasAnaliticas.Add(contaAnalitica);
                         }
@@ -237,7 +239,25 @@ namespace Contabilidade.Forms.Relatorios
                                     // Pilha para armazenar as contas sintéticas "abertas"
                                     Stack<ContaSintetica> pilhaContas = new Stack<ContaSintetica>();
 
-                                    void AdicionarParagrafosPdf(string conta, string descricao, decimal saldoAnterior, decimal debitos, decimal creditos, decimal saldo, int espacosInicio, int espacosDescricao, int linhasNecessarias)
+                                    // Função para adicionar linha de contas sintéticas
+                                    void AdicionarParagrafoSintetico(string conta, string descricao, int espacosInicio, int espacosDescricao, int linhasNecessarias)
+                                    {
+                                        // Obter linhas da descrição
+                                        var linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(descricao, espacosDescricao);
+
+                                        pdf.Add(new Paragraph($"{"".PadRight(espacosInicio)}{conta.PadRight(conta.Length)} - {linhasDescricao[0].PadRight(espacosDescricao)}", fonte));
+                                        linhasDisponiveis -= 1;
+
+                                        // Adicionar as outras linhas (se houver mais que uma)
+                                        for (int i = 1; i < linhasNecessarias; i++)
+                                        {
+                                            pdf.Add(new Paragraph($"{"    ".PadRight(espacosInicio + conta.Length)}   {linhasDescricao[i].PadRight(espacosDescricao)}", fonte));
+                                            linhasDisponiveis -= 1;
+                                        }
+                                    }
+
+                                    // Função para adicionar linha de contas analiticas
+                                    void AdicionarParagrafo(string conta, string descricao, decimal saldoAnterior, decimal debitos, decimal creditos, decimal saldo, int espacosInicio, int espacosDescricao, int linhasNecessarias)
                                     {
                                         // Obter linhas da descrição
                                         var linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(descricao, espacosDescricao);
@@ -270,7 +290,7 @@ namespace Contabilidade.Forms.Relatorios
                                             adicionarCabecalho(subtitulo);
                                         }
 
-                                        AdicionarParagrafosPdf(contaFechada.Conta, contaFechada.Descricao, saldoAnteriorRemover, contaFechada.Debitos, contaFechada.Creditos, contaFechada.Saldo, espacosInicioRemover, espacosDescricaoRemover, linhasNecessariasRemover);
+                                        AdicionarParagrafo(contaFechada.Conta, contaFechada.Descricao, saldoAnteriorRemover, contaFechada.Debitos, contaFechada.Creditos, contaFechada.Saldo, espacosInicioRemover, espacosDescricaoRemover, linhasNecessariasRemover);
                                     }
 
                                     // Para cada conta
@@ -299,7 +319,7 @@ namespace Contabilidade.Forms.Relatorios
                                                 adicionarCabecalho(subtitulo);
                                             }
 
-                                            AdicionarParagrafosPdf(contaSintetica.Conta, contaSintetica.Descricao, 0, 0, 0, 0, espacosInicio, espacosDescricao, linhasNecessarias);
+                                            AdicionarParagrafoSintetico(contaSintetica.Conta, contaSintetica.Descricao, espacosInicio, espacosDescricao, linhasNecessarias);
                                             // Adicionar a conta sintetica aberta a pilha de contas
                                             pilhaContas.Push(contaSintetica);
                                         }
@@ -321,7 +341,7 @@ namespace Contabilidade.Forms.Relatorios
                                                 adicionarCabecalho(subtitulo);
                                             }
 
-                                            AdicionarParagrafosPdf(contaAnalitica.Conta, contaAnalitica.Descricao, saldoAnterior, contaAnalitica.Debitos, contaAnalitica.Creditos, contaAnalitica.Saldo, espacosInicio, espacosDescricao, linhasNecessarias);
+                                            AdicionarParagrafo(contaAnalitica.Conta, contaAnalitica.Descricao, saldoAnterior, contaAnalitica.Debitos, contaAnalitica.Creditos, contaAnalitica.Saldo, espacosInicio, espacosDescricao, linhasNecessarias);
 
                                             // Adicionar valores em cada conta sintética aberta
                                             foreach (var grupoAberto in pilhaContas)

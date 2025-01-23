@@ -49,7 +49,7 @@
             pnlBarraTitulo.Dock = DockStyle.Top;
             pnlBarraTitulo.Location = new Point(0, 0);
             pnlBarraTitulo.Name = "pnlBarraTitulo";
-            pnlBarraTitulo.Size = new Size(300, 30);
+            pnlBarraTitulo.Size = new Size(363, 30);
             pnlBarraTitulo.TabIndex = 8;
             pnlBarraTitulo.MouseDown += pnlBarraTitulo_MouseDown;
             // 
@@ -61,7 +61,7 @@
             btnMinimizar.FlatStyle = FlatStyle.Flat;
             btnMinimizar.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnMinimizar.ForeColor = Color.White;
-            btnMinimizar.Location = new Point(240, 0);
+            btnMinimizar.Location = new Point(303, 0);
             btnMinimizar.Name = "btnMinimizar";
             btnMinimizar.Size = new Size(30, 30);
             btnMinimizar.TabIndex = 4;
@@ -72,11 +72,11 @@
             // lblTitulo
             // 
             lblTitulo.AutoSize = true;
-            lblTitulo.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblTitulo.Font = new Font("Lucida Sans", 10F);
             lblTitulo.ForeColor = Color.White;
             lblTitulo.Location = new Point(12, 7);
             lblTitulo.Name = "lblTitulo";
-            lblTitulo.Size = new Size(166, 16);
+            lblTitulo.Size = new Size(191, 16);
             lblTitulo.TabIndex = 1;
             lblTitulo.Text = "Informe o período desejado";
             lblTitulo.MouseDown += lblTitulo_MouseDown;
@@ -89,7 +89,7 @@
             btnFechar.FlatStyle = FlatStyle.Flat;
             btnFechar.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnFechar.ForeColor = Color.White;
-            btnFechar.Location = new Point(270, 0);
+            btnFechar.Location = new Point(333, 0);
             btnFechar.Name = "btnFechar";
             btnFechar.Size = new Size(30, 30);
             btnFechar.TabIndex = 5;
@@ -99,27 +99,30 @@
             // 
             // dtpDataInicial
             // 
-            dtpDataInicial.Location = new Point(16, 64);
+            dtpDataInicial.Font = new Font("Lucida Sans", 10.5F);
+            dtpDataInicial.Location = new Point(23, 64);
             dtpDataInicial.Name = "dtpDataInicial";
-            dtpDataInicial.Size = new Size(269, 23);
+            dtpDataInicial.Size = new Size(317, 24);
             dtpDataInicial.TabIndex = 12;
             // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(16, 46);
+            label4.Font = new Font("Lucida Sans", 10.5F);
+            label4.Location = new Point(23, 46);
             label4.Margin = new Padding(5);
             label4.Name = "label4";
-            label4.Size = new Size(65, 15);
+            label4.Size = new Size(78, 16);
             label4.TabIndex = 11;
             label4.Text = "Data Inicial";
             // 
             // btnConfirmar
             // 
-            btnConfirmar.Location = new Point(16, 149);
+            btnConfirmar.Font = new Font("Lucida Sans", 10.5F);
+            btnConfirmar.Location = new Point(23, 149);
             btnConfirmar.Margin = new Padding(3, 10, 3, 3);
             btnConfirmar.Name = "btnConfirmar";
-            btnConfirmar.Size = new Size(269, 32);
+            btnConfirmar.Size = new Size(317, 32);
             btnConfirmar.TabIndex = 10;
             btnConfirmar.Text = "Confirmar";
             btnConfirmar.UseVisualStyleBackColor = true;
@@ -127,18 +130,20 @@
             // 
             // dtpDataFinal
             // 
-            dtpDataFinal.Location = new Point(16, 113);
+            dtpDataFinal.Font = new Font("Lucida Sans", 10.5F);
+            dtpDataFinal.Location = new Point(23, 113);
             dtpDataFinal.Name = "dtpDataFinal";
-            dtpDataFinal.Size = new Size(269, 23);
+            dtpDataFinal.Size = new Size(317, 24);
             dtpDataFinal.TabIndex = 14;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(16, 95);
+            label1.Font = new Font("Lucida Sans", 10.5F);
+            label1.Location = new Point(23, 95);
             label1.Margin = new Padding(5);
             label1.Name = "label1";
-            label1.Size = new Size(59, 15);
+            label1.Size = new Size(72, 16);
             label1.TabIndex = 13;
             label1.Text = "Data Final";
             // 
@@ -146,7 +151,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(300, 200);
+            ClientSize = new Size(363, 200);
             Controls.Add(dtpDataFinal);
             Controls.Add(label1);
             Controls.Add(dtpDataInicial);

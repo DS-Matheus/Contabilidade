@@ -16,6 +16,8 @@ namespace Contabilidade.Forms.Relatorios
             InitializeComponent();
 
             con = conexaoBanco;
+
+            dtpData.Select();
         }
 
         private class Lancamento
@@ -47,7 +49,7 @@ namespace Contabilidade.Forms.Relatorios
                         Conta = reader["conta"].ToString(),
                         Descricao = reader["descricao"].ToString(),
                         Historico = reader["historico"].ToString(),
-                        Valor = Convert.ToDecimal(reader["valor"])
+                        Valor = (Convert.ToInt32(reader["valor"]) / 100m)
                     };
                     listLancamentos.Add(lancamento);
                 }
@@ -141,12 +143,12 @@ namespace Contabilidade.Forms.Relatorios
                             {
                                 if (reader2.Read())
                                 {
-                                    saldoAtual = reader2.GetDecimal(0);
+                                    saldoAtual = (reader2.GetInt32(0) / 100m);
                                 }
 
                                 if (reader2.Read())
                                 {
-                                    saldoAnterior = reader2.GetDecimal(0);
+                                    saldoAnterior = (reader2.GetInt32(0) / 100m);
                                 }
                             }
 
@@ -168,8 +170,11 @@ namespace Contabilidade.Forms.Relatorios
                                 // Obter dados
                                 var (conta, descricao, historico, valor) = (lancamento.Conta, lancamento.Descricao, lancamento.Historico, lancamento.Valor);
 
+                                // Dividir considerando o tamanho máximo que pode ter
+                                var linhasHistorico = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(historico, 82);
+
                                 // Verificar quantas linhas serão necessárias para cada uso - Não contar o espaço entre as colunas
-                                var linhasNecessariasHistorico = lancamento.Historico.Length >= 82 ? 2 : 1;
+                                var linhasNecessariasHistorico = lancamento.Historico.Length >= 82 ? linhasHistorico.Count : 1;
                                 var linhasNecessarias = linhasNecessariasHistorico;
 
                                 // Declarar para atribuir posteriormente, caso necessário
@@ -229,12 +234,9 @@ namespace Contabilidade.Forms.Relatorios
                                     }
                                 }
 
-                                // Testar se serão necessárias 1 ou 2 linhas por causa do comprimento do histórico
-                                if (linhasNecessariasHistorico == 2)
+                                // Testar se serão necessárias 1 ou mais linhas por causa do comprimento do histórico
+                                if (linhasNecessariasHistorico >= 2)
                                 {
-                                    // Dividir considerando o tamanho máximo que pode ter
-                                    var linhasHistorico = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(historico, 82);
-
                                     // Verificar se é um débito/crédito
                                     // Crédito
                                     if (valor > 0)
@@ -255,11 +257,17 @@ namespace Contabilidade.Forms.Relatorios
                                         pdf.Add(new Paragraph($"{linhasHistorico[0]?.PadRight(82)}{valor.ToString("#,##0.00").PadLeft(14)}", fonte));
                                     }
 
-                                    // Adicionar segunda linha
-                                    pdf.Add(new Paragraph(linhasHistorico[1], fonte));
+                                    // Remover primeiro item da lista e contabilizar sua adição no pdf
+                                    linhasHistorico.RemoveAt(0);
+                                    linhasDisponiveis -= 1;
 
-                                    // Contabilizar linhas
-                                    linhasDisponiveis -= 2;
+                                    // Adicionar demais linhas
+                                    foreach (var linha in linhasHistorico) {
+                                        pdf.Add(new Paragraph(linha, fonte));
+
+                                        // Contabilizar linha
+                                        linhasDisponiveis -= 1;
+                                    }
                                 }
                                 else
                                 {

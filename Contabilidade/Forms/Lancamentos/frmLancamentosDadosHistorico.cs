@@ -23,6 +23,10 @@ namespace Contabilidade.Forms.Lancamentos
             this.con = conexaoBanco;
 
             atualizarDataGrid();
+
+            dgvHistoricos.Columns["ID"].Visible = false;
+
+            txtFiltrar.Select();
         }
 
         private void atualizarDataGrid()
@@ -44,51 +48,79 @@ namespace Contabilidade.Forms.Lancamentos
             }
         }
 
+        private bool verificarExistenciaHistorico(string historico)
+        {
+            return dtDados.AsEnumerable().Any(row => string.Equals(historico, row.Field<string>("historico"), StringComparison.OrdinalIgnoreCase));
+        }
+
         private void btnCriar_Click(object sender, EventArgs e)
         {
-            var historicoNovo = txtHistorico.Text.TrimEnd();
-            // Se o histórico já existir
-            if (frmHistoricos.verificarExistenciaHistorico(historicoNovo))
+            try
             {
-                MessageBox.Show("O histórico informado já existe!", "Erro ao informar histórico", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtHistorico.Text = "";
-                txtHistorico.Focus();
-            }
-            else
-            {
-                // Criar histórico
-                string sql = "INSERT INTO historicos (historico) VALUES(@historico);";
-                using (var comando = new SQLiteCommand(sql, con.conn))
+                var historicoNovo = txtHistorico.Text.TrimEnd();
+                // Se o histórico já existir
+                if (verificarExistenciaHistorico(historicoNovo))
                 {
-                    comando.Parameters.AddWithValue("@historico", historicoNovo);
-
-                    int retornoBD = comando.ExecuteNonQuery();
-
-                    // Verificar se houve a criação da linha (0 = negativo)
-                    if (retornoBD > 0)
+                    MessageBox.Show("O histórico informado já existe!", "Erro ao informar histórico", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtHistorico.Text = "";
+                    txtHistorico.Focus();
+                }
+                else
+                {
+                    using (var transacao = con.conn.BeginTransaction())
                     {
-                        using (var command = new SQLiteCommand("SELECT last_insert_rowid();", con.conn))
+                        try
                         {
-                            var id = (Int64)command.ExecuteScalar();
+                            // Criar histórico
+                            string sql = "INSERT INTO historicos (historico) VALUES(@historico);";
+                            using (var comando = new SQLiteCommand(sql, con.conn))
+                            {
+                                comando.Transaction = transacao;
 
-                            // Adicionar dados na tabela
-                            DataRow row = dtDados.NewRow();
-                            row["id"] = id;
-                            row["historico"] = historicoNovo;
-                            dtDados.Rows.Add(row);
+                                comando.Parameters.AddWithValue("@historico", historicoNovo);
 
-                            dgvHistoricos.Refresh();
+                                int retornoBD = comando.ExecuteNonQuery();
 
-                            txtHistorico.Text = txtHistorico.Text.Trim();
+                                // Verificar se houve a criação da linha (0 = negativo)
+                                if (retornoBD > 0)
+                                {
+                                    comando.CommandText = "SELECT last_insert_rowid();";
+                                    var id = (Int64)comando.ExecuteScalar();
 
-                            MessageBox.Show("Histórico criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    // Adicionar dados na tabela
+                                    DataRow row = dtDados.NewRow();
+                                    row["id"] = id;
+                                    row["historico"] = historicoNovo;
+                                    dtDados.Rows.Add(row);
+
+                                    dgvHistoricos.Refresh();
+
+                                    txtHistorico.Text = "";
+
+                                    MessageBox.Show("Histórico criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                                    // Salvar registro commitando sua alteração
+                                    transacao.Commit();
+
+                                    frmHistoricos.novoHistorico = true;
+                                }
+                                else
+                                {
+                                    throw new Exception("Não foi possível criar o novo histórico.");
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            transacao.Rollback();
+                            MessageBox.Show(ex.Message.ToString(), "Histórico não criado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                     }
-                    else
-                    {
-                        MessageBox.Show("Não foi possível criar o novo histórico.", "Histórico não criado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao criar o histórico", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -133,6 +165,38 @@ namespace Contabilidade.Forms.Lancamentos
         {
             dv.RowFilter = $"historico LIKE '%{txtFiltrar.Text}%'";
             dgvHistoricos.DataSource = dv;
+        }
+
+        private void dgvHistoricos_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                DataGridViewRow row = dgvHistoricos.Rows[e.RowIndex];
+
+                txtHistorico.Text = row.Cells["Histórico"].Value.ToString();
+            }
+        }
+
+        private void txtFiltrar_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Verifica se a tecla pressionada é Enter
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                // Impede a quebra de linha
+                e.Handled = true;
+            }
+        }
+
+        private void txtHistorico_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Verifica se a tecla pressionada é Enter
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                // Impede a quebra de linha
+                e.Handled = true;
+
+                btnCriar.PerformClick();
+            }
         }
     }
 }

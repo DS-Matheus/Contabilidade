@@ -74,11 +74,11 @@
             // lblTitulo
             // 
             lblTitulo.AutoSize = true;
-            lblTitulo.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblTitulo.Font = new Font("Lucida Sans", 10.5F);
             lblTitulo.ForeColor = Color.White;
             lblTitulo.Location = new Point(12, 7);
             lblTitulo.Name = "lblTitulo";
-            lblTitulo.Size = new Size(175, 16);
+            lblTitulo.Size = new Size(203, 16);
             lblTitulo.TabIndex = 1;
             lblTitulo.Text = "Definir cabeçalho do relatório";
             lblTitulo.MouseDown += lblTitulo_MouseDown;
@@ -114,7 +114,8 @@
             // 
             // txtSubtitulo
             // 
-            txtSubtitulo.Location = new Point(32, 113);
+            txtSubtitulo.Font = new Font("Lucida Sans", 10F);
+            txtSubtitulo.Location = new Point(31, 109);
             txtSubtitulo.MaxLength = 100;
             txtSubtitulo.Multiline = true;
             txtSubtitulo.Name = "txtSubtitulo";
@@ -124,15 +125,17 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(32, 95);
+            label2.Font = new Font("Lucida Sans", 10F);
+            label2.Location = new Point(31, 91);
             label2.Name = "label2";
-            label2.Size = new Size(55, 15);
+            label2.Size = new Size(65, 16);
             label2.TabIndex = 5;
             label2.Text = "Subtítulo";
             // 
             // txtTitulo
             // 
-            txtTitulo.Location = new Point(32, 39);
+            txtTitulo.Font = new Font("Lucida Sans", 10F);
+            txtTitulo.Location = new Point(31, 35);
             txtTitulo.MaxLength = 100;
             txtTitulo.Multiline = true;
             txtTitulo.Name = "txtTitulo";
@@ -142,15 +145,17 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(32, 21);
+            label1.Font = new Font("Lucida Sans", 10F);
+            label1.Location = new Point(31, 17);
             label1.Name = "label1";
-            label1.Size = new Size(38, 15);
+            label1.Size = new Size(44, 16);
             label1.TabIndex = 1;
             label1.Text = "Título";
             // 
             // btnSalvar
             // 
-            btnSalvar.Location = new Point(32, 166);
+            btnSalvar.Font = new Font("Lucida Sans", 10F);
+            btnSalvar.Location = new Point(31, 162);
             btnSalvar.Margin = new Padding(3, 10, 3, 3);
             btnSalvar.Name = "btnSalvar";
             btnSalvar.Size = new Size(336, 32);
@@ -159,7 +164,7 @@
             btnSalvar.UseVisualStyleBackColor = true;
             btnSalvar.Click += btnSalvar_Click;
             // 
-            // frmObterSubtitulo
+            // frmDefinirCabecalho
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -167,7 +172,7 @@
             Controls.Add(panel1);
             Controls.Add(pnlBarraTitulo);
             FormBorderStyle = FormBorderStyle.None;
-            Name = "frmObterSubtitulo";
+            Name = "frmDefinirCabecalho";
             StartPosition = FormStartPosition.CenterParent;
             Text = "frmObterSubtítulo";
             pnlBarraTitulo.ResumeLayout(false);

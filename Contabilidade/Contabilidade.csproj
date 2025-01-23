@@ -8,15 +8,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <StartupObject>Contabilidade.Program</StartupObject>
 	<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+	<ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="iTextSharp.LGPLv2.Core" Version="3.4.21" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.119" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Fontes\" />
   </ItemGroup>
 
   <ItemGroup>

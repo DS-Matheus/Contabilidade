@@ -24,6 +24,10 @@ namespace Contabilidade.Forms.Cadastros
             con = conexaoBanco;
 
             atualizarDataGrid();
+
+            dgvHistoricos.Columns["ID"].Visible = false;
+
+            txtFiltrar.Select();
         }
 
         private void atualizarDataGrid()
@@ -47,59 +51,75 @@ namespace Contabilidade.Forms.Cadastros
 
         public static bool verificarExistenciaHistorico(string historico)
         {
-            return dtDados.AsEnumerable().Any(row => historico == row.Field<string>("historico"));
+            return dtDados.AsEnumerable().Any(row => string.Equals(historico, row.Field<string>("historico"), StringComparison.OrdinalIgnoreCase));
+
         }
 
         private void btnCriar_Click(object sender, EventArgs e)
         {
-            // Criar uma instância do formulário de dados e aguardar um retorno
-            using (var frmDados = new frmHistoricosDados("Criar histórico", ""))
+            try
             {
-                // O usuário apertou o botão de salvar
-                if (frmDados.ShowDialog() == DialogResult.OK)
+                // Criar uma instância do formulário de dados e aguardar um retorno
+                using (var frmDados = new frmHistoricosDados("Criar histórico", ""))
                 {
-                    // Criar histórico
-                    string sql = "INSERT INTO historicos (historico) VALUES(@historico);";
-                    using (var comando = new SQLiteCommand(sql, con.conn))
+                    // O usuário apertou o botão de salvar
+                    if (frmDados.ShowDialog() == DialogResult.OK)
                     {
-                        try
+                        using (var transacao = con.conn.BeginTransaction())
                         {
-                            comando.Parameters.AddWithValue("@historico", historico);
-
-                            int retornoBD = comando.ExecuteNonQuery();
-
-                            // Verificar se houve a criação da linha (0 = negativo)
-                            if (retornoBD > 0)
+                            try
                             {
-                                using (var command = new SQLiteCommand("SELECT last_insert_rowid();", con.conn))
+                                // Criar histórico
+                                string sql = "INSERT INTO historicos (historico) VALUES(@historico);";
+                                using (var comando = new SQLiteCommand(sql, con.conn))
                                 {
-                                    var id = (Int64)command.ExecuteScalar();
+                                    comando.Transaction = transacao;
+                                    comando.Parameters.AddWithValue("@historico", historico);
 
-                                    // Adicionar dados na tabela
-                                    DataRow row = dtDados.NewRow();
-                                    row["id"] = id;
-                                    row["historico"] = historico;
-                                    dtDados.Rows.Add(row);
+                                    int retornoBD = comando.ExecuteNonQuery();
 
-                                    dgvHistoricos.Refresh();
+                                    // Verificar se houve a criação da linha (0 = negativo)
+                                    if (retornoBD > 0)
+                                    {
+                                        using (var command = new SQLiteCommand("SELECT last_insert_rowid();", con.conn))
+                                        {
+                                            var id = (Int64)command.ExecuteScalar();
 
-                                    // Remover dados das variáveis
-                                    historico = "";
+                                            // Adicionar dados na tabela
+                                            DataRow row = dtDados.NewRow();
+                                            row["id"] = id;
+                                            row["historico"] = historico;
+                                            dtDados.Rows.Add(row);
 
-                                    MessageBox.Show("Histórico criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                            dgvHistoricos.Refresh();
+
+                                            // Remover dados das variáveis
+                                            historico = "";
+
+                                            // Efetivar alterações
+                                            transacao.Commit();
+
+                                            MessageBox.Show("Histórico criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        throw new Exception("Não foi possível criar o novo histórico.");
+                                    }
                                 }
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                throw new Exception("Não foi possível criar o novo histórico.");
+                                transacao.Rollback();
+                                MessageBox.Show(ex.Message.ToString(), "Histórico não criado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(ex.Message.ToString(), "Histórico não criado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao criar o histórico", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -118,51 +138,66 @@ namespace Contabilidade.Forms.Cadastros
 
         private void btnEditar_Click(object sender, EventArgs e)
         {
-            // Obter histórico selecionado
-            int numLinha = frmUsuarios.obterNumLinhaSelecionada(dgvHistoricos);
-            var id = dgvHistoricos.Rows[numLinha].Cells["ID"].Value;
-            var historicoAntigo = obterDadosDGV(numLinha);
-
-            // Criar uma instância do formulário de dados e aguardar um retorno
-            using (var frmDados = new frmHistoricosDados("Editar usuário", historicoAntigo))
+            try
             {
-                // O usuário apertou o botão de salvar
-                if (frmDados.ShowDialog() == DialogResult.OK)
+                // Obter histórico selecionado
+                int numLinha = frmUsuarios.obterNumLinhaSelecionada(dgvHistoricos);
+                var id = dgvHistoricos.Rows[numLinha].Cells["ID"].Value;
+                var historicoAntigo = obterDadosDGV(numLinha);
+
+                // Criar uma instância do formulário de dados e aguardar um retorno
+                using (var frmDados = new frmHistoricosDados("Editar usuário", historicoAntigo))
                 {
-                    // Editar histórico
-                    using (var comando = new SQLiteCommand("UPDATE historicos SET historico = @historico WHERE id = @id;", con.conn))
+                    // O usuário apertou o botão de salvar
+                    if (frmDados.ShowDialog() == DialogResult.OK)
                     {
-                        try
+                        using (var transacao = con.conn.BeginTransaction())
                         {
-                            comando.Parameters.AddWithValue("@historico", historico);
-                            comando.Parameters.AddWithValue("@id", id);
-
-                            int retornoBD = comando.ExecuteNonQuery();
-
-                            // Verificar se houve a edição de alguma linha (0 = negativo)
-                            if (retornoBD > 0)
+                            try
                             {
-                                // Atualizar DataTable
-                                dgvHistoricos.Rows[numLinha].Cells["Histórico"].Value = historico;
+                                // Editar histórico
+                                using (var comando = new SQLiteCommand("UPDATE historicos SET historico = @historico WHERE id = @id;", con.conn))
+                                {
+                                    comando.Transaction = transacao;
+                                    comando.Parameters.AddWithValue("@historico", historico);
+                                    comando.Parameters.AddWithValue("@id", id);
 
-                                dgvHistoricos.Refresh();
+                                    int retornoBD = comando.ExecuteNonQuery();
 
-                                // Remover dados das variáveis
-                                historico = "";
+                                    // Verificar se houve a edição de alguma linha (0 = negativo)
+                                    if (retornoBD > 0)
+                                    {
+                                        // Atualizar DataTable
+                                        dgvHistoricos.Rows[numLinha].Cells["Histórico"].Value = historico;
 
-                                MessageBox.Show("Histórico editado com sucesso!", "Edição bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        dgvHistoricos.Refresh();
+
+                                        // Remover dados das variáveis
+                                        historico = "";
+
+                                        // Efetivar alterações
+                                        transacao.Commit();
+
+                                        MessageBox.Show("Histórico editado com sucesso!", "Edição bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    }
+                                    else
+                                    {
+                                        throw new Exception("Não foi possível encontrar o histórico ou ocorreu um erro na edição.");
+                                    }
+                                }
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                throw new Exception("Não foi possível encontrar o histórico ou ocorreu um erro na edição.");
+                                transacao.Rollback();
+                                MessageBox.Show(ex.Message.ToString(), "Edição não realizada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(ex.Message.ToString(), "Exclusão não realizada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao editar o histórico", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -261,20 +296,53 @@ namespace Contabilidade.Forms.Cadastros
 
                             for (int i = 0; i < qtdLinhas; i++)
                             {
-                                // Testar se possuí uma linha disponível para usar
-                                if (linhasDisponiveis - 1 < 0)
-                                {
-                                    pdf.NewPage();
-                                    linhasDisponiveis = 57;
-                                    adicionarCabecalho(titulo, subtitulo);
-                                }
-
+                                // Obter dados
                                 var id = dgvHistoricos.Rows[i].Cells["ID"].Value?.ToString();
                                 var historico = dgvHistoricos.Rows[i].Cells["Histórico"].Value?.ToString();
 
-                                pdf.Add(new Paragraph($"{id} - {historico}", fonte));
+                                // Verificar quantas linhas serão usadas
+                                var linhasHistorico = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(historico, 100);
 
-                                linhasDisponiveis--;
+                                // Verificar tamanho do histórico
+                                var linhasNecessarias = historico.Length >= 100 ? linhasHistorico.Count : 1;
+
+                                if (linhasNecessarias >= 2)
+                                {
+                                    // Testar se possuí uma linha disponível para usar
+                                    if (linhasDisponiveis - linhasNecessarias < 0)
+                                    {
+                                        pdf.NewPage();
+                                        linhasDisponiveis = 57;
+                                        adicionarCabecalho(titulo, subtitulo);
+                                    }
+
+                                    // Adicionar primeira linha
+                                    pdf.Add(new Paragraph($"{id} - {linhasHistorico[0]}", fonte));
+
+                                    linhasHistorico.RemoveAt(0);
+                                    linhasDisponiveis--;
+
+                                    // Adicionar demais linhas
+                                    foreach (var linhaHistorico in linhasHistorico)
+                                    {
+                                        pdf.Add(new Paragraph($"{" ".PadRight(id.ToString().Length + 3)}{linhaHistorico}", fonte));
+                                        linhasDisponiveis--;
+                                    }
+                                }
+                                else
+                                {
+                                    // Testar se possuí uma linha disponível para usar
+                                    if (linhasDisponiveis - 1 < 0)
+                                    {
+                                        pdf.NewPage();
+                                        linhasDisponiveis = 57;
+                                        adicionarCabecalho(titulo, subtitulo);
+                                    }
+
+                                    // Caso seja apenas 1 linha
+                                    pdf.Add(new Paragraph($"{id} - {historico}", fonte));
+                                    linhasDisponiveis--;
+                                }
                             }
 
                             // Fechando o documento
@@ -294,8 +362,7 @@ namespace Contabilidade.Forms.Cadastros
         private class Lancamento
         {
             public string ID { get; set; }
-            public decimal Valor { get; set; }
-            public string Data {  get; set; }
+            public string Data { get; set; }
         }
 
         private void btnExcluir_Click(object sender, EventArgs e)
@@ -336,7 +403,7 @@ namespace Contabilidade.Forms.Cadastros
                                         {
                                             // Variável para armazenar o id recebido do formulário filho
                                             string idNovo = "";
-                                            
+
                                             // Abrir formulário para seleção do id_histórico que irá substituir os demais (confirmar que o id não é o mesmo antes de retornar)
                                             using (var formFilho = new frmHistoricosSelecionar(con, transacao, idExcluir))
                                             {
@@ -388,7 +455,6 @@ namespace Contabilidade.Forms.Cadastros
                                                             Lancamento lancamento = new Lancamento
                                                             {
                                                                 ID = reader["id"].ToString(),
-                                                                Valor = Convert.ToDecimal(reader["valor"]),
                                                                 Data = reader["data"].ToString()
                                                             };
                                                             listLancamentos.Add(lancamento);
@@ -398,7 +464,7 @@ namespace Contabilidade.Forms.Cadastros
                                                     // Excluir cada lançamento na lista
                                                     foreach (var lancamento in listLancamentos)
                                                     {
-                                                        Contabilidade.Forms.Lancamentos.frmLancamentos.excluirLancamento(con, lancamento.ID, lancamento.Data, lancamento.Valor, transacao);
+                                                        Contabilidade.Forms.Lancamentos.frmLancamentos.excluirLancamento(con, lancamento.ID, lancamento.Data, transacao);
                                                     }
                                                 }
                                                 else
@@ -440,20 +506,20 @@ namespace Contabilidade.Forms.Cadastros
                             catch (CustomException ex)
                             {
                                 transacao.Rollback();
-                                
+
                                 // Atualizar DataGrid, apenas para os casos em que um novo histórico foi criado e deu algum erro após
                                 if (novoHistorico)
                                 {
                                     novoHistorico = false;
                                     atualizarDataGrid();
                                 }
-                                
+
                                 MessageBox.Show($"{ex.Message?.ToString()}", "Erro ao excluir o histórico", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
                             catch (Exception ex)
                             {
                                 transacao.Rollback();
-                                
+
                                 // Atualizar DataGrid, apenas para os casos em que um novo histórico foi criado e deu algum erro após
                                 if (novoHistorico)
                                 {
@@ -477,6 +543,95 @@ namespace Contabilidade.Forms.Cadastros
                 }
 
                 MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao excluir o histórico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void txtFiltrar_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Verifica se a tecla pressionada é Enter
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                // Impede a quebra de linha
+                e.Handled = true;
+            }
+        }
+
+        private void btnCopiarCriar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Verifique se há uma linha selecionada
+                if (dgvHistoricos.SelectedRows.Count > 0)
+                {
+                    // Obtém o histórico selecionado
+                    string historico = dgvHistoricos.SelectedRows[0].Cells["Histórico"].Value.ToString();
+
+                    // Criar uma instância do formulário de dados e aguardar um retorno
+                    using (var frmDados = new frmHistoricosDados("Criar histórico", historico))
+                    {
+                        // O usuário apertou o botão de salvar
+                        if (frmDados.ShowDialog() == DialogResult.OK)
+                        {
+                            using (var transacao = con.conn.BeginTransaction())
+                            {
+                                try
+                                {
+                                    // Criar histórico
+                                    string sql = "INSERT INTO historicos (historico) VALUES(@historico);";
+                                    using (var comando = new SQLiteCommand(sql, con.conn))
+                                    {
+                                        comando.Transaction = transacao;
+                                        comando.Parameters.AddWithValue("@historico", historico);
+
+                                        int retornoBD = comando.ExecuteNonQuery();
+
+                                        // Verificar se houve a criação da linha (0 = negativo)
+                                        if (retornoBD > 0)
+                                        {
+                                            using (var command = new SQLiteCommand("SELECT last_insert_rowid();", con.conn))
+                                            {
+                                                var id = (Int64)command.ExecuteScalar();
+
+                                                // Adicionar dados na tabela
+                                                DataRow row = dtDados.NewRow();
+                                                row["id"] = id;
+                                                row["historico"] = historico;
+                                                dtDados.Rows.Add(row);
+
+                                                dgvHistoricos.Refresh();
+
+                                                // Remover dados das variáveis
+                                                historico = "";
+
+                                                // Efetivar alterações
+                                                transacao.Commit();
+
+                                                MessageBox.Show("Histórico criado com sucesso!", "Criação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            throw new Exception("Não foi possível criar o novo histórico.");
+                                        }
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    transacao.Rollback();
+                                    MessageBox.Show(ex.Message.ToString(), "Histórico não criado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Nenhum histórico foi selecionado na tabela de dados", "Erro ao copiar histórico", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao copiar o histórico", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
