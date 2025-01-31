@@ -399,7 +399,7 @@
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.4"
+        "ProductVersion" = "8:1.5"
         "Manufacturer" = "8:DS-Matheus"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
