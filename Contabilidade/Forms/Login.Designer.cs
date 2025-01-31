@@ -273,7 +273,7 @@
             label5.Name = "label5";
             label5.Size = new Size(83, 16);
             label5.TabIndex = 4;
-            label5.Text = "Versão: 1.4";
+            label5.Text = "Versão: 1.5";
             // 
             // label3
             // 
