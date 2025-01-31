@@ -45,13 +45,16 @@ namespace Contabilidade.Forms.Lancamentos
 
             // Exibir 2 casas decimais no DataGridView
             dgvLancamentos.Columns["valor"].DefaultCellStyle.Format = "N2";
+
+            // Ajustar tamanho da coluna
+            dgvLancamentos.Columns["valor"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
         }
 
 
         private void atualizarDataGrid()
         {
             // Query de pesquisa
-            string sql = "SELECT l.id, l.conta, c.descricao, (l.valor / 100.0) as valor, l.data, l.id_historico, h.historico FROM lancamentos l JOIN contas c ON l.conta = c.conta JOIN historicos h ON l.id_historico = h.id ORDER BY l.data DESC, l.conta";
+            string sql = "SELECT l.id, l.conta, c.descricao, (l.valor / 100.0) as valor, l.data, l.id_historico, h.historico FROM lancamentos l JOIN contas c ON l.conta = c.conta JOIN historicos h ON l.id_historico = h.id ORDER BY l.data DESC, l.id DESC;";
             using (var command = new SQLiteCommand(sql, con.conn))
             {
                 // Alterar filtros somente se for diferente - para não acionar os handlers de forma desnecessária
@@ -126,35 +129,40 @@ namespace Contabilidade.Forms.Lancamentos
             {
                 comando.Transaction = transacao;
 
-                // Obter valor do lançamento
-                comando.CommandText = "SELECT valor FROM lancamentos WHERE id = @id;";
+                // Obter valor e conta do lançamento
+                comando.CommandText = "SELECT valor, conta FROM lancamentos WHERE id = @id;";
                 comando.Parameters.AddWithValue("@id", ID);
-                
-                var valorLancamento = 0;
 
-                var result = comando.ExecuteScalar();
-                if (result != null)
+                var valorLancamento = 0;
+                string contaLancamento = null;
+
+                using (var reader = comando.ExecuteReader())
                 {
-                    valorLancamento = Convert.ToInt32(result);
-                }
-                else
-                {
-                    throw new CustomException("Não foi possível obter o valor do lançamento, tente novamente ou contate o desenvolvedor do sistema.");
+                    if (reader.Read())
+                    {
+                        valorLancamento = Convert.ToInt32(reader["valor"]);
+                        contaLancamento = reader["conta"].ToString();
+                    }
+                    else
+                    {
+                        throw new CustomException("Não foi possível obter o valor e a conta do lançamento, tente novamente ou contate o desenvolvedor do sistema.");
+                    }
                 }
 
                 comando.Parameters.Clear();
 
-                // Reverter valores do lançamento na sua data -> atualizar saldos nos lançamentos seguintes
-                comando.CommandText = "SELECT id FROM lancamentos WHERE data = @data AND id > @id;";
+                // Reverter valores do lançamento NOS SALDOS das DATAS do lançamento -> atualizar saldos nos lançamentos seguintes de mesma data
+                comando.CommandText = "SELECT id FROM lancamentos WHERE conta = @conta AND data = @data AND id > @id;";
                 comando.Parameters.AddWithValue("@data", dataConvertida);
                 comando.Parameters.AddWithValue("@id", ID);
+                comando.Parameters.AddWithValue("@conta", contaLancamento);
                 reverterLancamentos(con, comando, valorLancamento, transacao);
 
-                // Reverter valor do lançamento nas datas seguintes -> atualizar saldos dos lançamentos seguintes
-                comando.CommandText = "SELECT id FROM lancamentos WHERE data > @data";
+                // Reverter valor do lançamento NOS SALDOS das DATAS POSTERIORES -> atualizar saldos dos lançamentos seguintes de datas posteriores
+                comando.CommandText = "SELECT id FROM lancamentos WHERE conta = @conta AND data > @data";
                 reverterLancamentos(con, comando, valorLancamento, transacao);
 
-                // Reverter valor do lançamento nos registros do caixa nas datas >= sua data
+                // Reverter valor do lançamento nos REGISTROS DO CAIXA nas datas IGUAIS OU POSTERIORES a do lançamento
                 comando.CommandText = "UPDATE registros_caixa SET saldo = (saldo - @valor) WHERE data >= @data;";
                 comando.Parameters.AddWithValue("@valor", valorLancamento);
                 comando.ExecuteNonQuery();
