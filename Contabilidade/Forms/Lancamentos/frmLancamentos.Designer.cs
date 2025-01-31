@@ -277,12 +277,12 @@
             // 
             // Valor
             // 
-            Valor.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            Valor.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader;
             Valor.DataPropertyName = "valor";
             Valor.HeaderText = "Valor";
             Valor.Name = "Valor";
             Valor.ReadOnly = true;
-            Valor.Width = 69;
+            Valor.Width = 5;
             // 
             // Conta
             // 
