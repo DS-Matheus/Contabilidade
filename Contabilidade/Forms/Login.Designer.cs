@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmLogin));
             groupBox1 = new GroupBox();
             btnTransferir = new Button();
             btnRestaurar = new Button();
@@ -364,6 +365,7 @@
             Controls.Add(pnlSidebar);
             Controls.Add(pnlBarraTitulo);
             FormBorderStyle = FormBorderStyle.None;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             KeyPreview = true;
             Name = "frmLogin";
             StartPosition = FormStartPosition.CenterScreen;

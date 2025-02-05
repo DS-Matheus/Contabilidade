@@ -31,6 +31,7 @@
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmLancamentos));
             groupBox1 = new GroupBox();
             dtpData2 = new DateTimePicker();
             cbbFiltrarValores = new ComboBox();
@@ -44,7 +45,6 @@
             btnExcluir = new Button();
             btnCriar = new Button();
             dgvLancamentos = new DataGridView();
-            btnCalcular = new Button();
             ID = new DataGridViewTextBoxColumn();
             Data = new DataGridViewTextBoxColumn();
             Valor = new DataGridViewTextBoxColumn();
@@ -52,6 +52,7 @@
             Descrição = new DataGridViewTextBoxColumn();
             ID_Historico = new DataGridViewTextBoxColumn();
             Histórico = new DataGridViewTextBoxColumn();
+            btnCalcular = new Button();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudValor2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudValor1).BeginInit();
@@ -243,18 +244,6 @@
             dgvLancamentos.Size = new Size(856, 390);
             dgvLancamentos.TabIndex = 20;
             // 
-            // btnCalcular
-            // 
-            btnCalcular.Anchor = AnchorStyles.Bottom;
-            btnCalcular.Font = new Font("Lucida Sans", 10.5F);
-            btnCalcular.Location = new Point(268, 453);
-            btnCalcular.Name = "btnCalcular";
-            btnCalcular.Size = new Size(250, 35);
-            btnCalcular.TabIndex = 26;
-            btnCalcular.Text = "Calcular";
-            btnCalcular.UseVisualStyleBackColor = true;
-            btnCalcular.Click += btnCalcular_Click;
-            // 
             // ID
             // 
             ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
@@ -317,6 +306,18 @@
             Histórico.Name = "Histórico";
             Histórico.ReadOnly = true;
             // 
+            // btnCalcular
+            // 
+            btnCalcular.Anchor = AnchorStyles.Bottom;
+            btnCalcular.Font = new Font("Lucida Sans", 10.5F);
+            btnCalcular.Location = new Point(268, 453);
+            btnCalcular.Name = "btnCalcular";
+            btnCalcular.Size = new Size(250, 35);
+            btnCalcular.TabIndex = 26;
+            btnCalcular.Text = "Calcular";
+            btnCalcular.UseVisualStyleBackColor = true;
+            btnCalcular.Click += btnCalcular_Click;
+            // 
             // frmLancamentos
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -329,6 +330,7 @@
             Controls.Add(btnCriar);
             Controls.Add(dgvLancamentos);
             FormBorderStyle = FormBorderStyle.None;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "frmLancamentos";
             Text = "Movimentação";
             groupBox1.ResumeLayout(false);

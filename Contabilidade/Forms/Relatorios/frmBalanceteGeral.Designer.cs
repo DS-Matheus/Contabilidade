@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmBalanceteGeral));
             btnVisualizar = new Button();
             label3 = new Label();
             label2 = new Label();
@@ -144,6 +145,7 @@
             ClientSize = new Size(880, 500);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "frmBalanceteGeral";
             Text = "Balancete Geral";
             panel1.ResumeLayout(false);

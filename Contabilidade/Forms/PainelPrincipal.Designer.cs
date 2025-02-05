@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmPainelPrincipal));
             pnlLogo = new Panel();
             lblData = new Label();
             lblRelogio = new Label();
@@ -656,6 +657,7 @@
             Controls.Add(pnlTitulo);
             Controls.Add(pnlMenuLateral);
             FormBorderStyle = FormBorderStyle.None;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             KeyPreview = true;
             Name = "frmPainelPrincipal";
             StartPosition = FormStartPosition.CenterParent;

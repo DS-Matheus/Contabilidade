@@ -295,6 +295,7 @@
             Controls.Add(panel1);
             Controls.Add(pnlBarraTitulo);
             FormBorderStyle = FormBorderStyle.None;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "frmLancamentosDados";
             StartPosition = FormStartPosition.CenterParent;
             Text = "frmLancamentosDados";

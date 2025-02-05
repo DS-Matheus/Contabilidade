@@ -33,6 +33,7 @@
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmContas));
             dgvContas = new DataGridView();
             Conta = new DataGridViewTextBoxColumn();
             Nível = new DataGridViewTextBoxColumn();
@@ -221,6 +222,7 @@
             Controls.Add(btnCriar);
             Controls.Add(dgvContas);
             FormBorderStyle = FormBorderStyle.None;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "frmContas";
             Text = "Contas";
             ((System.ComponentModel.ISupportInitialize)dgvContas).EndInit();

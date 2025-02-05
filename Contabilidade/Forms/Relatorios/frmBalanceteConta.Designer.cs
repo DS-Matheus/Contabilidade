@@ -33,12 +33,16 @@
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmBalanceteConta));
             btnVisualizar = new Button();
             groupBox1 = new GroupBox();
             cbbNivel = new ComboBox();
             cbbFiltrar = new ComboBox();
             txtFiltrar = new TextBox();
             dgvContas = new DataGridView();
+            Nível = new DataGridViewTextBoxColumn();
+            Conta = new DataGridViewTextBoxColumn();
+            Descrição = new DataGridViewTextBoxColumn();
             label4 = new Label();
             txtSubtitulo = new TextBox();
             label3 = new Label();
@@ -48,9 +52,6 @@
             label1 = new Label();
             txtConta = new TextBox();
             chkSaldosZero = new CheckBox();
-            Nível = new DataGridViewTextBoxColumn();
-            Conta = new DataGridViewTextBoxColumn();
-            Descrição = new DataGridViewTextBoxColumn();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvContas).BeginInit();
             SuspendLayout();
@@ -149,6 +150,38 @@
             dgvContas.TabIndex = 19;
             dgvContas.CellDoubleClick += dgvContas_CellDoubleClick;
             // 
+            // Nível
+            // 
+            Nível.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            Nível.DataPropertyName = "nivel";
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            Nível.DefaultCellStyle = dataGridViewCellStyle2;
+            Nível.HeaderText = "Nível";
+            Nível.Name = "Nível";
+            Nível.ReadOnly = true;
+            Nível.Width = 68;
+            // 
+            // Conta
+            // 
+            Conta.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            Conta.DataPropertyName = "conta";
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            Conta.DefaultCellStyle = dataGridViewCellStyle3;
+            Conta.HeaderText = "Conta";
+            Conta.Name = "Conta";
+            Conta.ReadOnly = true;
+            Conta.Width = 76;
+            // 
+            // Descrição
+            // 
+            Descrição.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Descrição.DataPropertyName = "descricao";
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            Descrição.DefaultCellStyle = dataGridViewCellStyle4;
+            Descrição.HeaderText = "Descrição";
+            Descrição.Name = "Descrição";
+            Descrição.ReadOnly = true;
+            // 
             // label4
             // 
             label4.Anchor = AnchorStyles.Bottom;
@@ -245,38 +278,6 @@
             chkSaldosZero.Text = "Incluir contas com saldo 0";
             chkSaldosZero.UseVisualStyleBackColor = true;
             // 
-            // Nível
-            // 
-            Nível.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            Nível.DataPropertyName = "nivel";
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Nível.DefaultCellStyle = dataGridViewCellStyle2;
-            Nível.HeaderText = "Nível";
-            Nível.Name = "Nível";
-            Nível.ReadOnly = true;
-            Nível.Width = 68;
-            // 
-            // Conta
-            // 
-            Conta.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            Conta.DataPropertyName = "conta";
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            Conta.DefaultCellStyle = dataGridViewCellStyle3;
-            Conta.HeaderText = "Conta";
-            Conta.Name = "Conta";
-            Conta.ReadOnly = true;
-            Conta.Width = 76;
-            // 
-            // Descrição
-            // 
-            Descrição.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            Descrição.DataPropertyName = "descricao";
-            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            Descrição.DefaultCellStyle = dataGridViewCellStyle4;
-            Descrição.HeaderText = "Descrição";
-            Descrição.Name = "Descrição";
-            Descrição.ReadOnly = true;
-            // 
             // frmBalanceteConta
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -295,6 +296,7 @@
             Controls.Add(dgvContas);
             Controls.Add(btnVisualizar);
             FormBorderStyle = FormBorderStyle.None;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "frmBalanceteConta";
             Text = "Balancete de Conta";
             groupBox1.ResumeLayout(false);

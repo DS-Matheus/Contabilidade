@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCalcularObterDados));
             pnlBarraTitulo = new Panel();
             btnMinimizar = new Button();
             lblTitulo = new Label();
@@ -159,6 +160,7 @@
             Controls.Add(btnConfirmar);
             Controls.Add(pnlBarraTitulo);
             FormBorderStyle = FormBorderStyle.None;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "frmCalcularObterDados";
             StartPosition = FormStartPosition.CenterParent;
             Text = "frmDatasCalcula";
