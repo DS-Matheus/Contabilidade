@@ -31,7 +31,11 @@
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmUsuarios));
             dgvUsuarios = new DataGridView();
+            ID = new DataGridViewTextBoxColumn();
+            Usuário = new DataGridViewTextBoxColumn();
+            Senha = new DataGridViewTextBoxColumn();
             btnCriar = new Button();
             btnExcluir = new Button();
             btnEditar = new Button();
@@ -39,9 +43,6 @@
             txtFiltrar = new TextBox();
             btnImprimir = new Button();
             groupBox1 = new GroupBox();
-            ID = new DataGridViewTextBoxColumn();
-            Usuário = new DataGridViewTextBoxColumn();
-            Senha = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgvUsuarios).BeginInit();
             groupBox1.SuspendLayout();
             SuspendLayout();
@@ -78,6 +79,33 @@
             dgvUsuarios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvUsuarios.Size = new Size(856, 385);
             dgvUsuarios.TabIndex = 0;
+            // 
+            // ID
+            // 
+            ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            ID.DataPropertyName = "id";
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            ID.DefaultCellStyle = dataGridViewCellStyle2;
+            ID.HeaderText = "ID";
+            ID.Name = "ID";
+            ID.ReadOnly = true;
+            ID.Visible = false;
+            // 
+            // Usuário
+            // 
+            Usuário.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Usuário.DataPropertyName = "nome";
+            Usuário.HeaderText = "Usuário";
+            Usuário.Name = "Usuário";
+            Usuário.ReadOnly = true;
+            // 
+            // Senha
+            // 
+            Senha.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Senha.DataPropertyName = "senha";
+            Senha.HeaderText = "Senha";
+            Senha.Name = "Senha";
+            Senha.ReadOnly = true;
             // 
             // btnCriar
             // 
@@ -161,33 +189,6 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "Filtrar por";
             // 
-            // ID
-            // 
-            ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            ID.DataPropertyName = "id";
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            ID.DefaultCellStyle = dataGridViewCellStyle2;
-            ID.HeaderText = "ID";
-            ID.Name = "ID";
-            ID.ReadOnly = true;
-            ID.Visible = false;
-            // 
-            // Usuário
-            // 
-            Usuário.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            Usuário.DataPropertyName = "nome";
-            Usuário.HeaderText = "Usuário";
-            Usuário.Name = "Usuário";
-            Usuário.ReadOnly = true;
-            // 
-            // Senha
-            // 
-            Senha.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            Senha.DataPropertyName = "senha";
-            Senha.HeaderText = "Senha";
-            Senha.Name = "Senha";
-            Senha.ReadOnly = true;
-            // 
             // frmUsuarios
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -200,6 +201,7 @@
             Controls.Add(btnCriar);
             Controls.Add(dgvUsuarios);
             FormBorderStyle = FormBorderStyle.None;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "frmUsuarios";
             Text = "Usuários";
             ((System.ComponentModel.ISupportInitialize)dgvUsuarios).EndInit();

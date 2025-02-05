@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmRelDiario));
             btnVisualizar = new Button();
             label2 = new Label();
             dtpData = new DateTimePicker();
@@ -108,6 +109,7 @@
             ClientSize = new Size(880, 500);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "frmRelDiario";
             Text = "Relatório Diário";
             panel1.ResumeLayout(false);

@@ -32,6 +32,7 @@
             DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmHistoricos));
             groupBox1 = new GroupBox();
             txtFiltrar = new TextBox();
             btnImprimir = new Button();
@@ -197,6 +198,7 @@
             Controls.Add(btnCriar);
             Controls.Add(dgvHistoricos);
             FormBorderStyle = FormBorderStyle.None;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "frmHistoricos";
             Text = "Históricos";
             groupBox1.ResumeLayout(false);

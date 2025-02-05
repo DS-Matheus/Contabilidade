@@ -33,6 +33,7 @@
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSaldo));
             groupBox1 = new GroupBox();
             cbbNivel = new ComboBox();
             cbbFiltrar = new ComboBox();
@@ -284,6 +285,7 @@
             Controls.Add(label1);
             Controls.Add(txtConta);
             FormBorderStyle = FormBorderStyle.None;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "frmSaldo";
             Text = "Saldo";
             groupBox1.ResumeLayout(false);

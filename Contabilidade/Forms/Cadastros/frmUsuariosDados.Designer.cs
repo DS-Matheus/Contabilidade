@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmUsuariosDados));
             btnFechar = new Button();
             lblTitulo = new Label();
             btnMinimizar = new Button();
@@ -170,6 +171,7 @@
             Controls.Add(panel1);
             Controls.Add(pnlBarraTitulo);
             FormBorderStyle = FormBorderStyle.None;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "frmUsuariosDados";
             StartPosition = FormStartPosition.CenterParent;
             Text = "frmUsuariosDados";
