@@ -433,34 +433,80 @@ namespace Contabilidade.Forms.Relatorios
                                     Stack<ContaSintetica> pilhaContas = new Stack<ContaSintetica>();
 
                                     // Função para adicionar linha de contas sintéticas
-                                    void AdicionarParagrafoSintetico(string conta, string descricao, int espacosInicio, int espacosDescricao, int linhasNecessarias)
+                                    void AdicionarParagrafoSintetico(string conta, string descricao, int espacosInicio, int espacosDescricao)
                                     {
-                                        // Obter linhas da descrição
-                                        var linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(descricao, espacosDescricao);
+                                        // Por padrão apenas 1 linha será necessária
+                                        var linhasNecessarias = 1;
+                                        List<string> linhasDescricao = [];
+                                        var haveraQuebra = frmBalanceteGeral.verificarSeHaveraQuebraDeLinha(descricao, espacosDescricao);
 
-                                        pdf.Add(new Paragraph($"{"".PadRight(espacosInicio)}{conta.PadRight(conta.Length)} - {linhasDescricao[0].PadRight(espacosDescricao)}", fonte));
-                                        linhasDisponiveis -= 1;
-
-                                        // Adicionar as outras linhas (se houver mais que uma)
-                                        for (int i = 1; i < linhasNecessarias; i++)
+                                        // Verificar se haverá quebra de linha na descrição - se houver, obter linhas
+                                        if (haveraQuebra)
                                         {
-                                            pdf.Add(new Paragraph($"{"    ".PadRight(espacosInicio + conta.Length)}   {linhasDescricao[i].PadRight(espacosDescricao)}", fonte));
+                                            linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(descricao, espacosDescricao);
+                                            linhasNecessarias = linhasDescricao.Count;
+                                        }
+
+                                        // Verificar se a quantidade de linhas disponiveis é suficiente
+                                        if ((linhasDisponiveis - linhasNecessarias) < 0)
+                                        {
+                                            pdf.NewPage();
+                                            linhasDisponiveis = 63;
+                                            adicionarCabecalho(subtitulo);
+                                        }
+
+                                        // Adicionar linhas - testar se será apenas uma ou várias
+                                        if (haveraQuebra)
+                                        {
+                                            // Várias linhas
+                                            for (int i = 0; i < linhasNecessarias; i++)
+                                            {
+                                                pdf.Add(new Paragraph($"{"    ".PadRight(espacosInicio + conta.Length)}   {linhasDescricao[i].PadRight(espacosDescricao)}", fonte));
+                                                linhasDisponiveis -= 1;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            pdf.Add(new Paragraph($"{"".PadRight(espacosInicio)}{conta.PadRight(conta.Length)} - {descricao.PadRight(espacosDescricao)}", fonte));
                                             linhasDisponiveis -= 1;
                                         }
                                     }
 
-                                    void AdicionarParagrafosPdf(string conta, string descricao, decimal saldo, int espacosInicio, int espacosDescricao, int linhasNecessarias)
+                                    void AdicionarParagrafosPdf(string conta, string descricao, decimal saldo, int espacosInicio, int espacosDescricao)
                                     {
-                                        // Obter linhas da descrição
-                                        var linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(descricao, espacosDescricao);
+                                        // Por padrão apenas 1 linha será necessária
+                                        var linhasNecessarias = 1;
+                                        List<string> linhasDescricao = [];
+                                        var haveraQuebra = frmBalanceteGeral.verificarSeHaveraQuebraDeLinha(descricao, espacosDescricao);
 
-                                        pdf.Add(new Paragraph($"{"".PadRight(espacosInicio)}{conta.PadRight(conta.Length)} - {linhasDescricao[0].PadRight(espacosDescricao)}{saldo.ToString("#,##0.00").PadLeft(14)}", fonte));
-                                        linhasDisponiveis -= 1;
-
-                                        // Adicionar as outras linhas (se houver mais que uma)
-                                        for (int i = 1; i < linhasNecessarias; i++)
+                                        // Verificar se haverá quebra de linha na descrição - se houver, obter linhas
+                                        if (haveraQuebra)
                                         {
-                                            pdf.Add(new Paragraph($"{"    ".PadRight(espacosInicio + conta.Length)}   {linhasDescricao[i].PadRight(espacosDescricao)}", fonte));
+                                            linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(descricao, espacosDescricao);
+                                            linhasNecessarias = linhasDescricao.Count;
+                                        }
+
+                                        // Verificar se a quantidade de linhas disponiveis é suficiente
+                                        if ((linhasDisponiveis - linhasNecessarias) < 0)
+                                        {
+                                            pdf.NewPage();
+                                            linhasDisponiveis = 63;
+                                            adicionarCabecalho(subtitulo);
+                                        }
+
+                                        // Adicionar linhas - testar se será apenas uma ou várias
+                                        if (haveraQuebra)
+                                        {
+                                            // Várias linhas
+                                            for (int i = 0; i < linhasNecessarias; i++)
+                                            {
+                                                pdf.Add(new Paragraph($"{"    ".PadRight(espacosInicio + conta.Length)}   {linhasDescricao[i].PadRight(espacosDescricao)}", fonte));
+                                                linhasDisponiveis -= 1;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            pdf.Add(new Paragraph($"{"".PadRight(espacosInicio)}{conta.PadRight(conta.Length)} - {descricao.PadRight(espacosDescricao)}{saldo.ToString("#,##0.00").PadLeft(14)}", fonte));
                                             linhasDisponiveis -= 1;
                                         }
                                     }
@@ -471,17 +517,8 @@ namespace Contabilidade.Forms.Relatorios
                                         var grauContaRemover = Contabilidade.Forms.Relatorios.frmBalanceteGeral.verificarGrauConta(contaFechada.Conta);
                                         int espacosInicioRemover = 2 * (grauContaRemover - 1);
                                         int espacosDescricaoRemover = 96 - espacosInicioRemover - contaFechada.Conta.Length - 3;
-                                        var linhasNecessariasRemover = Contabilidade.Forms.Relatorios.frmBalanceteGeral.obterQuantidadeLinhasString(contaFechada.Descricao, espacosDescricaoRemover);
 
-                                        // Verificar se a quantidade de linhas disponiveis é suficiente
-                                        if ((linhasDisponiveis - linhasNecessariasRemover) < 0)
-                                        {
-                                            pdf.NewPage();
-                                            linhasDisponiveis = 57;
-                                            adicionarCabecalho(subtitulo);
-                                        }
-
-                                        AdicionarParagrafosPdf(contaFechada.Conta, contaFechada.Descricao, contaFechada.Saldo, espacosInicioRemover, espacosDescricaoRemover, linhasNecessariasRemover);
+                                        AdicionarParagrafosPdf(contaFechada.Conta, contaFechada.Descricao, contaFechada.Saldo, espacosInicioRemover, espacosDescricaoRemover);
                                     }
 
                                     // Para cada conta
@@ -500,17 +537,8 @@ namespace Contabilidade.Forms.Relatorios
                                             var grauConta = Contabilidade.Forms.Relatorios.frmBalanceteGeral.verificarGrauConta(contaSintetica.Conta);
                                             int espacosInicio = 2 * (grauConta - 1);
                                             int espacosDescricao = 96 - espacosInicio - contaSintetica.Conta.Length - 3;
-                                            var linhasNecessarias = Contabilidade.Forms.Relatorios.frmBalanceteGeral.obterQuantidadeLinhasString(contaSintetica.Descricao, espacosDescricao);
 
-                                            // Verificar se a quantidade de linhas disponiveis é suficiente
-                                            if ((linhasDisponiveis - linhasNecessarias) < 0)
-                                            {
-                                                pdf.NewPage();
-                                                linhasDisponiveis = 57;
-                                                adicionarCabecalho(subtitulo);
-                                            }
-
-                                            AdicionarParagrafoSintetico(contaSintetica.Conta, contaSintetica.Descricao, espacosInicio, espacosDescricao, linhasNecessarias);
+                                            AdicionarParagrafoSintetico(contaSintetica.Conta, contaSintetica.Descricao, espacosInicio, espacosDescricao);
                                             // Adicionar a conta sintetica aberta a pilha de contas
                                             pilhaContas.Push(contaSintetica);
                                         }
@@ -521,17 +549,8 @@ namespace Contabilidade.Forms.Relatorios
                                             var grauConta = Contabilidade.Forms.Relatorios.frmBalanceteGeral.verificarGrauConta(lancamento.Conta);
                                             int espacosInicio = 2 * (grauConta - 1);
                                             int espacosDescricao = 96 - espacosInicio - lancamento.Conta.Length - 3;
-                                            var linhasNecessarias = Contabilidade.Forms.Relatorios.frmBalanceteGeral.obterQuantidadeLinhasString(lancamento.Descricao, espacosDescricao);
 
-                                            // Verificar se a quantidade de linhas disponiveis é suficiente
-                                            if ((linhasDisponiveis - linhasNecessarias) < 0)
-                                            {
-                                                pdf.NewPage();
-                                                linhasDisponiveis = 57;
-                                                adicionarCabecalho(subtitulo);
-                                            }
-
-                                            AdicionarParagrafosPdf(lancamento.Conta, lancamento.Descricao, lancamento.Saldo, espacosInicio, espacosDescricao, linhasNecessarias);
+                                            AdicionarParagrafosPdf(lancamento.Conta, lancamento.Descricao, lancamento.Saldo, espacosInicio, espacosDescricao);
 
                                             // Adicionar valores em cada conta sintética aberta
                                             foreach (var grupoAberto in pilhaContas)
