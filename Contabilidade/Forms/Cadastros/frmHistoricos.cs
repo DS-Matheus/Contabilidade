@@ -268,7 +268,7 @@ namespace Contabilidade.Forms.Cadastros
                             void adicionarCabecalho(string titulo, string subtitulo)
                             {
                                 // Adicionando parágrafos ao documento
-                                pdf.Add(new Paragraph($"{titulo?.PadRight(98)} PÁGINA: {(pdf.PageNumber + 1).ToString("D3")}", fonte));
+                                pdf.Add(new Paragraph($"{titulo?.PadRight(98)} PÁGINA: {writer.PageNumber.ToString("D3")}", fonte));
                                 if (!string.IsNullOrWhiteSpace(subtitulo))
                                 {
                                     pdf.Add(new Paragraph($"{subtitulo}", fonte));

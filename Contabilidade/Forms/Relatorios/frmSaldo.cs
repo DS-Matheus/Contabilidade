@@ -359,7 +359,7 @@ namespace Contabilidade.Forms.Relatorios
                                     void adicionarCabecalho(string subtitulo)
                                     {
                                         // Adicionando parágrafos ao documento
-                                        pdf.Add(new Paragraph($"                                       LISTAGEM DE SALDOS - {dataFormatada}                             PÁGINA: {(pdf.PageNumber + 1).ToString("D3")}", fonte));
+                                        pdf.Add(new Paragraph($"                                       LISTAGEM DE SALDOS - {dataFormatada}                             PÁGINA: {writer.PageNumber.ToString("D3")}", fonte));
                                         pdf.Add(new Paragraph($"{subtitulo}", fonte));
                                         pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
                                         pdf.Add(new Paragraph("CONTA - DESCRIÇÃO                                                                                        SALDO", fonte));

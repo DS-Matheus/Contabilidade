@@ -270,7 +270,7 @@ namespace Contabilidade.Forms.Relatorios
                                         void adicionarCabecalho(string subtitulo)
                                         {
                                             // Adicionando parágrafos ao documento
-                                            pdf.Add(new Paragraph($"RAZÃO ANALÍTICO                          PERÍODO: {dataInicialFormatada} A {dataFinalFormatada}                          PÁGINA: {(pdf.PageNumber + 1).ToString("D3")}", fonte));
+                                            pdf.Add(new Paragraph($"RAZÃO ANALÍTICO                          PERÍODO: {dataInicialFormatada} A {dataFinalFormatada}                          PÁGINA: {writer.PageNumber.ToString("D3")}", fonte));
                                             pdf.Add(new Paragraph($"{subtitulo}", fonte));
                                             pdf.Add(new Paragraph($"CONTA: {conta} - {linhasDescricao[0]}", fonte));
                                             // Verificação condicional para evitar "index out of bounds"
