@@ -122,8 +122,8 @@ namespace Contabilidade.Forms.Lancamentos
                         {
                             try
                             {
-                                var conta = txtConta.Text;
-                                var descricao = txtDescricao.Text;
+                                var conta = txtConta.Text.Trim();
+                                var descricao = txtDescricao.Text.Trim();
                                 var tipoConta = getTipoConta(cbbNivel.SelectedIndex);
 
                                 // Criar conta

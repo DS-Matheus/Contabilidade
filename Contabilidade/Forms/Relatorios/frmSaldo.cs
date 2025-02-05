@@ -352,7 +352,7 @@ namespace Contabilidade.Forms.Relatorios
                                     string subtitulo = "   ";
                                     if (!string.IsNullOrWhiteSpace(txtSubtitulo.Text))
                                     {
-                                        subtitulo = CentralizarString(txtSubtitulo.Text, 110);
+                                        subtitulo = CentralizarString(txtSubtitulo.Text.Trim(), 110);
                                     }
 
                                     // Função local para adicionar o cabeçalho

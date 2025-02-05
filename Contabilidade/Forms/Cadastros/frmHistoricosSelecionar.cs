@@ -90,7 +90,7 @@ namespace Contabilidade.Forms.Cadastros
         {
             try
             {
-                var historicoNovo = txtHistorico.Text.TrimEnd();
+                var historicoNovo = txtHistorico.Text.Trim();
                 // Se o histórico já existir
                 if (verificarExistenciaHistorico(historicoNovo))
                 {

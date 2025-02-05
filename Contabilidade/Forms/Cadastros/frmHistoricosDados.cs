@@ -51,7 +51,7 @@ namespace Contabilidade.Forms.Cadastros
 
         private void btnSalvar_Click(object sender, EventArgs e)
         {
-            var historicoNovo = txtHistorico.Text.TrimEnd();
+            var historicoNovo = txtHistorico.Text.Trim();
             // Se o histórico já existir
             if (frmHistoricos.verificarExistenciaHistorico(historicoNovo))
             {

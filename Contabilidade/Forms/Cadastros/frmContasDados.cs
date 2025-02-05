@@ -105,7 +105,7 @@ namespace Contabilidade.Forms.Cadastros
 
         private void btnSalvar_Click(object sender, EventArgs e)
         {
-            var contaNova = txtConta.Text;
+            var contaNova = txtConta.Text.Trim();
             var nivelConta = getNivelConta(cbbNivel.SelectedIndex);
 
             // Se a descrição não for válida
@@ -261,7 +261,7 @@ namespace Contabilidade.Forms.Cadastros
 
             // Envia os dados para o formulário pai se tudo foi bem sucedido
             frmContas.conta = contaNova;
-            frmContas.descricao = txtDescricao.Text;
+            frmContas.descricao = txtDescricao.Text.Trim();
             frmContas.nivel = nivelConta;
             frmContas.alterouNivel = alterouNivel;
 
