@@ -54,8 +54,8 @@ namespace Contabilidade.Forms.Cadastros
 
         private void btnSalvar_Click(object sender, EventArgs e)
         {
-            this.titulo = txtTitulo.Text;
-            this.subtitulo = txtSubtitulo.Text;
+            this.titulo = txtTitulo.Text.Trim();
+            this.subtitulo = txtSubtitulo.Text.Trim();
 
             DialogResult = DialogResult.OK;
             this.Close();

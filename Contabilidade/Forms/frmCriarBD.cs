@@ -131,10 +131,10 @@ namespace Contabilidade
             }
             else
             {
-                // Armazenar dados para o formulário pai
-                nomeBD = nomeBancoCompleto;
-                usuario = txtUsuario.Text;
-                senha = txtSenha.Text;
+                // Armazenar dados no formulário pai
+                nomeBD = nomeBancoCompleto.Trim();
+                usuario = txtUsuario.Text.Trim();
+                senha = txtSenha.Text.Trim();
 
                 this.DialogResult = DialogResult.OK;
                 this.Close();

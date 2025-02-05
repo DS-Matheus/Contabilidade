@@ -260,7 +260,7 @@ namespace Contabilidade.Forms.Relatorios
                                         string subtitulo = "   ";
                                         if (!string.IsNullOrWhiteSpace(txtSubtitulo.Text))
                                         {
-                                            subtitulo = Contabilidade.Forms.Relatorios.frmSaldo.CentralizarString(txtSubtitulo.Text, 110);
+                                            subtitulo = frmSaldo.CentralizarString(txtSubtitulo.Text.Trim(), 110);
                                         }
 
                                         var espacoDescricao = 110 - 7 - conta.Length - 3;

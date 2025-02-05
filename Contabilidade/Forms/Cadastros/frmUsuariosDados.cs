@@ -69,8 +69,8 @@ namespace Contabilidade.Forms.Cadastros
             else
             {
                 // Envia os dados para o formulário pai
-                frmUsuarios.usuario = txtUsuario.Text;
-                frmUsuarios.senha = txtSenha.Text;
+                frmUsuarios.usuario = txtUsuario.Text.Trim();
+                frmUsuarios.senha = txtSenha.Text.Trim();
 
                 this.DialogResult = DialogResult.OK;
                 this.Dispose();

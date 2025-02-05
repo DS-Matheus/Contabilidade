@@ -59,7 +59,7 @@ namespace Contabilidade.Forms
 
         private void btnRenomear_Click(object sender, EventArgs e)
         {
-            var nomeNovoSimples = txtBancoDados.Text;
+            var nomeNovoSimples = txtBancoDados.Text.Trim();
             var nomeNovoCompleto = frmLogin.validarExtensaoBD(nomeNovoSimples);
             var caminhoBD = $"{pastaDatabases}\\{nomeNovoCompleto}";
 
