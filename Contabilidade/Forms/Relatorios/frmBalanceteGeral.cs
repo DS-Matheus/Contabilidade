@@ -269,7 +269,14 @@ namespace Contabilidade.Forms.Relatorios
                                             // Adicionar as outras linhas (se houver mais que uma)
                                             for (int i = 0; i < linhasNecessarias; i++)
                                             {
-                                                pdf.Add(new Paragraph($"{"    ".PadRight(espacosInicio + conta.Length)}   {linhasDescricao[i].PadRight(espacosDescricao)}", fonte));
+                                                if (i == 0)
+                                                {
+                                                    pdf.Add(new Paragraph($"{"".PadRight(espacosInicio)}{conta.PadRight(conta.Length)} - {linhasDescricao[i].PadRight(espacosDescricao)}", fonte));
+                                                }
+                                                else
+                                                {
+                                                    pdf.Add(new Paragraph($"{"    ".PadRight(espacosInicio + conta.Length)}   {linhasDescricao[i].PadRight(espacosDescricao)}", fonte));
+                                                }
                                                 linhasDisponiveis -= 1;
                                             }
                                         }
@@ -309,7 +316,14 @@ namespace Contabilidade.Forms.Relatorios
                                             // Várias linhas
                                             for (int i = 0; i < linhasNecessarias; i++)
                                             {
-                                                pdf.Add(new Paragraph($"{"    ".PadRight(espacosInicio + conta.Length)}   {linhasDescricao[i].PadRight(espacosDescricao)}", fonte));
+                                                if (i == 0)
+                                                {
+                                                    pdf.Add(new Paragraph($"{"".PadRight(espacosInicio)}{conta.PadRight(conta.Length)} - {linhasDescricao[i].PadRight(espacosDescricao)}{saldoAnterior.ToString("#,##0.00").PadLeft(14)}{debitos.ToString("#,##0.00").PadLeft(14)}{creditos.ToString("#,##0.00").PadLeft(14)}{saldo.ToString("#,##0.00").PadLeft(14)}", fonte));
+                                                }
+                                                else
+                                                {
+                                                    pdf.Add(new Paragraph($"{"    ".PadRight(espacosInicio + conta.Length)}   {linhasDescricao[i].PadRight(espacosDescricao)}", fonte));
+                                                }
                                                 linhasDisponiveis -= 1;
                                             }
                                         }
