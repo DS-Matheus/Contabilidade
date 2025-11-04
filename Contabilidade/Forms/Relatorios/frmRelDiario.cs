@@ -221,16 +221,16 @@ namespace Contabilidade.Forms.Relatorios
                                         // Adicionar segunda linha (com espaço vázio referente a conta)
                                         pdf.Add(new Paragraph($"{"   ".PadRight(conta.Length + 3)}{linhasDescricao[1]}", fonte));
 
-                                        // Contabilizar linhas
-                                        linhasDisponiveis -= 2;
+                                        // Contabilizar linhas + espaço
+                                        linhasDisponiveis -= 3;
                                     }
                                     else
                                     {
                                         // Linha para identificação da conta
                                         pdf.Add(new Paragraph($"{conta} - {descricao}", fonte));
 
-                                        // Contabilizar linha
-                                        linhasDisponiveis -= 1;
+                                        // Contabilizar linha + espaço
+                                        linhasDisponiveis -= 2;
                                     }
                                 }
 
