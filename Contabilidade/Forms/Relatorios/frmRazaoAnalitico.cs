@@ -5,12 +5,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Text;
 using System.Data.SQLite;
-using Org.BouncyCastle.Asn1.X509;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Collections.Generic;
-using System.Windows.Forms;
 using Contabilidade.Forms.Cadastros;
-using System.Linq;
 
 namespace Contabilidade.Forms.Relatorios
 {

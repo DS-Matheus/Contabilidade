@@ -4,7 +4,6 @@ using System.Data;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Data.SQLite;
-using Contabilidade.Classes;
 
 namespace Contabilidade.Forms.Lancamentos
 {

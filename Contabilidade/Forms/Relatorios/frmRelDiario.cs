@@ -2,9 +2,7 @@
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System.Diagnostics;
-using System.Text;
 using System.Data.SQLite;
-using static System.Windows.Forms.LinkLabel;
 
 namespace Contabilidade.Forms.Relatorios
 {

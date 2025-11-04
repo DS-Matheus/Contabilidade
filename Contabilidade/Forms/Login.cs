@@ -1,11 +1,9 @@
 using Contabilidade.Models;
 using System.Data;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Data.SQLite;
 using Contabilidade.Classes;
-using Contabilidade.Forms.Cadastros;
 using Contabilidade.Forms;
 
 namespace Contabilidade
