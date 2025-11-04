@@ -301,7 +301,7 @@ namespace Contabilidade.Forms.Lancamentos
                 var sql = "UPDATE registros_caixa SET saldo = saldo + @valor WHERE data = @data;";
                 using (var comando2 = new SQLiteCommand(sql, con.conn))
                 {
-                    // Atribuir transação ao comando 3
+                    // Atribuir transação ao comando 2
                     comando2.Transaction = transacao;
 
                     // Variáveis para controle dos campos modificados
@@ -421,12 +421,22 @@ namespace Contabilidade.Forms.Lancamentos
                     }
                 }
 
-                // Obter valores de crédito e débito de todos os lançamentos
-                var sql = "SELECT SUM(CASE WHEN l.valor > 0 THEN l.valor ELSE 0 END) AS creditos, SUM(CASE WHEN l.valor < 0 THEN l.valor ELSE 0 END) AS debitos FROM lancamentos l WHERE l.data BETWEEN @dataInicial AND @dataFinal;";
+                // Verificar se existe pelo menos 1 lançamento entre as datas informadas
+                var sql = "SELECT EXISTS(SELECT 1 FROM lancamentos WHERE data BETWEEN @dataInicial AND @dataFinal);";
                 using (var comando = new SQLiteCommand(sql, con.conn))
                 {
                     comando.Parameters.AddWithValue("@dataInicial", dataInicial);
                     comando.Parameters.AddWithValue("@dataFinal", dataFinal);
+
+                    bool existeLancamentos = Convert.ToBoolean(comando.ExecuteScalar());
+
+                    if (!existeLancamentos)
+                    {
+                        throw new CustomException("Nenhum lançamento encontrado no periodo informado.");
+                    }
+
+                    // Obter valores de crédito e débito de todos os lançamentos
+                    comando.CommandText = "SELECT SUM(CASE WHEN l.valor > 0 THEN l.valor ELSE 0 END) AS creditos, SUM(CASE WHEN l.valor < 0 THEN l.valor ELSE 0 END) AS debitos FROM lancamentos l WHERE l.data BETWEEN @dataInicial AND @dataFinal;";
 
                     // Criação de variáveis
                     var creditos = 0;
@@ -450,7 +460,7 @@ namespace Contabilidade.Forms.Lancamentos
                         }
                     }
 
-                    // Obter saldo do caixa na data final (ou deixar como 0 se não possuir nenhum registro na data informada ou antes dela)
+                    // Obter saldo do caixa na data final (ou obter valores na primeira data antes dela)
                     comando.CommandText = "SELECT data, saldo FROM registros_caixa WHERE data <= @dataFinal ORDER BY data DESC LIMIT 1;";
 
                     DateTime dataSaldoAtual = DateTime.MinValue;
@@ -515,7 +525,7 @@ namespace Contabilidade.Forms.Lancamentos
             }
             catch (CustomException ex)
             {
-                MessageBox.Show($"{ex.Message?.ToString()}", "Erro ao criar o lançamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"{ex.Message?.ToString()}", "Erro ao calcular os valores de lançamentos", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             catch (Exception ex)
