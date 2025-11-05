@@ -560,61 +560,45 @@ namespace Contabilidade.Forms.Cadastros
         private class TotalLancamentos
         {
             public string data { get; set; }
-            public int total { get; set; }
+            public int saldo { get; set; }
 
-            public TotalLancamentos(string data, int total)
+            public TotalLancamentos(string data, int saldo)
             {
                 this.data = data;
-                this.total = total;
+                this.saldo = saldo;
             }
         }
 
         public void excluirTodosLancamentos(SQLiteCommand comando, string conta)
         {
-            // Obter a lista de datas que possuem lançamentos
-            var listDatas = new List<string>();
-            comando.CommandText = "SELECT DISTINCT data FROM lancamentos WHERE conta = @conta ORDER BY data;";
+            // Obter a lista de datas que possuem lançamentos (com saldo diferente de 0)
+            var listLancamentos = new List<TotalLancamentos>();
+            comando.Parameters.Clear();
+            comando.CommandText = "SELECT data, saldo FROM (SELECT data, saldo, ROW_NUMBER() OVER (PARTITION BY data ORDER BY id DESC) AS rn FROM lancamentos WHERE conta = @conta) WHERE rn = 1 and saldo != 0 ORDER BY data;";
             comando.Parameters.AddWithValue("@conta", conta);
 
             using (var reader = comando.ExecuteReader())
             {
                 while (reader.Read())
                 {
-                    listDatas.Add(reader["data"].ToString());
+                    listLancamentos.Add(
+                        new TotalLancamentos(
+                            reader["data"].ToString(),
+                            Convert.ToInt32(reader["saldo"])
+                        )
+                    );
                 }
             }
 
             // Verificar se foi encontrado algum lançamento
-            if (listDatas.Any())
+            if (listLancamentos.Any())
             {
-                // Obter relação de datas e valores líquidos dos lançamentos em cada data
-                var listLancamentos = new List<TotalLancamentos>();
-
-                // Obter o valor total dos lançamentos em cada data -> obter saldo mais recente em uma data e somar esse valor a um total, a cada operação reduzir do saldo encontrado o total (esse será o real valor dos lançamentos no período)
-                var saldoAnterior = 0;
-                foreach (var data in listDatas)
-                {
-                    comando.Parameters.Clear();
-                    comando.Parameters.AddWithValue("@conta", conta);
-                    comando.Parameters.AddWithValue("@data", data);
-
-                    comando.CommandText = "SELECT COALESCE((SELECT saldo FROM lancamentos WHERE conta = @conta and data = @data ORDER BY data DESC, id DESC LIMIT 1), 0);";
-                    var saldoEncontrado = Convert.ToInt32(comando.ExecuteScalar());
-
-                    // Valor líquido do periodo (o que será reduzido do caixa) = saldoEncontrado - saldoAnterior
-                    saldoEncontrado -= saldoAnterior;
-                    saldoAnterior += saldoEncontrado;
-
-                    var novoLancamento = new TotalLancamentos(data, saldoEncontrado);
-                    listLancamentos.Add(novoLancamento);
-                }
-
                 // Atualizar registros do caixa com os valores encontrados (reverter os lançamentos)
-                comando.CommandText = "UPDATE registros_caixa SET saldo = (saldo - @valor) WHERE data >= @data;";
+                comando.CommandText = "UPDATE registros_caixa SET saldo = (saldo - @valor) WHERE data = @data;";
                 foreach (var registro in listLancamentos)
                 {
                     comando.Parameters.Clear();
-                    comando.Parameters.AddWithValue("@valor", registro.total);
+                    comando.Parameters.AddWithValue("@valor", registro.saldo);
                     comando.Parameters.AddWithValue("@data", registro.data);
                     comando.ExecuteNonQuery();
                 }
@@ -624,6 +608,8 @@ namespace Contabilidade.Forms.Cadastros
                 comando.Parameters.Clear();
                 comando.Parameters.AddWithValue("@conta", conta);
                 comando.ExecuteNonQuery();
+                
+                comando.Parameters.Clear();
             }
         }
 
