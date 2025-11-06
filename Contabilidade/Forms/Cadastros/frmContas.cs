@@ -571,46 +571,43 @@ namespace Contabilidade.Forms.Cadastros
 
         public void excluirTodosLancamentos(SQLiteCommand comando, string conta)
         {
-            // Obter a lista de datas que possuem lançamentos (com saldo diferente de 0)
-            var listLancamentos = new List<TotalLancamentos>();
+            var listSomaPorData = new List<TotalLancamentos>();
+
             comando.Parameters.Clear();
-            comando.CommandText = "SELECT data, saldo FROM (SELECT data, saldo, ROW_NUMBER() OVER (PARTITION BY data ORDER BY data DESC, id DESC) AS rn FROM lancamentos WHERE conta = @conta) WHERE rn = 1 and saldo != 0 ORDER BY data ASC;";
+            comando.CommandText = "SELECT data, SUM(valor) AS total FROM lancamentos WHERE conta = @conta GROUP BY data ORDER BY data ASC;";
             comando.Parameters.AddWithValue("@conta", conta);
 
             using (var reader = comando.ExecuteReader())
             {
                 while (reader.Read())
                 {
-                    listLancamentos.Add(
-                        new TotalLancamentos(
-                            Convert.ToDateTime(reader["data"]).ToString("yyyy-MM-dd"),
-                            Convert.ToInt32(reader["saldo"])
-                        )
-                    );
+                    listSomaPorData.Add(new TotalLancamentos(
+                        Convert.ToDateTime(reader["data"]).ToString("yyyy-MM-dd"),
+                        Convert.ToInt32(reader["total"])
+                    ));
                 }
             }
 
-            // Verificar se foi encontrado algum lançamento
-            if (listLancamentos.Any())
+            if (!listSomaPorData.Any())
+                return;
+
+            // Para cada data, subtrai o total daquela data de registros_caixa em data >= data
+            foreach (var item in listSomaPorData)
             {
-                // Atualizar registros do caixa com os valores encontrados (reverter os lançamentos)
-                comando.CommandText = "UPDATE registros_caixa SET saldo = (saldo - @valor) WHERE data = @data;";
-                foreach (var registro in listLancamentos)
-                {
-                    comando.Parameters.Clear();
-                    comando.Parameters.AddWithValue("@valor", registro.saldo);
-                    comando.Parameters.AddWithValue("@data", registro.data);
-                    comando.ExecuteNonQuery();
-                }
-
-                // Excluir todos os lançamentos da conta
-                comando.CommandText = "DELETE FROM lancamentos WHERE conta = @conta;";
                 comando.Parameters.Clear();
-                comando.Parameters.AddWithValue("@conta", conta);
+                comando.CommandText = "UPDATE registros_caixa SET saldo = (saldo - @valor) WHERE data >= @data;";
+                comando.Parameters.AddWithValue("@valor", item.saldo);
+                comando.Parameters.AddWithValue("@data", item.data);
                 comando.ExecuteNonQuery();
-                
                 comando.Parameters.Clear();
             }
+
+            // Excluir todos os lançamentos da conta
+            comando.Parameters.Clear();
+            comando.CommandText = "DELETE FROM lancamentos WHERE conta = @conta;";
+            comando.Parameters.AddWithValue("@conta", conta);
+            comando.ExecuteNonQuery();
+            comando.Parameters.Clear();
         }
 
         public void excluirConta(Conexao con, string conta, string nivel, SQLiteTransaction transacao)
