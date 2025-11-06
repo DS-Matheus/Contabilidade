@@ -574,7 +574,7 @@ namespace Contabilidade.Forms.Cadastros
             // Obter a lista de datas que possuem lançamentos (com saldo diferente de 0)
             var listLancamentos = new List<TotalLancamentos>();
             comando.Parameters.Clear();
-            comando.CommandText = "SELECT data, saldo FROM (SELECT data, saldo, ROW_NUMBER() OVER (PARTITION BY data ORDER BY id DESC) AS rn FROM lancamentos WHERE conta = @conta) WHERE rn = 1 and saldo != 0 ORDER BY data;";
+            comando.CommandText = "SELECT data, saldo FROM (SELECT data, saldo, ROW_NUMBER() OVER (PARTITION BY data ORDER BY data DESC, id DESC) AS rn FROM lancamentos WHERE conta = @conta) WHERE rn = 1 and saldo != 0 ORDER BY data ASC;";
             comando.Parameters.AddWithValue("@conta", conta);
 
             using (var reader = comando.ExecuteReader())
@@ -583,7 +583,7 @@ namespace Contabilidade.Forms.Cadastros
                 {
                     listLancamentos.Add(
                         new TotalLancamentos(
-                            reader["data"].ToString(),
+                            Convert.ToDateTime(reader["data"]).ToString("yyyy-MM-dd"),
                             Convert.ToInt32(reader["saldo"])
                         )
                     );
