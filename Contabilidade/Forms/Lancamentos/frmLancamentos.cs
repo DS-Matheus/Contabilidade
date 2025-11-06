@@ -1083,7 +1083,7 @@ namespace Contabilidade.Forms.Lancamentos
 
                                     // Verificar se os lançamentos estão corretos. Inicia obtendo o saldo do caixa após todos os lançamentos (ou seja, o saldo mais recente).
                                     comando.Parameters.Clear();
-                                    comando.CommandText = "SELECT saldo FROM registros_caixa ORDER BY data DESC LIMIT 1;";
+                                    comando.CommandText = "SELECT COALESCE(saldo, 0) FROM registros_caixa ORDER BY data DESC LIMIT 1;";
 
                                     var ultimoRegistroCaixa = 0;
                                     var resultCaixa = comando.ExecuteScalar();
@@ -1094,7 +1094,7 @@ namespace Contabilidade.Forms.Lancamentos
 
                                     // Obter a soma do valor de todos os lançamentos
                                     comando.Parameters.Clear();
-                                    comando.CommandText = "SELECT SUM(valor) FROM lancamentos;";
+                                    comando.CommandText = "SELECT COALESCE(SUM(valor), 0) FROM lancamentos;";
 
                                     var somaTodosLancamentos = 0;
                                     var resultSomaLancamentos = comando.ExecuteScalar();
