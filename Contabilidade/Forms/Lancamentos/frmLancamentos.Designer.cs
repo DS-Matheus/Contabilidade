@@ -53,6 +53,7 @@
             ID_Historico = new DataGridViewTextBoxColumn();
             Histórico = new DataGridViewTextBoxColumn();
             btnCalcular = new Button();
+            btnRecalcular = new Button();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudValor2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudValor1).BeginInit();
@@ -312,17 +313,30 @@
             btnCalcular.Font = new Font("Lucida Sans", 10.5F);
             btnCalcular.Location = new Point(268, 453);
             btnCalcular.Name = "btnCalcular";
-            btnCalcular.Size = new Size(250, 35);
+            btnCalcular.Size = new Size(123, 35);
             btnCalcular.TabIndex = 26;
             btnCalcular.Text = "Calcular";
             btnCalcular.UseVisualStyleBackColor = true;
             btnCalcular.Click += btnCalcular_Click;
+            // 
+            // btnRecalcular
+            // 
+            btnRecalcular.Anchor = AnchorStyles.Bottom;
+            btnRecalcular.Font = new Font("Lucida Sans", 10.5F);
+            btnRecalcular.Location = new Point(395, 453);
+            btnRecalcular.Name = "btnRecalcular";
+            btnRecalcular.Size = new Size(123, 35);
+            btnRecalcular.TabIndex = 27;
+            btnRecalcular.Text = "Recalcular";
+            btnRecalcular.UseVisualStyleBackColor = true;
+            btnRecalcular.Click += btnRecalcular_Click;
             // 
             // frmLancamentos
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(880, 500);
+            Controls.Add(btnRecalcular);
             Controls.Add(btnCalcular);
             Controls.Add(groupBox1);
             Controls.Add(btnEditar);
@@ -364,5 +378,6 @@
         private DataGridViewTextBoxColumn Descrição;
         private DataGridViewTextBoxColumn ID_Historico;
         private DataGridViewTextBoxColumn Histórico;
+        private Button btnRecalcular;
     }
 }
