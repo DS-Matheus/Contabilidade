@@ -382,7 +382,7 @@ namespace Contabilidade.Forms.Relatorios
 
                                         // Obter saldo no dia informado
                                         comando.CommandText = "SELECT COALESCE((SELECT saldo FROM registros_caixa WHERE data <= @data ORDER BY data DESC LIMIT 1), 0);";
-                                        var saldoCaixa = Convert.ToDecimal(comando.ExecuteScalar());
+                                        var saldoCaixa = Convert.ToDecimal(comando.ExecuteScalar()) / 100m;
 
                                         // Verificar se a descrição do caixa precisa de uma segunda linha (no caso de ser muito grande)
                                         if (descricaoCaixa?.Length >= 92)
