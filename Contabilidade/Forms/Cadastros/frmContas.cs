@@ -147,7 +147,8 @@ namespace Contabilidade.Forms.Cadastros
             return verificarExistenciaConta(contaSintetica);
         }
 
-        public static string obterNivelConta(string conta) {
+        public static string obterNivelConta(string conta)
+        {
             var linha = dtDados.AsEnumerable().FirstOrDefault(row => conta == row.Field<string>("conta"));
             return linha != null ? linha.Field<string>("nivel") : null;
         }
@@ -330,7 +331,8 @@ namespace Contabilidade.Forms.Cadastros
 
                                 // Contar linhas usadas após adição do cabeçalho
                                 linhasDisponiveis -= 5;
-                            };
+                            }
+                            ;
 
                             // Operações com o subtítulo
                             if (!string.IsNullOrWhiteSpace(subtitulo))
@@ -571,38 +573,161 @@ namespace Contabilidade.Forms.Cadastros
 
         public void excluirTodosLancamentos(SQLiteCommand comando, string conta)
         {
-            var listSomaPorData = new List<TotalLancamentos>();
+            var listLancamentos = new List<TotalLancamentos>();
 
             comando.Parameters.Clear();
-            comando.CommandText = "SELECT data, SUM(valor) AS total FROM lancamentos WHERE conta = @conta GROUP BY data ORDER BY data ASC;";
+            comando.CommandText = @"
+        SELECT data, saldo
+        FROM (
+            SELECT data, saldo,
+                   ROW_NUMBER() OVER (PARTITION BY data ORDER BY id DESC) AS rn
+            FROM lancamentos
+            WHERE conta = @conta
+        ) t
+        WHERE rn = 1 AND saldo != 0
+        ORDER BY data ASC;
+    ";
             comando.Parameters.AddWithValue("@conta", conta);
 
             using (var reader = comando.ExecuteReader())
             {
                 while (reader.Read())
                 {
-                    listSomaPorData.Add(new TotalLancamentos(
-                        Convert.ToDateTime(reader["data"]).ToString("yyyy-MM-dd"),
-                        Convert.ToInt32(reader["total"])
-                    ));
+                    if (reader["data"] == DBNull.Value || reader["saldo"] == DBNull.Value)
+                        continue;
+
+                    string dataStr = Convert.ToDateTime(reader["data"]).ToString("yyyy-MM-dd");
+                    int saldo = Convert.ToInt32(reader["saldo"]);
+
+                    listLancamentos.Add(new TotalLancamentos(dataStr, saldo));
                 }
             }
 
-            if (!listSomaPorData.Any())
-                return;
+            if (!listLancamentos.Any()) return;
 
-            // Para cada data, subtrai o total daquela data de registros_caixa em data >= data
-            foreach (var item in listSomaPorData)
+            if (listLancamentos.Count == 1)
             {
                 comando.Parameters.Clear();
-                comando.CommandText = "UPDATE registros_caixa SET saldo = (saldo - @valor) WHERE data >= @data;";
-                comando.Parameters.AddWithValue("@valor", item.saldo);
-                comando.Parameters.AddWithValue("@data", item.data);
+                comando.CommandText = "UPDATE registros_caixa SET saldo = saldo - @valor WHERE data >= @data;";
+                comando.Parameters.AddWithValue("@valor", listLancamentos[0].saldo);
+                comando.Parameters.AddWithValue("@data", listLancamentos[0].data);
                 comando.ExecuteNonQuery();
                 comando.Parameters.Clear();
             }
+            else
+            {
+                for (int i = 0; i < listLancamentos.Count; i++)
+                {
+                    var registro = listLancamentos[i];
+                    string dataInicio = registro.data;
+                    string dataFim = (i < listLancamentos.Count - 1) ? listLancamentos[i + 1].data : null;
 
-            // Excluir todos os lançamentos da conta
+                    comando.Parameters.Clear();
+                    comando.Parameters.AddWithValue("@valor", registro.saldo);
+                    comando.Parameters.AddWithValue("@dataInicio", dataInicio);
+
+                    if (dataFim != null)
+                    {
+                        comando.CommandText = "UPDATE registros_caixa SET saldo = saldo - @valor WHERE data >= @dataInicio AND data < @dataFim;";
+                        comando.Parameters.AddWithValue("@dataFim", dataFim);
+                    }
+                    else
+                    {
+                        comando.CommandText = "UPDATE registros_caixa SET saldo = saldo - @valor WHERE data >= @dataInicio;";
+                    }
+
+                    comando.ExecuteNonQuery();
+                    comando.Parameters.Clear();
+                }
+            }
+
+            comando.Parameters.Clear();
+            comando.CommandText = "DELETE FROM lancamentos WHERE conta = @conta;";
+            comando.Parameters.AddWithValue("@conta", conta);
+            comando.ExecuteNonQuery();
+            comando.Parameters.Clear();
+        }
+        public void excluirTodosLancamentos(SQLiteCommand comando, string conta)
+        {
+            var listLancamentos = new List<TotalLancamentos>();
+
+            // Obter todas as datas que houve lançamentos e o saldo final naquele dia
+            comando.Parameters.Clear();
+            comando.CommandText = @"
+                SELECT data, saldo
+                FROM (
+                    SELECT data, saldo,
+                        ROW_NUMBER() OVER (PARTITION BY data ORDER BY id DESC) AS rn
+                    FROM lancamentos
+                    WHERE conta = @conta
+                ) t
+                WHERE rn = 1
+                ORDER BY data ASC;
+            ";
+            comando.Parameters.AddWithValue("@conta", conta);
+
+            using (var reader = comando.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    if (reader["data"] == DBNull.Value || reader["saldo"] == DBNull.Value)
+                        continue;
+
+                    string dataStr = Convert.ToDateTime(reader["data"]).ToString("yyyy-MM-dd");
+                    int saldo = Convert.ToInt32(reader["saldo"]);
+
+                    listLancamentos.Add(new TotalLancamentos(dataStr, saldo));
+                }
+            }
+
+            // Se não encontrou nenhum lançamento: termina a função
+            if (!listLancamentos.Any())
+            {
+                return; 
+            }
+            // Se encontrar apenas 1 registro: atualizar todos os valores do caixa daquela data até a mais recente (atual)
+            else if (listLancamentos.Count == 1)
+            {
+                comando.Parameters.Clear();
+                comando.CommandText = "UPDATE registros_caixa SET saldo = saldo - @valor WHERE data >= @data;";
+                comando.Parameters.AddWithValue("@valor", listLancamentos[0].saldo);
+                comando.Parameters.AddWithValue("@data", listLancamentos[0].data);
+                comando.ExecuteNonQuery();
+                comando.Parameters.Clear();
+            }
+            // Se encontrar 2 ou mais registros: atualizar todos os valores do caixa daquela data até a do dia anterior ao próximo registro
+            else if (listLancamentos.Count >= 2)
+            {
+                for (int i = 0; i < listLancamentos.Count; i++)
+                {
+                    var registro = listLancamentos[i];
+
+                    // Se o saldo for 0, não gastar processamento atualizando
+                    if (registro.saldo == 0) continue;
+
+                    string dataInicio = registro.data;
+                    string dataFim = (i < listLancamentos.Count - 1) ? listLancamentos[i + 1].data : null;
+
+                    comando.Parameters.Clear();
+                    comando.Parameters.AddWithValue("@valor", registro.saldo);
+                    comando.Parameters.AddWithValue("@dataInicio", dataInicio);
+
+                    if (dataFim != null)
+                    {
+                        comando.CommandText = "UPDATE registros_caixa SET saldo = saldo - @valor WHERE data >= @dataInicio AND data < @dataFim;";
+                        comando.Parameters.AddWithValue("@dataFim", dataFim);
+                    }
+                    else
+                    {
+                        comando.CommandText = "UPDATE registros_caixa SET saldo = saldo - @valor WHERE data >= @dataInicio;";
+                    }
+
+                    comando.ExecuteNonQuery();
+                    comando.Parameters.Clear();
+                }
+            }
+
+            // Excluir todos os lançamentos
             comando.Parameters.Clear();
             comando.CommandText = "DELETE FROM lancamentos WHERE conta = @conta;";
             comando.Parameters.AddWithValue("@conta", conta);
