@@ -1029,6 +1029,118 @@ namespace Contabilidade.Forms.Lancamentos
             handleMudancaValor();
         }
 
+        private void refazerLancamentos(SQLiteCommand comando)
+        {
+            comando.CommandText = "SELECT ;";
+        }
+
+        private void refazerCaixa(SQLiteCommand comando)
+        {
+
+            // Remover todos os valores antigos do caixa
+            comando.CommandText = "DELETE FROM registros_caixa;";
+            comando.ExecuteNonQuery();
+
+            // Obter a soma de todos os lançamentos em cada data individual
+            var lancamentosPorData = new List<(string data, int total)>();
+            comando.CommandText = "SELECT data, SUM(valor) AS total FROM lancamentos GROUP BY data ORDER BY data ASC;";
+            comando.Parameters.Clear();
+
+            using (var reader = comando.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    var dataObj = reader["data"];
+                    var totalObj = reader["total"];
+
+                    if (dataObj == DBNull.Value || totalObj == DBNull.Value)
+                        continue;
+
+                    var dataStr = dataObj.ToString("yyyy-MM-dd");
+                    var total = Convert.ToInt32(totalObj);
+
+                    lancamentosPorData.Add((dataStr, total));
+                }
+            }
+
+            // Se não encontrou nenhum lançamento, termina a execução, já que o caixa não terá nenhum registro
+            if (lancamentosPorData.Count == 0)
+            {
+                return;
+            }
+            
+            // Inserir os valores novamente no caixa
+            comando.CommandText = "INSERT INTO registros_caixa (data, saldo) VALUES (@data, @saldo);";
+            comando.Parameters.Clear();
+
+            int saldoAcumulado = 0;
+            foreach (var item in lancamentosPorData)
+            {
+                saldoAcumulado += item.total;
+
+                comando.Parameters.Clear();
+                comando.Parameters.AddWithValue("@data", item.data);
+                comando.Parameters.AddWithValue("@saldo", saldoAcumulado);
+
+                comando.ExecuteNonQuery();
+            }
+        }
+
+        private int obterSaldoAtualCaixa(Conexao con)
+        {
+            var saldoCaixa = 0;
+            const string sql = "SELECT COALESCE(saldo, 0) FROM registros_caixa ORDER BY data DESC LIMIT 1;";
+            using (var comando = new SQLiteCommand(sql, con.conn))
+            {
+                var result = comando.ExecuteScalar();
+                if (result != null && result != DBNull.Value)
+                {
+                    saldoCaixa = Convert.ToInt32(result);
+                }
+            }
+
+            return saldoCaixa;
+        }
+
+        private int obterSomaTodosSaldos(Conexao con)
+        {
+            var somaTodosSaldos = 0;
+            const string sql = @"
+                SELECT COALESCE(SUM(saldo), 0) AS total_saldos FROM (
+                    SELECT saldo FROM (
+                        SELECT conta, data, saldo, ROW_NUMBER() OVER (PARTITION BY conta ORDER BY data DESC, id DESC) AS rn FROM lancamentos
+                    ) AS ultimos WHERE rn = 1
+                ) AS saldos_por_conta;
+            ";
+
+            using (var comando = new SQLiteCommand(sql, con.conn))
+            {
+                var result = comando.ExecuteScalar();
+                if (result != null && result != DBNull.Value)
+                {
+                    somaTodosSaldos = Convert.ToInt32(result);
+                }
+            }
+
+            return somaTodosSaldos;
+        }
+
+        private int obterSomaTodosLancamentos(Conexao con)
+        {
+            var somaTodosLancamentos = 0;
+            const string sql = "SELECT COALESCE(SUM(valor), 0) FROM lancamentos;";
+            using (var comando = new SQLiteCommand(sql, con.conn))
+            {
+                var result = comando.ExecuteScalar();
+                if (result != null && result != DBNull.Value)
+                {
+                    somaTodosLancamentos = Convert.ToInt32(result);
+                }
+            }
+
+            return somaTodosLancamentos;
+        }
+
         private void btnRecalcular_Click(object sender, EventArgs e)
         {
             try
@@ -1041,9 +1153,23 @@ namespace Contabilidade.Forms.Lancamentos
                     dialogResult = MessageBox.Show("Você deseja realmente recalcular todos os valores dos lançamentos? Essa é a última confirmação, faça um backup antes de prosseguir!", "Confirmação de recálculo do lançamento", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     if (dialogResult == DialogResult.Yes)
                     {
-                        // Excluir todos os registros existentes
-                        var sql = "DELETE FROM registros_caixa;";
-                        using (var comando = new SQLiteCommand(sql, con.conn))
+                        int saldoCaixa = obterSaldoAtualCaixa();
+                        int somaTodosSaldos = obterSomaTodosSaldos();
+                        int somaTodosLancamentos = obterSomaTodosLancamentos();
+
+                        // Testar integridade dos dados
+                        bool refazerCaixa = saldoCaixa == somaTodosLancamentos ? false : true;
+                        bool refazerLancamentos = somaTodosSaldos == somaTodosLancamentos ? false : true;
+
+                        // Se estiver integro, finaliza com mensagem
+                        if (!refazerCaixa && !refazerLancamentos)
+                        {
+                            MessageBox.Show("Todos os valores foram verificados e não precisou ser feita nenhuma correção.", "Operação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        // Se houver problemas, refazer o que for necessário
+                        using (var comando = new SQLiteCommand("", con.conn))
                         {
                             using (var transacao = con.conn.BeginTransaction())
                             {
@@ -1051,78 +1177,35 @@ namespace Contabilidade.Forms.Lancamentos
                                 {
                                     comando.Transaction = transacao;
 
-                                    comando.ExecuteNonQuery();
-
-                                    // Obter datas únicas e soma dos lançamentos por data
-                                    var lancamentosPorData = new List<(string data, int total)>();
-                                    comando.CommandText = "SELECT data, SUM(valor) AS total FROM lancamentos GROUP BY data ORDER BY data ASC;";
-
-                                    using (var reader = comando.ExecuteReader())
+                                    if (refazerCaixa)
                                     {
-                                        while (reader.Read())
-                                        {
-                                            var data = Convert.ToDateTime(reader["data"]).ToString("yyyy-MM-dd");
-                                            var total = Convert.ToInt32(reader["total"]);
-                                            lancamentosPorData.Add((data, total));
-                                        }
+                                        refazerCaixa(comando);
                                     }
 
-                                    // Inserir registros acumulados no caixa
-                                    comando.CommandText = "INSERT INTO registros_caixa (data, saldo) VALUES (@data, @saldo);";
-
-                                    int saldoAcumulado = 0;
-                                    foreach (var item in lancamentosPorData)
+                                    if (refazerLancamentos)
                                     {
-                                        saldoAcumulado += item.total;
-
-                                        comando.Parameters.Clear();
-                                        comando.Parameters.AddWithValue("@data", item.data);
-                                        comando.Parameters.AddWithValue("@saldo", saldoAcumulado);
-                                        comando.ExecuteNonQuery();
+                                        refazerLancamentos(comando);
                                     }
 
-                                    // Verificar se os lançamentos estão corretos. Inicia obtendo o saldo do caixa após todos os lançamentos (ou seja, o saldo mais recente).
-                                    comando.Parameters.Clear();
-                                    comando.CommandText = "SELECT COALESCE(saldo, 0) FROM registros_caixa ORDER BY data DESC LIMIT 1;";
+                                    // Verificar novamente a integridade dos dados
+                                    saldoCaixa = obterSaldoAtualCaixa();
+                                    somaTodosSaldos = obterSomaTodosSaldos();
+                                    // A soma de todos lançamentos permanece igual
 
-                                    var ultimoRegistroCaixa = 0;
-                                    var resultCaixa = comando.ExecuteScalar();
-                                    if (resultCaixa != null)
-                                    {
-                                        ultimoRegistroCaixa = Convert.ToInt32(resultCaixa);
-                                    }
+                                    refazerCaixa = saldoCaixa == somaTodosLancamentos ? false : true;
+                                    refazerLancamentos = somaTodosSaldos == somaTodosLancamentos ? false : true;
 
-                                    // Obter a soma do valor de todos os lançamentos
-                                    comando.Parameters.Clear();
-                                    comando.CommandText = "SELECT COALESCE(SUM(valor), 0) FROM lancamentos;";
-
-                                    var somaTodosLancamentos = 0;
-                                    var resultSomaLancamentos = comando.ExecuteScalar();
-                                    if (resultSomaLancamentos != null)
-                                    {
-                                        somaTodosLancamentos = Convert.ToInt32(resultSomaLancamentos);
-                                    }
-
-                                    // Obter o valor total com a somatória de último saldo de todas as contas. Esse valor deve ser igual ao valor do último registro do caixa.
-                                    comando.Parameters.Clear();
-                                    comando.CommandText = "SELECT COALESCE(SUM(saldo), 0) AS total_saldos FROM (SELECT saldo FROM (SELECT conta, data, saldo, ROW_NUMBER() OVER (PARTITION BY conta ORDER BY data DESC, id DESC) AS rn FROM lancamentos) AS ultimos WHERE rn = 1) AS saldos_por_conta;";
-
-                                    var resultSaldos = comando.ExecuteScalar();
-                                    var somaTodosSaldos = 0;
-                                    if (resultSaldos != null)
-                                    {
-                                        somaTodosSaldos = Convert.ToInt32(resultSaldos);
-                                    }
-
-                                    if (ultimoRegistroCaixa == somaTodosLancamentos && ultimoRegistroCaixa == somaTodosSaldos)
+                                    // Se estiver integro, finaliza com sucesso
+                                    if (!refazerCaixa && !refazerLancamentos)
                                     {
                                         transacao.Commit();
-                                        MessageBox.Show("Lançamentos recalculados com sucesso.", "Operação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        MessageBox.Show("A verificação encontrou valores incorretos e corrigiu as inconsistências com sucesso.", "Operação bem sucedida", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                     }
+                                    // Se não, rollback e erro
                                     else
                                     {
                                         transacao.Rollback();
-                                        MessageBox.Show("Ao recalcular os lançamentos, verificou-se uma inconsistência grave nos valores de saldo das contas. Contate o desenvolvedor do sistema.", "Operação mal sucedida", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        MessageBox.Show("A verificação encontrou valores incorretos, mas não foi possível corrigir as inconsistências. Contate o desenvolvedor do sistema.", "A operação falhou", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                     }
                                 }
                                 catch (CustomException ex)
