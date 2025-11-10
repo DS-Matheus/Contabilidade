@@ -1031,7 +1031,49 @@ namespace Contabilidade.Forms.Lancamentos
 
         private void refazerLancamentos(SQLiteCommand comando)
         {
-            comando.CommandText = "SELECT ;";
+            // Obter número de todas contas
+            comando.CommandText = ("SELECT conta FROM contas WHERE nivel = 'A' and conta != 0");
+            contasReader = comando.ExecuteReader();
+
+            // Para cada conta
+            while (contasReader.Read())
+            {
+                // Obter todos lançamentos
+                var lancamentos = new List<(int id, int valor)>();
+                var conta = contasReader.GetInt32(0);
+                int saldo = 0;
+
+                var sql = "SELECT id, valor FROM lancamentos WHERE conta = @conta ORDER BY data ASC, id ASC;";
+                using (var comando2 = new SQLiteCommand(sql, connection))
+                {
+                    comando2.Parameters.AddWithValue("@conta", conta);
+
+                    using (var lancamentosReader = comando2.ExecuteReader())
+                    {
+                        while (lancamentosReader.Read())
+                        {
+                            lancamentos.Add((
+                                lancamentosReader.GetInt32(0),
+                                lancamentosReader.GetInt32(1)
+                            ));
+                        }
+                    }
+                    
+                    // Atualizar todos lançamentos daquela conta
+                    foreach (var lancamento in lancamentos)
+                    {
+                        saldo += lancamento.valor;
+
+                        comando2.CommandText = "UPDATE lancamentos SET saldo = @saldo WHERE id = @id";
+                        
+                        comando2.Parameters.Clear();
+                        comando2.Parameters.AddWithValue("@saldo", saldo);
+                        comando2.Parameters.AddWithValue("@id", lancamento.id);
+
+                        comando2.ExecuteNonQuery();
+                    }
+                }
+            }
         }
 
         private void refazerCaixa(SQLiteCommand comando)
@@ -1068,7 +1110,7 @@ namespace Contabilidade.Forms.Lancamentos
             {
                 return;
             }
-            
+
             // Inserir os valores novamente no caixa
             comando.CommandText = "INSERT INTO registros_caixa (data, saldo) VALUES (@data, @saldo);";
             comando.Parameters.Clear();
@@ -1105,13 +1147,7 @@ namespace Contabilidade.Forms.Lancamentos
         private int obterSomaTodosSaldos(Conexao con)
         {
             var somaTodosSaldos = 0;
-            const string sql = @"
-                SELECT COALESCE(SUM(saldo), 0) AS total_saldos FROM (
-                    SELECT saldo FROM (
-                        SELECT conta, data, saldo, ROW_NUMBER() OVER (PARTITION BY conta ORDER BY data DESC, id DESC) AS rn FROM lancamentos
-                    ) AS ultimos WHERE rn = 1
-                ) AS saldos_por_conta;
-            ";
+            const string sql = "SELECT COALESCE(SUM(saldo), 0) AS total_saldos FROM (SELECT saldo FROM (SELECT conta, data, saldo, ROW_NUMBER() OVER (PARTITION BY conta ORDER BY data DESC, id DESC) AS rn FROM lancamentos) AS ultimos WHERE rn = 1) AS saldos_por_conta;";
 
             using (var comando = new SQLiteCommand(sql, con.conn))
             {
