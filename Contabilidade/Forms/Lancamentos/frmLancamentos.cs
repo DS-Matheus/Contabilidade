@@ -1046,6 +1046,8 @@ namespace Contabilidade.Forms.Lancamentos
                 var sql = "SELECT id, valor FROM lancamentos WHERE conta = @conta ORDER BY data ASC, id ASC;";
                 using (var comando2 = new SQLiteCommand(sql, connection))
                 {
+                    // Definir transação para o comando criado
+                    comando2.Transaction = comando.Transaction;
                     comando2.Parameters.AddWithValue("@conta", conta);
 
                     using (var lancamentosReader = comando2.ExecuteReader())
@@ -1076,9 +1078,8 @@ namespace Contabilidade.Forms.Lancamentos
             }
         }
 
-        private void refazerCaixa(SQLiteCommand comando)
+        private void refazerCaixa(SQLiteCommand comando)    
         {
-
             // Remover todos os valores antigos do caixa
             comando.CommandText = "DELETE FROM registros_caixa;";
             comando.ExecuteNonQuery();
