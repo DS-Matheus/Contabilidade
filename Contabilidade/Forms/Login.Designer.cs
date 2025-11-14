@@ -270,11 +270,11 @@
             label5.AutoSize = true;
             label5.Font = new Font("Lucida Sans", 10F);
             label5.ForeColor = Color.White;
-            label5.Location = new Point(89, 313);
+            label5.Location = new Point(84, 313);
             label5.Name = "label5";
-            label5.Size = new Size(83, 16);
+            label5.Size = new Size(92, 16);
             label5.TabIndex = 4;
-            label5.Text = "Versão: 1.6";
+            label5.Text = "Versão: 1.6b";
             // 
             // label3
             // 
