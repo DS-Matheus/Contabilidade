@@ -1029,11 +1029,11 @@ namespace Contabilidade.Forms.Lancamentos
             handleMudancaValor();
         }
 
-        private void refazerLancamentos(SQLiteCommand comando)
+        private void RefazerLancamentos(SQLiteCommand comando)
         {
             // Obter número de todas contas
             comando.CommandText = ("SELECT conta FROM contas WHERE nivel = 'A' and conta != 0");
-            contasReader = comando.ExecuteReader();
+            var contasReader = comando.ExecuteReader();
 
             // Para cada conta
             while (contasReader.Read())
@@ -1044,7 +1044,7 @@ namespace Contabilidade.Forms.Lancamentos
                 int saldo = 0;
 
                 var sql = "SELECT id, valor FROM lancamentos WHERE conta = @conta ORDER BY data ASC, id ASC;";
-                using (var comando2 = new SQLiteCommand(sql, connection))
+                using (var comando2 = new SQLiteCommand(sql, con.conn))
                 {
                     // Definir transação para o comando criado
                     comando2.Transaction = comando.Transaction;
@@ -1078,7 +1078,7 @@ namespace Contabilidade.Forms.Lancamentos
             }
         }
 
-        private void refazerCaixa(SQLiteCommand comando)    
+        private void RefazerCaixa(SQLiteCommand comando)    
         {
             // Remover todos os valores antigos do caixa
             comando.CommandText = "DELETE FROM registros_caixa;";
@@ -1099,7 +1099,7 @@ namespace Contabilidade.Forms.Lancamentos
                     if (dataObj == DBNull.Value || totalObj == DBNull.Value)
                         continue;
 
-                    var dataStr = dataObj.ToString("yyyy-MM-dd");
+                    var dataStr = Convert.ToDateTime(dataObj).ToString("yyyy-MM-dd");
                     var total = Convert.ToInt32(totalObj);
 
                     lancamentosPorData.Add((dataStr, total));
@@ -1190,9 +1190,9 @@ namespace Contabilidade.Forms.Lancamentos
                     dialogResult = MessageBox.Show("Você deseja realmente recalcular todos os valores dos lançamentos? Essa é a última confirmação, faça um backup antes de prosseguir!", "Confirmação de recálculo do lançamento", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     if (dialogResult == DialogResult.Yes)
                     {
-                        int saldoCaixa = obterSaldoAtualCaixa();
-                        int somaTodosSaldos = obterSomaTodosSaldos();
-                        int somaTodosLancamentos = obterSomaTodosLancamentos();
+                        int saldoCaixa = obterSaldoAtualCaixa(con);
+                        int somaTodosSaldos = obterSomaTodosSaldos(con);
+                        int somaTodosLancamentos = obterSomaTodosLancamentos(con);
 
                         // Testar integridade dos dados
                         bool refazerCaixa = saldoCaixa == somaTodosLancamentos ? false : true;
@@ -1216,17 +1216,17 @@ namespace Contabilidade.Forms.Lancamentos
 
                                     if (refazerCaixa)
                                     {
-                                        refazerCaixa(comando);
+                                        RefazerCaixa(comando);
                                     }
 
                                     if (refazerLancamentos)
                                     {
-                                        refazerLancamentos(comando);
+                                        RefazerLancamentos(comando);
                                     }
 
                                     // Verificar novamente a integridade dos dados
-                                    saldoCaixa = obterSaldoAtualCaixa();
-                                    somaTodosSaldos = obterSomaTodosSaldos();
+                                    saldoCaixa = obterSaldoAtualCaixa(con);
+                                    somaTodosSaldos = obterSomaTodosSaldos(con);
                                     // A soma de todos lançamentos permanece igual
 
                                     refazerCaixa = saldoCaixa == somaTodosLancamentos ? false : true;
