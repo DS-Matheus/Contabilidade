@@ -391,15 +391,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Sistema de Contabilidade"
-        "ProductCode" = "8:{0FF2F545-696F-437C-BBC5-243A8B67603C}"
-        "PackageCode" = "8:{67165204-8F94-4002-B00B-55E436C19711}"
+        "ProductCode" = "8:{BA70CE6E-F196-45B3-B9FB-573D004EAE60}"
+        "PackageCode" = "8:{8F83D0E4-788E-4841-B2F2-C2E0B4178DDA}"
         "UpgradeCode" = "8:{2C6E83BB-0B7C-406B-89F9-ABFF9FA8BFAE}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.6"
+        "ProductVersion" = "8:1.6.2"
         "Manufacturer" = "8:DS-Matheus"
         "ARPHELPTELEPHONE" = "8:+55 (14) 99670-6559"
         "ARPHELPLINK" = "8:https://github.com/DS-Matheus"
@@ -941,7 +941,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_E435A2504B9A4E9F920230CF86FB2F8B"
             {
-            "SourcePath" = "8:..\\Contabilidade\\obj\\Debug\\net8.0-windows\\apphost.exe"
+            "SourcePath" = "8:..\\Contabilidade\\obj\\Release\\net8.0-windows\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_FEB2A9E55A2A43DDA91AE6CFA9E8CB84"
