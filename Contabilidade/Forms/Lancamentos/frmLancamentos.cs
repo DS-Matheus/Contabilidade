@@ -1032,7 +1032,7 @@ namespace Contabilidade.Forms.Lancamentos
         private void RefazerLancamentos(SQLiteCommand comando)
         {
             // Obter número de todas contas
-            comando.CommandText = ("SELECT conta FROM contas WHERE nivel = 'A' and conta != 0");
+            comando.CommandText = "SELECT conta FROM contas WHERE nivel = 'A' and conta != 0";
             var contasReader = comando.ExecuteReader();
 
             // Para cada conta
@@ -1040,7 +1040,7 @@ namespace Contabilidade.Forms.Lancamentos
             {
                 // Obter todos lançamentos
                 var lancamentos = new List<(int id, int valor)>();
-                var conta = contasReader.GetInt32(0);
+                var conta = contasReader.GetString(0);
                 int saldo = 0;
 
                 var sql = "SELECT id, valor FROM lancamentos WHERE conta = @conta ORDER BY data ASC, id ASC;";
