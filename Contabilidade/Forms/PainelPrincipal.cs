@@ -1,4 +1,5 @@
-﻿using Contabilidade.Models;
+﻿using Contabilidade.Forms.Lancamentos;
+using Contabilidade.Models;
 using System.Runtime.InteropServices;
 
 namespace Contabilidade
@@ -808,6 +809,11 @@ namespace Contabilidade
             {
                 this.WindowState = FormWindowState.Maximized;
             }
+        }
+
+        private void btnRecalcular_Click(object sender, EventArgs e)
+        {
+            frmLancamentos.recalcularLancamentos(con);
         }
     }
 }

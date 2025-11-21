@@ -1029,7 +1029,7 @@ namespace Contabilidade.Forms.Lancamentos
             handleMudancaValor();
         }
 
-        private void RefazerLancamentos(SQLiteCommand comando)
+        public static void RefazerLancamentos(Conexao con, SQLiteCommand comando)
         {
             // Obter número de todas contas
             comando.CommandText = "SELECT conta FROM contas WHERE nivel = 'A' and conta != 0";
@@ -1078,7 +1078,7 @@ namespace Contabilidade.Forms.Lancamentos
             }
         }
 
-        private void RefazerCaixa(SQLiteCommand comando)    
+        public static void RefazerCaixa(SQLiteCommand comando)    
         {
             // Remover todos os valores antigos do caixa
             comando.CommandText = "DELETE FROM registros_caixa;";
@@ -1129,7 +1129,7 @@ namespace Contabilidade.Forms.Lancamentos
             }
         }
 
-        private int obterSaldoAtualCaixa(Conexao con)
+        public static int obterSaldoAtualCaixa(Conexao con)
         {
             var saldoCaixa = 0;
             const string sql = "SELECT COALESCE(saldo, 0) FROM registros_caixa ORDER BY data DESC LIMIT 1;";
@@ -1145,7 +1145,7 @@ namespace Contabilidade.Forms.Lancamentos
             return saldoCaixa;
         }
 
-        private int obterSomaTodosSaldos(Conexao con)
+        public static int obterSomaTodosSaldos(Conexao con)
         {
             var somaTodosSaldos = 0;
             const string sql = "SELECT COALESCE(SUM(saldo), 0) AS total_saldos FROM (SELECT saldo FROM (SELECT conta, data, saldo, ROW_NUMBER() OVER (PARTITION BY conta ORDER BY data DESC, id DESC) AS rn FROM lancamentos) AS ultimos WHERE rn = 1) AS saldos_por_conta;";
@@ -1162,7 +1162,7 @@ namespace Contabilidade.Forms.Lancamentos
             return somaTodosSaldos;
         }
 
-        private int obterSomaTodosLancamentos(Conexao con)
+        public static int obterSomaTodosLancamentos(Conexao con)
         {
             var somaTodosLancamentos = 0;
             const string sql = "SELECT COALESCE(SUM(valor), 0) FROM lancamentos;";
@@ -1178,7 +1178,7 @@ namespace Contabilidade.Forms.Lancamentos
             return somaTodosLancamentos;
         }
 
-        private void btnRecalcular_Click(object sender, EventArgs e)
+        public static void recalcularLancamentos(Conexao con)
         {
             try
             {
@@ -1221,7 +1221,7 @@ namespace Contabilidade.Forms.Lancamentos
 
                                     if (refazerLancamentos)
                                     {
-                                        RefazerLancamentos(comando);
+                                        RefazerLancamentos(con, comando);
                                     }
 
                                     // Verificar novamente a integridade dos dados
@@ -1264,6 +1264,11 @@ namespace Contabilidade.Forms.Lancamentos
             {
                 MessageBox.Show($"Por favor anote a mensagem de erro: \n\n{ex.Message?.ToString()}", "Erro ao recalcular valores", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void btnRecalcular_Click(object sender, EventArgs e)
+        {
+            recalcularLancamentos(con);
         }
     }
 }

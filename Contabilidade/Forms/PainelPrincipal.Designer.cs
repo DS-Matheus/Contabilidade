@@ -66,6 +66,7 @@
             label2 = new Label();
             label1 = new Label();
             timerRelogio = new System.Windows.Forms.Timer(components);
+            btnRecalcular = new Button();
             pnlLogo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picLogo).BeginInit();
             pnlMenuLateral.SuspendLayout();
@@ -205,12 +206,13 @@
             // 
             // pnlBackup
             // 
+            pnlBackup.Controls.Add(btnRecalcular);
             pnlBackup.Controls.Add(btnRestaurar);
             pnlBackup.Controls.Add(btnBackup);
             pnlBackup.Dock = DockStyle.Bottom;
             pnlBackup.Location = new Point(0, 560);
             pnlBackup.Name = "pnlBackup";
-            pnlBackup.Size = new Size(203, 80);
+            pnlBackup.Size = new Size(203, 120);
             pnlBackup.TabIndex = 17;
             pnlBackup.Visible = false;
             // 
@@ -491,7 +493,7 @@
             btnLogoff.Font = new Font("Lucida Sans", 11.25F);
             btnLogoff.ForeColor = Color.Gainsboro;
             btnLogoff.ImageAlign = ContentAlignment.MiddleLeft;
-            btnLogoff.Location = new Point(0, 640);
+            btnLogoff.Location = new Point(0, 680);
             btnLogoff.Name = "btnLogoff";
             btnLogoff.Padding = new Padding(10, 0, 0, 0);
             btnLogoff.Size = new Size(203, 40);
@@ -648,6 +650,26 @@
             // 
             timerRelogio.Tick += timerRelogio_Tick;
             // 
+            // btnRecalcular
+            // 
+            btnRecalcular.BackColor = Color.FromArgb(61, 61, 91);
+            btnRecalcular.Dock = DockStyle.Top;
+            btnRecalcular.FlatAppearance.BorderSize = 0;
+            btnRecalcular.FlatStyle = FlatStyle.Flat;
+            btnRecalcular.Font = new Font("Lucida Sans", 10F);
+            btnRecalcular.ForeColor = Color.Gainsboro;
+            btnRecalcular.ImageAlign = ContentAlignment.MiddleLeft;
+            btnRecalcular.Location = new Point(0, 80);
+            btnRecalcular.Name = "btnRecalcular";
+            btnRecalcular.Padding = new Padding(20, 0, 0, 0);
+            btnRecalcular.Size = new Size(203, 40);
+            btnRecalcular.TabIndex = 10;
+            btnRecalcular.Text = "Recalcular";
+            btnRecalcular.TextAlign = ContentAlignment.MiddleLeft;
+            btnRecalcular.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnRecalcular.UseVisualStyleBackColor = false;
+            btnRecalcular.Click += btnRecalcular_Click;
+            // 
             // frmPainelPrincipal
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -714,5 +736,6 @@
         private Button btnBackup;
         private Button btnMaximizar;
         private Label lblData;
+        private Button btnRecalcular;
     }
 }
