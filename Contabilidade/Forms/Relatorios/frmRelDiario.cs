@@ -32,10 +32,11 @@ namespace Contabilidade.Forms.Relatorios
             var sql = "SELECT DISTINCT data FROM lancamentos WHERE data >= @dataInicial AND data <= @dataFinal ORDER BY data ASC;";
             var comando = new SQLiteCommand(sql, con.conn);
 
-            DateTime dataInicial = dtpDataInicial.Value;
-            DateTime dataFinal = dtpDataFinal.Value;
-            comando.Parameters.AddWithValue("@dataInicial", dataInicial.ToString("yyyy-MM-dd"));
-            comando.Parameters.AddWithValue("@dataFinal", dataFinal.ToString("yyyy-MM-dd"));
+            // Obter datas
+            var (dataInicial, dataInicialFormatada, dataFinal, dataFinalFormatada) = Contabilidade.Forms.Relatorios.frmRazaoAnalitico.ordenarDatasEObterStringsFormatadas(dtpDataInicial.Value, dtpDataFinal.Value);
+
+            comando.Parameters.AddWithValue("@dataInicial", dataInicial);
+            comando.Parameters.AddWithValue("@dataFinal", dataFinal);
 
             // Iterar sobre as datas encontradas e criar uma relação de datas com os lançamentos dela
             Dictionary<string, List<Lancamento>> listRelacaoLancamentos = new Dictionary<string, List<Lancamento>>();
@@ -386,7 +387,7 @@ namespace Contabilidade.Forms.Relatorios
             }
             else
             {
-                MessageBox.Show($"Nenhum lançamento foi realizado no período informado ({dataInicial:dd}/{dataInicial:MM}/{dataInicial:yyyy} a {dataFinal:dd}/{dataFinal:MM}/{dataFinal:yyyy})", "O relatório não foi gerado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show($"Nenhum lançamento foi realizado no período informado ({dataInicialFormatada} a {dataFinalFormatada})", "O relatório não foi gerado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
 
