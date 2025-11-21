@@ -146,8 +146,7 @@ namespace Contabilidade.Forms.Relatorios
 
                                 // Contar linhas usadas após adição do cabeçalho
                                 linhasDisponiveis -= 6;
-                            }
-                            ;
+                            };
 
                             // Iterar para cada data
                             foreach (var registro in listRelacaoLancamentos) {
@@ -171,6 +170,8 @@ namespace Contabilidade.Forms.Relatorios
                                     // Criar nova página para a próxima data
                                     pdf.NewPage();
                                     linhasDisponiveis = 57;
+
+                                    pdf.PageCount = 1;
                                     adicionarCabecalho(subtitulo);
                                 }
 
