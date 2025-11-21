@@ -83,6 +83,7 @@ namespace Contabilidade
                         btnSaldo,
                         btnBackup,
                         btnRestaurar,
+                        btnRecalcular,
                     ];
 
                     // Testar se um botão já foi pressionado anteriormente
@@ -157,6 +158,7 @@ namespace Contabilidade
                 btnSaldo,
                 btnBackup,
                 btnRestaurar,
+                btnRecalcular,
             ];
 
             // Botão anterior: Voltar fonte ao padrão
@@ -813,6 +815,9 @@ namespace Contabilidade
 
         private void btnRecalcular_Click(object sender, EventArgs e)
         {
+            // Seleciona o botão sem mudar o tema, pois pode haver algum form já aberto
+            selecionarBotao(sender, false);
+
             frmLancamentos.recalcularLancamentos(con);
         }
     }
