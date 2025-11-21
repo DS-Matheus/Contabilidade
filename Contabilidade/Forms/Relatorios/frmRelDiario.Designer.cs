@@ -31,17 +31,19 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmRelDiario));
             btnVisualizar = new Button();
             label2 = new Label();
-            dtpData = new DateTimePicker();
+            dtpDataInicial = new DateTimePicker();
             label3 = new Label();
             txtSubtitulo = new TextBox();
             panel1 = new Panel();
+            dtpDataFinal = new DateTimePicker();
+            label1 = new Label();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
             // btnVisualizar
             // 
             btnVisualizar.Font = new Font("Lucida Sans", 10.5F);
-            btnVisualizar.Location = new Point(115, 199);
+            btnVisualizar.Location = new Point(115, 247);
             btnVisualizar.Name = "btnVisualizar";
             btnVisualizar.Size = new Size(419, 41);
             btnVisualizar.TabIndex = 44;
@@ -55,23 +57,23 @@
             label2.Font = new Font("Lucida Sans", 10.5F);
             label2.Location = new Point(115, 79);
             label2.Name = "label2";
-            label2.Size = new Size(38, 16);
+            label2.Size = new Size(78, 16);
             label2.TabIndex = 38;
-            label2.Text = "Data";
+            label2.Text = "Data inicial";
             // 
-            // dtpData
+            // dtpDataInicial
             // 
-            dtpData.Font = new Font("Lucida Sans", 10.5F);
-            dtpData.Location = new Point(115, 97);
-            dtpData.Name = "dtpData";
-            dtpData.Size = new Size(419, 24);
-            dtpData.TabIndex = 36;
+            dtpDataInicial.Font = new Font("Lucida Sans", 10.5F);
+            dtpDataInicial.Location = new Point(115, 97);
+            dtpDataInicial.Name = "dtpDataInicial";
+            dtpDataInicial.Size = new Size(419, 24);
+            dtpDataInicial.TabIndex = 36;
             // 
             // label3
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Lucida Sans", 10.5F);
-            label3.Location = new Point(115, 131);
+            label3.Location = new Point(115, 179);
             label3.Name = "label3";
             label3.Size = new Size(163, 16);
             label3.TabIndex = 50;
@@ -80,7 +82,7 @@
             // txtSubtitulo
             // 
             txtSubtitulo.Font = new Font("Lucida Sans", 10.5F);
-            txtSubtitulo.Location = new Point(115, 149);
+            txtSubtitulo.Location = new Point(115, 197);
             txtSubtitulo.MaxLength = 110;
             txtSubtitulo.Multiline = true;
             txtSubtitulo.Name = "txtSubtitulo";
@@ -92,15 +94,35 @@
             // 
             panel1.Anchor = AnchorStyles.None;
             panel1.BorderStyle = BorderStyle.FixedSingle;
+            panel1.Controls.Add(dtpDataFinal);
+            panel1.Controls.Add(label1);
             panel1.Controls.Add(btnVisualizar);
             panel1.Controls.Add(label3);
-            panel1.Controls.Add(dtpData);
+            panel1.Controls.Add(dtpDataInicial);
             panel1.Controls.Add(txtSubtitulo);
             panel1.Controls.Add(label2);
             panel1.Location = new Point(115, 90);
             panel1.Name = "panel1";
             panel1.Size = new Size(650, 320);
             panel1.TabIndex = 51;
+            // 
+            // dtpDataFinal
+            // 
+            dtpDataFinal.Font = new Font("Lucida Sans", 10.5F);
+            dtpDataFinal.Location = new Point(115, 146);
+            dtpDataFinal.Name = "dtpDataFinal";
+            dtpDataFinal.Size = new Size(419, 24);
+            dtpDataFinal.TabIndex = 51;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Lucida Sans", 10.5F);
+            label1.Location = new Point(115, 128);
+            label1.Name = "label1";
+            label1.Size = new Size(69, 16);
+            label1.TabIndex = 52;
+            label1.Text = "Data final";
             // 
             // frmRelDiario
             // 
@@ -121,9 +143,11 @@
 
         private Button btnVisualizar;
         private Label label2;
-        private DateTimePicker dtpData;
+        private DateTimePicker dtpDataInicial;
         private Label label3;
         private TextBox txtSubtitulo;
         private Panel panel1;
+        private DateTimePicker dtpDataFinal;
+        private Label label1;
     }
 }

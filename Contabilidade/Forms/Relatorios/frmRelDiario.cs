@@ -15,7 +15,7 @@ namespace Contabilidade.Forms.Relatorios
 
             con = conexaoBanco;
 
-            dtpData.Select();
+            dtpDataInicial.Select();
         }
 
         private class Lancamento
@@ -28,33 +28,59 @@ namespace Contabilidade.Forms.Relatorios
 
         private void btnVisualizar_Click(object sender, EventArgs e)
         {
-            var sql = "SELECT l.conta, c.descricao, h.historico, l.valor FROM lancamentos l JOIN contas c ON l.conta = c.conta JOIN historicos h ON l.id_historico = h.id WHERE date(l.data) = @data ORDER BY l.conta ASC, l.id ASC;";
+            // Obter datas com lancamentos
+            var sql = "SELECT DISTINCT data FROM lancamentos WHERE data >= @dataInicial AND data <= @dataFinal ORDER BY data ASC;";
             var comando = new SQLiteCommand(sql, con.conn);
 
-            // Obter data selecionada
-            DateTime data = dtpData.Value;
-            comando.Parameters.AddWithValue("@data", data.ToString("yyyy-MM-dd"));
+            DateTime dataInicial = dtpDataInicial.Value;
+            DateTime dataFinal = dtpDataFinal.Value;
+            comando.Parameters.AddWithValue("@dataInicial", dataInicial.ToString("yyyy-MM-dd"));
+            comando.Parameters.AddWithValue("@dataFinal", dataFinal.ToString("yyyy-MM-dd"));
 
-            // Ler valores de lançamentos
-            List<Lancamento> listLancamentos = new List<Lancamento>();
+            // Iterar sobre as datas encontradas e criar uma relação de datas com os lançamentos dela
+            Dictionary<string, List<Lancamento>> listRelacaoLancamentos = new Dictionary<string, List<Lancamento>>();
 
             using (var reader = comando.ExecuteReader())
             {
+                // Para cada data
                 while (reader.Read())
                 {
-                    Lancamento lancamento = new Lancamento
+                    // Ler data corretamente
+                    string data = Convert.ToDateTime(reader["data"]).ToString("yyyy-MM-dd");
+
+                    // Criar lista de lançamentos daquela data específica
+                    List<Lancamento> listLancamentos = new List<Lancamento>();
+
+                    var sql2 = "SELECT l.conta, c.descricao, h.historico, l.valor FROM lancamentos l JOIN contas c ON l.conta = c.conta JOIN historicos h ON l.id_historico = h.id WHERE l.data = @data ORDER BY l.conta ASC, l.id ASC;";
+
+                    using (var comando2 = new SQLiteCommand(sql2, con.conn))
                     {
-                        Conta = reader["conta"].ToString(),
-                        Descricao = reader["descricao"].ToString(),
-                        Historico = reader["historico"].ToString(),
-                        Valor = (Convert.ToInt32(reader["valor"]) / 100m)
-                    };
-                    listLancamentos.Add(lancamento);
+                        comando2.Parameters.AddWithValue("@data", data);
+
+                        using (var reader2 = comando2.ExecuteReader())
+                        {
+                            while (reader2.Read())
+                            {
+                                Lancamento lancamento = new Lancamento
+                                {
+                                    Conta = reader2["conta"].ToString(),
+                                    Descricao = reader2["descricao"].ToString(),
+                                    Historico = reader2["historico"].ToString(),
+                                    Valor = Convert.ToInt32(reader2["valor"]) / 100m
+                                };
+
+                                listLancamentos.Add(lancamento);
+                            }
+                        }
+
+                        // Atribuir ao dicionário
+                        listRelacaoLancamentos.Add(data, listLancamentos);
+                    }
                 }
             }
 
             // Verificar se pelo menos 1 registro foi encontrado
-            if (listLancamentos.Count > 0)
+            if (listRelacaoLancamentos.Count > 0)
             {
                 // Exibir caixa de diálogo para o usuário escolher onde salvar o arquivo PDF
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog())
@@ -94,8 +120,10 @@ namespace Contabilidade.Forms.Relatorios
                             BaseFont bf = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
                             var fonte = new iTextSharp.text.Font(bf, 9);
 
-                            // Obter data formatada                    
-                            string dataFormatada = $"{data:dd}/{data:MM}/{data:yyyy}";
+                            // Variáveis de controle
+                            string dataAnterior = ""; 
+                            string dataAtual = "";
+                            string dataFormatada = "";
                             var linhasDisponiveis = 57;
 
                             // Operações com o subtítulo
@@ -118,203 +146,232 @@ namespace Contabilidade.Forms.Relatorios
 
                                 // Contar linhas usadas após adição do cabeçalho
                                 linhasDisponiveis -= 6;
-                            };
-
-                            // Adicionar cabeçalho da primeira página
-                            adicionarCabecalho(subtitulo);
-
-                            // Variáveis para controle
-                            string contaAnterior = "";
-                            decimal totalDebitos = 0;
-                            decimal totalCreditos = 0;
-
-                            // Obter nome da conta referente ao caixa
-                            comando.CommandText = "SELECT descricao FROM contas WHERE conta = '0';";
-                            var descricaoCaixa = comando.ExecuteScalar()?.ToString();
-
-                            // Obter saldo anterior e atual do caixa (ou deixar como 0 se não possuir nenhum registro na data informada ou antes dela)
-                            comando.CommandText = "SELECT saldo FROM registros_caixa WHERE data <= @data ORDER BY data DESC LIMIT 2;";
-
-                            decimal saldoAtual = 0;
-                            decimal saldoAnterior = 0;
-                            using (var reader2 = comando.ExecuteReader())
-                            {
-                                if (reader2.Read())
-                                {
-                                    saldoAtual = (reader2.GetInt32(0) / 100m);
-                                }
-
-                                if (reader2.Read())
-                                {
-                                    saldoAnterior = (reader2.GetInt32(0) / 100m);
-                                }
                             }
+                            ;
 
-                            // Adicionar linha para a conta do caixa
-                            pdf.Add(new Paragraph($"0 - {descricaoCaixa}", fonte));
-
-                            totalCreditos += saldoAnterior;
-                            totalDebitos -= saldoAtual;
-
-                            // Adicionar saldo anterior (crédito) e saldo atual (débito) do caixa
-                            pdf.Add(new Paragraph($"{"(+) SALDO ANTERIOR".PadRight(82)}{saldoAnterior.ToString("#,##0.00").PadLeft(28)}", fonte));
-                            pdf.Add(new Paragraph($"{"(-) SALDO ATUAL".PadRight(82)}{saldoAtual.ToString("#,##0.00").PadLeft(14)}", fonte));
-
-                            linhasDisponiveis -= 3;
-
-                            // Para cada lançamento
-                            foreach (var lancamento in listLancamentos)
-                            {
-                                // Obter dados
-                                var (conta, descricao, historico, valor) = (lancamento.Conta, lancamento.Descricao, lancamento.Historico, lancamento.Valor);
-
-                                // Dividir considerando o tamanho máximo que pode ter
-                                var linhasHistorico = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(historico, 82);
-
-                                // Verificar quantas linhas serão necessárias para cada uso - Não contar o espaço entre as colunas
-                                var linhasNecessariasHistorico = lancamento.Historico.Length >= 82 ? linhasHistorico.Count : 1;
-                                var linhasNecessarias = linhasNecessariasHistorico;
-
-                                // Declarar para atribuir posteriormente, caso necessário
-                                var linhasNecessariasDescricao = 0;
-                                int espacosDescricao = 0;
-
-                                // Verificar última conta inserida
-                                if (contaAnterior != conta)
+                            // Iterar para cada data
+                            foreach (var registro in listRelacaoLancamentos) {
+                                // Obter e atribuir valores para esta iteração
+                                dataAtual = registro.Key;
+                                dataFormatada = Convert.ToDateTime(dataAtual).ToString("dd/MM/yyyy");
+                                
+                                comando.Parameters.Clear();
+                                comando.Parameters.AddWithValue("@data", dataAtual);
+                                
+                                List<Lancamento> listLancamentos = registro.Value;
+                                
+                                
+                                // Adicionar cabeçalho da primeira página
+                                if (dataAnterior == "")
                                 {
-                                    espacosDescricao = 82 - conta.Length - 3;
-
-                                    // Contabilizar linhas de identificação
-                                    linhasNecessariasDescricao = lancamento.Descricao.Length > espacosDescricao ? 2 : 1;
-                                    // Linhas necessárias para descricão + espaço superior
-                                    linhasNecessarias += linhasNecessariasDescricao + 1;
+                                    adicionarCabecalho(subtitulo);
+                                }
+                                else
+                                {
+                                    // Criar nova página para a próxima data
+                                    pdf.NewPage();
+                                    linhasDisponiveis = 57;
+                                    adicionarCabecalho(subtitulo);
                                 }
 
-                                // Verificar se há linhas nessa página para incluir os registros, caso não haja: criar nova página com o cabeçalho
-                                if ((linhasDisponiveis - linhasNecessarias) < 0)
+                                // Variáveis para controle (escopo dentro da data)
+                                string contaAnterior = "";
+                                decimal totalDebitos = 0;
+                                decimal totalCreditos = 0;
+
+                                // Obter nome da conta referente ao caixa
+                                comando.CommandText = "SELECT descricao FROM contas WHERE conta = '0';";
+                                var descricaoCaixa = comando.ExecuteScalar()?.ToString();
+
+                                // Obter saldo anterior e atual do caixa (ou deixar como 0 se não possuir nenhum registro na data informada ou antes dela)
+                                comando.CommandText = "SELECT saldo FROM registros_caixa WHERE data <= @data ORDER BY data DESC LIMIT 2;";
+
+                                decimal saldoAtual = 0;
+                                decimal saldoAnterior = 0;
+                                using (var reader2 = comando.ExecuteReader())
+                                {
+                                    if (reader2.Read())
+                                    {
+                                        saldoAtual = (reader2.GetInt32(0) / 100m);
+                                    }
+
+                                    if (reader2.Read())
+                                    {
+                                        saldoAnterior = (reader2.GetInt32(0) / 100m);
+                                    }
+                                }
+
+                                // Adicionar linha para a conta do caixa
+                                pdf.Add(new Paragraph($"0 - {descricaoCaixa}", fonte));
+
+                                totalCreditos += saldoAnterior;
+                                totalDebitos -= saldoAtual;
+
+                                // Adicionar saldo anterior (crédito) e saldo atual (débito) do caixa
+                                pdf.Add(new Paragraph($"{"(+) SALDO ANTERIOR".PadRight(82)}{saldoAnterior.ToString("#,##0.00").PadLeft(28)}", fonte));
+                                pdf.Add(new Paragraph($"{"(-) SALDO ATUAL".PadRight(82)}{saldoAtual.ToString("#,##0.00").PadLeft(14)}", fonte));
+
+                                linhasDisponiveis -= 3;
+
+                                // Para cada lançamento
+                                foreach (var lancamento in listLancamentos)
+                                {
+                                    // Obter dados
+                                    var (conta, descricao, historico, valor) = (lancamento.Conta, lancamento.Descricao, lancamento.Historico, lancamento.Valor);
+
+                                    // Dividir considerando o tamanho máximo que pode ter
+                                    var linhasHistorico = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(historico, 82);
+
+                                    // Verificar quantas linhas serão necessárias para cada uso - Não contar o espaço entre as colunas
+                                    var linhasNecessariasHistorico = lancamento.Historico.Length >= 82 ? linhasHistorico.Count : 1;
+                                    var linhasNecessarias = linhasNecessariasHistorico;
+
+                                    // Declarar para atribuir posteriormente, caso necessário
+                                    var linhasNecessariasDescricao = 0;
+                                    int espacosDescricao = 0;
+
+                                    // Verificar última conta inserida
+                                    if (contaAnterior != conta)
+                                    {
+                                        espacosDescricao = 82 - conta.Length - 3;
+
+                                        // Contabilizar linhas de identificação
+                                        linhasNecessariasDescricao = lancamento.Descricao.Length > espacosDescricao ? 2 : 1;
+                                        // Linhas necessárias para descricão + espaço superior
+                                        linhasNecessarias += linhasNecessariasDescricao + 1;
+                                    }
+
+                                    // Verificar se há linhas nessa página para incluir os registros, caso não haja: criar nova página com o cabeçalho
+                                    if ((linhasDisponiveis - linhasNecessarias) < 0)
+                                    {
+                                        pdf.NewPage();
+                                        linhasDisponiveis = 57;
+                                        adicionarCabecalho(subtitulo);
+                                    }
+
+                                    // Verificar novamente se é a mesma conta ou não (através do número de linhas para evitar comparar uma string inteira novamente)
+                                    if (linhasNecessariasDescricao != 0)
+                                    {
+                                        // Atualizar conta atual
+                                        contaAnterior = conta;
+
+                                        // Adicionar linha vázia para separar da conta anterior / cabeçalho
+                                        pdf.Add(new Paragraph("   ", fonte));
+
+                                        // Verificar quantas linhas serão necessárias para a identificação da conta
+                                        if (linhasNecessariasDescricao == 2)
+                                        {
+                                            // Dividir a descrição considerando o tamanho máximo que pode ter
+                                            var linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(descricao, espacosDescricao);
+
+                                            // Adicionar primeira linha
+                                            pdf.Add(new Paragraph($"{conta} - {linhasDescricao[0]}", fonte));
+
+                                            // Adicionar segunda linha (com espaço vázio referente a conta)
+                                            pdf.Add(new Paragraph($"{"   ".PadRight(conta.Length + 3)}{linhasDescricao[1]}", fonte));
+
+                                            // Contabilizar linhas + espaço
+                                            linhasDisponiveis -= 3;
+                                        }
+                                        else
+                                        {
+                                            // Linha para identificação da conta
+                                            pdf.Add(new Paragraph($"{conta} - {descricao}", fonte));
+
+                                            // Contabilizar linha + espaço
+                                            linhasDisponiveis -= 2;
+                                        }
+                                    }
+
+                                    // Testar se serão necessárias 1 ou mais linhas por causa do comprimento do histórico
+                                    if (linhasNecessariasHistorico >= 2)
+                                    {
+                                        // Verificar se é um débito/crédito
+                                        // Crédito
+                                        if (valor > 0)
+                                        {
+                                            // Contabilizar valor do lançamento
+                                            totalCreditos += valor;
+
+                                            // Adicionar primeira linha (com os espaços do débito vázios)
+                                            pdf.Add(new Paragraph($"{linhasHistorico[0]?.PadRight(82)}{"   "?.PadLeft(14)}{valor.ToString("#,##0.00").PadLeft(14)}", fonte));
+                                        }
+                                        // Débito
+                                        else
+                                        {
+                                            // Contabilizar valor do lançamento
+                                            totalDebitos += valor;
+
+                                            // Adicionar primeira linha
+                                            pdf.Add(new Paragraph($"{linhasHistorico[0]?.PadRight(82)}{valor.ToString("#,##0.00").PadLeft(14)}", fonte));
+                                        }
+
+                                        // Remover primeiro item da lista e contabilizar sua adição no pdf
+                                        linhasHistorico.RemoveAt(0);
+                                        linhasDisponiveis -= 1;
+
+                                        // Adicionar demais linhas
+                                        foreach (var linha in linhasHistorico)
+                                        {
+                                            pdf.Add(new Paragraph(linha, fonte));
+
+                                            // Contabilizar linha
+                                            linhasDisponiveis -= 1;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // Verificar se é um débito/crédito
+                                        // Crédito
+                                        if (valor > 0)
+                                        {
+                                            // Contabilizar valor do lançamento
+                                            totalCreditos += valor;
+
+                                            // Adicionar primeira linha (com os espaços do débito vázios)
+                                            pdf.Add(new Paragraph($"{historico?.PadRight(82)}{"   "?.PadLeft(14)}{valor.ToString("#,##0.00").PadLeft(14)}", fonte));
+                                        }
+                                        // Débito
+                                        else
+                                        {
+                                            // Contabilizar valor do lançamento
+                                            totalDebitos += valor;
+
+                                            // Adicionar primeira linha
+                                            pdf.Add(new Paragraph($"{historico?.PadRight(82)}{valor.ToString("#,##0.00").PadLeft(14)}", fonte));
+                                        }
+
+                                        // Contabilizar linha
+                                        linhasDisponiveis -= 1;
+                                    }
+                                }
+
+                                // Verificar se existe espaço para o rodapé, senão: criar nova página
+                                if (linhasDisponiveis < 2)
                                 {
                                     pdf.NewPage();
                                     linhasDisponiveis = 57;
                                     adicionarCabecalho(subtitulo);
                                 }
 
-                                // Verificar novamente se é a mesma conta ou não (através do número de linhas para evitar comparar uma string inteira novamente)
-                                if (linhasNecessariasDescricao != 0)
+                                // Verificar se existe linhas sobrando para inserir um espaço antes do rodapé
+                                if (linhasDisponiveis >= 3)
                                 {
-                                    // Atualizar conta atual
-                                    contaAnterior = conta;
-
-                                    // Adicionar linha vázia para separar da conta anterior / cabeçalho
-                                    pdf.Add(new Paragraph("   ", fonte));
-
-                                    // Verificar quantas linhas serão necessárias para a identificação da conta
-                                    if (linhasNecessariasDescricao == 2)
-                                    {
-                                        // Dividir a descrição considerando o tamanho máximo que pode ter
-                                        var linhasDescricao = Contabilidade.Forms.Relatorios.frmSaldo.QuebrarLinhaString(descricao, espacosDescricao);
-
-                                        // Adicionar primeira linha
-                                        pdf.Add(new Paragraph($"{conta} - {linhasDescricao[0]}", fonte));
-
-                                        // Adicionar segunda linha (com espaço vázio referente a conta)
-                                        pdf.Add(new Paragraph($"{"   ".PadRight(conta.Length + 3)}{linhasDescricao[1]}", fonte));
-
-                                        // Contabilizar linhas + espaço
-                                        linhasDisponiveis -= 3;
-                                    }
-                                    else
-                                    {
-                                        // Linha para identificação da conta
-                                        pdf.Add(new Paragraph($"{conta} - {descricao}", fonte));
-
-                                        // Contabilizar linha + espaço
-                                        linhasDisponiveis -= 2;
-                                    }
+                                    pdf.Add(new Paragraph($"   ", fonte));
+                                    linhasDisponiveis--;
                                 }
 
-                                // Testar se serão necessárias 1 ou mais linhas por causa do comprimento do histórico
-                                if (linhasNecessariasHistorico >= 2)
-                                {
-                                    // Verificar se é um débito/crédito
-                                    // Crédito
-                                    if (valor > 0)
-                                    {
-                                        // Contabilizar valor do lançamento
-                                        totalCreditos += valor;
-
-                                        // Adicionar primeira linha (com os espaços do débito vázios)
-                                        pdf.Add(new Paragraph($"{linhasHistorico[0]?.PadRight(82)}{"   "?.PadLeft(14)}{valor.ToString("#,##0.00").PadLeft(14)}", fonte));
-                                    }
-                                    // Débito
-                                    else
-                                    {
-                                        // Contabilizar valor do lançamento
-                                        totalDebitos += valor;
-
-                                        // Adicionar primeira linha
-                                        pdf.Add(new Paragraph($"{linhasHistorico[0]?.PadRight(82)}{valor.ToString("#,##0.00").PadLeft(14)}", fonte));
-                                    }
-
-                                    // Remover primeiro item da lista e contabilizar sua adição no pdf
-                                    linhasHistorico.RemoveAt(0);
-                                    linhasDisponiveis -= 1;
-
-                                    // Adicionar demais linhas
-                                    foreach (var linha in linhasHistorico) {
-                                        pdf.Add(new Paragraph(linha, fonte));
-
-                                        // Contabilizar linha
-                                        linhasDisponiveis -= 1;
-                                    }
-                                }
-                                else
-                                {
-                                    // Verificar se é um débito/crédito
-                                    // Crédito
-                                    if (valor > 0)
-                                    {
-                                        // Contabilizar valor do lançamento
-                                        totalCreditos += valor;
-
-                                        // Adicionar primeira linha (com os espaços do débito vázios)
-                                        pdf.Add(new Paragraph($"{historico?.PadRight(82)}{"   "?.PadLeft(14)}{valor.ToString("#,##0.00").PadLeft(14)}", fonte));
-                                    }
-                                    // Débito
-                                    else
-                                    {
-                                        // Contabilizar valor do lançamento
-                                        totalDebitos += valor;
-
-                                        // Adicionar primeira linha
-                                        pdf.Add(new Paragraph($"{historico?.PadRight(82)}{valor.ToString("#,##0.00").PadLeft(14)}", fonte));
-                                    }
-
-                                    // Contabilizar linha
-                                    linhasDisponiveis -= 1;
-                                }
-                            }
-                            // Verificar se existe espaço para o rodapé, senão: criar nova página
-                            if (linhasDisponiveis < 2)
-                            {
-                                pdf.NewPage();
-                                linhasDisponiveis = 57;
-                                adicionarCabecalho(subtitulo);
-                            }
-
-                            // Verificar se existe linhas sobrando para inserir um espaço antes do rodapé
-                            if (linhasDisponiveis >= 3)
-                            {
-                                pdf.Add(new Paragraph($"   ", fonte));
-                                linhasDisponiveis--;
-                            }
-
-                            // Inserindo rodapé
-                            pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
-                            pdf.Add(new Paragraph($"{"TOTAL DO DIA:".PadLeft(82)}{totalDebitos.ToString("#,##0.00").PadLeft(14)}{totalCreditos.ToString("#,##0.00").PadLeft(14)}", fonte));
-                            linhasDisponiveis -= 2;
-                            if (linhasDisponiveis > 0)
-                            {
+                                // Inserindo rodapé
                                 pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
+                                pdf.Add(new Paragraph($"{"TOTAL DO DIA:".PadLeft(82)}{totalDebitos.ToString("#,##0.00").PadLeft(14)}{totalCreditos.ToString("#,##0.00").PadLeft(14)}", fonte));
+                                linhasDisponiveis -= 2;
+                                if (linhasDisponiveis > 0)
+                                {
+                                    pdf.Add(new Paragraph("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", fonte));
+                                }
+
+                                // Atualizar data anterior para a próxima iteração
+                                dataAnterior = dataAtual;
                             }
 
                             // Fechando o documento
@@ -328,7 +385,7 @@ namespace Contabilidade.Forms.Relatorios
             }
             else
             {
-                MessageBox.Show($"Nenhum lançamento foi realizado na data {data:dd}/{data:MM}/{data:yyyy}", "O relatório não foi gerado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show($"Nenhum lançamento foi realizado no período informado ({dataInicial:dd}/{dataInicial:MM}/{dataInicial:yyyy} a {dataFinal:dd}/{dataFinal:MM}/{dataFinal:yyyy})", "O relatório não foi gerado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
 
